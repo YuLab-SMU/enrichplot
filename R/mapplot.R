@@ -1,4 +1,5 @@
-mapplot <- function(x, n = 50, ...) {
+
+mapplot <- function(x, n = 50, layout = "kk", ...) {
     if (is(x, "gseaResult")) {
         geneSets <- x@geneSets
     }
@@ -43,7 +44,6 @@ mapplot <- function(x, n = 50, ...) {
         g <- delete.edges(g, E(g)[wd[,3] < 0.2])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
 
-        cols <- color_scale("red", "#E5C494")
 
         if (is(x, "gseaResult")) {
             cnt <- y$setSize / 10
@@ -59,7 +59,7 @@ mapplot <- function(x, n = 50, ...) {
     }
 
 
-    ggraph(g, layout='kk') +
+    ggraph(g, layout=layout) +
         geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey') +
         geom_node_point(aes_(color=~pvalue, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
