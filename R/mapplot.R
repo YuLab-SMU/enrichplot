@@ -1,5 +1,5 @@
 
-mapplot <- function(x, n = 50, layout = "kk", color="pvalue", ...) {
+mapplot <- function(x, n = 50, layout = "kk", color="p.adjust", ...) {
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
     if (nrow(y) < n) {
