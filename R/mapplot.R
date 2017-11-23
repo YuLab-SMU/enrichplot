@@ -1,11 +1,6 @@
 
-mapplot <- function(x, n = 50, layout = "kk", ...) {
-    if (is(x, "gseaResult")) {
-        geneSets <- x@geneSets
-    }
-    if (is(x, "enrichResult")) {
-        geneSets <- geneInCategory(x)
-    }
+mapplot <- function(x, n = 50, layout = "kk", color="pvalue", ...) {
+    geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
     if (nrow(y) < n) {
         n <- nrow(y)
@@ -21,8 +16,6 @@ mapplot <- function(x, n = 50, layout = "kk", ...) {
         V(g)$color <- "red"
         return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
     } else {
-        pvalue <- y$pvalue
-
         id <- y[,1]
         geneSets <- geneSets[id]
 
@@ -44,26 +37,19 @@ mapplot <- function(x, n = 50, layout = "kk", ...) {
         g <- delete.edges(g, E(g)[wd[,3] < 0.2])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
 
+        cnt <- sapply(geneSets, length)
+        V(g)$size <- cnt
 
-        if (is(x, "gseaResult")) {
-            cnt <- y$setSize / 10
-        }
-        if (is(x, "enrichResult")) {
-            cnt <- y$Count
-        }
-
-        names(cnt) <- y$Description
-        cnt2 <- cnt[V(g)$name]
-
-        V(g)$size <- cnt2
+        colVar <- y[, color]
+        V(g)$color <- colVar
     }
 
 
     ggraph(g, layout=layout) +
         geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey') +
-        geom_node_point(aes_(color=~pvalue, size=~size)) +
+        geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-        scale_color_gradientn(colors=heatmap_palette, guide=guide_colorbar(reverse=TRUE)) +
+        scale_color_gradientn(name = color, colors=heatmap_palette, guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8))
 
 }
