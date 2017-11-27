@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.4.2)
@@ -8,9 +8,11 @@ Imports:
     DOSE,
     ggplot2,
     ggraph,
+    GOSemSim,
     grDevices,
     igraph,
-    reshape2
+    reshape2,
+    utils
 License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true

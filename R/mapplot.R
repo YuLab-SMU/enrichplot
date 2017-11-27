@@ -1,6 +1,6 @@
-##' Enrichment Map 
+##' Enrichment Map
 ##'
-##' 
+##'
 ##' @title mapplot
 ##' @param x enrichment result. e.g. instance of gseaResult or enrichResult
 ##' @param showCategory number of enriched terms to display
@@ -26,7 +26,7 @@
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @export
-##' @author Guangchuang Yu 
+##' @author Guangchuang Yu
 mapplot <- function(x, showCategory = 50, color="p.adjust", layout = "kk", ...) {
     if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
         stop("object not supported...")
@@ -84,16 +84,5 @@ mapplot <- function(x, showCategory = 50, color="p.adjust", layout = "kk", ...) 
         scale_color_gradientn(name = color, colors=heatmap_palette, guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8))
 
-}
-
-
-##' @importFrom grDevices colorRampPalette
-heatmap_palette <- colorRampPalette(c("red", "yellow", "green"))(n = 299)
-
-
-overlap_ratio <- function(x, y) {
-    x <- unlist(x)
-    y <- unlist(y)
-    length(intersect(x, y))/length(unique(c(x,y)))
 }
 
