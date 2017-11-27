@@ -1,0 +1,60 @@
+---
+title: "Visualization of Functional Enrichment Result"
+author: "\\
+
+	Guangchuang Yu\\
+
+        School of Public Health, The University of Hong Kong"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    toc: true
+    theme: cayman
+    highlight: github
+  pdf_document:
+    toc: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{enrichplot introduction}
+  %\VignetteDepends{ggplot2}
+  %\VignetteDepends{ggraph}
+  %\usepackage[utf8]{inputenc}
+---
+
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(warning = FALSE,
+                      message = TRUE)
+
+library(DOSE)
+library(org.Hs.eg.db)
+library(clusterProfiler)
+library(ggplot2)
+library(ggraph)
+library(cowplot)
+library(enrichplot)
+```
+
+
+## Induced GO DAG graph
+
+```{r fig.width=8, fig.height=8}
+library(clusterProfiler)
+data(geneList)
+de <- names(geneList)[1:100]
+ego <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="BP")
+
+library(enrichplot)
+goplot(ego)
+```
+
+## Enrichment Map
+
+```{r}
+## remove redundent GO terms
+ego2 <- simplify(ego) 
+mapplot(ego2)
+```
+
+

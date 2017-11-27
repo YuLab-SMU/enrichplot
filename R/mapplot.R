@@ -69,10 +69,10 @@ mapplot <- function(x, showCategory = 50, color="p.adjust", layout = "kk", ...) 
         g <- delete.edges(g, E(g)[wd[,3] < 0.2])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
 
-        cnt <- sapply(geneSets, length)
+        cnt <- sapply(geneSets[idx], length)
         V(g)$size <- cnt
 
-        colVar <- y[, color]
+        colVar <- y[idx, color]
         V(g)$color <- colVar
     }
 
