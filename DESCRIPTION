@@ -9,6 +9,7 @@ Imports:
     DOSE,
     ggplot2,
     ggraph,
+    ggridges,
     GOSemSim,
     grDevices,
     igraph,

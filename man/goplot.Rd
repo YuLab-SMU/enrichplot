@@ -4,7 +4,8 @@
 \alias{goplot}
 \title{goplot}
 \usage{
-goplot(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", ...)
+goplot(x, showCategory = 10, color = "p.adjust", layout = "sugiyama",
+  geom = "text", ...)
 }
 \arguments{
 \item{x}{enrichment result. e.g. instance of gseaResult or enrichResult}
@@ -14,6 +15,8 @@ goplot(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", ...)
 \item{color}{variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue}
 
 \item{layout}{layout of the map}
+
+\item{geom}{label geom, one of 'label' or 'text'}
 
 \item{...}{additional parameter}
 }

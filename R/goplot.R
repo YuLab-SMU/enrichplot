@@ -6,6 +6,7 @@
 ##' @param showCategory number of enriched terms to display
 ##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
 ##' @param layout layout of the map
+##' @param geom label geom, one of 'label' or 'text'
 ##' @param ... additional parameter
 ##' @return ggplot object
 ##' @importFrom utils data
@@ -18,7 +19,7 @@
 ##' @importFrom AnnotationDbi mget
 ##' @export
 ##' @author guangchuang yu
-goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", ...) {
+goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
     if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
         stop("object not supported...")
 
@@ -67,15 +68,21 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     node$size <- sapply(geneSets[node$go_id], length)
 
     g <- graph.data.frame(edge, directed=T, vertices=node)
+    E(g)$relationship <- edge[,3]
 
-    ggraph(g, layout=layout) +
-        geom_edge_link(arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm')) +
+    p <- ggraph(g, layout=layout) +
+        geom_edge_link(aes_(linetype = ~relationship), arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm'), colour="darkgrey") +
         geom_node_point(size = 5, aes_(color=~color)) +
-        geom_node_label(aes_(label=~Term, fill=~color), repel=TRUE) +
         theme_void() +
-        scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
-        scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white') #+
-    ##scale_size(range=c(3, 8))
+        scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE))
+
+    if (geom == "label") {
+        p <- p + geom_node_label(aes_(label=~Term, fill=~color), repel=TRUE) +
+            scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white')
+    } else {
+        p <- p + geom_node_text(aes_(label=~Term), repel=TRUE)
+    }
+    return(p)
 }
 
 GOSemSim_initial <- getFromNamespace(".initial", "GOSemSim")

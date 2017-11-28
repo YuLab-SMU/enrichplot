@@ -63,4 +63,13 @@ cnetplot(ego2, foldChange=geneList)
 mapplot(ego2)
 ```
 
+## ridgeline plot for expression distribution for GSEA result
+
+The `ridgeplot` will visualize expression distributions of core enriched genes
+for GSEA enriched categories.
+
+```{r fig.width=12, fig.height=8, message=FALSE}
+kk <- gseKEGG(geneList, nPerm=10000)
+ridgeplot(kk)
+```
 
