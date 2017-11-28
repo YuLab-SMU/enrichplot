@@ -39,7 +39,7 @@ library(enrichplot)
 
 ## Induced GO DAG graph
 
-```{r fig.width=8, fig.height=8}
+```{r fig.width=12, fig.height=8}
 library(clusterProfiler)
 data(geneList)
 de <- names(geneList)[1:100]
@@ -51,9 +51,9 @@ goplot(ego)
 
 ## Enrichment Map
 
-```{r}
+```{r fig.width=12, fig.height=8}
 ## remove redundent GO terms
-ego2 <- simplify(ego) 
+ego2 <- simplify(ego)
 mapplot(ego2)
 ```
 
