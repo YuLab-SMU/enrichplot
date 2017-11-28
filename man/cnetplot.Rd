@@ -4,7 +4,8 @@
 \alias{cnetplot}
 \title{cnetplot}
 \usage{
-cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk",
+  circular = FALSE, ...)
 }
 \arguments{
 \item{x}{enrichment result. e.g. instance of gseaResult or enrichResult}
@@ -14,6 +15,8 @@ cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 \item{foldChange}{fold Change}
 
 \item{layout}{layout of the network}
+
+\item{circular}{whether using circular layout}
 
 \item{...}{additional parameters}
 }

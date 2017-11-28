@@ -4,7 +4,7 @@
 \alias{mapplot}
 \title{mapplot}
 \usage{
-mapplot(x, showCategory = 50, color = "p.adjust", layout = "kk", ...)
+mapplot(x, showCategory = 30, color = "p.adjust", layout = "kk", ...)
 }
 \arguments{
 \item{x}{enrichment result. e.g. instance of gseaResult or enrichResult}

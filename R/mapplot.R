@@ -27,7 +27,7 @@
 ##' @importFrom ggraph geom_edge_link
 ##' @export
 ##' @author Guangchuang Yu
-mapplot <- function(x, showCategory = 50, color="p.adjust", layout = "kk", ...) {
+mapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
     if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
         stop("object not supported...")
 

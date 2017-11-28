@@ -42,12 +42,28 @@ library(enrichplot)
 ```{r fig.width=12, fig.height=8}
 library(clusterProfiler)
 data(geneList)
-de <- names(geneList)[1:100]
+de <- names(geneList)[abs(geneList) > 2]
 ego <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="BP", readable=TRUE)
 
 library(enrichplot)
 goplot(ego)
 ```
+
+## Bar plot
+
+```{r fig.width=12, fig.height=8}
+barplot(ego, showCategory=20)
+```
+
+## Dot plot
+
+```{r fig.width=12, fig.height=8}
+dotplot(ego, showCategory=30)
+
+go <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="all")
+dotplot(go, split="ONTOLOGY") + facet_grid(ONTOLOGY~., scale="free")
+```
+
 
 ## Gene-Concept Network
 
@@ -55,6 +71,7 @@ goplot(ego)
 ## remove redundent GO terms
 ego2 <- simplify(ego)
 cnetplot(ego2, foldChange=geneList)
+cnetplot(ego2, foldChange=geneList, circular = TRUE)
 ```
 
 ## Enrichment Map

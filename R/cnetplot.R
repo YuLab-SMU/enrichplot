@@ -6,15 +6,25 @@
 ##' @param showCategory number of enriched terms to display
 ##' @param foldChange fold Change
 ##' @param layout layout of the network
+##' @param circular whether using circular layout
 ##' @param ... additional parameters
 ##' @return ggplot object
+##' @importFrom ggraph geom_edge_arc
 ##' @export
 ##' @author guangchuang yu
 cnetplot <- function(x,
                      showCategory = 5,
                      foldChange   = NULL,
                      layout = "kk",
+                     circular = FALSE,
                      ...) {
+
+    if (circular) {
+        layout <- "linear"
+        geom_edge <- geom_edge_arc
+    } else {
+        geom_edge <- geom_edge_link
+    }
 
     n <- showCategory
     geneSets <- geneInCategory(x) ## use core gene for gsea result
@@ -55,17 +65,17 @@ cnetplot <- function(x,
         } else if (all(fc < 0, na.rm=TRUE)) {
             palette <- color_palette(c("green", "blue"))
         } else {
-            palette <- color_palette(c("green", "blue", "red"))
+            palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF5C32", "red"))
         }
-        p <- ggraph(g, layout=layout) +
-            geom_edge_link(alpha=.8, colour='darkgrey') +
+        p <- ggraph(g, layout=layout, circular = circular) +
+            geom_edge(alpha=.8, colour='darkgrey') +
             geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size)) +
             scale_color_gradientn(name = "fold change", colors=palette, na.value = "#E5C494")
     } else {
         V(g)$color <- "#B3B3B3"
         V(g)$color[1:n] <- "#E5C494"
-        p <- ggraph(g, layout=layout) +
-            geom_edge_link(alpha=.8, colour='darkgrey') +
+        p <- ggraph(g, layout=layout, circular=circular) +
+            geom_edge(alpha=.8, colour='darkgrey') +
             geom_node_point(aes_(color=~I(color), size=~size))
     }
 

@@ -9,6 +9,7 @@
 ##' @return ggplot object
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 aes_string
+##' @importFrom ggplot2 scale_x_reverse
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggridges geom_density_ridges
@@ -57,7 +58,7 @@ ridgeplot <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRU
 
     ggplot(gs2val.df, aes_string(x="value", y="category", fill=fill)) + geom_density_ridges() +
         scale_x_reverse() +
-        scale_fill_gradientn(name = fill, colors=heatmap_palette) +
+        scale_fill_gradientn(name = fill, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         ## geom_vline(xintercept=0, color='firebrick', linetype='dashed') +
         xlab(NULL) + ylab(NULL) +  DOSE::theme_dose()
 }
