@@ -31,12 +31,9 @@ mapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) 
     if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
         stop("object not supported...")
 
-    n <- showCategory
+    n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
-    if (nrow(y) < n) {
-        n <- nrow(y)
-    }
     y <- y[1:n,]
 
     if (n == 0) {

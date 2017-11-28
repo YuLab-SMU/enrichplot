@@ -14,40 +14,15 @@
 ##' @return ggplot object
 ##' @author guangchuang yu
 heatplot <- function(x, showCategory=30, foldChange=NULL) {
-    n <- showCategory
-    geneSets <- geneInCategory(x) ## use core gene for gsea result
-    y <- as.data.frame(x)
-    if (nrow(y) < n) {
-        n <- nrow(y)
-    }
-    y <- y[1:n,]
-    geneSets <- geneSets[y$ID]
-    names(geneSets) <- y$Description
+    n <- update_n(x, showCategory)
+    geneSets <- extract_geneSets(x, n)
 
-    readable <- x@readable
-    organism <- x@organism
-    if (readable & (!is.null(foldChange) ) ){
-        gid <- names(foldChange)
-        if (is(x, 'gseaResult')) {
-            ii <- gid %in% names(x@geneList)
-        } else {
-            ii <- gid %in% x@gene
-        }
-        gid[ii] <- x@gene2Symbol[gid[ii]]
-        names(foldChange) <- gid
-    }
-
+    foldChange <- fc_readable(x, foldChange)
     d <- list2df(geneSets)
 
     if (!is.null(foldChange)) {
-        d$foldChange <- fc <- foldChange[d[,2]]
-        if (all(fc > 0, na.rm=TRUE)) {
-            palette <- color_palette(c("blue", "red"))
-        } else if (all(fc < 0, na.rm=TRUE)) {
-            palette <- color_palette(c("green", "blue"))
-        } else {
-            palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF6347", "red"))
-        }
+        d$foldChange <- foldChange[d[,2]]
+        palette <- fc_palette(d$foldChange)
         p <- ggplot(d, aes_(~Gene, ~categoryID)) + geom_tile(aes_(fill=~foldChange), color="white") +
             scale_fill_gradientn(name = "fold change", colors=palette)
 
@@ -57,3 +32,5 @@ heatplot <- function(x, showCategory=30, foldChange=NULL) {
     p + xlab(NULL) + ylab(NULL) + theme_minimal() +
         theme(panel.grid.major=element_blank(), axis.text.x=element_text(angle=60, hjust=1))
 }
+
+

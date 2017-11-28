@@ -26,30 +26,12 @@ cnetplot <- function(x,
         geom_edge <- geom_edge_link
     }
 
-    n <- showCategory
-    geneSets <- geneInCategory(x) ## use core gene for gsea result
-    y <- as.data.frame(x)
-    if (nrow(y) < n) {
-        n <- nrow(y)
-    }
-    y <- y[1:n,]
-    geneSets <- geneSets[y$ID]
-    names(geneSets) <- y$Description
+    n <- update_n(x, showCategory)
+    geneSets <- extract_geneSets(x, n)
 
     g <- list2graph(geneSets)
 
-    readable <- x@readable
-    organism <- x@organism
-    if (readable & (!is.null(foldChange) ) ){
-        gid <- names(foldChange)
-        if (is(x, 'gseaResult')) {
-            ii <- gid %in% names(x@geneList)
-        } else {
-            ii <- gid %in% x@gene
-        }
-        gid[ii] <- x@gene2Symbol[gid[ii]]
-        names(foldChange) <- gid
-    }
+    foldChange <- fc_readable(x, foldChange)
 
     size <- sapply(geneSets, length)
     V(g)$size <- min(size)/2
@@ -60,13 +42,7 @@ cnetplot <- function(x,
         fc <- foldChange[V(g)$name[(n+1):length(V(g))]]
         V(g)$color <- NA
         V(g)$color[(n+1):length(V(g))] <- fc
-        if (all(fc > 0, na.rm=TRUE)) {
-            palette <- color_palette(c("blue", "red"))
-        } else if (all(fc < 0, na.rm=TRUE)) {
-            palette <- color_palette(c("green", "blue"))
-        } else {
-            palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF6347", "red"))
-        }
+        palette <- fc_palette(fc)
         p <- ggraph(g, layout=layout, circular = circular) +
             geom_edge(alpha=.8, colour='darkgrey') +
             geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size)) +

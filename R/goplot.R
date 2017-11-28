@@ -23,12 +23,9 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
         stop("object not supported...")
 
-    n <- showCategory
+    n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
-    if (nrow(y) < n) {
-        n <- nrow(y)
-    }
     y <- y[1:n,]
 
     id <- y$ID[1:n]
