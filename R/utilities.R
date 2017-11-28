@@ -10,6 +10,8 @@
 ##' @author guangchuang yu
 color_palette <- function(colors) colorRampPalette(colors)(n = 299)
 
+sig_palette <- color_palette(c("red", "yellow", "blue"))
+
 heatmap_palette <- color_palette(c("red", "yellow", "green"))
 
 overlap_ratio <- function(x, y) {

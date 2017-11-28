@@ -46,7 +46,7 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     ##     cdag = gotbl[gotbl$go_id %in% cid, ]
     ##     dag <- unique(rbind(dag, cdag))
     ## }
- 
+
     GOANCESTOR <- getAncestors(x@ontology)
     anc <- AnnotationDbi::mget(id, GOANCESTOR)
     ca <- anc[[1]]
@@ -59,7 +59,7 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     ## uanc <- uanc[sapply(uanc, function(g) sum(sapply(anc, function(y) g %in% y))) > 1]
 
     dag <- gotbl[gotbl$go_id %in% unique(c(id, uanc)),]
-    
+
 
     edge <- dag[, c(5, 1, 4)]
     node <- unique(gotbl[gotbl$go_id %in% unique(c(edge[,1], edge[,2])), 1:3])
@@ -73,8 +73,8 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
         geom_node_point(size = 5, aes_(color=~color)) +
         geom_node_label(aes_(label=~Term, fill=~color), repel=TRUE) +
         theme_void() +
-        scale_color_gradientn(name = color, colors=heatmap_palette, guide=guide_colorbar(reverse=TRUE)) +
-        scale_fill_gradientn(name = color, colors=heatmap_palette, guide=guide_colorbar(reverse=TRUE), na.value='white') #+
+        scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
+        scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white') #+
     ##scale_size(range=c(3, 8))
 }
 

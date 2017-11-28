@@ -1,7 +1,7 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 0.0.2
-Authors@R: person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com", role = c("aut", "cre"))
+Version: 0.0.3
+Authors@R: person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.4.2)
 Imports:
