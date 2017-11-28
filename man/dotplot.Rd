@@ -36,6 +36,13 @@ plot
 \description{
 dotplot for enrichment result
 }
+\examples{
+library(DOSE)
+data(geneList)
+de <- names(geneList)[1:100]
+x <- enrichDO(de)
+dotplot(x)
+}
 \author{
 guangchuang yu
 

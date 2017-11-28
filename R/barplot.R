@@ -12,7 +12,6 @@
 ##' @importFrom ggplot2 ggtitle
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
-## @S3method barplot enrichResult
 ##' @title barplot
 ##' @param height enrichResult object
 ##' @param x one of 'Count' and 'GeneRatio'
@@ -23,6 +22,13 @@
 ##' @param ... other parameter, ignored
 ##' @method barplot enrichResult
 ##' @export
+##' @return ggplot object
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' de <- names(geneList)[1:100]
+##' x <- enrichDO(de)
+##' barplot(x)
 barplot.enrichResult <- function(height, x="Count", color='p.adjust', showCategory=8, font.size=12, title="", ...) {
     ## use *height* to satisy barplot generic definition
     ## actually here is an enrichResult object.

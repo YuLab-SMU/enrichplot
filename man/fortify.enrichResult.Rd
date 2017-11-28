@@ -24,6 +24,9 @@
 
 \item{...}{additional parameter}
 }
+\value{
+data.frame
+}
 \description{
 convert enrichResult object for ggplot2
 }

@@ -21,6 +21,12 @@ ggplot object
 \description{
 ridgeline plot for GSEA result
 }
+\examples{
+library(DOSE)
+data(geneList)
+x <- gseDO(geneList)
+ridgeplot(x)
+}
 \author{
 guangchuang yu
 }

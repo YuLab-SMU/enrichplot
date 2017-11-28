@@ -11,6 +11,12 @@
 ##' @return ggplot object
 ##' @importFrom ggraph geom_edge_arc
 ##' @export
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' de <- names(geneList)[1:100]
+##' x <- enrichDO(de)
+##' cnetplot(x)
 ##' @author guangchuang yu
 cnetplot <- function(x,
                      showCategory = 5,
@@ -70,7 +76,7 @@ cnetplot <- function(x,
 ##' @author Guangchuang Yu
 list2graph <- function(inputList) {
     x <- list2df(inputList)
-    g <- graph.data.frame(x, directed=F)
+    g <- graph.data.frame(x, directed=FALSE)
     return(g)
 }
 

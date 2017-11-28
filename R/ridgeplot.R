@@ -15,6 +15,11 @@
 ##' @importFrom ggridges geom_density_ridges
 ##' @importFrom DOSE theme_dose
 ##' @export
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' x <- gseDO(geneList)
+##' ridgeplot(x)
 ##' @author guangchuang yu
 ridgeplot <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
     if (!is(x, "gseaResult"))
@@ -46,7 +51,7 @@ ridgeplot <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRU
     i <- match(nn, x$ID)
     nn <- x$Description[i]
 
-    j <- order(x$NES[i], decreasing=F)
+    j <- order(x$NES[i], decreasing=FALSE)
 
     len <- sapply(gs2val, length)
     gs2val.df <- data.frame(category = rep(nn, times=len),

@@ -12,6 +12,12 @@
 ##' @importFrom ggplot2 element_text
 ##' @export
 ##' @return ggplot object
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' de <- names(geneList)[1:100]
+##' x <- enrichDO(de)
+##' heatplot(x)
 ##' @author guangchuang yu
 heatplot <- function(x, showCategory=30, foldChange=NULL) {
     n <- update_n(x, showCategory)

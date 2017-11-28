@@ -64,7 +64,7 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     node$color <- x[node$go_id, color]
     node$size <- sapply(geneSets[node$go_id], length)
 
-    g <- graph.data.frame(edge, directed=T, vertices=node)
+    g <- graph.data.frame(edge, directed=TRUE, vertices=node)
     E(g)$relationship <- edge[,3]
 
     p <- ggraph(g, layout=layout) +

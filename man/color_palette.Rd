@@ -15,6 +15,9 @@ color vector
 \description{
 create color palette for continuous data
 }
+\examples{
+color_palette(c("red", "yellow", "green"))
+}
 \author{
 guangchuang yu
 }

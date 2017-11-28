@@ -23,6 +23,13 @@ ggplot object
 \description{
 Enrichment Map
 }
+\examples{
+library(DOSE)
+data(geneList)
+de <- names(geneList)[1:100]
+x <- enrichDO(de)
+mapplot(x)
+}
 \author{
 Guangchuang Yu
 }

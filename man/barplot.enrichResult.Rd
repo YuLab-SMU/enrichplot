@@ -22,6 +22,16 @@
 
 \item{...}{other parameter, ignored}
 }
+\value{
+ggplot object
+}
 \description{
 barplot of enrichResult
+}
+\examples{
+library(DOSE)
+data(geneList)
+de <- names(geneList)[1:100]
+x <- enrichDO(de)
+barplot(x)
 }

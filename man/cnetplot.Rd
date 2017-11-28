@@ -26,6 +26,13 @@ ggplot object
 \description{
 gene-concept network
 }
+\examples{
+library(DOSE)
+data(geneList)
+de <- names(geneList)[1:100]
+x <- enrichDO(de)
+cnetplot(x)
+}
 \author{
 guangchuang yu
 }

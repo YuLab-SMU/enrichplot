@@ -10,6 +10,7 @@
 ##' @param drop logical
 ##' @param split separate result by 'split' variable
 ##' @param ... additional parameter
+##' @return data.frame
 ##' @importFrom ggplot2 fortify
 ##' @method fortify enrichResult
 ##' @export

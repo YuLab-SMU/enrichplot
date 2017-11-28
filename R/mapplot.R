@@ -26,6 +26,12 @@
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @export
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' de <- names(geneList)[1:100]
+##' x <- enrichDO(de)
+##' mapplot(x)
 ##' @author Guangchuang Yu
 mapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
     if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
@@ -61,7 +67,7 @@ mapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) 
         wd <- melt(w)
         wd <- wd[wd[,1] != wd[,2],]
         wd <- wd[!is.na(wd[,3]),]
-        g <- graph.data.frame(wd[,-3], directed=F)
+        g <- graph.data.frame(wd[,-3], directed=FALSE)
         E(g)$width=sqrt(wd[,3] * 5)
         g <- delete.edges(g, E(g)[wd[,3] < 0.2])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))

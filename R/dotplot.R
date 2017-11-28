@@ -12,6 +12,12 @@
 ##' @param title plot title
 ##' @return plot
 ##' @export
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' de <- names(geneList)[1:100]
+##' x <- enrichDO(de)
+##' dotplot(x)
 ##' @author guangchuang yu
 dotplot <- function(height, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "") {
     UseMethod("dotplot", height)

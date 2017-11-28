@@ -1,6 +1,10 @@
+CHANGES IN VERSION 0.99.0
+------------------------
+ o ready to submit to Bioconductor <2017-11-28, Tue>
+
 CHANGES IN VERSION 0.0.3
 ------------------------
- o heatplot <2017-11-28, Tue>
+ o heatplot and gseaplot <2017-11-28, Tue>
  o ridgeplot, barplot and dotplot derived from DOSE <2017-11-28, Tue>
  o cnetplot <2017-11-28, Tue>
 

@@ -99,3 +99,13 @@ ridgeplot(kk)
 ```
 
 
+## running score and preranked list of GSEA result
+
+```{r fig.width=12, fig.height=4}
+gseaplot(kk, geneSetID = 1, by = "runningScore", title = kk$Description[1])
+gseaplot(kk, geneSetID = 1, by = "preranked", title = kk$Description[1])
+```
+
+```{r fig.width=12, fig.height=8}
+gseaplot(kk, geneSetID = 1, title = kk$Description[1])
+```

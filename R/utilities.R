@@ -7,6 +7,8 @@
 ##' @return color vector
 ##' @importFrom grDevices colorRampPalette
 ##' @export
+##' @examples
+##' color_palette(c("red", "yellow", "green"))
 ##' @author guangchuang yu
 color_palette <- function(colors) colorRampPalette(colors)(n = 299)
 
