@@ -1,4 +1,4 @@
-CHANGES IN VERSION 0.99.2
+CHANGES IN VERSION 0.99.3
 ------------------------
  o import ggplot2::rel to fix R check <2017-11-28, Tue>
 
