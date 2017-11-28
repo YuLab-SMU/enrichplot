@@ -65,7 +65,7 @@ cnetplot <- function(x,
         } else if (all(fc < 0, na.rm=TRUE)) {
             palette <- color_palette(c("green", "blue"))
         } else {
-            palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF5C32", "red"))
+            palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF6347", "red"))
         }
         p <- ggraph(g, layout=layout, circular = circular) +
             geom_edge(alpha=.8, colour='darkgrey') +
@@ -79,7 +79,7 @@ cnetplot <- function(x,
             geom_node_point(aes_(color=~I(color), size=~size))
     }
 
-    p + scale_size(range=c(3, 8), breaks=seq(min(size), max(size), length.out=4)) +
+    p + scale_size(range=c(3, 10), breaks=unique(round(seq(min(size), max(size), length.out=4)))) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
 }
 
@@ -93,15 +93,20 @@ cnetplot <- function(x,
 ##' @importFrom igraph graph.data.frame
 ##' @author Guangchuang Yu
 list2graph <- function(inputList) {
-    x <- data.frame()
-    for (i in 1:length(inputList)) {
-        x=rbind(x,
-        data.frame(categoryID=rep(names(inputList[i]),
-                                  length(inputList[[i]])),
-                   Gene=inputList[[i]]))
-    }
+    x <- list2df(inputList)
     g <- graph.data.frame(x, directed=F)
     return(g)
+}
+
+
+list2df <- function(inputList) {
+    ldf <- lapply(1:length(inputList), function(i) {
+        data.frame(categoryID=rep(names(inputList[i]),
+                                  length(inputList[[i]])),
+                   Gene=inputList[[i]])
+    })
+
+    do.call('rbind', ldf)
 }
 
 

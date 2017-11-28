@@ -74,13 +74,21 @@ cnetplot(ego2, foldChange=geneList)
 cnetplot(ego2, foldChange=geneList, circular = TRUE)
 ```
 
+## Heatmap-like functional classification
+
+```{r fig.width=16, fig.height=4}
+heatplot(ego2)
+heatplot(ego2, foldChange=geneList)
+```
+
+
 ## Enrichment Map
 
 ```{r fig.width=12, fig.height=8}
 mapplot(ego2)
 ```
 
-## ridgeline plot for expression distribution for GSEA result
+## ridgeline plot for expression distribution of GSEA result
 
 The `ridgeplot` will visualize expression distributions of core enriched genes
 for GSEA enriched categories.
@@ -89,4 +97,5 @@ for GSEA enriched categories.
 kk <- gseKEGG(geneList, nPerm=10000)
 ridgeplot(kk)
 ```
+
 
