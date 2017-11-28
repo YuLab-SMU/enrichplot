@@ -1,3 +1,7 @@
+CHANGES IN VERSION 0.99.1
+------------------------
+ o import ggplot2::rel to fix R check <2017-11-28, Tue>
+ 
 CHANGES IN VERSION 0.99.0
 ------------------------
  o ready to submit to Bioconductor <2017-11-28, Tue>
