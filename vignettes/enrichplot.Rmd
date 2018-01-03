@@ -6,6 +6,8 @@ author: "\\
 
         School of Public Health, The University of Hong Kong"
 date: "`r Sys.Date()`"
+bibliography: enrichplot.bib
+biblio-style: apalike
 output:
   prettydoc::html_pretty:
     toc: true
@@ -34,10 +36,37 @@ library(ggplot2)
 library(ggraph)
 library(cowplot)
 library(enrichplot)
+
+CRANpkg <- function (pkg) {
+    cran <- "https://CRAN.R-project.org/package"
+    fmt <- "[%s](%s=%s)"
+    sprintf(fmt, pkg, cran, pkg)
+}
+
+Biocpkg <- function (pkg) {
+    sprintf("[%s](http://bioconductor.org/packages/%s)", pkg, pkg)
+}
 ```
+
+The `r Biocpkg("enrichplot")` package implements several methods for enrichment
+result visualization to help interpretation. It supports both hypergeometric
+test and gene set enrichment analysis. Both of them are widely used to
+characterize pathway/function relationships to elucidate molecular mechanisms
+from high-throughput genomic data.
+
+The `r Biocpkg("enrichplot")` package supports visualizing enrichment results
+obtained from `r Biocpkg("DOSE")` [@yu_dose_2015],
+`r Biocpkg("clusterProfiler")` [@yu_clusterprofiler_2012],
+`r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")`.
 
 
 ## Induced GO DAG graph
+
+Gene Ontology (GO) is organized as a directed acyclic graph. An insighful way of
+looking at the results of the analysis is to investigate how the significant GO
+terms are distributed over the GO graph. The `goplot` function shows subgraph
+induced by most significant GO terms.
+
 
 ```{r fig.width=12, fig.height=8}
 library(clusterProfiler)
@@ -51,11 +80,21 @@ goplot(ego)
 
 ## Bar plot
 
+
+Bar plot is the most widely used method to visualize enriched terms. It depicts
+the enrichment scores (*e.g.* p values) and gene count or ratio as bar height
+and color.
+
 ```{r fig.width=12, fig.height=8}
 barplot(ego, showCategory=20)
 ```
 
 ## Dot plot
+
+
+Dot plot is similar to bar plot with the capability to encode another score as
+dot size. Both `barplot` and `dotplot` supports facetting to visualize
+sub-ontologies simultaneously.
 
 ```{r fig.width=12, fig.height=8}
 dotplot(ego, showCategory=30)
@@ -67,14 +106,25 @@ dotplot(go, split="ONTOLOGY") + facet_grid(ONTOLOGY~., scale="free")
 
 ## Gene-Concept Network
 
+Both the `barplot` and `dotplot` only displayed most significant enriched terms,
+while users may want to know which genes are involved in these significant
+terms. The `cnetplot` depicts the linkages of genes and biological concepts
+(*e.g.* GO terms or KEGG pathways) as a network.
+
 ```{r fig.width=12, fig.height=8}
 ## remove redundent GO terms
 ego2 <- simplify(ego)
 cnetplot(ego2, foldChange=geneList)
-cnetplot(ego2, foldChange=geneList, circular = TRUE)
+cnetplot(ego2, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
 ```
 
 ## Heatmap-like functional classification
+
+
+The `heatplot` is similar to `cnetplot`, while displaying the relationships as a
+heatmap. The gene-concept network may become too complicated if user want to
+show a large number significant terms. The `heatplot` can simplify the result
+and more easy to identify expression patterns.
 
 ```{r fig.width=16, fig.height=4}
 heatplot(ego2)
@@ -84,14 +134,21 @@ heatplot(ego2, foldChange=geneList)
 
 ## Enrichment Map
 
+
+Enrichment map organizes enriched terms into a network with edges connecting
+overlapping gene sets. In this way, mutually overlapping gene sets are tend to
+cluster together, making it easy to identify functional module.
+
+
+
 ```{r fig.width=12, fig.height=8}
-mapplot(ego2)
+emapplot(ego2)
 ```
 
 ## ridgeline plot for expression distribution of GSEA result
 
 The `ridgeplot` will visualize expression distributions of core enriched genes
-for GSEA enriched categories.
+for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.
 
 ```{r fig.width=12, fig.height=8, message=FALSE}
 kk <- gseKEGG(geneList, nPerm=10000)
@@ -101,6 +158,11 @@ ridgeplot(kk)
 
 ## running score and preranked list of GSEA result
 
+Running score and preranked list are traditional methods for visualizing GSEA
+result. The `r Biocpkg("enrichplot")` package supports both of them to visualize
+the distribution of the gene set and the enrichment score.
+
+
 ```{r fig.width=12, fig.height=4}
 gseaplot(kk, geneSetID = 1, by = "runningScore", title = kk$Description[1])
 gseaplot(kk, geneSetID = 1, by = "preranked", title = kk$Description[1])
@@ -109,3 +171,6 @@ gseaplot(kk, geneSetID = 1, by = "preranked", title = kk$Description[1])
 ```{r fig.width=12, fig.height=8}
 gseaplot(kk, geneSetID = 1, title = kk$Description[1])
 ```
+
+
+# References

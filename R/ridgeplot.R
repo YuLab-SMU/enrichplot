@@ -1,27 +1,14 @@
-##' ridgeline plot for GSEA result
-##'
-##'
-##' @title ridgeplot
-##' @param x gseaResult object
-##' @param showCategory number of categories for plotting
-##' @param fill one of "pvalue", "p.adjust", "qvalue"
-##' @param core_enrichment whether only using core_enriched genes
-##' @return ggplot object
+##' @rdname ridgeplot
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 aes_string
 ##' @importFrom ggplot2 scale_x_reverse
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggridges geom_density_ridges
-##' @importFrom DOSE theme_dose
+##' @method ridgeplot gseaResult
 ##' @export
-##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' x <- gseDO(geneList)
-##' ridgeplot(x)
-##' @author guangchuang yu
-ridgeplot <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
+##' @author Guangchuang Yu
+ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
     if (!is(x, "gseaResult"))
         stop("currently only support gseaResult")
 
@@ -62,9 +49,9 @@ ridgeplot <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRU
     gs2val.df$category <- factor(gs2val.df$category, levels=nn[j])
 
     ggplot(gs2val.df, aes_string(x="value", y="category", fill=fill)) + geom_density_ridges() +
-        scale_x_reverse() +
+        ## scale_x_reverse() +
         scale_fill_gradientn(name = fill, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         ## geom_vline(xintercept=0, color='firebrick', linetype='dashed') +
-        xlab(NULL) + ylab(NULL) +  DOSE::theme_dose()
+        xlab(NULL) + ylab(NULL) +  theme_dose()
 }
 

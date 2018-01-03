@@ -1,27 +1,15 @@
-##' gene-concept network
-##'
-##'
-##' @title cnetplot
-##' @param x enrichment result. e.g. instance of gseaResult or enrichResult
-##' @param showCategory number of enriched terms to display
-##' @param foldChange fold Change
-##' @param layout layout of the network
+##' @rdname cnetplot
+##' @param colorEdge whether coloring edge by enriched terms
 ##' @param circular whether using circular layout
-##' @param ... additional parameters
-##' @return ggplot object
 ##' @importFrom ggraph geom_edge_arc
+##' @method cnetplot enrichResult
 ##' @export
-##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' de <- names(geneList)[1:100]
-##' x <- enrichDO(de)
-##' cnetplot(x)
-##' @author guangchuang yu
-cnetplot <- function(x,
+##' @author Guangchuang Yu
+cnetplot.enrichResult <- function(x,
                      showCategory = 5,
                      foldChange   = NULL,
                      layout = "kk",
+                     colorEdge = FALSE,
                      circular = FALSE,
                      ...) {
 
@@ -43,6 +31,12 @@ cnetplot <- function(x,
     V(g)$size <- min(size)/2
     V(g)$size[1:n] <- size
 
+    if (colorEdge) {
+        E(g)$category <- rep(names(geneSets), sapply(geneSets, length))
+        edge_layer <- geom_edge(aes_(color = ~category), alpha=.8)
+    } else {
+        edge_layer <- geom_edge(alpha=.8, colour='darkgrey')
+    }
 
     if (!is.null(foldChange)) {
         fc <- foldChange[V(g)$name[(n+1):length(V(g))]]
@@ -50,14 +44,14 @@ cnetplot <- function(x,
         V(g)$color[(n+1):length(V(g))] <- fc
         palette <- fc_palette(fc)
         p <- ggraph(g, layout=layout, circular = circular) +
-            geom_edge(alpha=.8, colour='darkgrey') +
+            edge_layer +
             geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size)) +
             scale_color_gradientn(name = "fold change", colors=palette, na.value = "#E5C494")
     } else {
         V(g)$color <- "#B3B3B3"
         V(g)$color[1:n] <- "#E5C494"
         p <- ggraph(g, layout=layout, circular=circular) +
-            geom_edge(alpha=.8, colour='darkgrey') +
+            edge_layer +
             geom_node_point(aes_(color=~I(color), size=~size))
     }
 
@@ -65,6 +59,9 @@ cnetplot <- function(x,
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
 }
 
+##' @method cnetplot gseaResult
+##' @export
+cnetplot.gseaResult <- cnetplot.enrichResult
 
 ##' convert a list of gene IDs to igraph object.
 ##'

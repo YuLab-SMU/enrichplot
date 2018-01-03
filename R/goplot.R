@@ -1,14 +1,4 @@
-##' plot induced GO DAG of significant terms
-##'
-##'
-##' @title goplot
-##' @param x enrichment result. e.g. instance of gseaResult or enrichResult
-##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
-##' @param layout layout of the map
-##' @param geom label geom, one of 'label' or 'text'
-##' @param ... additional parameter
-##' @return ggplot object
+##' @rdname goplot
 ##' @importFrom utils data
 ##' @import GOSemSim
 ##' @importFrom ggplot2 scale_fill_gradientn
@@ -17,12 +7,10 @@
 ##' @importFrom ggraph circle
 ##' @importFrom ggraph geom_node_label
 ##' @importFrom AnnotationDbi mget
+##' @method goplot enrichResult
 ##' @export
 ##' @author guangchuang yu
-goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
-    if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
-        stop("object not supported...")
-
+goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
@@ -33,17 +21,6 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     if (!exists(".GOSemSimEnv")) GOSemSim_initial()
     .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
     gotbl <- get("gotbl", envir=.GOSemSimEnv)
-    ## data("gotbl", package="GOSemSim")
-    ## gotbl <- get("gotbl", envir=.GlobalEnv)
-
-    ## dag = gotbl[gotbl$go_id %in% id, ]
-
-    ## cid <- dag$go_id
-    ## cid = unique(dag$parent[!dag$parent %in% cid])
-    ## if (length(cid) > 1 || cid != "all") {
-    ##     cdag = gotbl[gotbl$go_id %in% cid, ]
-    ##     dag <- unique(rbind(dag, cdag))
-    ## }
 
     GOANCESTOR <- getAncestors(x@ontology)
     anc <- AnnotationDbi::mget(id, GOANCESTOR)
@@ -51,11 +28,9 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     for (i in 2:length(anc)) {
         ca <- intersect(ca, anc[[i]])
     }
-    ## mrca <- ca[1]
+
     uanc <- unique(unlist(anc))
     uanc <- uanc[!uanc %in% ca]
-    ## uanc <- uanc[sapply(uanc, function(g) sum(sapply(anc, function(y) g %in% y))) > 1]
-
     dag <- gotbl[gotbl$go_id %in% unique(c(id, uanc)),]
 
 
@@ -81,6 +56,10 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
     }
     return(p)
 }
+
+##' @method goplot gseaResult
+##' @export
+goplot.gseaResult <- goplot.enrichResult
 
 GOSemSim_initial <- getFromNamespace(".initial", "GOSemSim")
 getAncestors <- getFromNamespace("getAncestors", "GOSemSim")

@@ -1,14 +1,4 @@
-##' Enrichment Map
-##'
-##'
-##' @title mapplot
-##' @param x enrichment result. e.g. instance of gseaResult or enrichResult
-##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
-##' @param layout layout of the map
-##' @param ... additional parameter
-##' @return ggplot object
-##' @importFrom DOSE geneInCategory
+##' @rdname emapplot
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph add_vertices
 ##' @importFrom igraph graph.data.frame
@@ -25,18 +15,10 @@
 ##' @importFrom ggraph geom_node_point
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
+##' @method emapplot enrichResult
 ##' @export
-##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' de <- names(geneList)[1:100]
-##' x <- enrichDO(de)
-##' mapplot(x)
 ##' @author Guangchuang Yu
-mapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
-    if (!inherits(x, "gseaResult") && !inherits(x, "enrichResult"))
-        stop("object not supported...")
-
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
@@ -89,3 +71,6 @@ mapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) 
 
 }
 
+##' @method emapplot gseaResult
+##' @export
+emapplot.gseaResult <- emapplot.enrichResult

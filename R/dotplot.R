@@ -1,29 +1,3 @@
-##' dotplot for enrichment result
-##'
-##'
-##' @title dotplot
-##' @rdname dotplot
-##' @param height input object, just name it to make it consistent with barplot
-##' @param x variable for x-axis, one of 'geneRatio' or 'Count'
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
-##' @param showCategory number of enriched terms to display
-##' @param split separate result by 'category' variable
-##' @param font.size font size
-##' @param title plot title
-##' @return plot
-##' @export
-##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' de <- names(geneList)[1:100]
-##' x <- enrichDO(de)
-##' dotplot(x)
-##' @author guangchuang yu
-dotplot <- function(height, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "") {
-    UseMethod("dotplot", height)
-}
-
-
 ##' @rdname dotplot
 ##' @method dotplot enrichResult
 ##' @export

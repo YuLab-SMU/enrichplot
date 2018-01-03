@@ -1,6 +1,8 @@
-##' visualize analyzing result of GSEA
-##'
-##' plotting function for gseaResult
+##' @rdname gseaplot
+##' @param color color of line segments
+##' @param color.line color of running enrichment score line
+##' @param color.vline color of vertical line which indicating the maximum/minimal running enrichment score
+##' @return ggplot2 object
 ##' @importFrom ggplot2 ggplot
 ##' @importFrom ggplot2 geom_linerange
 ##' @importFrom ggplot2 geom_line
@@ -18,30 +20,18 @@
 ##' @importFrom ggplot2 element_text
 ##' @importFrom ggplot2 rel
 ##' @importFrom cowplot plot_grid
-##' @param gseaResult gseaResult object
-##' @param geneSetID geneSet ID
-##' @param by one of "runningScore" or "position"
-##' @param title plot title
-##' @param color color of line segments
-##' @param color.line color of running enrichment score line
-##' @param color.vline color of vertical line which indicating the maximum/minimal running enrichment score
-##' @return ggplot2 object
+##' @method gseaplot gseaResult
 ##' @export
-##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' x <- gseDO(geneList)
-##' gseaplot(x, geneSetID=1)
-##' @author Yu Guangchuang
-gseaplot <- function (gseaResult, geneSetID, by = "all", title = "", color='black', color.line="green", color.vline="#FA5860"){
+##' @author Guangchuang Yu
+gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "", color='black', color.line="green", color.vline="#FA5860", ...){
     by <- match.arg(by, c("runningScore", "preranked", "all"))
-    gsdata <- gsInfo(gseaResult, geneSetID)
+    gsdata <- gsInfo(x, geneSetID)
     p <- ggplot(gsdata, aes_(x = ~x)) +
         theme_dose() + xlab("Position in the Ranked List of Genes")
     if (by == "runningScore" || by == "all") {
         p.res <- p + geom_linerange(aes_(ymin=~ymin, ymax=~ymax), color=color)
         p.res <- p.res + geom_line(aes_(y = ~runningScore), color=color.line, size=1)
-        enrichmentScore <- gseaResult@result[geneSetID, "enrichmentScore"]
+        enrichmentScore <- x@result[geneSetID, "enrichmentScore"]
         es.df <- data.frame(es = which.min(abs(p$data$runningScore - enrichmentScore)))
         p.res <- p.res + geom_vline(data = es.df, aes_(xintercept = ~es),
                                     colour = color.vline, linetype = "dashed")
