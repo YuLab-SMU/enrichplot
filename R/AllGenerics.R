@@ -1,7 +1,8 @@
 ##' Gene-Concept Network
 ##'
 ##'
-##' plot linkages of genes and enriched concepts (e.g. GO categories, KEGG pathways)
+##' plot linkages of genes and enriched concepts
+##' (e.g. GO categories, KEGG pathways)
 ##' @title cnetplot
 ##' @rdname cnetplot
 ##' @param x enrichment result
@@ -17,7 +18,8 @@
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' cnetplot(x)
-cnetplot <- function(x, showCategory = 5, foldChange = NULL, layout = "kk", ...) {
+cnetplot <- function(x, showCategory = 5,
+                     foldChange = NULL, layout = "kk", ...) {
     UseMethod("cnetplot", x)
 }
 
@@ -28,7 +30,8 @@ cnetplot <- function(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 ##' @rdname dotplot
 ##' @param height input object, just name it to make it consistent with barplot
 ##' @param x variable for x-axis, one of 'geneRatio' or 'Count'
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
+##' @param color variable that used to color enriched terms,
+##'              e.g. pvalue, p.adjust or qvalue
 ##' @param showCategory number of enriched terms to display
 ##' @param split separate result by 'category' variable
 ##' @param font.size font size
@@ -41,14 +44,17 @@ cnetplot <- function(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' dotplot(x)
-dotplot <- function(height, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "") {
+dotplot <- function(height, x = "geneRatio", color = "p.adjust",
+                    showCategory=10, split = NULL, font.size=12, title = "") {
     UseMethod("dotplot", height)
 }
 
-##' Enrichment Map for enrichment result of over-representation test or gene set enrichment analysis
+##' Enrichment Map for enrichment result of
+##' over-representation test or gene set enrichment analysis
 ##'
 ##'
-##' This function visualizes gene sets as a network (i.e. enrichment map). Mutually overlapping gene sets tend to cluster together, making it easier for interpretation.
+##' This function visualizes gene sets as a network (i.e. enrichment map).
+##' Mutually overlapping gene sets tend to cluster together, making it easier for interpretation.
 ##' @title emapplot
 ##' @rdname emapplot
 ##' @param x enrichment result.

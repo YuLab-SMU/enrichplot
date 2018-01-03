@@ -25,10 +25,12 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk", ...)
 ggplot object
 }
 \description{
-Enrichment Map for enrichment result of over-representation test or gene set enrichment analysis
+Enrichment Map for enrichment result of
+over-representation test or gene set enrichment analysis
 }
 \details{
-This function visualizes gene sets as a network (i.e. enrichment map). Mutually overlapping gene sets tend to cluster together, making it easier for interpretation.
+This function visualizes gene sets as a network (i.e. enrichment map).
+Mutually overlapping gene sets tend to cluster together, making it easier for interpretation.
 }
 \examples{
 library(DOSE)

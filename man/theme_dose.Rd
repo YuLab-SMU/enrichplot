@@ -9,6 +9,13 @@ theme_dose(font.size = 14)
 \arguments{
 \item{font.size}{font size}
 }
+\value{
+ggplot theme
+}
 \description{
 ggplot theme of DOSE
+}
+\examples{
+library(ggplot2)
+qplot(1:10) + theme_dose()
 }

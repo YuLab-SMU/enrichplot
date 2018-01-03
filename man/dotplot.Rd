@@ -20,7 +20,8 @@ dotplot(height, x = "geneRatio", color = "p.adjust", showCategory = 10,
 
 \item{x}{variable for x-axis, one of 'geneRatio' or 'Count'}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue}
+\item{color}{variable that used to color enriched terms,
+e.g. pvalue, p.adjust or qvalue}
 
 \item{showCategory}{number of enriched terms to display}
 

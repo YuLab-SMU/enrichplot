@@ -32,7 +32,8 @@ ggplot object
 Gene-Concept Network
 }
 \details{
-plot linkages of genes and enriched concepts (e.g. GO categories, KEGG pathways)
+plot linkages of genes and enriched concepts
+(e.g. GO categories, KEGG pathways)
 }
 \examples{
 library(DOSE)

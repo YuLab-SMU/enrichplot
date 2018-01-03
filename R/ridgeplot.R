@@ -24,9 +24,9 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust", core_enric
 
     n <- showCategory
     if (core_enrichment) {
-        gs2id <- geneInCategory(x)[1:n]
+        gs2id <- geneInCategory(x)[seq_len(n)]
     } else {
-        gs2id <- x@geneSets[x$ID[1:n]]
+        gs2id <- x@geneSets[x$ID[seq_len(n)]]
     }
 
     gs2val <- lapply(gs2id, function(id) {

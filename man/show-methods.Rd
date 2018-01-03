@@ -23,6 +23,13 @@ show method for \code{enrichResult} instance
 
 show method for \code{gseaResult} instance
 }
+\examples{
+library(DOSE)
+data(geneList)
+de <- names(geneList)[1:100]
+x <- enrichDO(de)
+print(x)
+}
 \author{
 Guangchuang Yu \url{https://guangchuangyu.github.io}
 
