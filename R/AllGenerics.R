@@ -18,24 +18,20 @@
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' cnetplot(x)
-cnetplot <- function(x, showCategory = 5,
-                     foldChange = NULL, layout = "kk", ...) {
-    UseMethod("cnetplot", x)
-}
+setGeneric("cnetplot",
+           function(x, showCategory = 5,
+                    foldChange = NULL, layout = "kk", ...)
+               standardGeneric("cnetplot")
+           )
+
 
 ##' dotplot for enrichment result
 ##'
 ##'
 ##' @title dotplot
 ##' @rdname dotplot
-##' @param height input object, just name it to make it consistent with barplot
-##' @param x variable for x-axis, one of 'geneRatio' or 'Count'
-##' @param color variable that used to color enriched terms,
-##'              e.g. pvalue, p.adjust or qvalue
-##' @param showCategory number of enriched terms to display
-##' @param split separate result by 'category' variable
-##' @param font.size font size
-##' @param title plot title
+##' @param object input object
+##' @param ... additional parameters
 ##' @return plot
 ##' @export
 ##' @examples
@@ -44,10 +40,10 @@ cnetplot <- function(x, showCategory = 5,
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' dotplot(x)
-dotplot <- function(height, x = "geneRatio", color = "p.adjust",
-                    showCategory=10, split = NULL, font.size=12, title = "") {
-    UseMethod("dotplot", height)
-}
+setGeneric("dotplot",
+           function(object,  ...)
+               standardGeneric("dotplot")
+           )
 
 ##' Enrichment Map for enrichment result of
 ##' over-representation test or gene set enrichment analysis
@@ -61,7 +57,7 @@ dotplot <- function(height, x = "geneRatio", color = "p.adjust",
 ##' @param showCategory number of enriched terms to display
 ##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
 ##' @param layout layout of the map
-##' @param ... additional parameter
+##' @param ... additional parameters
 ##' @return ggplot object
 ##' @export
 ##' @examples
@@ -70,9 +66,10 @@ dotplot <- function(height, x = "geneRatio", color = "p.adjust",
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' emapplot(x)
-emapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
-    UseMethod("emapplot", x)
-}
+setGeneric("emapplot",
+           function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
+               standardGeneric("emapplot")
+           })
 
 ##' plot induced GO DAG of significant terms
 ##'
@@ -87,9 +84,10 @@ emapplot <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...)
 ##' @param ... additional parameter
 ##' @return ggplot object
 ##' @export
-goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
-    UseMethod("goplot", x)
-}
+setGeneric("goplot",
+           function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
+               standardGeneric("goplot")
+           })
 
 ##' visualize analyzing result of GSEA
 ##'
@@ -108,9 +106,11 @@ goplot <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama"
 ##' data(geneList)
 ##' x <- gseDO(geneList)
 ##' gseaplot(x, geneSetID=1)
-gseaplot <- function(x, geneSetID, by = "all", title = "", ...) {
-    UseMethod("gseaplot", x)
-}
+setGeneric("gseaplot",
+           function(x, geneSetID, by = "all", title = "", ...) {
+               standardGeneric("gseaplot")
+           })
+
 
 ##' heatmap like plot for functional classification
 ##'
@@ -129,9 +129,11 @@ gseaplot <- function(x, geneSetID, by = "all", title = "", ...) {
 ##' x <- enrichDO(de)
 ##' heatplot(x)
 ##' @author guangchuang yu
-heatplot <- function(x, showCategory=30, foldChange=NULL) {
-    UseMethod("heatplot", x)
-}
+setGeneric("heatplot",
+           function(x, showCategory=30, foldChange=NULL) {
+               standardGeneric("heatplot")
+           })
+
 
 
 ##' ridgeline plot for GSEA result
@@ -150,38 +152,9 @@ heatplot <- function(x, showCategory=30, foldChange=NULL) {
 ##' data(geneList)
 ##' x <- gseDO(geneList)
 ##' ridgeplot(x)
-ridgeplot <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
-    UseMethod("ridgeplot", x)
-}
+setGeneric("ridgeplot",
+           function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
+               standardGeneric("ridgeplot")
+           })
 
 
-#' geneInCategory generic
-#'
-#' @param x enrichResult
-#' @return 'geneInCategory' return a list of genes, by spliting the input gene vector to enriched functional categories
-#' @export
-#' @examples
-#' library(DOSE)
-#' data(geneList)
-#' de <- names(geneList)[1:100]
-#' x <- enrichDO(de)
-#' geneInCategory(x)
-geneInCategory <- function(x) {
-   UseMethod("geneInCategory", x)
-}
-
-
-#' geneID generic
-#'
-#' @param x enrichResult object
-#' @return 'geneID' return the 'geneID' column of the enriched result which can be converted to data.frame via 'as.data.frame'
-#' @export
-#' @examples
-#' library(DOSE)
-#' data(geneList)
-#' de <- names(geneList)[1:100]
-#' x <- enrichDO(de)
-#' geneID(x)
-geneID <- function(x) {
-   UseMethod("geneID", x)
-}

@@ -1,17 +1,27 @@
 ##' @rdname dotplot
-##' @method dotplot enrichResult
-##' @export
+##' @param x variable for x-axis, one of 'geneRatio' or 'Count'
+##' @param color variable that used to color enriched terms,
+##'              e.g. pvalue, p.adjust or qvalue
+##' @param showCategory number of enriched terms to display
+##' @param split separate result by 'category' variable
+##' @param font.size font size
+##' @param title plot title
+##' @importClassesFrom DOSE enrichResult
+##' @exportMethod dotplot
 ##' @author guangchuang yu
-dotplot.enrichResult <- function(height, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "") {
-    dotplot_internal(height, x, color, showCategory, split, font.size, title)
-}
+setMethod("dotplot", signature(object = "enrichResult"),
+          function(object, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
+              dotplot_internal(object, x, color, showCategory, split, font.size, title)
+          })
 
 ##' @rdname dotplot
-##' @method dotplot gseaResult
-##' @export
-dotplot.gseaResult <- function(height, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "") {
-    dotplot_internal(height, x, color, showCategory, split, font.size, title)
-}
+##' @importClassesFrom DOSE gseaResult
+##' @exportMethod dotplot
+setMethod("dotplot", signature(object = "gseaResult"),
+          function(object, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
+              dotplot_internal(object, x, color, showCategory, split, font.size, title)
+          })
+
 
 
 ##' @importFrom ggplot2 fortify

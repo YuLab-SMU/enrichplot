@@ -1,4 +1,15 @@
 ##' @rdname gseaplot
+##' @exportMethod gseaplot
+setMethod("gseaplot", signature(x = "gseaResult"),
+          function (x, geneSetID, by = "all", title = "", color='black',
+                    color.line="green", color.vline="#FA5860", ...){
+              gseaplot.gseaResult(x, geneSetID = geneSetID,
+                                    by = by, title = title,
+                                    color = color, color.line = color.line,
+                                    color.vline = color.vline, ...)
+          })
+
+##' @rdname gseaplot
 ##' @param color color of line segments
 ##' @param color.line color of running enrichment score line
 ##' @param color.vline color of vertical line which indicating the maximum/minimal running enrichment score
@@ -20,8 +31,6 @@
 ##' @importFrom ggplot2 element_text
 ##' @importFrom ggplot2 rel
 ##' @importFrom cowplot plot_grid
-##' @method gseaplot gseaResult
-##' @export
 ##' @author Guangchuang Yu
 gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "", color='black', color.line="green", color.vline="#FA5860", ...){
     by <- match.arg(by, c("runningScore", "preranked", "all"))

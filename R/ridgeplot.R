@@ -1,12 +1,19 @@
 ##' @rdname ridgeplot
+##' @exportMethod ridgeplot
+setMethod("ridgeplot", signature(x = "gseaResult"),
+          function(x, showCategory = 30, fill = "p.adjust", core_enrichment = TRUE) {
+              ridgeplot.gseaResult(x, showCategory = showCategory,
+                                   fill = fill, core_enrichment = core_enrichment)
+          })
+
+
+##' @rdname ridgeplot
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 aes_string
 ##' @importFrom ggplot2 scale_x_reverse
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggridges geom_density_ridges
-##' @method ridgeplot gseaResult
-##' @export
 ##' @author Guangchuang Yu
 ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
     if (!is(x, "gseaResult"))

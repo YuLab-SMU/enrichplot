@@ -1,4 +1,21 @@
 ##' @rdname goplot
+##' @exportMethod goplot
+setMethod("goplot", signature(x = "enrichResult"),
+          function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom="text", ...) {
+              goplot.enrichResult(x, showCategory = showCategory,
+                                  color = color, layout = layout, geom = geom, ...)
+          })
+
+##' @rdname goplot
+##' @exportMethod goplot
+setMethod("goplot", signature(x = "gseaResult"),
+          function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom="text", ...) {
+              goplot.enrichResult(x, showCategory = showCategory,
+                                  color = color, layout = layout, geom = geom, ...)
+          })
+
+
+##' @rdname goplot
 ##' @importFrom utils data
 ##' @import GOSemSim
 ##' @importFrom ggplot2 scale_fill_gradientn
@@ -7,8 +24,6 @@
 ##' @importFrom ggraph circle
 ##' @importFrom ggraph geom_node_label
 ##' @importFrom AnnotationDbi mget
-##' @method goplot enrichResult
-##' @export
 ##' @author guangchuang yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
     n <- update_n(x, showCategory)
@@ -57,9 +72,6 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust", layout
     return(p)
 }
 
-##' @method goplot gseaResult
-##' @export
-goplot.gseaResult <- goplot.enrichResult
 
 GOSemSim_initial <- getFromNamespace(".initial", "GOSemSim")
 getAncestors <- getFromNamespace("getAncestors", "GOSemSim")

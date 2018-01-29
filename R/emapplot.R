@@ -1,4 +1,21 @@
 ##' @rdname emapplot
+##' @exportMethod emapplot
+setMethod("emapplot", signature(x = "enrichResult"),
+          function(x, showCategory = 30, color = "p.adjust", layout = "kk", ...) {
+              emapplot.enrichResult(x, showCategory = showCategory,
+                                    color = color, layout = layout, ...)
+          })
+
+##' @rdname emapplot
+##' @exportMethod emapplot
+setMethod("emapplot", signature(x = "gseaResult"),
+          function(x, showCategory = 30, color = "p.adjust", layout = "kk", ...) {
+              emapplot.enrichResult(x, showCategory = showCategory,
+                                    color = color, layout = layout, ...)
+          })
+
+
+##' @rdname emapplot
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph add_vertices
 ##' @importFrom igraph graph.data.frame
@@ -15,8 +32,7 @@
 ##' @importFrom ggraph geom_node_point
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
-##' @method emapplot enrichResult
-##' @export
+##' @importFrom DOSE geneInCategory
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
     n <- update_n(x, showCategory)
@@ -71,6 +87,3 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
 
 }
 
-##' @method emapplot gseaResult
-##' @export
-emapplot.gseaResult <- emapplot.enrichResult

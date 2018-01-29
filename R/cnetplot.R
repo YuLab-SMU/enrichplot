@@ -1,9 +1,25 @@
 ##' @rdname cnetplot
+##' @exportMethod cnetplot
+setMethod("cnetplot", signature(x = "enrichResult"),
+          function(x, showCategory = 5,
+                   foldChange = NULL, layout = "kk", ...) {
+              cnetplot.enrichResult(x, showCategory = showCategory,
+                                    foldChange = foldChange, layout = layout, ...)
+          })
+
+##' @rdname cnetplot
+##' @exportMethod cnetplot
+setMethod("cnetplot", signature(x = "gseaResult"),
+          function(x, showCategory = 5,
+                   foldChange = NULL, layout = "kk", ...) {
+              cnetplot.enrichResult(x, showCategory = showCategory,
+                                    foldChange = foldChange, layout = layout, ...)
+          })
+
+##' @rdname cnetplot
 ##' @param colorEdge whether coloring edge by enriched terms
 ##' @param circular whether using circular layout
 ##' @importFrom ggraph geom_edge_arc
-##' @method cnetplot enrichResult
-##' @export
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,
                      showCategory = 5,
@@ -59,9 +75,6 @@ cnetplot.enrichResult <- function(x,
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
 }
 
-##' @method cnetplot gseaResult
-##' @export
-cnetplot.gseaResult <- cnetplot.enrichResult
 
 ##' convert a list of gene IDs to igraph object.
 ##'
