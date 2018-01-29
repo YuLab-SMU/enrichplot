@@ -33,6 +33,7 @@ setGeneric("cnetplot",
 ##' @param object input object
 ##' @param ... additional parameters
 ##' @return plot
+##' @importFrom methods setGeneric
 ##' @export
 ##' @examples
 ##' library(DOSE)
