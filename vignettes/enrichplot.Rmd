@@ -35,6 +35,7 @@ library(clusterProfiler)
 library(ggplot2)
 library(ggraph)
 library(cowplot)
+library(UpSetR)
 library(enrichplot)
 
 CRANpkg <- function (pkg) {
@@ -70,7 +71,7 @@ induced by most significant GO terms.
 
 ```{r fig.width=12, fig.height=8}
 library(clusterProfiler)
-data(geneList)
+data(geneList, package="DOSE")
 de <- names(geneList)[abs(geneList) > 2]
 ego <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="BP", readable=TRUE)
 
@@ -118,6 +119,17 @@ cnetplot(ego2, foldChange=geneList)
 cnetplot(ego2, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
 ```
 
+## UpSet Plot
+
+
+The `upsetplot` is an alternative to `cnetplot` for visualizing the complex
+association between genes and gene sets. It emphasizes the gene overlapping
+among different gene sets.
+
+```{r fig.width=8, fig.height=5}
+upsetplot(ego)
+```
+
 ## Heatmap-like functional classification
 
 
@@ -141,7 +153,7 @@ cluster together, making it easy to identify functional module.
 
 
 
-```{r fig.width=12, fig.height=8}
+```{r fig.width=12, fig.height=10}
 emapplot(ego2)
 ```
 

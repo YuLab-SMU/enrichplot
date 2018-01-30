@@ -1,3 +1,8 @@
+# enrichplot 0.99.9
+
++ defined upsetplot (2018-01-30, Tue)
++ all visualization methods were defined as S4 methods (2018-01-29, Mon)
+
 # enrichplot 0.99.5
 
 + defined all visualization functions as generic functions (2018-01-03, Wed)
