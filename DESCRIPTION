@@ -8,7 +8,7 @@ Depends: R (>= 3.4.0)
 Imports:
     AnnotationDbi,
     cowplot,
-    DOSE,
+    DOSE (>= 3.5.1),
     ggplot2,
     ggraph,
     ggridges,
@@ -26,6 +26,8 @@ Suggests:
     knitr,
     org.Hs.eg.db,
     prettydoc
+Remotes:
+    GuangchuangYu/DOSE
 VignetteBuilder: knitr
 License: Artistic-2.0
 biocViews: Annotation, GeneSetEnrichment, GO, KEGG,
