@@ -68,9 +68,9 @@ setGeneric("dotplot",
 ##' x <- enrichDO(de)
 ##' emapplot(x)
 setGeneric("emapplot",
-           function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
+           function(x, showCategory = 30, color="p.adjust", layout = "kk", ...)
                standardGeneric("emapplot")
-           })
+           )
 
 ##' plot induced GO DAG of significant terms
 ##'
@@ -86,9 +86,9 @@ setGeneric("emapplot",
 ##' @return ggplot object
 ##' @export
 setGeneric("goplot",
-           function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
+           function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...)
                standardGeneric("goplot")
-           })
+           )
 
 ##' visualize analyzing result of GSEA
 ##'
@@ -131,9 +131,9 @@ setGeneric("gseaplot",
 ##' heatplot(x)
 ##' @author guangchuang yu
 setGeneric("heatplot",
-           function(x, showCategory=30, foldChange=NULL) {
+           function(x, showCategory=30, foldChange=NULL)
                standardGeneric("heatplot")
-           })
+           )
 
 
 
@@ -154,9 +154,9 @@ setGeneric("heatplot",
 ##' x <- gseDO(geneList)
 ##' ridgeplot(x)
 setGeneric("ridgeplot",
-           function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE) {
+           function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE)
                standardGeneric("ridgeplot")
-           })
+           )
 
 
 #' upsetplot method generics
