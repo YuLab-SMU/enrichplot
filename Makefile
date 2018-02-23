@@ -42,3 +42,16 @@ clean:
 	$(RM) -r $(PKGNAME).Rcheck/
 
 
+release:
+	git checkout RELEASE_3_6;\
+	git fetch --all
+
+update:
+	git fetch --all;\
+	git checkout master;\
+	git merge upstream/master;\
+	git merge origin/master
+
+push:
+	git push upstream master;\
+	git push origin master
