@@ -82,7 +82,8 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
         geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey') +
         geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-        scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
+        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+        ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8))
 
 }

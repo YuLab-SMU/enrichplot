@@ -33,7 +33,8 @@ heatplot.enrichResult <- function(x, showCategory=30, foldChange=NULL) {
         palette <- fc_palette(d$foldChange)
         p <- ggplot(d, aes_(~Gene, ~categoryID)) +
             geom_tile(aes_(fill = ~foldChange), color = "white") +
-            scale_fill_gradientn(name = "fold change", colors = palette)
+            scale_fill_continuous(low="red", high="blue", name = "fold change")
+        ## scale_fill_gradientn(name = "fold change", colors = palette)
 
     } else {
         p <- ggplot(d, aes_(~Gene, ~categoryID)) + geom_tile(color = 'white')

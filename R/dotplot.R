@@ -29,6 +29,7 @@ setMethod("dotplot", signature(object = "gseaResult"),
 ##' @importFrom ggplot2 aes_string
 ##' @importFrom ggplot2 geom_point
 ##' @importFrom ggplot2 scale_color_gradient
+##' @importFrom ggplot2 scale_color_continuous
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggplot2 ggtitle
@@ -51,7 +52,8 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
     df$Description <- factor(df$Description, levels=unique(df$Description[idx]))
     ggplot(df, aes_string(x=x, y="Description", size=size, color=colorBy)) +
         geom_point() +
-        scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
+        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+        ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) + scale_size(range=c(3, 8))
 
 }

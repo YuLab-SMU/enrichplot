@@ -57,7 +57,8 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust", core_enric
 
     ggplot(gs2val.df, aes_string(x="value", y="category", fill=fill)) + geom_density_ridges() +
         ## scale_x_reverse() +
-        scale_fill_gradientn(name = fill, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
+        scale_fill_continuous(low="red", high="blue", name = fill, guide=guide_colorbar(reverse=TRUE)) +
+        ## scale_fill_gradientn(name = fill, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         ## geom_vline(xintercept=0, color='firebrick', linetype='dashed') +
         xlab(NULL) + ylab(NULL) +  theme_dose()
 }

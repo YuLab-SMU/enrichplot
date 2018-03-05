@@ -126,7 +126,7 @@ The `upsetplot` is an alternative to `cnetplot` for visualizing the complex
 association between genes and gene sets. It emphasizes the gene overlapping
 among different gene sets.
 
-```{r fig.width=8, fig.height=5}
+```{r fig.width=12, fig.height=5}
 upsetplot(ego)
 ```
 
