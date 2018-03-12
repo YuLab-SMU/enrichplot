@@ -21,6 +21,7 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom grid arrow
 ##' @importFrom grid unit
+##' @import ggraph
 ##' @importFrom ggraph circle
 ##' @importFrom ggraph geom_node_label
 ##' @importFrom AnnotationDbi mget
