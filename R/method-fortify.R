@@ -27,6 +27,7 @@ fortify.gseaResult <- function(model, data, showCategory=5, by = "Count", order=
 
 fortify.internal <- function(model, data, showCategory=5, by = "Count", order=FALSE, drop=FALSE, split=NULL, ...) {
     res <- as.data.frame(model)
+    res <- res[!is.na(res$Description), ]
     if (inherits(model, "gseaResult")) {
         res$Count <- str_count(res$core_enrichment, "/") + 1
         res$.sign <- "activated"
@@ -39,6 +40,7 @@ fortify.internal <- function(model, data, showCategory=5, by = "Count", order=FA
         res$GeneRatio <- res$Count / res$setSize
     } else if (inherits(model, "enrichResult")) {
         res$GeneRatio <- parse_ratio(res$GeneRatio)
+        res$BgRatio <- parse_ratio(res$BgRatio)
     }
 
     if (order) {

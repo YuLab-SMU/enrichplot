@@ -1,3 +1,9 @@
+# enrichplot 0.99.14
+
++ drop NA in `dotplot` <2018-03-19, Mon>
+  - <https://twitter.com/S_Canchi/status/974440351162294272>
++ enable using formula to specify x axis in `dotplot`
+
 # enrichplot 0.99.13
 
 + fixed `goplot` issue by imporint `ggraph` <2018-03-12, Mon>

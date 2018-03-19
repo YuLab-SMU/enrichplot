@@ -9,11 +9,11 @@
 \usage{
 dotplot(object, ...)
 
-\S4method{dotplot}{enrichResult}(object, x = "geneRatio",
+\S4method{dotplot}{enrichResult}(object, x = "GeneRatio",
   color = "p.adjust", showCategory = 10, split = NULL, font.size = 12,
   title = "", ...)
 
-\S4method{dotplot}{gseaResult}(object, x = "geneRatio", color = "p.adjust",
+\S4method{dotplot}{gseaResult}(object, x = "GeneRatio", color = "p.adjust",
   showCategory = 10, split = NULL, font.size = 12, title = "", ...)
 }
 \arguments{
@@ -21,7 +21,7 @@ dotplot(object, ...)
 
 \item{...}{additional parameters}
 
-\item{x}{variable for x-axis, one of 'geneRatio' or 'Count'}
+\item{x}{variable for x-axis, one of 'GeneRatio' or 'Count'}
 
 \item{color}{variable that used to color enriched terms,
 e.g. pvalue, p.adjust or qvalue}

@@ -1,5 +1,5 @@
 ##' @rdname dotplot
-##' @param x variable for x-axis, one of 'geneRatio' or 'Count'
+##' @param x variable for x-axis, one of 'GeneRatio' or 'Count'
 ##' @param color variable that used to color enriched terms,
 ##'              e.g. pvalue, p.adjust or qvalue
 ##' @param showCategory number of enriched terms to display
@@ -10,7 +10,7 @@
 ##' @exportMethod dotplot
 ##' @author guangchuang yu
 setMethod("dotplot", signature(object = "enrichResult"),
-          function(object, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
+          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
               dotplot_internal(object, x, color, showCategory, split, font.size, title, ...)
           })
 
@@ -18,7 +18,7 @@ setMethod("dotplot", signature(object = "enrichResult"),
 ##' @importClassesFrom DOSE gseaResult
 ##' @exportMethod dotplot
 setMethod("dotplot", signature(object = "gseaResult"),
-          function(object, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
+          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
               dotplot_internal(object, x, color, showCategory, split, font.size, title, ...)
           })
 
@@ -43,9 +43,15 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
     } else if (x == "count" || x == "Count") {
         x <- "Count"
         size <- "GeneRatio"
+    } else if (is(x, "formula")) {
+        x <- as.character(x)[2]
+        size <- "Count"
     } else {
-        stop("x should be geneRatio or count...")
+        message("invalid x, setting to 'GeneRatio' by default")
+        x <- "GeneRatio"
+        size <- "Count"
     }
+
     df <- fortify(object, showCategory = showCategory, split=split)
     ## already parsed in fortify
     ## df$GeneRatio <- parse_ratio(df$GeneRatio)
