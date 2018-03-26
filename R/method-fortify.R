@@ -40,7 +40,10 @@ fortify.internal <- function(model, data, showCategory=5, by = "Count", order=FA
         res$GeneRatio <- res$Count / res$setSize
     } else if (inherits(model, "enrichResult")) {
         res$GeneRatio <- parse_ratio(res$GeneRatio)
-        res$BgRatio <- parse_ratio(res$BgRatio)
+        if ("BgRatio" %in% colnames(res)) {
+            ## groupGO output doesn't have this column
+            res$BgRatio <- parse_ratio(res$BgRatio)
+        }
     }
 
     if (order) {
