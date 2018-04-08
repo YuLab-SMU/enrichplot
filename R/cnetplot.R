@@ -27,6 +27,7 @@ cnetplot.enrichResult <- function(x,
                      layout = "kk",
                      colorEdge = FALSE,
                      circular = FALSE,
+                     node_label = TRUE,
                      ...) {
 
     if (circular) {
@@ -71,8 +72,13 @@ cnetplot.enrichResult <- function(x,
             geom_node_point(aes_(color=~I(color), size=~size))
     }
 
-    p + scale_size(range=c(3, 10), breaks=unique(round(seq(min(size), max(size), length.out=4)))) +
-        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
+    p <- p + scale_size(range=c(3, 10), breaks=unique(round(seq(min(size), max(size), length.out=4)))) +
+        theme_void()
+
+    if (node_label)
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE)
+
+    return(p)
 }
 
 

@@ -1,5 +1,6 @@
 # enrichplot 0.99.14
 
++ `node_label = TRUE` parameter in `cnetplot` (2018-04-08, Sun)
 + drop NA in `dotplot` <2018-03-19, Mon>
   - <https://twitter.com/S_Canchi/status/974440351162294272>
 + enable using formula to specify x axis in `dotplot`
