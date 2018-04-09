@@ -59,7 +59,9 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust", layout
     E(g)$relationship <- edge[,3]
 
     p <- ggraph(g, layout=layout) +
+        ## geom_edge_link(aes_(color = ~relationship), arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm')) +
         geom_edge_link(aes_(linetype = ~relationship), arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm'), colour="darkgrey") +
+        ## geom_node_point(size = 5, aes_(fill=~color), shape=21) +
         geom_node_point(size = 5, aes_(color=~color)) +
         theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE))
