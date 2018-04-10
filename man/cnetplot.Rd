@@ -17,7 +17,8 @@ cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
   layout = "kk", ...)
 
 cnetplot.enrichResult(x, showCategory = 5, foldChange = NULL,
-  layout = "kk", colorEdge = FALSE, circular = FALSE, ...)
+  layout = "kk", colorEdge = FALSE, circular = FALSE, node_label = TRUE,
+  ...)
 }
 \arguments{
 \item{x}{enrichment result}
@@ -33,6 +34,8 @@ cnetplot.enrichResult(x, showCategory = 5, foldChange = NULL,
 \item{colorEdge}{whether coloring edge by enriched terms}
 
 \item{circular}{whether using circular layout}
+
+\item{node_label}{whether display node label}
 }
 \value{
 ggplot object

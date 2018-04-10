@@ -29,11 +29,11 @@ heatplot.enrichResult <- function(x, showCategory=30, foldChange=NULL) {
     d <- list2df(geneSets)
 
     if (!is.null(foldChange)) {
-        d$foldChange <- foldChange[d[,2]]
-        palette <- fc_palette(d$foldChange)
+        d$foldChange <- foldChange[as.character(d[,2])]
+        ## palette <- fc_palette(d$foldChange)
         p <- ggplot(d, aes_(~Gene, ~categoryID)) +
             geom_tile(aes_(fill = ~foldChange), color = "white") +
-            scale_fill_continuous(low="red", high="blue", name = "fold change")
+            scale_fill_continuous(low="blue", high="red", name = "fold change")
         ## scale_fill_gradientn(name = "fold change", colors = palette)
 
     } else {

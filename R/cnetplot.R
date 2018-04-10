@@ -19,6 +19,7 @@ setMethod("cnetplot", signature(x = "gseaResult"),
 ##' @rdname cnetplot
 ##' @param colorEdge whether coloring edge by enriched terms
 ##' @param circular whether using circular layout
+##' @param node_label whether display node label
 ##' @importFrom ggraph geom_edge_arc
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,

@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 Makefile
+^CONDUCT\.md$
+README.Rmd
