@@ -2,9 +2,11 @@
 Visualization of Functional Enrichment Result
 =============================================
 
-[![](https://img.shields.io/badge/release%20version-0.99.14-green.svg)](https://bioconductor.org/packages/enrichplot) [![](https://img.shields.io/badge/devel%20version-0.99.14-green.svg)](https://github.com/guangchuangyu/enrichplot) [![Bioc](http://www.bioconductor.org/shields/years-in-bioc/enrichplot.svg)](https://www.bioconductor.org/packages/devel/bioc/html/enrichplot.html#since)
+[![](https://img.shields.io/badge/release%20version-0.99.15-green.svg)](https://bioconductor.org/packages/enrichplot) [![](https://img.shields.io/badge/devel%20version-0.99.15-green.svg)](https://github.com/guangchuangyu/enrichplot) [![Bioc](http://www.bioconductor.org/shields/years-in-bioc/enrichplot.svg)](https://www.bioconductor.org/packages/devel/bioc/html/enrichplot.html#since)
 
-[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![platform](http://www.bioconductor.org/shields/availability/devel/treeio.svg)](https://www.bioconductor.org/packages/devel/bioc/html/treeio.html#archives) [![Build Status](http://www.bioconductor.org/shields/build/devel/bioc/treeio.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/treeio/) [![Last-changedate](https://img.shields.io/badge/last%20change-2018--04--10-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
+[![download](http://www.bioconductor.org/shields/downloads/enrichplot.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot) [![](https://img.shields.io/badge/download-225/total-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot) [![](https://img.shields.io/badge/download-152/month-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot)
+
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![platform](http://www.bioconductor.org/shields/availability/devel/treeio.svg)](https://www.bioconductor.org/packages/devel/bioc/html/treeio.html#archives) [![Build Status](http://www.bioconductor.org/shields/build/devel/bioc/treeio.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/treeio/) [![Last-changedate](https://img.shields.io/badge/last%20change-2018--04--16-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
 
 Base classes and functions for parsing and exporting phylogenetic trees. 'treeio' supports parsing analysis findings from commonly used software packages, allows linking external data to phylogeny and merging tree data obtained from different sources. It also supports exporting phylogenetic tree with heterogeneous associated data to a single tree file.
 
@@ -41,11 +43,6 @@ Or the development version from github:
 ## install.packages("devtools")
 devtools::install_github("GuangchuangYu/enrichplot")
 ```
-
-Download stats
---------------
-
-[![download](http://www.bioconductor.org/shields/downloads/enrichplot.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot) [![](https://img.shields.io/badge/download-175/total-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot) [![](https://img.shields.io/badge/download-152/month-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot)
 
 Contributing
 ------------

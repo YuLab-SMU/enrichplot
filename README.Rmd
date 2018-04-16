@@ -21,6 +21,9 @@ library("ypages")
 `r badge_devel("guangchuangyu/enrichplot", "green")`
 [![Bioc](http://www.bioconductor.org/shields/years-in-bioc/enrichplot.svg)](https://www.bioconductor.org/packages/devel/bioc/html/enrichplot.html#since)
 
+`r badge_download_bioc("enrichplot")`
+`r badge_bioc_download("enrichplot", "total", "blue")`
+`r badge_bioc_download("enrichplot", "month", "blue")`
 
 
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -71,14 +74,6 @@ Or the development version from github:
 ## install.packages("devtools")
 devtools::install_github("GuangchuangYu/enrichplot")
 ```
-
-## Download stats
-
-`r badge_download_bioc("enrichplot")`
-`r badge_bioc_download("enrichplot", "total", "blue")`
-`r badge_bioc_download("enrichplot", "month", "blue")`
-
-
 
 
 ## Contributing
