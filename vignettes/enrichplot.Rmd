@@ -163,7 +163,7 @@ The `ridgeplot` will visualize expression distributions of core enriched genes
 for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.
 
 ```{r fig.width=12, fig.height=8, message=FALSE}
-kk <- gseKEGG(geneList, nPerm=10000)
+kk <- gseKEGG(geneList, nPerm=1000)
 ridgeplot(kk)
 ```
 
