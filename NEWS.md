@@ -1,6 +1,17 @@
+# enrichplot 1.1.1
+
++ `cnetplot` supports `showCategory` parameter to accept a vector of
+`Description`
+  - <https://github.com/GuangchuangYu/DOSE/issues/20#issuecomment-391802809>
+
+# enrichplot 1.0.0
+
++ Bioconductor 3.7 release
+
 # enrichplot 0.99.14
 
-+ `node_label = TRUE` parameter in `cnetplot` (2018-04-08, Sun)
++ `node_label = TRUE` parameter in `cnetplot` (2018-04-08, Sun
+)
 + drop NA in `dotplot` <2018-03-19, Mon>
   - <https://twitter.com/S_Canchi/status/974440351162294272>
 + enable using formula to specify x axis in `dotplot`

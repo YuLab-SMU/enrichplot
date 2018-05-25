@@ -43,7 +43,7 @@ clean:
 
 
 release:
-	git checkout RELEASE_3_6;\
+	git checkout RELEASE_3_7;\
 	git fetch --all
 
 update:
