@@ -38,7 +38,13 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
-    y <- y[1:n,]
+    if (is.numeric(n)) {
+        y <- y[1:n,]
+    } else {
+        y <- y[match(n, y$Description),]
+        n <- length(n)
+    }
+
 
     if (n == 0) {
         stop("no enriched term found...")
@@ -78,13 +84,16 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     }
 
 
-    ggraph(g, layout=layout) +
-        geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey') +
-        geom_node_point(aes_(color=~color, size=~size)) +
+    p <- ggraph(g, layout=layout)
+
+    if (length(E(g)$width) > 0) {
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+    }
+
+    p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
         ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8))
-
 }
 

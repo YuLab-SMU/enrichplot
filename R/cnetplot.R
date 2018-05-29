@@ -38,8 +38,7 @@ cnetplot.enrichResult <- function(x,
         geom_edge <- geom_edge_link
     }
 
-    n <- update_n(x, showCategory)
-    geneSets <- extract_geneSets(x, n)
+    geneSets <- extract_geneSets(x, showCategory)
 
     g <- list2graph(geneSets)
 
@@ -47,6 +46,8 @@ cnetplot.enrichResult <- function(x,
 
     size <- sapply(geneSets, length)
     V(g)$size <- min(size)/2
+
+    n <- length(geneSets)
     V(g)$size[1:n] <- size
 
     if (colorEdge) {
