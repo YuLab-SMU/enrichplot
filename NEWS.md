@@ -1,3 +1,7 @@
+# enrichplot 1.1.2.001
+
++ `gseaplot2` now accepts a vector of `geneSetID` (2018-06-13, Wed)
+
 # enrichplot 1.1.2
 
 + `emapplot` supports `showCategory` parameter to accept a vector of

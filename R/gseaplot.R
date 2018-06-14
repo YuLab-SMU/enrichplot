@@ -92,6 +92,7 @@ gsInfo <- function(object, geneSetID) {
     df$ymax[pos] <- h
     df$geneList <- geneList
 
+    df$Description <- object@result[geneSetID, "Description"]
     return(df)
 }
 
@@ -107,47 +108,138 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param x gseaResult object
 ##' @param geneSetID gene set ID
 ##' @param title plot title
-##' @param color.line color of running enrichment score line
-##' @param color.vline color of vertical line which indicating the maximum/minimal running enrichment score
+##' @param color color of running enrichment score line
+##' @param rel_heights relative heights of subplots
+##' @param subplots which subplots to be displayed
+##' @param add_pvalue whether add pvalue table
 ##' @return plot
 ##' @export
 ##' @importFrom ggplot2 theme_classic
 ##' @importFrom ggplot2 element_line
+##' @importFrom ggplot2 element_text
 ##' @importFrom ggplot2 element_blank
 ##' @importFrom ggplot2 scale_x_continuous
+##' @importFrom ggplot2 scale_y_continuous
+##' @importFrom ggplot2 scale_color_manual
 ##' @importFrom ggplot2 theme_void
 ##' @importFrom ggplot2 geom_rect
-##' @author guangchuang yu
-gseaplot2 <- function(x, geneSetID, title = "", color.line="green", color.vline="#FA5860"){
+##' @importFrom ggplot2 margin
+##' @importFrom ggplot2 ggplot_build
+##' @importFrom ggplot2 annotation_custom
+##' @importFrom grid gpar
+##' @importFrom gridExtra tableGrob
+##' @importFrom stats quantile
+##' @author Guangchuang Yu
+gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5, .5, 1), subplots = 1:3, add_pvalue = FALSE) {
     geneList = NULL ## to satisfy codetool
 
-    gsdata <- gsInfo(x, geneSetID)
+    if (length(geneSetID) == 1) {
+        gsdata <- gsInfo(x, geneSetID)
+    } else {
+        gsdata <- do.call(rbind, lapply(geneSetID, gsInfo, object = x))
+    }
+
     p <- ggplot(gsdata, aes_(x = ~x)) + xlab(NULL) +
         theme_classic() +
         theme(panel.grid.major=element_line(),
               panel.grid.minor=element_line())+
         scale_x_continuous(expand=c(0,0))
 
-    p.res <- p + geom_line(aes_(y = ~runningScore), color=color.line, size=1) +
-        ylab("Running Enrichment Score") +
+    p.res <- p + geom_line(aes_(y = ~runningScore, color= ~Description), size=1) +
+        theme(legend.position = c(.8, .8), legend.title = element_blank())
+
+    p.res <- p.res + ylab("Running Enrichment Score") +
         theme(axis.text.x=element_blank(),
               axis.ticks.x=element_blank(),
-              axis.line.x=element_blank())
+              axis.line.x=element_blank(),
+              plot.margin=margin(t=0, unit="cm"))
 
-    p2 <- p + geom_linerange(aes_(ymin=~ymin, ymax=~ymax), color="black")
-    ymin <- min(p2$data$ymin)
-    yy <- max(p2$data$ymax - p2$data$ymin) * .3
-    p2 <- p2 + geom_rect(aes(xmin=x-.5, xmax=x+.5, fill=geneList),
-                         ymin=ymin, ymax = ymin + yy, alpha=.5) +
-        theme_void() +
-        theme(legend.position="none") +
-        scale_fill_gradientn(colors=color_palette(c("blue", "red")))
+    i <- 0
+    for (term in unique(gsdata$Description)) {
+        idx <- which(gsdata$ymin != 0 & gsdata$Description == term)
+        gsdata[idx, "ymin"] <- i
+        gsdata[idx, "ymax"] <- i + 1
+        i <- i + 1
+    }
+    p2 <- ggplot(gsdata, aes_(x = ~x)) +
+        geom_linerange(aes_(ymin=~ymin, ymax=~ymax, color=~Description)) +
+        xlab(NULL) + ylab(NULL) + theme_classic() +
+        theme(legend.position = "none",
+              plot.margin = margin(t=-.1, b=0,unit="cm"),
+              axis.ticks = element_blank(),
+              axis.text=element_blank(),
+              axis.line.x=element_blank()) +
+        scale_x_continuous(expand=c(0,0)) +
+        scale_y_continuous(expand=c(0,0))
+
+
+    ## ymin <- min(p2$data$ymin)
+    ## yy <- max(p2$data$ymax - p2$data$ymin) * .3
+    ## p2 <- p2 +
+    ## geom_rect(aes(xmin=x-.5, xmax=x+.5, fill=geneList),
+    ##           ymin=ymin, ymax = ymin + yy, alpha=.5) +
+    ## theme(legend.position="none") +
+    ## scale_fill_gradientn(colors=color_palette(c("blue", "red")))
 
     df2 <- p$data #data.frame(x = which(p$data$position == 1))
     df2$y <- p$data$geneList[df2$x]
     p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0), color="grey")
     p.pos <- p.pos + ylab("Ranked list metric") +
-        xlab("Rank in Ordered Dataset")
+        xlab("Rank in Ordered Dataset") +
+        theme(plot.margin=margin(t=-.1, unit="cm"))
 
-    plot_grid(p.res + ggtitle(title), p2, p.pos, ncol=1, align="v", rel_heights=c(1.5, .5, 1))
+    if (!is.null(title) && !is.na(title) && title != "")
+        p.res <- p.res + ggtitle(title)
+
+    if (length(color) == length(geneSetID)) {
+        p.res <- p.res + scale_color_manual(values=color)
+        if (length(color) == 1) {
+            p.res <- p.res + theme(legend.position = "none")
+            p2 <- p2 + scale_color_manual(values = "black")
+        } else {
+            p2 <- p2 + scale_color_manual(values = color)
+        }
+    }
+
+    if (add_pvalue) {
+        pd <- x[geneSetID, c("Description", "pvalue", "p.adjust")]
+        pd <- pd[order(pd[,1], decreasing=FALSE),]
+        rownames(pd) <- pd$Description
+
+        pd <- pd[,-1]
+        pd <- round(pd, 4)
+
+        pcol <- unique(ggplot_build(p.res)$data[[1]][["colour"]])
+
+        ## tt <- ttheme_default(rowhead = list(fg_params=list(col=pcol)))
+        ## tp <- tableGrob(pd, theme=tt)
+
+        tp <- tableGrob(pd)
+        j <- which(tp$layout$name == "rowhead-fg")
+        for (i in seq_along(pcol)) {
+            tp$grobs[j][[i+1]][["gp"]] = gpar(col = pcol[i])
+        }
+        p.res <- p.res + theme(legend.position = "none") +
+            annotation_custom(tp, xmin = quantile(p.res$data$x, .5),
+                              xmax = quantile(p.res$data$x, .95),
+                              ymin = quantile(p.res$data$ymax, .5),
+                              ymax = quantile(p.res$data$ymax, .9))
+    }
+
+
+    plotlist <- list(p.res, p2, p.pos)[subplots]
+    n <- length(plotlist)
+    plotlist[[n]] <- plotlist[[n]] +
+        theme(axis.line.x = element_line(),
+              axis.ticks.x=element_line(),
+              axis.text.x = element_text())
+
+    if (length(subplots) == 1)
+        return(plotlist[[1]])
+
+
+    if (length(rel_heights) > length(subplots))
+        rel_heights <- rel_heights[subplots]
+
+    plot_grid(plotlist = plotlist, ncol=1, align="v", rel_heights=rel_heights)
 }
