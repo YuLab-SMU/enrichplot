@@ -111,7 +111,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param color color of running enrichment score line
 ##' @param rel_heights relative heights of subplots
 ##' @param subplots which subplots to be displayed
-##' @param add_pvalue whether add pvalue table
+##' @param pvalue_table whether add pvalue table
 ##' @return plot
 ##' @export
 ##' @importFrom ggplot2 theme_classic
@@ -130,7 +130,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom gridExtra tableGrob
 ##' @importFrom stats quantile
 ##' @author Guangchuang Yu
-gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5, .5, 1), subplots = 1:3, add_pvalue = FALSE) {
+gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE) {
     geneList = NULL ## to satisfy codetool
 
     if (length(geneSetID) == 1) {

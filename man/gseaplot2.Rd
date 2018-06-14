@@ -5,7 +5,7 @@
 \title{gseaplot2}
 \usage{
 gseaplot2(x, geneSetID, title = "", color = "green", rel_heights = c(1.5,
-  0.5, 1), subplots = 1:3, add_pvalue = FALSE)
+  0.5, 1), subplots = 1:3, pvalue_table = FALSE)
 }
 \arguments{
 \item{x}{gseaResult object}
@@ -20,7 +20,7 @@ gseaplot2(x, geneSetID, title = "", color = "green", rel_heights = c(1.5,
 
 \item{subplots}{which subplots to be displayed}
 
-\item{add_pvalue}{whether add pvalue table}
+\item{pvalue_table}{whether add pvalue table}
 }
 \value{
 plot
