@@ -124,10 +124,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom ggplot2 theme_void
 ##' @importFrom ggplot2 geom_rect
 ##' @importFrom ggplot2 margin
-##' @importFrom ggplot2 ggplot_build
 ##' @importFrom ggplot2 annotation_custom
-##' @importFrom grid gpar
-##' @importFrom gridExtra tableGrob
 ##' @importFrom stats quantile
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE) {
@@ -201,7 +198,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
         }
     }
 
-    if (add_pvalue) {
+    if (pvalue_table) {
         pd <- x[geneSetID, c("Description", "pvalue", "p.adjust")]
         pd <- pd[order(pd[,1], decreasing=FALSE),]
         rownames(pd) <- pd$Description
@@ -209,16 +206,19 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
         pd <- pd[,-1]
         pd <- round(pd, 4)
 
-        pcol <- unique(ggplot_build(p.res)$data[[1]][["colour"]])
+        ## pcol <- unique(ggplot_build(p.res)$data[[1]][["colour"]])
 
-        ## tt <- ttheme_default(rowhead = list(fg_params=list(col=pcol)))
-        ## tp <- tableGrob(pd, theme=tt)
+        ## ## tt <- ttheme_default(rowhead = list(fg_params=list(col=pcol)))
+        ## ## tp <- tableGrob(pd, theme=tt)
 
-        tp <- tableGrob(pd)
-        j <- which(tp$layout$name == "rowhead-fg")
-        for (i in seq_along(pcol)) {
-            tp$grobs[j][[i+1]][["gp"]] = gpar(col = pcol[i])
-        }
+        ## tp <- tableGrob(pd)
+        ## j <- which(tp$layout$name == "rowhead-fg")
+        ## for (i in seq_along(pcol)) {
+        ##     tp$grobs[j][[i+1]][["gp"]] = gpar(col = pcol[i])
+        ## }
+
+        tp <- tableGrob2(pd, p.res)
+
         p.res <- p.res + theme(legend.position = "none") +
             annotation_custom(tp, xmin = quantile(p.res$data$x, .5),
                               xmax = quantile(p.res$data$x, .95),

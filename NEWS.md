@@ -1,5 +1,7 @@
-# enrichplot 1.1.2.001
+# enrichplot 1.1.2.002
 
++ `pmcplot` for plotting pubmed trend (2018-06-14, Thu)
++ `ggtable` for plotting table
 + `gseaplot2` now accepts a vector of `geneSetID` (2018-06-13, Wed)
 
 # enrichplot 1.1.2
