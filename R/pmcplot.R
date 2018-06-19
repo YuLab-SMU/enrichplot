@@ -8,6 +8,7 @@
 ##' @return ggplot object
 ##' @importFrom purrr map_df
 ##' @importFrom europepmc epmc_hits_trend
+##' @importFrom utils modifyList
 ##' @export
 ##' @author guangchuang yu
 pmcplot <- function(query, period, proportion = TRUE) {

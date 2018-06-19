@@ -118,6 +118,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom ggplot2 element_line
 ##' @importFrom ggplot2 element_text
 ##' @importFrom ggplot2 element_blank
+##' @importFrom ggplot2 element_rect
 ##' @importFrom ggplot2 scale_x_continuous
 ##' @importFrom ggplot2 scale_y_continuous
 ##' @importFrom ggplot2 scale_color_manual
@@ -126,6 +127,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom ggplot2 margin
 ##' @importFrom ggplot2 annotation_custom
 ##' @importFrom stats quantile
+##' @importFrom RColorBrewer brewer.pal
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE) {
     geneList = NULL ## to satisfy codetool
@@ -138,12 +140,15 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
 
     p <- ggplot(gsdata, aes_(x = ~x)) + xlab(NULL) +
         theme_classic() +
-        theme(panel.grid.major=element_line(),
-              panel.grid.minor=element_line())+
+        theme(panel.grid.major = element_line(colour = "grey92"),
+              panel.grid.minor = element_line(colour = "grey92"),
+              panel.grid.major.y = element_blank(),
+              panel.grid.minor.y = element_blank()) +
         scale_x_continuous(expand=c(0,0))
 
     p.res <- p + geom_line(aes_(y = ~runningScore, color= ~Description), size=1) +
-        theme(legend.position = c(.8, .8), legend.title = element_blank())
+        theme(legend.position = c(.8, .8), legend.title = element_blank(),
+              legend.background = element_rect(fill = "transparent"))
 
     p.res <- p.res + ylab("Running Enrichment Score") +
         theme(axis.text.x=element_blank(),
@@ -169,9 +174,40 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
         scale_x_continuous(expand=c(0,0)) +
         scale_y_continuous(expand=c(0,0))
 
+    if (length(geneSetID) == 1) {
+        ## geneList <- gsdata$geneList
+        ## j <- which.min(abs(geneList))
+        ## v1 <- quantile(geneList[1:j], seq(0,1, length.out=6))[1:5]
+        ## v2 <- quantile(geneList[j:length(geneList)], seq(0,1, length.out=6))[1:5]
 
-    ## ymin <- min(p2$data$ymin)
-    ## yy <- max(p2$data$ymax - p2$data$ymin) * .3
+        ## v <- sort(c(v1, v2))
+        ## inv <- findInterval(geneList, v)
+
+        v <- seq(1, sum(gsdata$position), length.out=9)
+        inv <- findInterval(rev(cumsum(gsdata$position)), v)
+        if (min(inv) == 0) inv <- inv + 1
+
+        col=c(rev(brewer.pal(5, "Blues")), brewer.pal(5, "Reds"))
+
+        ymin <- min(p2$data$ymin)
+        yy <- max(p2$data$ymax - p2$data$ymin) * .3
+        xmin <- which(!duplicated(inv))
+        xmax <- xmin + as.numeric(table(inv)[unique(inv)])
+        d <- data.frame(ymin = ymin, ymax = yy,
+                        xmin = xmin,
+                        xmax = xmax,
+                        col = col[unique(inv)])
+        p2 <- p2 + geom_rect(
+                       aes_(xmin=~xmin,
+                            xmax=~xmax,
+                            ymin=~ymin,
+                            ymax=~ymax,
+                            fill=~I(col)),
+                       data=d,
+                       alpha=.9,
+                       inherit.aes=FALSE)
+    }
+
     ## p2 <- p2 +
     ## geom_rect(aes(xmin=x-.5, xmax=x+.5, fill=geneList),
     ##           ymin=ymin, ymax = ymin + yy, alpha=.5) +
@@ -220,10 +256,11 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
         tp <- tableGrob2(pd, p.res)
 
         p.res <- p.res + theme(legend.position = "none") +
-            annotation_custom(tp, xmin = quantile(p.res$data$x, .5),
+            annotation_custom(tp,
+                              xmin = quantile(p.res$data$x, .5),
                               xmax = quantile(p.res$data$x, .95),
-                              ymin = quantile(p.res$data$ymax, .5),
-                              ymax = quantile(p.res$data$ymax, .9))
+                              ymin = quantile(p.res$data$runningScore, .75),
+                              ymax = quantile(p.res$data$runningScore, .9))
     }
 
 

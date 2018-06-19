@@ -1,4 +1,4 @@
-# enrichplot 1.1.2.002
+# enrichplot 1.1.3
 
 + `pmcplot` for plotting pubmed trend (2018-06-14, Thu)
 + `ggtable` for plotting table
