@@ -4,8 +4,8 @@
 \alias{gseaplot2}
 \title{gseaplot2}
 \usage{
-gseaplot2(x, geneSetID, title = "", color = "green", rel_heights = c(1.5,
-  0.5, 1), subplots = 1:3, pvalue_table = FALSE)
+gseaplot2(x, geneSetID, title = "", color = "green", base_size = 11,
+  rel_heights = c(1.5, 0.5, 1), subplots = 1:3, pvalue_table = FALSE)
 }
 \arguments{
 \item{x}{gseaResult object}
@@ -15,6 +15,8 @@ gseaplot2(x, geneSetID, title = "", color = "green", rel_heights = c(1.5,
 \item{title}{plot title}
 
 \item{color}{color of running enrichment score line}
+
+\item{base_size}{base font size}
 
 \item{rel_heights}{relative heights of subplots}
 

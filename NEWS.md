@@ -1,3 +1,7 @@
+# enrichplot 1.1.4
+
++ `base_size` parameter in `gseaplot2` (2018-06-21, Thu)
+
 # enrichplot 1.1.3
 
 + `pmcplot` for plotting pubmed trend (2018-06-14, Thu)

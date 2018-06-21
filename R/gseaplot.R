@@ -109,6 +109,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param geneSetID gene set ID
 ##' @param title plot title
 ##' @param color color of running enrichment score line
+##' @param base_size base font size
 ##' @param rel_heights relative heights of subplots
 ##' @param subplots which subplots to be displayed
 ##' @param pvalue_table whether add pvalue table
@@ -129,7 +130,8 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom stats quantile
 ##' @importFrom RColorBrewer brewer.pal
 ##' @author Guangchuang Yu
-gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE) {
+gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
+                      rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE) {
     geneList = NULL ## to satisfy codetool
 
     if (length(geneSetID) == 1) {
@@ -139,7 +141,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
     }
 
     p <- ggplot(gsdata, aes_(x = ~x)) + xlab(NULL) +
-        theme_classic() +
+        theme_classic(base_size) +
         theme(panel.grid.major = element_line(colour = "grey92"),
               panel.grid.minor = element_line(colour = "grey92"),
               panel.grid.major.y = element_blank(),
@@ -154,7 +156,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
         theme(axis.text.x=element_blank(),
               axis.ticks.x=element_blank(),
               axis.line.x=element_blank(),
-              plot.margin=margin(t=0, unit="cm"))
+              plot.margin=margin(t=.2, r = .2, b=0, l=.2, unit="cm"))
 
     i <- 0
     for (term in unique(gsdata$Description)) {
@@ -165,12 +167,12 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
     }
     p2 <- ggplot(gsdata, aes_(x = ~x)) +
         geom_linerange(aes_(ymin=~ymin, ymax=~ymax, color=~Description)) +
-        xlab(NULL) + ylab(NULL) + theme_classic() +
+        xlab(NULL) + ylab(NULL) + theme_classic(base_size) +
         theme(legend.position = "none",
               plot.margin = margin(t=-.1, b=0,unit="cm"),
               axis.ticks = element_blank(),
-              axis.text=element_blank(),
-              axis.line.x=element_blank()) +
+              axis.text = element_blank(),
+              axis.line.x = element_blank()) +
         scale_x_continuous(expand=c(0,0)) +
         scale_y_continuous(expand=c(0,0))
 
@@ -219,7 +221,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
     p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0), color="grey")
     p.pos <- p.pos + ylab("Ranked list metric") +
         xlab("Rank in Ordered Dataset") +
-        theme(plot.margin=margin(t=-.1, unit="cm"))
+        theme(plot.margin=margin(t = -.1, r = .2, b=.2, l=.2, unit="cm"))
 
     if (!is.null(title) && !is.na(title) && title != "")
         p.res <- p.res + ggtitle(title)
@@ -242,17 +244,6 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
         pd <- pd[,-1]
         pd <- round(pd, 4)
 
-        ## pcol <- unique(ggplot_build(p.res)$data[[1]][["colour"]])
-
-        ## ## tt <- ttheme_default(rowhead = list(fg_params=list(col=pcol)))
-        ## ## tp <- tableGrob(pd, theme=tt)
-
-        ## tp <- tableGrob(pd)
-        ## j <- which(tp$layout$name == "rowhead-fg")
-        ## for (i in seq_along(pcol)) {
-        ##     tp$grobs[j][[i+1]][["gp"]] = gpar(col = pcol[i])
-        ## }
-
         tp <- tableGrob2(pd, p.res)
 
         p.res <- p.res + theme(legend.position = "none") +
@@ -272,7 +263,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", rel_heights=c(1.5
               axis.text.x = element_text())
 
     if (length(subplots) == 1)
-        return(plotlist[[1]])
+        return(plotlist[[1]] + theme(plot.margin=margin(t=.2, r = .2, b=.2, l=.2, unit="cm")))
 
 
     if (length(rel_heights) > length(subplots))
