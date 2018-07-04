@@ -28,3 +28,5 @@ pmcplot <- function(query, period, proportion = TRUE) {
     ggplot(res, mapping) + geom_line() + geom_point() +
         xlab(NULL) + ylab(ylab)
 }
+
+

@@ -113,6 +113,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param rel_heights relative heights of subplots
 ##' @param subplots which subplots to be displayed
 ##' @param pvalue_table whether add pvalue table
+##' @param ES_geom geom for plotting running enrichment score, one of 'line' or 'dot'
 ##' @return plot
 ##' @export
 ##' @importFrom ggplot2 theme_classic
@@ -131,8 +132,10 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom RColorBrewer brewer.pal
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
-                      rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE) {
-    geneList = NULL ## to satisfy codetool
+                      rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE, ES_geom="line") {
+    ES_geom <- match.arg(ES_geom, c("line", "dot"))
+
+    geneList <- position <- NULL ## to satisfy codetool
 
     if (length(geneSetID) == 1) {
         gsdata <- gsInfo(x, geneSetID)
@@ -148,7 +151,13 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
               panel.grid.minor.y = element_blank()) +
         scale_x_continuous(expand=c(0,0))
 
-    p.res <- p + geom_line(aes_(y = ~runningScore, color= ~Description), size=1) +
+    if (ES_geom == "line") {
+        es_layer <- geom_line(aes_(y = ~runningScore, color= ~Description), size=1)
+    } else {
+        es_layer <- geom_point(aes_(y = ~runningScore, color= ~Description), size=1, data = subset(gsdata, position == 1))
+    }
+
+    p.res <- p + es_layer +
         theme(legend.position = c(.8, .8), legend.title = element_blank(),
               legend.background = element_rect(fill = "transparent"))
 
@@ -271,3 +280,30 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
 
     plot_grid(plotlist = plotlist, ncol=1, align="v", rel_heights=rel_heights)
 }
+
+
+##' plot ranked list of genes with running enrichment score as bar height
+##'
+##'
+##' @title gsearank
+##' @param x gseaResult object
+##' @param geneSetID gene set ID
+##' @param title plot title
+##' @return ggplot object
+##' @importFrom ggplot2 geom_segment
+##' @importFrom ggplot2 theme_minimal
+##' @export
+##' @author Guangchuang Yu
+gsearank <- function(x, geneSetID, title="") {
+    position <- NULL
+    gsdata <- gsInfo(x, geneSetID)
+    gsdata <- subset(gsdata, position == 1)
+    p <- ggplot(gsdata, aes_(x = ~x, y = ~runningScore)) +
+        geom_segment(aes_(xend=~x, yend=0)) +
+        ggtitle(title) +
+        xlab("Position in the Ranked List of Genes") +
+        ylab("Running Enrichment Score") +
+        theme_minimal()
+    return(p)
+}
+

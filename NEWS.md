@@ -1,3 +1,8 @@
+# enrichplot 1.1.5
+
++ `gsearank` for plotting ranked list of genes belong to specific gene set
+  (2018-07-04, Wed)
+
 # enrichplot 1.1.4
 
 + `base_size` parameter in `gseaplot2` (2018-06-21, Thu)

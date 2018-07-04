@@ -5,7 +5,8 @@
 \title{gseaplot2}
 \usage{
 gseaplot2(x, geneSetID, title = "", color = "green", base_size = 11,
-  rel_heights = c(1.5, 0.5, 1), subplots = 1:3, pvalue_table = FALSE)
+  rel_heights = c(1.5, 0.5, 1), subplots = 1:3, pvalue_table = FALSE,
+  ES_geom = "line")
 }
 \arguments{
 \item{x}{gseaResult object}
@@ -23,6 +24,8 @@ gseaplot2(x, geneSetID, title = "", color = "green", base_size = 11,
 \item{subplots}{which subplots to be displayed}
 
 \item{pvalue_table}{whether add pvalue table}
+
+\item{ES_geom}{geom for plotting running enrichment score, one of 'line' or 'dot'}
 }
 \value{
 plot

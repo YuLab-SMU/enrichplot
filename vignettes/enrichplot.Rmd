@@ -31,7 +31,6 @@ knitr::opts_chunk$set(warning = FALSE,
 
 library(DOSE)
 library(org.Hs.eg.db)
-library(clusterProfiler)
 library(ggplot2)
 library(ggraph)
 library(cowplot)
@@ -49,35 +48,34 @@ Biocpkg <- function (pkg) {
 }
 ```
 
-The `r Biocpkg("enrichplot")` package implements several methods for enrichment
-result visualization to help interpretation. It supports both hypergeometric
-test and gene set enrichment analysis. Both of them are widely used to
-characterize pathway/function relationships to elucidate molecular mechanisms
-from high-throughput genomic data.
-
-The `r Biocpkg("enrichplot")` package supports visualizing enrichment results
-obtained from `r Biocpkg("DOSE")` [@yu_dose_2015],
+The `r Biocpkg("enrichplot")` package implements several visualization methods
+to help interpreting enrichment results. It supports visualizing enrichment
+results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015],
 `r Biocpkg("clusterProfiler")` [@yu_clusterprofiler_2012],
-`r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")`.
+`r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")`. Both
+over representation analysis (ORA) and gene set enrichment analysis (GSEA) are
+supported.
+
+# Enrichment Analysis
 
 
-## Induced GO DAG graph
-
-Gene Ontology (GO) is organized as a directed acyclic graph. An insighful way of
-looking at the results of the analysis is to investigate how the significant GO
-terms are distributed over the GO graph. The `goplot` function shows subgraph
-induced by most significant GO terms.
-
+## Over Representation Analysis
 
 ```{r fig.width=12, fig.height=8}
-library(clusterProfiler)
-data(geneList, package="DOSE")
+library(DOSE)
+data(geneList)
 de <- names(geneList)[abs(geneList) > 2]
-ego <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="BP", readable=TRUE)
 
-library(enrichplot)
-goplot(ego)
+edo <- enrichDGN(de)
 ```
+
+## Gene Set Enrichment Analysis
+
+```{r message=FALSE}
+edo2 <- gseNCG(geneList, nPerm=10000)
+```
+
+# Visualization methods
 
 ## Bar plot
 
@@ -87,31 +85,28 @@ the enrichment scores (*e.g.* p values) and gene count or ratio as bar height
 and color.
 
 ```{r fig.width=12, fig.height=8}
-barplot(ego, showCategory=20)
+barplot(edo, showCategory=20)
 ```
 
 ## Dot plot
 
 
 Dot plot is similar to bar plot with the capability to encode another score as
-dot size. Both `barplot` and `dotplot` supports facetting to visualize
-sub-ontologies simultaneously.
+dot size.
 
 ```{r fig.width=12, fig.height=8}
-dotplot(ego, showCategory=30)
-
-
-go <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="all")
-dotplot(go, split="ONTOLOGY") + facet_grid(ONTOLOGY~., scale="free")
+p1 <- dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
+p2 <- dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
+plot_grid(p1, p2, ncol=2)
 ```
 
 Users can use formula to specify derived variable of x-axis.
 
 
 ```{r}
-N <- as.numeric(sub("\\d+/", "", ego[1, "BgRatio"]))
+N <- as.numeric(sub("\\d+/", "", edo[1, "BgRatio"]))
 N
-dotplot(ego, showCategory=30, x = ~Count/N) + ggplot2::xlab("Rich Factor")
+dotplot(edo, showCategory=15, x = ~Count/N) + ggplot2::xlab("Rich Factor")
 ```
 
 
@@ -120,13 +115,14 @@ dotplot(ego, showCategory=30, x = ~Count/N) + ggplot2::xlab("Rich Factor")
 Both the `barplot` and `dotplot` only displayed most significant enriched terms,
 while users may want to know which genes are involved in these significant
 terms. The `cnetplot` depicts the linkages of genes and biological concepts
-(*e.g.* GO terms or KEGG pathways) as a network.
+(*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
+with only core enriched genes displayed.
 
 ```{r fig.width=12, fig.height=8}
-## remove redundent GO terms
-ego2 <- simplify(ego)
-cnetplot(ego2, foldChange=geneList)
-cnetplot(ego2, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
+## convert gene ID to Symbol
+edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(edox, foldChange=geneList)
+cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
 ```
 
 ## UpSet Plot
@@ -137,7 +133,7 @@ association between genes and gene sets. It emphasizes the gene overlapping
 among different gene sets.
 
 ```{r fig.width=12, fig.height=5}
-upsetplot(ego)
+upsetplot(edo)
 ```
 
 ## Heatmap-like functional classification
@@ -149,8 +145,8 @@ show a large number significant terms. The `heatplot` can simplify the result
 and more easy to identify expression patterns.
 
 ```{r fig.width=16, fig.height=4}
-heatplot(ego2)
-heatplot(ego2, foldChange=geneList)
+heatplot(edox)
+heatplot(edox, foldChange=geneList)
 ```
 
 
@@ -162,9 +158,8 @@ overlapping gene sets. In this way, mutually overlapping gene sets are tend to
 cluster together, making it easy to identify functional module.
 
 
-
 ```{r fig.width=12, fig.height=10}
-emapplot(ego2)
+emapplot(edo)
 ```
 
 ## ridgeline plot for expression distribution of GSEA result
@@ -173,8 +168,7 @@ The `ridgeplot` will visualize expression distributions of core enriched genes
 for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.
 
 ```{r fig.width=12, fig.height=8, message=FALSE}
-kk <- gseKEGG(geneList, nPerm=1000)
-ridgeplot(kk)
+ridgeplot(edo2)
 ```
 
 
@@ -186,43 +180,64 @@ the distribution of the gene set and the enrichment score.
 
 
 ```{r fig.width=12, fig.height=4}
-gseaplot(kk, geneSetID = 1, by = "runningScore", title = kk$Description[1])
-gseaplot(kk, geneSetID = 1, by = "preranked", title = kk$Description[1])
+gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
+gseaplot(edo2, geneSetID = 1, by = "preranked", title = edo2$Description[1])
 ```
 
 ```{r fig.width=12, fig.height=8}
-gseaplot(kk, geneSetID = 1, title = kk$Description[1])
+gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
 ```
 
 Another method to plot GSEA result is the `gseaplot2` function:
 
 ```{r fig.width=12, fig.height=8}
-gseaplot2(kk, geneSetID = 1, title = kk$Description[1])
+gseaplot2(edo2, geneSetID = 1, title = edo2$Description[1])
 ```
 
 The `gseaplot2` also supports multile gene sets to be displayed on the same figure:
 
 ```{r fig.width=12, fig.height=8}
-gseaplot2(kk, geneSetID = 1:3)
+gseaplot2(edo2, geneSetID = 1:3)
 ```
 
 User can also displaying the pvalue table on the plot via `pvalue_table`
 parameter:
 
 ```{r fig.width=12, fig.height=8}
-gseaplot2(kk, geneSetID = 1:3, pvalue_table = TRUE,
-          color = c("#E495A5", "#86B875", "#7DB0DD"))
+gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
+          color = c("#E495A5", "#86B875", "#7DB0DD"), ES_geom = "dot")
 ```
 
 
 User can specify `subplots` to only display a subset of plots:
 
 ```{r fig.width=12, fig.height=4}
-gseaplot2(kk, geneSetID = 1:3, subplots = 1)
+gseaplot2(edo2, geneSetID = 1:3, subplots = 1)
 ```
 
 ```{r fig.width=12, fig.height=8}
-gseaplot2(kk, geneSetID = 1:3, subplots = 1:2)
+gseaplot2(edo2, geneSetID = 1:3, subplots = 1:2)
+```
+
+
+The `gsearank` function plot the ranked list of genes belong to the specific
+gene set.
+
+```{r fig.width=8, fig.height=4}
+gsearank(edo2, 1, title = edo2[1, "Description"])
+```
+
+Multiple gene sets can be aligned using `cowplot`:
+
+```{r fig.width=8, fig.height=6}
+pp <- lapply(1:3, function(i) {
+    anno <- edo2[i, c("NES", "pvalue", "p.adjust")]
+    lab <- paste0(names(anno), "=",  round(anno, 3), collapse="\n")
+
+    gsearank(edo2, i, edo2[i, 2]) + xlab(NULL) +ylab(NULL) +
+        annotate("text", 0, edo2[i, "enrichmentScore"] * .9, label = lab, hjust=0, vjust=0)
+})
+plot_grid(plotlist=pp, ncol=1)
 ```
 
 
@@ -236,10 +251,10 @@ is valid as input of `pmcplot`.
 
 
 ```{r fig.width=12, fig.height=4}
-terms <- ego2$Description[1:3]
+terms <- edo$Description[1:3]
 p <- pmcplot(terms, 2010:2017)
 p2 <- pmcplot(terms, 2010:2017, proportion=FALSE)
-cowplot::plot_grid(p, p2, ncol=2)
+plot_grid(p, p2, ncol=2)
 ```
 
 
