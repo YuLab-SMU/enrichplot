@@ -55,3 +55,7 @@ update:
 push:
 	git push upstream master;\
 	git push origin master
+
+biocinit:
+	git remote add upstream git@git.bioconductor.org:packages/$(PKGNAME).git;\
+	git fetch --all
