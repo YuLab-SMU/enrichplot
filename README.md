@@ -32,9 +32,10 @@ Get the released version from Bioconductor:
 
 ``` r
 ## try http:// if https:// URLs are not supported
-source("https://bioconductor.org/biocLite.R")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 ## biocLite("BiocUpgrade") ## you may need this
-biocLite("enrichplot")
+BiocManager::install("enrichplot")
 ```
 
 Or the development version from github:
