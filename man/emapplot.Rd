@@ -8,13 +8,14 @@
 \alias{emapplot.enrichResult}
 \title{emapplot}
 \usage{
-emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk", ...)
+emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
+  ...)
 
-\S4method{emapplot}{enrichResult}(x, showCategory = 30, color = "p.adjust",
-  layout = "kk", ...)
+\S4method{emapplot}{enrichResult}(x, showCategory = 30,
+  color = "p.adjust", layout = "kk", ...)
 
-\S4method{emapplot}{gseaResult}(x, showCategory = 30, color = "p.adjust",
-  layout = "kk", ...)
+\S4method{emapplot}{gseaResult}(x, showCategory = 30,
+  color = "p.adjust", layout = "kk", ...)
 
 emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
   layout = "kk", ...)

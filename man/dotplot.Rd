@@ -10,11 +10,12 @@
 dotplot(object, ...)
 
 \S4method{dotplot}{enrichResult}(object, x = "GeneRatio",
-  color = "p.adjust", showCategory = 10, split = NULL, font.size = 12,
-  title = "", ...)
+  color = "p.adjust", showCategory = 10, size = NULL, split = NULL,
+  font.size = 12, title = "", ...)
 
-\S4method{dotplot}{gseaResult}(object, x = "GeneRatio", color = "p.adjust",
-  showCategory = 10, split = NULL, font.size = 12, title = "", ...)
+\S4method{dotplot}{gseaResult}(object, x = "GeneRatio",
+  color = "p.adjust", showCategory = 10, size = NULL, split = NULL,
+  font.size = 12, title = "", ...)
 }
 \arguments{
 \item{object}{input object}
@@ -27,6 +28,8 @@ dotplot(object, ...)
 e.g. pvalue, p.adjust or qvalue}
 
 \item{showCategory}{number of enriched terms to display}
+
+\item{size}{variable that used to scale the sizes of categories}
 
 \item{split}{separate result by 'category' variable}
 

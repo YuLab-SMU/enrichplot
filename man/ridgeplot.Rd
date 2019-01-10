@@ -7,10 +7,11 @@
 \alias{ridgeplot.gseaResult}
 \title{ridgeplot}
 \usage{
-ridgeplot(x, showCategory = 30, fill = "p.adjust", core_enrichment = TRUE)
-
-\S4method{ridgeplot}{gseaResult}(x, showCategory = 30, fill = "p.adjust",
+ridgeplot(x, showCategory = 30, fill = "p.adjust",
   core_enrichment = TRUE)
+
+\S4method{ridgeplot}{gseaResult}(x, showCategory = 30,
+  fill = "p.adjust", core_enrichment = TRUE)
 
 ridgeplot.gseaResult(x, showCategory = 30, fill = "p.adjust",
   core_enrichment = TRUE)

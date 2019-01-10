@@ -4,8 +4,8 @@
 \alias{fortify.enrichResult}
 \title{fortify}
 \usage{
-\method{fortify}{enrichResult}(model, data, showCategory = 5, by = "Count",
-  order = FALSE, drop = FALSE, split = NULL, ...)
+\method{fortify}{enrichResult}(model, data, showCategory = 5,
+  by = "Count", order = FALSE, drop = FALSE, split = NULL, ...)
 }
 \arguments{
 \item{model}{enrichResult object}

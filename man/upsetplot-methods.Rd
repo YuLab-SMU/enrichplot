@@ -23,8 +23,6 @@ plot
 }
 \description{
 upsetplot method generics
-
-upsetplot
 }
 \examples{
 require(DOSE)

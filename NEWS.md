@@ -1,3 +1,12 @@
+# enrichplot 1.3.2
+
++ `dotplot` supports setting `x` to other variable, e.g. NES (2019-01-10, Thu)
++ mv vignette to [clusterProfiler-book](https://yulab-smu.github.io/clusterProfiler-book/).
+
+# enrichplot 1.2.0
+
++ Bioconductor 3.8 release
+
 # enrichplot 1.1.5
 
 + `gsearank` for plotting ranked list of genes belong to specific gene set

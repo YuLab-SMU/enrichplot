@@ -10,10 +10,12 @@
 gseaplot(x, geneSetID, by = "all", title = "", ...)
 
 \S4method{gseaplot}{gseaResult}(x, geneSetID, by = "all", title = "",
-  color = "black", color.line = "green", color.vline = "#FA5860", ...)
+  color = "black", color.line = "green", color.vline = "#FA5860",
+  ...)
 
-gseaplot.gseaResult(x, geneSetID, by = "all", title = "", color = "black",
-  color.line = "green", color.vline = "#FA5860", ...)
+gseaplot.gseaResult(x, geneSetID, by = "all", title = "",
+  color = "black", color.line = "green", color.vline = "#FA5860",
+  ...)
 }
 \arguments{
 \item{x}{object of gsea result}

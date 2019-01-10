@@ -4,7 +4,6 @@
 \name{reexports}
 \alias{reexports}
 \alias{ggtitle}
-\alias{reexports}
 \alias{plot_grid}
 \title{Objects exported from other packages}
 \keyword{internal}

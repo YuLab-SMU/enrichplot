@@ -10,9 +10,11 @@
 \usage{
 heatplot(x, showCategory = 30, foldChange = NULL)
 
-\S4method{heatplot}{enrichResult}(x, showCategory = 30, foldChange = NULL)
+\S4method{heatplot}{enrichResult}(x, showCategory = 30,
+  foldChange = NULL)
 
-\S4method{heatplot}{gseaResult}(x, showCategory = 30, foldChange = NULL)
+\S4method{heatplot}{gseaResult}(x, showCategory = 30,
+  foldChange = NULL)
 
 heatplot.enrichResult(x, showCategory = 30, foldChange = NULL)
 }

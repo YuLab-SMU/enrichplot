@@ -26,7 +26,7 @@ install:
 
 check: build
 	cd ..;\
-	Rscript -e 'rcmdcheck::rcmdcheck("$(PKGNAME)_$(PKGVERS).tar.gz", args="--as-cran")'
+	Rscript -e 'rcmdcheck::rcmdcheck("$(PKGNAME)_$(PKGVERS).tar.gz")'
 
 check2: build
 	cd ..;\
@@ -43,7 +43,7 @@ clean:
 
 
 release:
-	git checkout RELEASE_3_7;\
+	git checkout RELEASE_3_8;\
 	git fetch --all
 
 update:

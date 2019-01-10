@@ -11,8 +11,8 @@
 goplot(x, showCategory = 10, color = "p.adjust", layout = "sugiyama",
   geom = "text", ...)
 
-\S4method{goplot}{enrichResult}(x, showCategory = 10, color = "p.adjust",
-  layout = "sugiyama", geom = "text", ...)
+\S4method{goplot}{enrichResult}(x, showCategory = 10,
+  color = "p.adjust", layout = "sugiyama", geom = "text", ...)
 
 \S4method{goplot}{gseaResult}(x, showCategory = 10, color = "p.adjust",
   layout = "sugiyama", geom = "text", ...)

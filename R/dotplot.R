@@ -3,6 +3,7 @@
 ##' @param color variable that used to color enriched terms,
 ##'              e.g. pvalue, p.adjust or qvalue
 ##' @param showCategory number of enriched terms to display
+##' @param size variable that used to scale the sizes of categories
 ##' @param split separate result by 'category' variable
 ##' @param font.size font size
 ##' @param title plot title
@@ -10,16 +11,16 @@
 ##' @exportMethod dotplot
 ##' @author guangchuang yu
 setMethod("dotplot", signature(object = "enrichResult"),
-          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
-              dotplot_internal(object, x, color, showCategory, split, font.size, title, ...)
+          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, size = NULL, split = NULL, font.size=12, title = "", ...) {
+              dotplot_internal(object, x, color, showCategory, size, split, font.size, title, ...)
           })
 
 ##' @rdname dotplot
 ##' @importClassesFrom DOSE gseaResult
 ##' @exportMethod dotplot
 setMethod("dotplot", signature(object = "gseaResult"),
-          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, split = NULL, font.size=12, title = "", ...) {
-              dotplot_internal(object, x, color, showCategory, split, font.size, title, ...)
+          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, size = NULL, split = NULL, font.size=12, title = "", ...) {
+              dotplot_internal(object, x, color, showCategory, size, split, font.size, title, ...)
           })
 
 
@@ -33,23 +34,28 @@ setMethod("dotplot", signature(object = "gseaResult"),
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggplot2 ggtitle
-dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCategory=10, split = NULL,
+dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="GeneRatio", decreasing=TRUE) {
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {
         x <- "GeneRatio"
-        size <- "Count"
+        if (is.null(size))
+            size <- "Count"
     } else if (x == "count" || x == "Count") {
         x <- "Count"
-        size <- "GeneRatio"
+        if (is.null(size))
+            size <- "GeneRatio"
     } else if (is(x, "formula")) {
         x <- as.character(x)[2]
-        size <- "Count"
+        if (is.null(size))
+            size <- "Count"
     } else {
-        message("invalid x, setting to 'GeneRatio' by default")
-        x <- "GeneRatio"
-        size <- "Count"
+        ## message("invalid x, setting to 'GeneRatio' by default")
+        ## x <- "GeneRatio"
+        ## size <- "Count"
+        if (is.null(size))
+            size  <- "GeneRatio"
     }
 
     df <- fortify(object, showCategory = showCategory, split=split)
