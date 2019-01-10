@@ -55,7 +55,7 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
         ## x <- "GeneRatio"
         ## size <- "Count"
         if (is.null(size))
-            size  <- "GeneRatio"
+            size  <- "Count"
     }
 
     df <- fortify(object, showCategory = showCategory, split=split)
