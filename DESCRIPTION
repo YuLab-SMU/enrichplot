@@ -29,6 +29,7 @@ Imports:
     utils
 Suggests:
     clusterProfiler,
+    dplyr,
     knitr,
     org.Hs.eg.db,
     prettydoc

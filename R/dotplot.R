@@ -35,7 +35,7 @@ setMethod("dotplot", signature(object = "gseaResult"),
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggplot2 ggtitle
 dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCategory=10, size=NULL, split = NULL,
-                             font.size=12, title = "", orderBy="GeneRatio", decreasing=TRUE) {
+                             font.size=12, title = "", orderBy="x", decreasing=TRUE) {
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {
@@ -63,8 +63,12 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
     ## df$GeneRatio <- parse_ratio(df$GeneRatio)
 
     if (!orderBy %in% colnames(df)) {
-        message('wrong orderBy parameter; set to default `orderBy = "GeneRatio"`')
-        orderBy <- "GeneRatio"
+        message('wrong orderBy parameter; set to default `orderBy = "x"`')
+        orderBy <- "x"
+    }
+    
+    if (orderBy == "x") {
+        df <- dplyr::mutate(df, x = eval(parse(text=x)))
     }
 
     idx <- order(df[[orderBy]], decreasing = decreasing)
