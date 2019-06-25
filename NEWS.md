@@ -1,3 +1,11 @@
+# enrichplot 1.5.1
+
++ `gseadist` for plotting logFC distribution of selected gene sets. (2019-06-25, Tue)
+
+# enrichplot 1.4.0
+
++ Bioconductor 3.9 release
+
 # enrichplot 1.3.2
 
 + `dotplot` supports setting `x` to other variable, e.g. NES (2019-01-10, Thu)
