@@ -18,7 +18,7 @@ fortify.enrichResult <- function(model, data, showCategory=5, by = "Count", orde
     fortify.internal(model, data, showCategory, by, order, drop, split, ...)
 }
 
-##' @method fortify enrichResult
+##' @method fortify gseaResult
 ##' @export
 fortify.gseaResult <- function(model, data, showCategory=5, by = "Count", order=FALSE, drop=FALSE, split=NULL, ...) {
     fortify.internal(model, data, showCategory, by, order, drop, split, ...)

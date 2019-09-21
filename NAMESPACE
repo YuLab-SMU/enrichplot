@@ -2,6 +2,7 @@
 
 S3method(barplot,enrichResult)
 S3method(fortify,enrichResult)
+S3method(fortify,gseaResult)
 export(cnetplot)
 export(color_palette)
 export(dotplot)
