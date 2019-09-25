@@ -1,3 +1,8 @@
+# enrichplot 1.5.2
+
++ `upsetplot` for `gseaResult` (2019-09-25, Wed)
++ reimplement `upsetplot` based on `ggupset` 
+
 # enrichplot 1.5.1
 
 + `gseadist` for plotting logFC distribution of selected gene sets. (2019-06-25, Tue)
