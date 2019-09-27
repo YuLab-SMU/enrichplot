@@ -1,5 +1,7 @@
 # enrichplot 1.5.2
 
++ update `node_label` parameter in `cnetplot` to support selection of subset to be labeled (2019-09-27, Fri)
+  - <https://yulab-smu.github.io/clusterProfiler-book/chapter12.html#fig:cnetNodeLabel>
 + `upsetplot` for `gseaResult` (2019-09-25, Wed)
 + reimplement `upsetplot` based on `ggupset` 
 

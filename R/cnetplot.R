@@ -19,7 +19,8 @@ setMethod("cnetplot", signature(x = "gseaResult"),
 ##' @rdname cnetplot
 ##' @param colorEdge whether coloring edge by enriched terms
 ##' @param circular whether using circular layout
-##' @param node_label whether display node label
+##' @param node_label select which labels to be displayed.
+##'                   one of 'category', 'gene', 'all' and 'none', default is "all".
 ##' @importFrom ggraph geom_edge_arc
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,
@@ -28,8 +29,10 @@ cnetplot.enrichResult <- function(x,
                      layout = "kk",
                      colorEdge = FALSE,
                      circular = FALSE,
-                     node_label = TRUE,
+                     node_label = "all",
                      ...) {
+
+    node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
 
     if (circular) {
         layout <- "linear"
@@ -77,8 +80,14 @@ cnetplot.enrichResult <- function(x,
     p <- p + scale_size(range=c(3, 10), breaks=unique(round(seq(min(size), max(size), length.out=4)))) +
         theme_void()
 
-    if (node_label)
+
+    if (node_label == "category") {
+        p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,])
+    } else if (node_label == "gene") {
+        p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),], repel=TRUE)
+    } else if (node_label == "all") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE)
+    } 
 
     return(p)
 }

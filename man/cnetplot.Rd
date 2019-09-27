@@ -18,7 +18,7 @@ cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 
 cnetplot.enrichResult(x, showCategory = 5, foldChange = NULL,
   layout = "kk", colorEdge = FALSE, circular = FALSE,
-  node_label = TRUE, ...)
+  node_label = "all", ...)
 }
 \arguments{
 \item{x}{enrichment result}
@@ -35,7 +35,8 @@ cnetplot.enrichResult(x, showCategory = 5, foldChange = NULL,
 
 \item{circular}{whether using circular layout}
 
-\item{node_label}{whether display node label}
+\item{node_label}{select which labels to be displayed.
+one of 'category', 'gene', 'all' and 'none', default is "all".}
 }
 \value{
 ggplot object
