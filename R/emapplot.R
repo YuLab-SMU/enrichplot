@@ -17,8 +17,8 @@ setMethod("emapplot", signature(x = "gseaResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 5, color = "p.adjust", layout = "kk", ...) {
-              emapplot.compareClusterResult(x, showCategory = 5, color="p.adjust", layout = "kk",by="geneRatio",split=NULL, includeAll=TRUE,size_label=FALSE, ...)
+          function(x, showCategory = 5, color = "p.adjust", layout = "kk", by="geneRatio",split=NULL, includeAll=TRUE,size_label=FALSE,...) {
+              emapplot.compareClusterResult(x, showCategory = showCategory, color=color, layout = layout, by="geneRatio",split=split, includeAll=includeAll,size_label=size_label, ...)
           })
 		  
 
@@ -190,7 +190,7 @@ merge_compareClusterResult <- function(yy) {
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
-emapplot.compareClusterResult <- function(x, showCategory = 5, color="p.adjust", layout = "kk",by="geneRatio",split=NULL, includeAll=TRUE,size_label=FALSE, ...) {
+emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust", layout = "kk", by="geneRatio",split=NULL, includeAll=TRUE,size_label=FALSE,...) {
 region <- radius <- NULL
 
 #pretreatment of x, just like dotplot do
