@@ -19,14 +19,15 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
 \S4method{emapplot}{gseaResult}(x, showCategory = 30,
   color = "p.adjust", layout = "kk", ...)
 
-\S4method{emapplot}{compareClusterResult}(x, showCategory = 30,
+\S4method{emapplot}{compareClusterResult}(x, showCategory = 5,
   color = "p.adjust", layout = "kk", ...)
 
 emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
   layout = "kk", ...)
 
-emapplot.compareClusterResult(x, showCategory = 30, color = "p.adjust",
-  layout = "kk", ...)
+\method{fortify}{compareClusterResult}(x, showCategory = 5,
+  color = "p.adjust", layout = "kk", by = "geneRatio",
+  split = NULL, includeAll = TRUE, ...)
 }
 \arguments{
 \item{x}{enrichment result.}
