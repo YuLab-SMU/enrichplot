@@ -279,7 +279,7 @@ y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y)
 
 p + geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
                            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) + coord_equal()+
-						    scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,size=FALSE)+
+						    scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,size_label=FALSE)+
 							 annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
 }
 
