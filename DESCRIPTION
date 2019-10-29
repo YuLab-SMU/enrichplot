@@ -26,9 +26,9 @@ Imports:
     reshape2,
     stats,
     utils,
-    scatterpie
+    scatterpie,
+    clusterProfiler
 Suggests:
-    clusterProfiler,
     dplyr,
     ggupset,
     knitr,
