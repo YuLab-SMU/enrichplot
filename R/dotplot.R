@@ -62,7 +62,7 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
     ## already parsed in fortify
     ## df$GeneRatio <- parse_ratio(df$GeneRatio)
 
-    if (!orderBy %in% colnames(df)) {
+    if (orderBy !=  'x' && !orderBy %in% colnames(df)) {
         message('wrong orderBy parameter; set to default `orderBy = "x"`')
         orderBy <- "x"
     }
