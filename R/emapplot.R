@@ -17,8 +17,8 @@ setMethod("emapplot", signature(x = "gseaResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 5, color = "p.adjust", layout = "kk", by="geneRatio",split=NULL, includeAll=TRUE,size_label=FALSE,...) {
-              emapplot.compareClusterResult(x, showCategory = showCategory, color=color, layout = layout, by="geneRatio",split=split, includeAll=includeAll,size_label=size_label, ...)
+          function(x, showCategory = 5, color = "p.adjust", layout = "kk", by="geneRatio",split=NULL, includeAll=TRUE,...) {
+              emapplot.compareClusterResult(x, showCategory = showCategory, color=color, layout = layout, by="geneRatio",split=split, includeAll=includeAll, ...)
           })
 		  
 
@@ -190,7 +190,7 @@ merge_compareClusterResult <- function(yy) {
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
-emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust", layout = "kk", by="geneRatio",split=NULL, includeAll=TRUE,size_label=FALSE,...) {
+emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust", layout = "kk", by="geneRatio",split=NULL, includeAll=TRUE,...) {
 region <- radius <- NULL
 
 #pretreatment of x, just like dotplot do
@@ -269,8 +269,8 @@ ID_Cluster_mat$x <- aa$x
 ID_Cluster_mat$y <- aa$y
 
 #Change the radius value to fit the pie plot
-ID_Cluster_mat$radius <- sqrt(aa$size / sum(aa$size))
-
+#ID_Cluster_mat$radius <- sqrt(aa$size / sum(aa$size))
+ID_Cluster_mat$radius <- sqrt(aa$size / pi)
 
 x_loc1 <- min(ID_Cluster_mat$x)
 y_loc1 <- min(ID_Cluster_mat$y)
@@ -279,7 +279,7 @@ y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y)
 
 p + geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
                            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) + coord_equal()+
-						    scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,size_label=FALSE)+
+						    scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,labeller=function(x) pi*x^2)+
 							 annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
 }
 
