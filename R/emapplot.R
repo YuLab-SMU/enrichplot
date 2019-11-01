@@ -56,7 +56,7 @@ graph_build <- function(n1,y1,geneSets1,layout1,color1) {
         cnt <- sapply(geneSets1[idx], length)
         V(g)$size <- cnt
 
-        colVar <- y[idx, color1]
+        colVar <- y1[idx, color1]
         V(g)$color <- colVar
     }
 
