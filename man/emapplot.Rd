@@ -20,7 +20,8 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
   color = "p.adjust", layout = "kk", ...)
 
 \S4method{emapplot}{compareClusterResult}(x, showCategory = 5,
-  color = "p.adjust", layout = "kk", ...)
+  color = "p.adjust", layout = "kk", by = "geneRatio",
+  split = NULL, includeAll = TRUE, ...)
 
 emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
   layout = "kk", ...)

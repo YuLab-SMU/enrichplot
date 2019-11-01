@@ -26,15 +26,15 @@ Imports:
     reshape2,
     stats,
     utils,
-    scatterpie,
-    clusterProfiler
+    scatterpie
 Suggests:
     dplyr,
     ggupset,
     knitr,
     org.Hs.eg.db,
     prettydoc,
-    tibble
+    tibble,
+    clusterProfiler
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://github.com/GuangchuangYu/enrichplot
