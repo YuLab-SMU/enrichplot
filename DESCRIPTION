@@ -25,9 +25,10 @@ Imports:
     RColorBrewer,
     reshape2,
     stats,
-    utils
+    utils,
+    scatterpie,
+    clusterProfiler
 Suggests:
-    clusterProfiler,
     dplyr,
     ggupset,
     knitr,

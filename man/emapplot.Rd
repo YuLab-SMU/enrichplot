@@ -5,7 +5,9 @@
 \alias{emapplot}
 \alias{emapplot,enrichResult-method}
 \alias{emapplot,gseaResult-method}
+\alias{emapplot,compareClusterResult-method}
 \alias{emapplot.enrichResult}
+\alias{emapplot.compareClusterResult}
 \title{emapplot}
 \usage{
 emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
@@ -17,8 +19,15 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
 \S4method{emapplot}{gseaResult}(x, showCategory = 30,
   color = "p.adjust", layout = "kk", ...)
 
+\S4method{emapplot}{compareClusterResult}(x, showCategory = 5,
+  color = "p.adjust", layout = "kk", ...)
+
 emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
   layout = "kk", ...)
+
+\method{fortify}{compareClusterResult}(x, showCategory = 5,
+  color = "p.adjust", layout = "kk", by = "geneRatio",
+  split = NULL, includeAll = TRUE, ...)
 }
 \arguments{
 \item{x}{enrichment result.}
