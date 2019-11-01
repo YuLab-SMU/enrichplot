@@ -110,7 +110,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     if (n == 0) {
         stop("no enriched term found...")
     } 
-    p <- graph_build(n=n,y=y,geneSets=geneSets,layout=layout,color=color)
+    p <- graph_build(n1=n,y1=y,geneSets1=geneSets,layout1=layout,color1=color)
 	if(n==1) {
 	    p + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name))
 	} else {
