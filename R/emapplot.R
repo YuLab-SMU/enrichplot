@@ -1,4 +1,4 @@
- ##' @rdname emapplot
+##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "enrichResult"),
           function(x, showCategory = 30, color = "p.adjust", layout = "kk", ...) {
@@ -21,6 +21,56 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
               emapplot.compareClusterResult(x, showCategory = showCategory, color=color, layout = layout, by="geneRatio",split=split, includeAll=includeAll, ...)
           })
 		  
+
+
+
+graph_build <- function(n1,y1,geneSets1,layout1,color1) {
+       if (n1 == 1) {
+        g <- graph.empty(0, directed=FALSE)
+        g <- add_vertices(g, nv = 1)
+        V(g)$name <- y1$Description
+        V(g)$color <- "red"
+        return(ggraph(g))
+		} else {
+        id <- y1[,"ID"]
+        geneSets1 <- geneSets1[id]
+        n1 <- nrow(y1) #
+        w <- matrix(NA, nrow=n1, ncol=n1)
+        colnames(w) <- rownames(w) <- y1$Description
+
+        for (i in 1:n1) {
+            for (j in i:n1) {
+                w[i,j] = enrichplot:::overlap_ratio(geneSets1[id[i]], geneSets1[id[j]])
+            }
+        }
+
+        wd <- melt(w)
+        wd <- wd[wd[,1] != wd[,2],]
+        wd <- wd[!is.na(wd[,3]),]
+        g <- graph.data.frame(wd[,-3], directed=FALSE)
+        E(g)$width=sqrt(wd[,3] * 5)
+        g <- delete.edges(g, E(g)[wd[,3] < 0.2])
+		#g <- delete.edges(g, E(g)[wd[,3] < 0.05])
+        idx <- unlist(sapply(V(g)$name, function(x) which(x == y1$Description)))
+
+        cnt <- sapply(geneSets1[idx], length)
+        V(g)$size <- cnt
+
+        colVar <- y[idx, color1]
+        V(g)$color <- colVar
+    }
+
+
+      p <- ggraph(g, layout=layout1)
+
+    if (length(E(g)$width) > 0) {
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+    }
+	return(p)
+
+}
+
+
 
 
 
@@ -59,53 +109,17 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
 
     if (n == 0) {
         stop("no enriched term found...")
-    } else if (n == 1) {
-        g <- graph.empty(0, directed=FALSE)
-        g <- add_vertices(g, nv = 1)
-        V(g)$name <- y$Description
-        V(g)$color <- "red"
-        return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
-    } else {
-        id <- y[,1]
-        geneSets <- geneSets[id]
-
-        n <- nrow(y) 
-        w <- matrix(NA, nrow=n, ncol=n)
-        colnames(w) <- rownames(w) <- y$Description
-
-        for (i in 1:n) {
-            for (j in i:n) {
-                w[i,j] = overlap_ratio(geneSets[id[i]], geneSets[id[j]])
-            }
-        }
-
-        wd <- melt(w)
-        wd <- wd[wd[,1] != wd[,2],]
-        wd <- wd[!is.na(wd[,3]),]
-        g <- graph.data.frame(wd[,-3], directed=FALSE)
-        E(g)$width=sqrt(wd[,3] * 5)
-        g <- delete.edges(g, E(g)[wd[,3] < 0.2])
-        idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
-
-        cnt <- sapply(geneSets[idx], length)
-        V(g)$size <- cnt
-
-        colVar <- y[idx, color]
-        V(g)$color <- colVar
-    }
-
-
-    p <- ggraph(g, layout=layout)
-
-    if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
-    }
-
+    } 
+    p <- graph_build(n=n,y=y,geneSets=geneSets,layout=layout,color=color)
+	if(n==1) {
+	    p + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name))
+	} else {
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
         ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8))
+    }
 }
 
 # Make appropriate changes to several functions
@@ -206,36 +220,12 @@ n <- update_n(x, showCategory)
 
 y_union <- merge_compareClusterResult(y)
 
-   if (n <= 1) {
+ if (n == 0) {
         stop("no enriched term found...")
-    } else {
-	    id <- y_union$ID
-		geneSets <- geneSets[id]
-        n <- nrow(y_union) 
-        w <- matrix(NA, nrow=n, ncol=n)
-        colnames(w) <- rownames(w) <- y_union$Description
-
-        for (i in 1:n) {
-            for (j in i:n) {
-                w[i,j] = overlap_ratio(geneSets[id[i]], geneSets[id[j]])
-            }
-        }
-
-        wd <- melt(w)
-        wd <- wd[wd[,1] != wd[,2],]
-        wd <- wd[!is.na(wd[,3]),]
-		g <- graph.data.frame(wd[,-3], directed=FALSE)
-        E(g)$width=sqrt(wd[,3] * 5)
-        g <- delete.edges(g, E(g)[wd[,3] < 0.05])
-        idx <- unlist(sapply(V(g)$name, function(x) which(x == y_union$Description)))
-
-        cnt <- sapply(geneSets[idx], length)
-        V(g)$size <- cnt
-
-        colVar <- y_union[idx, color]
-        V(g)$color <- colVar
-	}
+    } 
 	
+p <- graph_build(n1=n,y1=y_union,geneSets1=geneSets,layout1=layout,color1=color)
+
 
 # then add the pie plot	
 #Get the matrix data for the pie plot
@@ -256,12 +246,6 @@ ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
 ID_Cluster_mat$region <- factor(1:dim(ID_Cluster_mat)[1])
 
 #plot the edge
-  p <- ggraph(g, layout=layout)
-
-    if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
-    }
-
 #get the X-coordinate and y-coordinate of pies
 aa <- p$data
 	
