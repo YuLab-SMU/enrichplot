@@ -56,3 +56,12 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust', showCatego
     p + geom_bar(stat = "identity") + coord_flip() +
         ggtitle(title) + xlab(NULL) + ylab(NULL)
 }
+
+
+barplot.compareClusterResult <- function(height, color="p.adjust", showCategory=5,
+                                         by="geneRatio", includeAll=TRUE, font.size=12, title="", ...) {
+    ## use *height* to satisy barplot generic definition
+    ## actually here is an compareClusterResult object.
+    df <- fortify(height, showCategory=showCategory, by=by, includeAll=includeAll)
+    plotting.clusterProfile(df, type="bar", colorBy=color, by=by, title=title, font.size=font.size)
+}

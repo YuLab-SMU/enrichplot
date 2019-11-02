@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 1.7.0
+Version: 1.7.1
 Authors@R: person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781"))
 Description: The 'enrichplot' package implements several visualization methods for interpreting functional enrichment results obtained from ORA or GSEA analysis.
              All the visualization methods are developed based on 'ggplot2' graphics.
@@ -8,7 +8,7 @@ Depends: R (>= 3.4.0)
 Imports:
     AnnotationDbi,
     cowplot,
-    DOSE (>= 3.5.1),
+    DOSE (>= 3.13.1),
     europepmc,
     ggplot2,
     ggplotify,
@@ -21,6 +21,7 @@ Imports:
     gridExtra,
     igraph,
     methods,
+    plyr,
     purrr,
     RColorBrewer,
     reshape2,
@@ -28,13 +29,13 @@ Imports:
     utils,
     scatterpie
 Suggests:
+    clusterProfiler,
     dplyr,
     ggupset,
     knitr,
     org.Hs.eg.db,
     prettydoc,
-    tibble,
-    clusterProfiler
+    tibble
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://github.com/GuangchuangYu/enrichplot

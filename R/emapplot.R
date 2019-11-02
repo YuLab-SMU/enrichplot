@@ -17,12 +17,10 @@ setMethod("emapplot", signature(x = "gseaResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 5, color = "p.adjust", layout = "kk",
-                   by="geneRatio", split=NULL, includeAll=TRUE,...) {
+          function(x, showCategory = 5, color = "p.adjust", layout = "kk", ...) {
 
               emapplot.compareClusterResult(x, showCategory = showCategory, color=color,
-                                            layout = layout, by="geneRatio",split=split,
-                                            includeAll=includeAll, ...)
+                                            layout = layout, ...)
           })
 
 emap_graph_build <- function(n1,y1,geneSets1,layout1,color1) {
@@ -41,7 +39,7 @@ emap_graph_build <- function(n1,y1,geneSets1,layout1,color1) {
         
         for (i in 1:n1) {
             for (j in i:n1) {
-                w[i,j] = enrichplot:::overlap_ratio(geneSets1[id[i]], geneSets1[id[j]])
+                w[i,j] <- overlap_ratio(geneSets1[id[i]], geneSets1[id[j]])
             }
         }
         
@@ -138,9 +136,6 @@ merge_compareClusterResult <- function(yy) {
 }
 
 
-
-		  
-##' @rdname emapplot
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph add_vertices
 ##' @importFrom igraph graph.data.frame
@@ -155,7 +150,7 @@ merge_compareClusterResult <- function(yy) {
 ##' @importFrom ggplot2 theme_void
 ##' @importFrom ggplot2 geom_text
 ##' @importFrom ggplot2 coord_equal
-##' @importFrom ggplot2 annotate
+##' @importFrom ggplot2 labs
 ##' @importFrom ggraph ggraph
 ##' @importFrom ggraph geom_node_point
 ##' @importFrom ggraph geom_node_text
@@ -163,17 +158,19 @@ merge_compareClusterResult <- function(yy) {
 ##' @importFrom DOSE geneInCategory
 ##' @importFrom DOSE geneID
 ##' @importClassesFrom DOSE compareClusterResult
+##' @param split separate result by 'category' variable
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
-emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust", layout = "kk",
-                                          by="geneRatio", split=NULL, includeAll=TRUE,...) {
+##' @noRd
+emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
+                                          layout = "kk", split=NULL, ...) {
 
     region <- radius <- NULL
 
     ## pretreatment of x, just like dotplot do
-    y <- clusterProfiler:::fortify.compareClusterResult(x, showCategory=showCategory, by=by,
-                                                        includeAll=includeAll, split=split)
+    y <- fortify.compareClusterResult(x, showCategory=showCategory, 
+                                      includeAll=TRUE, split=split)
 
     y$Cluster = sub("\n.*", "", y$Cluster)
 
