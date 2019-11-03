@@ -23,23 +23,23 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
                                             layout = layout, ...)
           })
 
-emap_graph_build <- function(n1,y1,geneSets1,layout1,color1) {
-    if (n1 == 1) {
+emap_graph_build <- function(n,y,geneSets,colorr) {
+    if (n == 1) {
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
-        V(g)$name <- y1$Description
+        V(g)$name <- y$Description
         V(g)$color <- "red"
         return(ggraph(g))
 		} else {
-        id <- y1[,"ID"]
-        geneSets1 <- geneSets1[id]
-        n1 <- nrow(y1) #
-        w <- matrix(NA, nrow=n1, ncol=n1)
-        colnames(w) <- rownames(w) <- y1$Description
+        id <- y[,"ID"]
+        geneSets <- geneSets[id]
+        n <- nrow(y) #
+        w <- matrix(NA, nrow=n, ncol=n)
+        colnames(w) <- rownames(w) <- y$Description
         
-        for (i in 1:n1) {
-            for (j in i:n1) {
-                w[i,j] <- overlap_ratio(geneSets1[id[i]], geneSets1[id[j]])
+        for (i in 1:n) {
+            for (j in i:n) {
+                w[i,j] <- overlap_ratio(geneSets[id[i]], geneSets[id[j]])
             }
         }
         
@@ -50,23 +50,18 @@ emap_graph_build <- function(n1,y1,geneSets1,layout1,color1) {
         E(g)$width=sqrt(wd[,3] * 5)
         g <- delete.edges(g, E(g)[wd[,3] < 0.2])
         ## g <- delete.edges(g, E(g)[wd[,3] < 0.05])
-        idx <- unlist(sapply(V(g)$name, function(x) which(x == y1$Description)))
+        idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
         
-        cnt <- sapply(geneSets1[idx], length)
+        cnt <- sapply(geneSets[idx], length)
         V(g)$size <- cnt
         
-        colVar <- y1[idx, color1]
+        colVar <- y[idx, colorr]
         V(g)$color <- colVar
     }
-
-
-    p <- ggraph(g, layout=layout1)
-    
-    if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
-    }
-    return(p)
+ 
+    return(g)
 }
+
 
 
 		  
@@ -104,7 +99,12 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     if (n == 0) {
         stop("no enriched term found...")
     } 
-    p <- emap_graph_build(n1=n,y1=y,geneSets1=geneSets,layout1=layout,color1=color)
+	
+    g <- emap_graph_build(n=n,y=y,geneSets=geneSets,colorr=color)
+	p <- ggraph(g, layout=layout)
+	if (length(E(g)$width) > 0) {
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+    }
     if(n==1) {
         p + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name))
     } else {
@@ -188,8 +188,11 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
 
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
-    p <- emap_graph_build(n1=n,y1=y_union,geneSets1=geneSets,layout1=layout,color1=color)
-
+    g <- emap_graph_build(n=n,y=y_union,geneSets=geneSets,colorr=color)
+	p <- ggraph(g, layout=layout)
+    if (length(E(g)$width) > 0) {
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+    }
 
     ## then add the pie plot	
     ## Get the matrix data for the pie plot
@@ -230,7 +233,9 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     
     p + scatterpie::geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
                                     cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
+		
         coord_equal()+
+		geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
                                            labeller=function(x) round(sum(aa$size)*(x^2))) +
         labs(fill = "Cluster")
