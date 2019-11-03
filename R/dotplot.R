@@ -11,15 +11,19 @@
 ##' @exportMethod dotplot
 ##' @author guangchuang yu
 setMethod("dotplot", signature(object = "enrichResult"),
-          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, size = NULL, split = NULL, font.size=12, title = "", ...) {
-              dotplot_internal(object, x, color, showCategory, size, split, font.size, title, ...)
+          function(object, x = "GeneRatio", color = "p.adjust",
+                   showCategory=10, size = NULL,
+                   split = NULL, font.size=12, title = "", ...) {
+              dotplot_internal(object, x, color, showCategory, size,
+                               split, font.size, title, ...)
           })
 
 ##' @rdname dotplot
 ##' @importClassesFrom DOSE gseaResult
 ##' @exportMethod dotplot
 setMethod("dotplot", signature(object = "gseaResult"),
-          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10, size = NULL, split = NULL, font.size=12, title = "", ...) {
+          function(object, x = "GeneRatio", color = "p.adjust", showCategory=10,
+                   size = NULL, split = NULL, font.size=12, title = "", ...) {
               dotplot_internal(object, x, color, showCategory, size, split, font.size, title, ...)
           })
 
@@ -34,7 +38,8 @@ setMethod("dotplot", signature(object = "gseaResult"),
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggplot2 ggtitle
-dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCategory=10, size=NULL, split = NULL,
+dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust",
+                             showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x", decreasing=TRUE) {
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
@@ -62,7 +67,7 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
     ## already parsed in fortify
     ## df$GeneRatio <- parse_ratio(df$GeneRatio)
 
-    if (!orderBy %in% colnames(df)) {
+    if (orderBy !=  'x' && !orderBy %in% colnames(df)) {
         message('wrong orderBy parameter; set to default `orderBy = "x"`')
         orderBy <- "x"
     }
@@ -81,3 +86,49 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust", showCa
 
 }
 
+
+##' dot plot method
+##'
+##'
+##' @docType methods
+##' @title dotplot
+##' @rdname dotplot-methods
+##' @aliases dotplot,compareClusterResult,ANY-method
+##' @param object compareClusterResult object
+##' @param x x variable
+##' @param color one of pvalue or p.adjust
+##' @param showCategory category numbers
+##' @param by one of geneRatio, Percentage or count
+##' @param split ONTOLOGY or NULL
+##' @param includeAll logical
+##' @param font.size font size
+##' @param title figure title
+##' @exportMethod dotplot
+setMethod("dotplot", signature(object="compareClusterResult"),
+          function(object,
+                   x = ~Cluster,
+                   color ="p.adjust",
+                   showCategory=5,
+                   split=NULL,
+                   font.size=12,
+                   title="",
+                   by="geneRatio",
+                   includeAll=TRUE
+                   ) {
+              dotplot.compareClusterResult(object, x=x, colorBy = color,
+                                           showCategory = showCategory, by = by,
+                                           includeAll = includeAll,
+                                           split=split, font.size = font.size,
+                                           title = title)
+          })
+
+
+dotplot.compareClusterResult <- function(object, x=~Cluster, colorBy="p.adjust",
+                                         showCategory=5, by="geneRatio",
+                                         split=NULL, includeAll=TRUE, font.size=12, title="") {
+
+    df <- fortify(object, showCategory=showCategory, by=by,
+                  includeAll=includeAll, split=split)
+    plotting.clusterProfile(df, x=x, type="dot", colorBy=colorBy,
+                            by=by, title=title, font.size=font.size)
+}

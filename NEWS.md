@@ -1,3 +1,11 @@
+# enrichplot 1.7.1
+
++ move `barplot`, `dotplot` and `fortify` methods of `compareClusterResult` from `clusterProfiler` (2019-11-2, Sat)
+
+# enrichplot 1.6.0
+
++ Bioconductor 3.10 release
+
 # enrichplot 1.5.2
 
 + update `node_label` parameter in `cnetplot` to support selection of subset to be labeled (2019-09-27, Fri)

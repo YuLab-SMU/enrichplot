@@ -41,9 +41,11 @@ clean:
 	cd ..;\
 	$(RM) -r $(PKGNAME).Rcheck/
 
+rmoldrelease:
+	git branch -D RELEASE_3_9
 
 release:
-	git checkout RELEASE_3_8;\
+	git checkout RELEASE_3_10;\
 	git fetch --all
 
 update:
