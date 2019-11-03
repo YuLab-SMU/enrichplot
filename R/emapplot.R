@@ -24,13 +24,13 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
           })
 
 emap_graph_build <- function(n,y,geneSets,colorr) {
-    if (n == 1) {
+    if (is.null(dim(y)) | nrow(y) == 1) {
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
-        V(g)$name <- y$Description
+        V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
-        return(ggraph(g))
-		} else {
+        #return(ggraph(g))
+        } else {
         id <- y[,"ID"]
         geneSets <- geneSets[id]
         n <- nrow(y) #
@@ -64,7 +64,7 @@ emap_graph_build <- function(n,y,geneSets,colorr) {
 
 
 
-		  
+          
 ##' @rdname emapplot
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph add_vertices
@@ -99,20 +99,20 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     if (n == 0) {
         stop("no enriched term found...")
     } 
-	
+    
     g <- emap_graph_build(n=n,y=y,geneSets=geneSets,colorr=color)
-	p <- ggraph(g, layout=layout)
-	if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
-    }
-    if(n==1) {
-        p + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name))
+    if(n == 1) {
+        return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
+
     } else {
-        p + geom_node_point(aes_(color=~color, size=~size)) +
-            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-            scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-            ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
-            scale_size(range=c(3, 8))
+    p <- ggraph(g, layout=layout)
+    if (length(E(g)$width) > 0) {
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+    } 
+    p + geom_node_point(aes_(color=~color, size=~size)) +
+        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+        scale_size(range=c(3, 8))
     }
 }
 
@@ -185,62 +185,78 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     if (n == 0) {
         stop("no enriched term found...")
     } 
-
-
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
     g <- emap_graph_build(n=n,y=y_union,geneSets=geneSets,colorr=color)
-	p <- ggraph(g, layout=layout)
-    if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
-    }
-
-    ## then add the pie plot	
-    ## Get the matrix data for the pie plot
-    data_pie <- as.matrix(y[,1:2])
-    ID_unique <- unique(data_pie[,2])
-    Cluster_unique <- unique(data_pie[,1])
+    if(is.null(dim(y_union)) | nrow(y_union) == 1) {
+         #return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
+         p <- ggraph(g)
+         data_pie <- as.matrix(y[,1:2])
+         ID_unique <- data_pie[1,2]
+         Cluster_unique <- unique(data_pie[,1])
+         ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
+         rownames(ID_Cluster_mat) <- ID_unique
+         colnames(ID_Cluster_mat) <- Cluster_unique
+         for(i in seq_len(nrow(data_pie))) {
+             ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- 1
+         }
+         ID_Cluster_mat$x <- 1
+         ID_Cluster_mat$y <- 1
+         ID_Cluster_mat$radius <- 0.1
+         p + scatterpie::geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
+                                    cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA)     
+    } else {
+        p <- ggraph(g, layout=layout)
+        if (length(E(g)$width) > 0) {
+            p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+        }
+     
+        ## then add the pie plot    
+        ## Get the matrix data for the pie plot
+        data_pie <- as.matrix(y[,1:2])
+        ID_unique <- unique(data_pie[,2])
+        Cluster_unique <- unique(data_pie[,1])
     
     
-    ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
-    rownames(ID_Cluster_mat) <- ID_unique
-    colnames(ID_Cluster_mat) <- Cluster_unique
-    for(i in seq_len(nrow(data_pie))) {
-        ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- 1
-    }
+        ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
+        rownames(ID_Cluster_mat) <- ID_unique
+        colnames(ID_Cluster_mat) <- Cluster_unique
+        for(i in seq_len(nrow(data_pie))) {
+            ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- 1
+        }
     
     ##use "region" as group of geom_scatterpie()
-    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
-    ID_Cluster_mat$region <- factor(1:dim(ID_Cluster_mat)[1])
+        ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
+        ID_Cluster_mat$region <- factor(1:dim(ID_Cluster_mat)[1])
     
                                         #plot the edge
                                         #get the X-coordinate and y-coordinate of pies
-    aa <- p$data
+        aa <- p$data
 
-    desc <- y_union$Description[match(ID_unique, y_union$ID)]
-    i <- match(desc, aa$name) 
+        desc <- y_union$Description[match(ID_unique, y_union$ID)]
+        i <- match(desc, aa$name) 
 
-    ID_Cluster_mat$x <- aa$x[i]
-    ID_Cluster_mat$y <- aa$y[i]
+        ID_Cluster_mat$x <- aa$x[i]
+        ID_Cluster_mat$y <- aa$y[i]
     
                                         #Change the radius value to fit the pie plot
-    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size))
+        ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size))
                                         #ID_Cluster_mat$radius <- sqrt(aa$size / pi)
     
-    x_loc1 <- min(ID_Cluster_mat$x)
-    y_loc1 <- min(ID_Cluster_mat$y)
+        x_loc1 <- min(ID_Cluster_mat$x)
+        y_loc1 <- min(ID_Cluster_mat$y)
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
     
-    p + scatterpie::geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
+        p + scatterpie::geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
                                     cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
-		
-        coord_equal()+
-		geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-        scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
+        
+            coord_equal()+
+            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+            scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
                                            labeller=function(x) round(sum(aa$size)*(x^2))) +
-        labs(fill = "Cluster")
+            labs(fill = "Cluster")
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
 
+    }
 }
-
 
