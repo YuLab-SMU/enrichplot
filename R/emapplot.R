@@ -226,9 +226,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         ## Get the matrix data for the pie plot
         ID_Cluster_mat <- deal_data_pie(y)
     
-    ##use "region" as group of geom_scatterpie()
         ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
-        ID_Cluster_mat$region <- factor(1:dim(ID_Cluster_mat)[1])
     
                                         #plot the edge
                                         #get the X-coordinate and y-coordinate of pies
@@ -248,9 +246,9 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         y_loc1 <- min(ID_Cluster_mat$y)
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
-        if(nrow(ID_Cluster_mat) > 5) {    
+        if(nrow(ID_Cluster_mat) > 4) {    
         p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
-                                    cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
+                                    cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         
             coord_equal()+
             geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
