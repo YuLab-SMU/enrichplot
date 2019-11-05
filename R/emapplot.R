@@ -246,7 +246,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         y_loc1 <- min(ID_Cluster_mat$y)
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
-        if(nrow(ID_Cluster_mat) > 4) {    
+        if(ncol(ID_Cluster_mat) > 4) {    
         p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
                                     cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         
