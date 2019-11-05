@@ -212,7 +212,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
 		ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1)
 		colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
 		ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
-        p + scatterpie::geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
+        p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
                                     cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
             									
