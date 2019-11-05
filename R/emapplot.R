@@ -210,10 +210,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         p <- ggraph(g)
 		ID_Cluster_mat <- deal_data_pie(y)
 		ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1)
-		colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:2],"x","y","radius")
+		colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
 		ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
         p + scatterpie::geom_scatterpie(aes(x=x,y=y, group=region,r=radius), data=ID_Cluster_mat,
-                                    cols=names(ID_Cluster_mat)[1:2],color=NA)+
+                                    cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
             									
     } else {
@@ -248,7 +248,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         y_loc1 <- min(ID_Cluster_mat$y)
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
-    
+        if(nrow(ID_Cluster_mat) > 5) {    
         p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
                                     cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
         
@@ -258,6 +258,12 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
                                            labeller=function(x) round(sum(aa$size)*(x^2))) +
             labs(fill = "Cluster")
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
+	} else {
+	    p + geom_node_point(aes_(color=~color, size=~size)) +
+            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+            scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+            scale_size(range=c(3, 8))
+	}
 
     }
 }
