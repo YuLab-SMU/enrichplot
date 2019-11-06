@@ -217,57 +217,58 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
         ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
-        p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
+        p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
                                     cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + theme_void()
+		return(p)
                                                 
-    } else {
-        p <- ggraph(g, layout=layout)
-        if (length(E(g)$width) > 0) {
-            p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
-        }
+    } 
+    p <- ggraph(g, layout=layout)
+    if (length(E(g)$width) > 0) {
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+    }
      
-        ## then add the pie plot    
-        ## Get the matrix data for the pie plot
-        ID_Cluster_mat <- deal_data_pie(y)
+    ## then add the pie plot    
+    ## Get the matrix data for the pie plot
+    ID_Cluster_mat <- deal_data_pie(y)
     
-        ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
+    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
     
                                         #plot the edge
                                         #get the X-coordinate and y-coordinate of pies
-        aa <- p$data
+    aa <- p$data
 
-        desc <- y_union$Description[match(rownames(ID_Cluster_mat), y_union$ID)]
-        i <- match(desc, aa$name) 
+    desc <- y_union$Description[match(rownames(ID_Cluster_mat), y_union$ID)]
+    i <- match(desc, aa$name) 
 
-        ID_Cluster_mat$x <- aa$x[i]
-        ID_Cluster_mat$y <- aa$y[i]
+    ID_Cluster_mat$x <- aa$x[i]
+    ID_Cluster_mat$y <- aa$y[i]
     
                                         #Change the radius value to fit the pie plot
-        ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size))
+    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size))
                                         #ID_Cluster_mat$radius <- sqrt(aa$size / pi)
     
-        x_loc1 <- min(ID_Cluster_mat$x)
-        y_loc1 <- min(ID_Cluster_mat$y)
+    x_loc1 <- min(ID_Cluster_mat$x)
+    y_loc1 <- min(ID_Cluster_mat$y)
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
-        if(ncol(ID_Cluster_mat) > 4) {    
-        p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
-                                    cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
+    if(ncol(ID_Cluster_mat) > 4) {    
+    p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
+                                cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         
-            coord_equal()+
-            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-            scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
-                                           labeller=function(x) round(sum(aa$size)*(x^2))) +
-            labs(fill = "Cluster")
+        coord_equal()+
+        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+        scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
+                                       labeller=function(x) round(sum(aa$size)*(x^2))) +
+        labs(fill = "Cluster")
+	return(p)
+	}
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
-    } else {
-        p + geom_node_point(aes_(color=~color, size=~size)) +
-            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-            scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-            scale_size(range=c(3, 8))
-    }
+	title <- colnames(ID_Cluster_mat)[1]
+    p + geom_node_point(aes_(color=~color, size=~size)) +
+        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+        scale_size(range=c(3, 8))  +labs(title= title)
 
-    }
 }
 
