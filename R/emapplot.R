@@ -144,11 +144,11 @@ deal_data_pie <- function(y, pie = "average") {
     ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
     rownames(ID_Cluster_mat) <- ID_unique
     colnames(ID_Cluster_mat) <- Cluster_unique
+	ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
 	if(pie == "gene_number") {
 	    for(i in seq_len(nrow(data_pie))) {
             ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- data_pie[i,3]
         }
-		ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
 		for(kk in seq_len(ncol(ID_Cluster_mat))) {
 	        ID_Cluster_mat[,kk] <- as.numeric(ID_Cluster_mat[,kk])
 	    }
