@@ -220,7 +220,12 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     g <- emap_graph_build(n=n,y=y_union,geneSets=geneSets,color=color)
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
-        return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
+	    title <- y$Cluster
+        p <- ggraph(g) + geom_node_point(color="red", size=5) + 
+		    geom_node_text(aes_(label=~name)) +
+			labs(title=title)
+	    return(p)
+		
     }
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
          ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
