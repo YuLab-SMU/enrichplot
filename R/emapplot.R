@@ -222,7 +222,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     if(is.null(dim(y)) | nrow(y) == 1) {
 	    title <- y$Cluster
         p <- ggraph(g) + geom_node_point(color="red", size=5) + 
-		    geom_node_text(aes_(label=~name)) +
+		    geom_node_text(aes_(label=~name)) + theme_void() +
 			labs(title=title)
 	    return(p)
 		
