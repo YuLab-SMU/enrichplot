@@ -164,9 +164,6 @@ deal_data_pie <- function(y, pie = "equal") {
 }
 
 
-
-
-
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph add_vertices
 ##' @importFrom igraph graph.data.frame
@@ -188,6 +185,8 @@ deal_data_pie <- function(y, pie = "equal") {
 ##' @importFrom ggraph geom_node_point
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
+##' @importFrom scatterpie geom_scatterpie
+##' @importFrom scatterpie geom_scatterpie_legend
 ##' @importFrom DOSE geneInCategory
 ##' @importFrom DOSE geneID
 ##' @importClassesFrom DOSE compareClusterResult
@@ -239,8 +238,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
         
 		
-        p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
-                                             cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
+        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
+                                 cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + 
             theme_void()+labs(fill = "Cluster")
         return(p)
@@ -275,13 +274,13 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
     if(ncol(ID_Cluster_mat) > 4) {    
-        p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
-                                             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
+        p <- p + geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
+                                 cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         
             coord_equal()+
             geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-            scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
-                                               labeller=function(x) round(sum(aa$size)*(x^2))) +
+            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
+                                   labeller=function(x) round(sum(aa$size)*(x^2))) +
             labs(fill = "Cluster")
         return(p)
     }
