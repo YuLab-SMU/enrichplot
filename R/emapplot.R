@@ -136,13 +136,24 @@ merge_compareClusterResult <- function(yy) {
     yy_union
 }
 
-deal_data_pie <- function(y) {
-    data_pie <- as.matrix(y[,1:2])
+deal_data_pie <- function(y, pie = "average") {
+    data_pie <- as.matrix(y[,c(1,2,10)])
+	##rownames(data_pie) <- paste0(data_pie[,1],data_pie[,2])
     ID_unique <- unique(data_pie[,2])
     Cluster_unique <- unique(data_pie[,1])
     ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
     rownames(ID_Cluster_mat) <- ID_unique
     colnames(ID_Cluster_mat) <- Cluster_unique
+	if(pie == "gene_number") {
+	    for(i in seq_len(nrow(data_pie))) {
+            ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- data_pie[i,3]
+        }
+		ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
+		for(kk in seq_len(ncol(ID_Cluster_mat))) {
+	        ID_Cluster_mat[,kk] <- as.numeric(ID_Cluster_mat[,kk])
+	    }
+		return(ID_Cluster_mat)
+	}
     for(i in seq_len(nrow(data_pie))) {
         ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- 1
     }
@@ -178,12 +189,13 @@ deal_data_pie <- function(y) {
 ##' @importFrom DOSE geneID
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @param split separate result by 'category' variable
+##' @param pie proportion of cluster in the pie chart
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
-                                          layout = "kk", split=NULL, ...) {
+                                          layout = "kk", split=NULL, pie = "average", ...) {
 
     region <- radius <- NULL
 
@@ -207,16 +219,18 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
     g <- emap_graph_build(n=n,y=y_union,geneSets=geneSets,color=color)
     ## when y just have one line
-        if(is.null(dim(y)) | nrow(y) == 1) {
-            return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
+    if(is.null(dim(y)) | nrow(y) == 1) {
+        return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
     }
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
          ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
         p <- ggraph(g)
-        ID_Cluster_mat <- deal_data_pie(y)
+        ID_Cluster_mat <- deal_data_pie(y, pie=pie)
+		
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
-        ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
+        
+		
         p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
                                     cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + 
@@ -231,9 +245,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
      
     ## then add the pie plot    
     ## Get the matrix data for the pie plot
-    ID_Cluster_mat <- deal_data_pie(y)
+    ID_Cluster_mat <- deal_data_pie(y,pie=pie)
     
-    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat)
     
                                         #plot the edge
                                         #get the X-coordinate and y-coordinate of pies
