@@ -136,32 +136,32 @@ merge_compareClusterResult <- function(yy) {
     yy_union
 }
 
-deal_data_pie <- function(y, pie = "average") {
+deal_data_pie <- function(y, pie = "equal") {
+    pie <- match.arg(pie, c("equal", "count", "Count"))
+    if (pie == "count") pie <- "Count"
+
     data_pie <- as.matrix(y[,c(1,2,10)])
-	##rownames(data_pie) <- paste0(data_pie[,1],data_pie[,2])
+    ##rownames(data_pie) <- paste0(data_pie[,1],data_pie[,2])
     ID_unique <- unique(data_pie[,2])
     Cluster_unique <- unique(data_pie[,1])
     ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
     rownames(ID_Cluster_mat) <- ID_unique
     colnames(ID_Cluster_mat) <- Cluster_unique
-	ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
-	if(pie == "gene_number") {
-	    for(i in seq_len(nrow(data_pie))) {
+    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
+    if(pie == "Count") {
+        for(i in seq_len(nrow(data_pie))) {
             ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- data_pie[i,3]
         }
-		for(kk in seq_len(ncol(ID_Cluster_mat))) {
-	        ID_Cluster_mat[,kk] <- as.numeric(ID_Cluster_mat[,kk])
-	    }
-		return(ID_Cluster_mat)
-	}
+        for(kk in seq_len(ncol(ID_Cluster_mat))) {
+            ID_Cluster_mat[,kk] <- as.numeric(ID_Cluster_mat[,kk])
+        }
+        return(ID_Cluster_mat)
+    }
     for(i in seq_len(nrow(data_pie))) {
         ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- 1
     }
     return(ID_Cluster_mat)
 }
-
-
-
 
 
 ##' @importFrom igraph graph.empty
@@ -185,17 +185,19 @@ deal_data_pie <- function(y, pie = "average") {
 ##' @importFrom ggraph geom_node_point
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
+##' @importFrom scatterpie geom_scatterpie
+##' @importFrom scatterpie geom_scatterpie_legend
 ##' @importFrom DOSE geneInCategory
 ##' @importFrom DOSE geneID
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @param split separate result by 'category' variable
-##' @param pie proportion of cluster in the pie chart
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
-                                          layout = "kk", split=NULL, pie = "average", ...) {
+                                          layout = "kk", split=NULL, pie = "equal", ...) {
 
     region <- radius <- NULL
 
@@ -220,13 +222,13 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     g <- emap_graph_build(n=n,y=y_union,geneSets=geneSets,color=color)
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
-	    title <- y$Cluster
+        title <- y$Cluster
         p <- ggraph(g) + geom_node_point(color="red", size=5) + 
-		    geom_node_text(aes_(label=~name)) + theme_void() +
-			labs(title=title)
-	    return(p)
-		
+            geom_node_text(aes_(label=~name)) + theme_void() +
+            labs(title=title)
+        return(p)
     }
+
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
          ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
         p <- ggraph(g)
@@ -236,18 +238,18 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
         
 		
-        p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
-                                    cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
+        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
+                                 cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + 
-			theme_void()+labs(fill = "Cluster")
-		return(p)
-                                                
+            theme_void()+labs(fill = "Cluster")
+        return(p)
+        
     } 
     p <- ggraph(g, layout=layout)
     if (length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
     }
-     
+    
     ## then add the pie plot    
     ## Get the matrix data for the pie plot
     ID_Cluster_mat <- deal_data_pie(y,pie=pie)
@@ -272,22 +274,21 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
     if(ncol(ID_Cluster_mat) > 4) {    
-    p <- p + scatterpie::geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
-                                cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
+        p <- p + geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
+                                 cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         
-        coord_equal()+
-        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-        scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
-                                       labeller=function(x) round(sum(aa$size)*(x^2))) +
-        labs(fill = "Cluster")
-	return(p)
-	}
+            coord_equal()+
+            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
+                                   labeller=function(x) round(sum(aa$size)*(x^2))) +
+            labs(fill = "Cluster")
+        return(p)
+    }
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
-	title <- colnames(ID_Cluster_mat)[1]
+    title <- colnames(ID_Cluster_mat)[1]
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8))  +labs(title= title)
-
 }
 
