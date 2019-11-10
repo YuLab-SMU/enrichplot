@@ -198,7 +198,8 @@ deal_data_pie <- function(y, pie = "equal") {
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
-                                          layout = "kk", split=NULL, pie = "equal",legend_n = 5, ...) {
+                                          layout = "kk", split=NULL, pie = "equal",
+                                          legend_n = 5, pie_scale = 1, ...) {
 
     region <- radius <- NULL
 
@@ -224,7 +225,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
         title <- y$Cluster
-        p <- ggraph(g) + geom_node_point(color="red", size=5) + 
+        p <- ggraph(g) + geom_node_point(color="red", size=5 * pie_scale) + 
             geom_node_text(aes_(label=~name)) + theme_void() +
             labs(title=title)
         return(p)
@@ -235,7 +236,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         p <- ggraph(g)
         ID_Cluster_mat <- deal_data_pie(y, pie=pie)
         
-        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1)
+        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*pie_scale)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
         
         
@@ -267,7 +268,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     ID_Cluster_mat$y <- aa$y[i]
     
                                         #Change the radius value to fit the pie plot
-    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size))
+    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size)) * pie_scale
                                         #ID_Cluster_mat$radius <- sqrt(aa$size / pi)
     
     x_loc1 <- min(ID_Cluster_mat$x)
@@ -275,13 +276,13 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     ## x_loc2 <- min(ID_Cluster_mat$x)
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
     if(ncol(ID_Cluster_mat) > 4) {    
-        p <- p + geom_scatterpie(aes(x=x,y=y,r=radius), data=ID_Cluster_mat,
+        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
                                  cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         
             coord_equal()+
             geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1, n = legend_n,
-                                   labeller=function(x) round(sum(aa$size)*(x^2))) +
+                                   labeller=function(x) round(sum(aa$size)*((x/pie_scale)^2))) +
             labs(fill = "Cluster")
         return(p)
     }
@@ -290,6 +291,6 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8))  +labs(title= title)
+        scale_size(range=c(3, 8) * pie_scale)  +labs(title= title)
 }
 
