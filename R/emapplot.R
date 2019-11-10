@@ -105,7 +105,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
         return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
     }
     ##} else {
-	
+    
     p <- ggraph(g, layout=layout)
     if (length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
@@ -192,12 +192,13 @@ deal_data_pie <- function(y, pie = "equal") {
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @param legend_n number of circle in legend
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
-                                          layout = "kk", split=NULL, pie = "equal", ...) {
+                                          layout = "kk", split=NULL, pie = "equal",legend_n = 5, ...) {
 
     region <- radius <- NULL
 
@@ -233,11 +234,11 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
          ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
         p <- ggraph(g)
         ID_Cluster_mat <- deal_data_pie(y, pie=pie)
-		
+        
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
         
-		
+        
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
                                  cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) + 
@@ -279,7 +280,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         
             coord_equal()+
             geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
+            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1, n = legend_n,
                                    labeller=function(x) round(sum(aa$size)*(x^2))) +
             labs(fill = "Cluster")
         return(p)
