@@ -13,16 +13,16 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
   ...)
 
 \S4method{emapplot}{enrichResult}(x, showCategory = 30,
-  color = "p.adjust", layout = "kk", ...)
+  color = "p.adjust", layout = "nicely", ...)
 
 \S4method{emapplot}{gseaResult}(x, showCategory = 30,
-  color = "p.adjust", layout = "kk", ...)
+  color = "p.adjust", layout = "nicely", ...)
 
 \S4method{emapplot}{compareClusterResult}(x, showCategory = 5,
-  color = "p.adjust", layout = "kk", ...)
+  color = "p.adjust", layout = "nicely", ...)
 
 emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
-  layout = "kk", pie_scale = 1, ...)
+  layout = "nicely", pie_scale = 1, ...)
 }
 \arguments{
 \item{x}{enrichment result.}

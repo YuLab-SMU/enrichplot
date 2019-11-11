@@ -1,7 +1,7 @@
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "enrichResult"),
-          function(x, showCategory = 30, color = "p.adjust", layout = "kk", ...) {
+          function(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...) {
               emapplot.enrichResult(x, showCategory = showCategory,
                                     color = color, layout = layout, ...)
           })
@@ -9,7 +9,7 @@ setMethod("emapplot", signature(x = "enrichResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "gseaResult"),
-          function(x, showCategory = 30, color = "p.adjust", layout = "kk", ...) {
+          function(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...) {
               emapplot.enrichResult(x, showCategory = showCategory,
                                     color = color, layout = layout, ...)
           })
@@ -95,7 +95,7 @@ emap_graph_build <- function(y,geneSets,color) {
 ##' @importFrom DOSE geneInCategory
 ##' @param pie_scale scale of pie plot
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "kk", pie_scale = 1,...) {
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", pie_scale = 1,...) {
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
