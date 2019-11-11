@@ -93,8 +93,9 @@ emap_graph_build <- function(y,geneSets,color) {
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
+##' @param pie_scale scale of pie plot 
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "kk", ...) {
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "kk", pie_scale = 1,...) {
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
@@ -123,7 +124,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8))
+        scale_size(range=c(3, 8) * pie_scale)
 
 }
 
@@ -215,6 +216,7 @@ deal_data_pie <- function(y, pie = "equal") {
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
+##' @param pie_scale scale of pie plot 
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames

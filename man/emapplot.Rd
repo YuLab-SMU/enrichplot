@@ -22,7 +22,7 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk",
   color = "p.adjust", layout = "kk", ...)
 
 emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
-  layout = "kk", ...)
+  layout = "kk", pie_scale = 1, ...)
 }
 \arguments{
 \item{x}{enrichment result.}
@@ -34,6 +34,8 @@ emapplot.enrichResult(x, showCategory = 30, color = "p.adjust",
 \item{layout}{layout of the map}
 
 \item{...}{additional parameters}
+
+\item{pie_scale}{scale of pie plot}
 }
 \value{
 ggplot object
