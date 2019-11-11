@@ -17,7 +17,7 @@ setMethod("emapplot", signature(x = "gseaResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 5, color = "p.adjust", layout = "kk", ...) {
+          function(x, showCategory = 5, color = "p.adjust", layout = "nicely", ...) {
 
               emapplot.compareClusterResult(x, showCategory = showCategory, color=color,
                                             layout = layout, ...)
@@ -93,7 +93,7 @@ emap_graph_build <- function(y,geneSets,color) {
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
-##' @param pie_scale scale of pie plot 
+##' @param pie_scale scale of pie plot
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "kk", pie_scale = 1,...) {
     n <- update_n(x, showCategory)
@@ -216,7 +216,7 @@ deal_data_pie <- function(y, pie = "equal") {
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
-##' @param pie_scale scale of pie plot 
+##' @param pie_scale scale of pie plot
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
