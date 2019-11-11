@@ -26,7 +26,7 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 
 
 
-##' Title
+##' Get graph.data.frame() result
 ##'
 ##' @param y a data.frame of clusterProfiler result
 ##' @param geneSets a list gene sets with the names of enrichment IDs
@@ -129,6 +129,12 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
 
 
 
+##' Merge the compareClusterResult file
+##'
+##' @param yy a data.frame of clusterProfiler result
+##'
+##' @return a data.frame
+##' @noRd
 merge_compareClusterResult <- function(yy) {
     yy_union<- yy[!duplicated(yy$ID),]
     yy_ids <- lapply(split(yy, yy$ID), function(x) {
@@ -146,6 +152,12 @@ merge_compareClusterResult <- function(yy) {
     yy_union
 }
 
+##' Prepare the data for the pie plot
+##'
+##' @param y a data.frame of clusterProfiler result
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @return a data.frame
+##' @noRd
 deal_data_pie <- function(y, pie = "equal") {
     pie <- match.arg(pie, c("equal", "count", "Count"))
     if (pie == "count") pie <- "Count"
