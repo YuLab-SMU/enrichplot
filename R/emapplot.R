@@ -222,7 +222,7 @@ deal_data_pie <- function(y, pie = "equal") {
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
-                                          layout = "kk", split=NULL, pie = "equal",
+                                          layout = "nicely", split=NULL, pie = "equal",
                                           legend_n = 5, pie_scale = 1, ...) {
 
     region <- radius <- NULL
