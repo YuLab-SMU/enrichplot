@@ -168,6 +168,15 @@ cnetplot.compareClusterResult <- function(x,
     ID_Cluster_mat2$radius[1:n] <- sizee
     x_loc1 <- min(ID_Cluster_mat2$x)
     y_loc1 <- min(ID_Cluster_mat2$y)
+    #node_label
+    if (node_label == "category") {
+        p$data$name[(n+1):nrow(p$data)] <- ""
+    } else if (node_label == "gene") {
+        p$data$name[1:n] <- ""
+    } else if (node_label == "none") {
+        p$data$name <- ""
+    }
+    
     if (!is.null(foldChange)) { 
         log_fc <- abs(foldChange)
         genes <- rownames(ID_Cluster_mat2)[(n+1):nrow(ID_Cluster_mat2)]
