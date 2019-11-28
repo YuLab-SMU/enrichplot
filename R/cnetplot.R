@@ -193,11 +193,12 @@ cnetplot.compareClusterResult <- function(x,
         return(p)
         
     }
-    p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
+    p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
                                  cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],color=NA) +
-        coord_equal()+
-        geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
-        labs(fill = "Cluster")
+    coord_equal()+
+    geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
+    labs(fill = "Cluster")
+    
 
 }
 
