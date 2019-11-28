@@ -15,6 +15,16 @@ setMethod("cnetplot", signature(x = "gseaResult"),
               cnetplot.enrichResult(x, showCategory = showCategory,
                                     foldChange = foldChange, layout = layout, ...)
           })
+          
+##' @rdname cnetplot
+##' @exportMethod cnetplot
+setMethod("cnetplot", signature(x = "compareClusterResult"),
+          function(x, showCategory = 5,
+                   foldChange = NULL, layout = "kk", ...) {
+              cnetplot.compareClusterResult(x, showCategory = showCategory,
+                                    foldChange = foldChange, layout = layout, ...)
+          })
+          
 
 ##' @rdname cnetplot
 ##' @param colorEdge whether coloring edge by enriched terms
@@ -91,6 +101,142 @@ cnetplot.enrichResult <- function(x,
 
     return(p)
 }
+
+##' @param colorEdge whether coloring edge by enriched terms
+##' @param circular whether using circular layout
+##' @param node_label select which labels to be displayed.
+##'                   one of 'category', 'gene', 'all' and 'none', default is "all".
+##' @param split separate result by 'category' variable
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @param pie_scale scale of pie plot
+##' @param legend_n number of circle in legend
+##' @importFrom ggraph geom_edge_arc
+##' @noRd
+cnetplot.compareClusterResult <- function(x,
+                     showCategory = 5,
+                     foldChange   = NULL,
+                     layout = "kk",
+                     colorEdge = FALSE,
+                     circular = FALSE,
+                     node_label = "all",
+                     split=NULL,
+                     pie = "equal",
+                     pie_scale = 1,
+                     legend_n = 5,
+                     ...) {
+    y <- fortify.compareClusterResult(x, showCategory=showCategory,
+                                      includeAll=TRUE, split=split)
+    y$Cluster = sub("\n.*", "", y$Cluster)
+    #n <- update_n(x, showCategory)
+    y_union <- merge_compareClusterResult(y)
+    node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
+    
+    if (circular) {
+        layout <- "linear"
+        geom_edge <- geom_edge_arc
+    } else {
+        geom_edge <- geom_edge_link
+    }
+
+ 
+    #geneSets <- extract_geneSets(x, showCategory)
+    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
+    n <- length(geneSets)
+    g <- list2graph(geneSets)
+    edge_layer <- geom_edge(alpha=.8, colour='darkgrey')
+
+    p <- ggraph(g, layout=layout, circular=circular) + edge_layer
+    #pie chart begin
+    #obtain the cluster distribution of each GO term and gene
+    ID_Cluster_mat <- deal_data_pie(y, pie=pie)
+
+    gene_Cluster_mat <- deal_gene_pie(y)
+    clusters <- match(colnames(ID_Cluster_mat),colnames(gene_Cluster_mat))
+    ID_Cluster_mat <- ID_Cluster_mat[,clusters]
+    gene_Cluster_mat <- gene_Cluster_mat[,clusters]
+    ID_Cluster_mat2 <- rbind(ID_Cluster_mat,gene_Cluster_mat)
+    #add the coordinates
+    aa <- p$data
+    ii <- match(rownames(ID_Cluster_mat2), aa$name)
+
+    ID_Cluster_mat2$x <- aa$x[ii]
+    ID_Cluster_mat2$y <- aa$y[ii]
+    #add the radius of the pie chart, the radius of go terms mean the number of genes
+    ii <- match(rownames(ID_Cluster_mat2)[1:n], y_union$ID)
+    sizee <- sqrt(y_union[ii,9] / sum(y_union[ii,9])) * pie_scale
+    ID_Cluster_mat2$radius <- min(sizee)/2
+    ID_Cluster_mat2$radius[1:n] <- sizee
+    x_loc1 <- min(ID_Cluster_mat2$x)
+    y_loc1 <- min(ID_Cluster_mat2$y)
+    if (!is.null(foldChange)) { 
+        log_fc <- abs(foldChange)
+        genes <- rownames(ID_Cluster_mat2)[(n+1):nrow(ID_Cluster_mat2)]
+        gene_fc <- rep(1,length(genes))
+        gid <- names(log_fc)
+        #Turn the id of  gid into gene symbols
+        ii <- gid %in% names(x@gene2Symbol)
+        gid[ii] <- x@gene2Symbol[gid[ii]]
+        ii <- match(genes,gid)
+        gene_fc <- log_fc[ii]
+        gene_fc[is.na(gene_fc)] <- 1
+        gene_fc2 <- c(rep(1,n),gene_fc)
+        #Assign value to the size of the genes
+        ID_Cluster_mat2$radius <- min(sizee)/2*gene_fc2
+        ID_Cluster_mat2$radius[1:n] <- sizee
+        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
+                                 cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],color=NA) +
+            coord_equal()+
+            geom_scatterpie_legend(ID_Cluster_mat2$radius[(n+1):nrow(ID_Cluster_mat2)], x=x_loc1, y=y_loc1, 
+            n = legend_n, labeller=function(x) round(x*2/(min(sizee)),3)) +
+            geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
+            labs(fill = "Cluster")
+        return(p)
+        
+    }
+    p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
+                                 cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],color=NA) +
+        coord_equal()+
+        geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
+        labs(fill = "Cluster")
+
+}
+
+##' Prepare the data for the pie plot
+##'
+##' @param y a data.frame of clusterProfiler result
+##' @return a data.frame
+##' @noRd
+deal_gene_pie <- function(y) {
+
+    #data_pie <- as.matrix(y[,c(1,2,10)])
+    gene_pie <- as.matrix(y[,c(1,2,9)])
+    gene_pie2 <- NULL
+    for(i in seq_len(dim(gene_pie)[1])){
+        gene <- unlist(strsplit(gene_pie[i, 3], "/"))
+        for(j in seq_len(length(gene))) {
+            
+            gene_pie2 <- rbind(gene_pie2,c(gene[j],gene_pie[i,1:2]))
+        }
+    }
+    gene_pie2 <- unique(gene_pie2)
+    genes_unique <- unique(gene_pie2[,1])
+    Cluster_unique <- unique(gene_pie2[,2])
+
+    #ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
+    gene_Cluster_mat <- matrix(0,length(genes_unique),length(Cluster_unique))   
+    #rownames(ID_Cluster_mat) <- ID_unique
+    #colnames(ID_Cluster_mat) <- Cluster_unique
+    rownames(gene_Cluster_mat) <- genes_unique
+    colnames(gene_Cluster_mat) <- Cluster_unique
+    
+    #ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
+    gene_Cluster_mat <- as.data.frame(gene_Cluster_mat, stringAsFactors = FALSE)
+    for(i in seq_len(nrow(gene_pie2))) {
+        gene_Cluster_mat[gene_pie2[i,1],gene_pie2[i,2]] <- 1
+    }
+    return(gene_Cluster_mat)
+}
+
 
 
 ##' convert a list of gene IDs to igraph object.

@@ -5,6 +5,7 @@
 \alias{cnetplot}
 \alias{cnetplot,enrichResult-method}
 \alias{cnetplot,gseaResult-method}
+\alias{cnetplot,compareClusterResult-method}
 \alias{cnetplot.enrichResult}
 \title{cnetplot}
 \usage{
@@ -15,6 +16,9 @@ cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 
 \S4method{cnetplot}{gseaResult}(x, showCategory = 5, foldChange = NULL,
   layout = "kk", ...)
+
+\S4method{cnetplot}{compareClusterResult}(x, showCategory = 5,
+  foldChange = NULL, layout = "kk", ...)
 
 cnetplot.enrichResult(x, showCategory = 5, foldChange = NULL,
   layout = "kk", colorEdge = FALSE, circular = FALSE,
