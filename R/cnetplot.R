@@ -159,11 +159,12 @@ cnetplot.compareClusterResult <- function(x,
         V(g)$color <- "#B3B3B3"
         V(g)$color[1] <- "#E5C494"
         title <- y$Cluster 
-        p <- ggraph(g, layout=layout, circular=circular) +
-            edge_layer + theme_void() +
+        p <- ggraph(g, layout=layout, circular=circular)
+        p <- p + edge_layer + theme_void() +
             geom_node_point(aes_(color=~I(color), size=~size)) + 
             labs(title= title) +
-            scale_size(range=c(3, 8) * pie_scale) + theme(legend.position="none") 
+            scale_size(range=c(3, 8) * pie_scale) + theme(legend.position="none")+
+            geom_node_text(aes_(label=~name), data = p$data)            
             
         return(p)
     }
@@ -244,8 +245,9 @@ cnetplot.compareClusterResult <- function(x,
     V(g)$color <- "#B3B3B3"
     V(g)$color[1:n] <- "#E5C494"
 
-    ggraph(g, layout=layout, circular=circular) + 
-    edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) + labs(title= title) +
+    p <- ggraph(g, layout=layout, circular=circular)     
+    p + edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) + labs(title= title) +
+    geom_node_text(aes_(label=~name), data = p$data) +
     scale_size(range=c(3, 8) * pie_scale) + theme_void() + theme(legend.position="none") 
 }
 
