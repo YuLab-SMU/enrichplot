@@ -159,8 +159,10 @@ cnetplot.compareClusterResult <- function(x,
         V(g)$color <- "#B3B3B3"
         V(g)$color[1] <- "#E5C494"
         p <- ggraph(g, layout=layout, circular=circular) +
-            edge_layer +
-            geom_node_point(aes_(color=~I(color), size=~size))
+            edge_layer + theme_void() +
+            geom_node_point(aes_(color=~I(color), size=~size)) + 
+            scale_size(range=c(3, 8) * pie_scale) 
+            
         return(p)
     }
     
@@ -242,7 +244,7 @@ cnetplot.compareClusterResult <- function(x,
 
     ggraph(g, layout=layout, circular=circular) + 
     edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) + labs(title= title) +
-    scale_size(range=c(3, 8) * pie_scale)
+    scale_size(range=c(3, 8) * pie_scale) + theme_void()
 }
 
 ##' Prepare the data for the pie plot
