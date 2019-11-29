@@ -161,7 +161,7 @@ cnetplot.compareClusterResult <- function(x,
         p <- ggraph(g, layout=layout, circular=circular) +
             edge_layer + theme_void() +
             geom_node_point(aes_(color=~I(color), size=~size)) + 
-            scale_size(range=c(3, 8) * pie_scale) 
+            scale_size(range=c(3, 8) * pie_scale) + theme(legend.position="none") 
             
         return(p)
     }
@@ -244,7 +244,7 @@ cnetplot.compareClusterResult <- function(x,
 
     ggraph(g, layout=layout, circular=circular) + 
     edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) + labs(title= title) +
-    scale_size(range=c(3, 8) * pie_scale) + theme_void()
+    scale_size(range=c(3, 8) * pie_scale) + theme_void() + theme(legend.position="none") 
 }
 
 ##' Prepare the data for the pie plot
