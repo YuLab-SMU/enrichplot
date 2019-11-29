@@ -158,9 +158,11 @@ cnetplot.compareClusterResult <- function(x,
         V(g)$size[1] <- 3
         V(g)$color <- "#B3B3B3"
         V(g)$color[1] <- "#E5C494"
+        title <- y$Cluster 
         p <- ggraph(g, layout=layout, circular=circular) +
             edge_layer + theme_void() +
             geom_node_point(aes_(color=~I(color), size=~size)) + 
+            labs(title= title) +
             scale_size(range=c(3, 8) * pie_scale) + theme(legend.position="none") 
             
         return(p)
