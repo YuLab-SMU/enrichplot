@@ -124,12 +124,21 @@ cnetplot.compareClusterResult <- function(x,
                      pie_scale = 1,
                      legend_n = 5,
                      ...) {
+    n <- update_n(x, showCategory)
+    if (n == 0) {
+        stop("no enriched term found...")
+    }
+  
     y <- fortify.compareClusterResult(x, showCategory=showCategory,
                                       includeAll=TRUE, split=split)
     y$Cluster = sub("\n.*", "", y$Cluster)
-    #n <- update_n(x, showCategory)
+    
+   
+    #n <- update_n(x, showCategory)  
     y_union <- merge_compareClusterResult(y)
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
+    ## when y just have one line
+   
     
     if (circular) {
         layout <- "linear"
@@ -144,16 +153,34 @@ cnetplot.compareClusterResult <- function(x,
     n <- length(geneSets)
     g <- list2graph(geneSets)
     edge_layer <- geom_edge(alpha=.8, colour='darkgrey')
+    if(is.null(dim(y)) | nrow(y) == 1) {
+        V(g)$size <- 1
+        V(g)$size[1] <- 3
+        V(g)$color <- "#B3B3B3"
+        V(g)$color[1] <- "#E5C494"
+        p <- ggraph(g, layout=layout, circular=circular) +
+            edge_layer +
+            geom_node_point(aes_(color=~I(color), size=~size))
+        return(p)
+    }
+    
+    if(is.null(dim(y_union)) | nrow(y_union) == 1) {
+        p <- ggraph(g) + edge_layer   
+    } else {
+        p <- ggraph(g, layout=layout, circular=circular) + edge_layer
+    }
 
-    p <- ggraph(g, layout=layout, circular=circular) + edge_layer
+    
     #pie chart begin
     #obtain the cluster distribution of each GO term and gene
     ID_Cluster_mat <- deal_data_pie(y, pie=pie)
 
     gene_Cluster_mat <- deal_gene_pie(y)
-    clusters <- match(colnames(ID_Cluster_mat),colnames(gene_Cluster_mat))
-    ID_Cluster_mat <- ID_Cluster_mat[,clusters]
-    gene_Cluster_mat <- gene_Cluster_mat[,clusters]
+    if(ncol(ID_Cluster_mat) > 1) {
+        clusters <- match(colnames(ID_Cluster_mat),colnames(gene_Cluster_mat))
+        ID_Cluster_mat <- ID_Cluster_mat[,clusters]
+        gene_Cluster_mat <- gene_Cluster_mat[,clusters]
+    }        
     ID_Cluster_mat2 <- rbind(ID_Cluster_mat,gene_Cluster_mat)
     #add the coordinates
     aa <- p$data
@@ -176,39 +203,46 @@ cnetplot.compareClusterResult <- function(x,
     } else if (node_label == "none") {
         p$data$name <- ""
     }
-    
-    if (!is.null(foldChange)) { 
-        log_fc <- abs(foldChange)
-        genes <- rownames(ID_Cluster_mat2)[(n+1):nrow(ID_Cluster_mat2)]
-        gene_fc <- rep(1,length(genes))
-        gid <- names(log_fc)
-        #Turn the id of  gid into gene symbols
-        ii <- gid %in% names(x@gene2Symbol)
-        gid[ii] <- x@gene2Symbol[gid[ii]]
-        ii <- match(genes,gid)
-        gene_fc <- log_fc[ii]
-        gene_fc[is.na(gene_fc)] <- 1
-        gene_fc2 <- c(rep(1,n),gene_fc)
-        #Assign value to the size of the genes
-        ID_Cluster_mat2$radius <- min(sizee)/2*gene_fc2
-        ID_Cluster_mat2$radius[1:n] <- sizee
+    if(ncol(ID_Cluster_mat2) > 4) {
+        if (!is.null(foldChange)) { 
+            log_fc <- abs(foldChange)
+            genes <- rownames(ID_Cluster_mat2)[(n+1):nrow(ID_Cluster_mat2)]
+            gene_fc <- rep(1,length(genes))
+            gid <- names(log_fc)
+            #Turn the id of  gid into gene symbols
+            ii <- gid %in% names(x@gene2Symbol)
+            gid[ii] <- x@gene2Symbol[gid[ii]]
+            ii <- match(genes,gid)
+            gene_fc <- log_fc[ii]
+            gene_fc[is.na(gene_fc)] <- 1
+            gene_fc2 <- c(rep(1,n),gene_fc)
+            #Assign value to the size of the genes
+            ID_Cluster_mat2$radius <- min(sizee)/2*gene_fc2
+            ID_Cluster_mat2$radius[1:n] <- sizee
+            p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
+                                 cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],color=NA) +
+                coord_equal()+
+                geom_scatterpie_legend(ID_Cluster_mat2$radius[(n+1):nrow(ID_Cluster_mat2)], x=x_loc1, y=y_loc1, 
+                n = legend_n, labeller=function(x) round(x*2/(min(sizee)),3)) +
+                geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
+                labs(fill = "Cluster")
+            return(p)        
+        }
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
                                  cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],color=NA) +
-            coord_equal()+
-            geom_scatterpie_legend(ID_Cluster_mat2$radius[(n+1):nrow(ID_Cluster_mat2)], x=x_loc1, y=y_loc1, 
-            n = legend_n, labeller=function(x) round(x*2/(min(sizee)),3)) +
-            geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
-            labs(fill = "Cluster")
-        return(p)
-        
+        coord_equal()+
+        geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
+        labs(fill = "Cluster")
+        return(p)    
     }
-    p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
-                                 cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],color=NA) +
-    coord_equal()+
-    geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) + theme_void() +
-    labs(fill = "Cluster")
-    
+    title <- colnames(ID_Cluster_mat2)[1]
+    V(g)$size <- ID_Cluster_mat2$radius
+    V(g)$color <- "#B3B3B3"
+    V(g)$color[1:n] <- "#E5C494"
 
+    ggraph(g, layout=layout, circular=circular) + 
+    edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) + labs(title= title) +
+    scale_size(range=c(3, 8) * pie_scale)
 }
 
 ##' Prepare the data for the pie plot
