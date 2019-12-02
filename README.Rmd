@@ -32,18 +32,7 @@ library("ypages")
 [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
 
 
-
-
-```{r comment="", echo=FALSE, results='asis'}
-cat(packageDescription('treeio')$Description)
-```
-
-[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?hashtags=enrichplot)
-
-
-### Vignettes
-
-+ [Visualization of Functional Enrichment Result](http://bioconductor.org/packages/devel/bioc/vignettes/enrichplot/inst/doc/enrichplot.html)
+For details, please visit <https://yulab-smu.github.io/clusterProfiler-book/>.
 
 
 ## :writing_hand: Authors
@@ -54,6 +43,7 @@ Guangchuang YU <https://guangchuangyu.github.io>
 
 School of Basic Medical Sciences, Southern Medical University
 
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?hashtags=enrichplot)
 [![saythanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/GuangchuangYu)
 `r badger::badge_custom('follow me on', 'WeChat', 'green', 'https://guangchuangyu.github.io/blog_images/biobabble.jpg')`
 

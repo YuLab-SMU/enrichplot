@@ -18,19 +18,8 @@ developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repo
 Status](http://www.bioconductor.org/shields/build/devel/bioc/treeio.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/treeio/)
 [![Last-changedate](https://img.shields.io/badge/last%20change-2019--12--02-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
 
-‘treeio’ is an R package to make it easier to import and store
-phylogenetic tree with associated data; and to link external data from
-different sources to phylogeny. It also supports exporting phylogenetic
-tree with heterogeneous associated data to a single tree file and can be
-served as a platform for merging tree with associated data and
-converting file formats.
-
-[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?hashtags=enrichplot)
-
-### Vignettes
-
-  - [Visualization of Functional Enrichment
-    Result](http://bioconductor.org/packages/devel/bioc/vignettes/enrichplot/inst/doc/enrichplot.html)
+For details, please visit
+<https://yulab-smu.github.io/clusterProfiler-book/>.
 
 ## :writing\_hand: Authors
 
@@ -38,6 +27,7 @@ Guangchuang YU <https://guangchuangyu.github.io>
 
 School of Basic Medical Sciences, Southern Medical University
 
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?hashtags=enrichplot)
 [![saythanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/GuangchuangYu)
 [![](https://img.shields.io/badge/follow%20me%20on-WeChat-green.svg)](https://guangchuangyu.github.io/blog_images/biobabble.jpg)
 
