@@ -153,40 +153,6 @@ merge_compareClusterResult <- function(yy) {
     yy_union
 }
 
-##' Prepare the data for the pie plot
-##'
-##' @param y a data.frame of clusterProfiler result
-##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
-##' @return a data.frame
-##' @noRd
-deal_data_pie <- function(y, pie = "equal") {
-    pie <- match.arg(pie, c("equal", "count", "Count"))
-    if (pie == "count") pie <- "Count"
-
-    ## data_pie <- as.matrix(y[,c(1,2,10)])
-    data_pie <- as.matrix(y[,c("Cluster", "ID", "Count")])
-    ##rownames(data_pie) <- paste0(data_pie[,1],data_pie[,2])
-    ID_unique <- unique(data_pie[,2])
-    Cluster_unique <- unique(data_pie[,1])
-    ID_Cluster_mat <- matrix(0, nrow = length(ID_unique), ncol = length(Cluster_unique))
-    rownames(ID_Cluster_mat) <- ID_unique
-    colnames(ID_Cluster_mat) <- Cluster_unique
-    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
-    if(pie == "Count") {
-        for(i in seq_len(nrow(data_pie))) {
-            ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- data_pie[i,3]
-        }
-        for(kk in seq_len(ncol(ID_Cluster_mat))) {
-            ID_Cluster_mat[,kk] <- as.numeric(ID_Cluster_mat[,kk])
-        }
-        return(ID_Cluster_mat)
-    }
-    for(i in seq_len(nrow(data_pie))) {
-        ID_Cluster_mat[data_pie[i,2],data_pie[i,1]] <- 1
-    }
-    return(ID_Cluster_mat)
-}
-
 
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph add_vertices
@@ -259,7 +225,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
          ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
         p <- ggraph(g)
-        ID_Cluster_mat <- deal_data_pie(y, pie=pie)
+        ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
 
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*pie_scale)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
@@ -279,7 +245,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
 
     ## then add the pie plot
     ## Get the matrix data for the pie plot
-    ID_Cluster_mat <- deal_data_pie(y,pie=pie)
+    ID_Cluster_mat <- prepare_pie_category(y,pie=pie)
 
 
                                         #plot the edge

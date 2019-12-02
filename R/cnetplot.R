@@ -178,9 +178,9 @@ cnetplot.compareClusterResult <- function(x,
     
     #pie chart begin
     #obtain the cluster distribution of each GO term and gene
-    ID_Cluster_mat <- deal_data_pie(y, pie=pie)
+    ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
 
-    gene_Cluster_mat <- deal_gene_pie(y)
+    gene_Cluster_mat <- prepare_pie_gene(y)
     if(ncol(ID_Cluster_mat) > 1) {
         clusters <- match(colnames(ID_Cluster_mat),colnames(gene_Cluster_mat))
         ID_Cluster_mat <- ID_Cluster_mat[,clusters]
@@ -251,31 +251,6 @@ cnetplot.compareClusterResult <- function(x,
     scale_size(range=c(3, 8) * pie_scale) + theme_void() + theme(legend.position="none") 
 }
 
-##' Prepare the data for the pie plot
-##'
-##' @param y a data.frame of clusterProfiler result
-##' @return a data.frame
-##' @noRd
-deal_gene_pie <- function(y) {
-    ## gene_pie <- as.matrix(y[,c(1,2,9)])
-    gene_pie <- tibble::as_tibble(y[,c("Cluster", "ID", "geneID")])
-    gene_pie$geneID <- strsplit(gene_pie$geneID, '/')
-    gene_pie2 <- as.data.frame(tidyr::unnest(gene_pie, cols=geneID))
-
-    gene_pie2 <- unique(gene_pie2)
-    genes_unique <- unique(gene_pie2[,1])
-    Cluster_unique <- unique(gene_pie2[,2])
-
-    gene_Cluster_mat <- matrix(0, nrow = length(genes_unique), ncol = length(Cluster_unique))   
-    rownames(gene_Cluster_mat) <- genes_unique
-    colnames(gene_Cluster_mat) <- Cluster_unique
-    
-    gene_Cluster_mat <- as.data.frame(gene_Cluster_mat, stringAsFactors = FALSE)
-    for(i in seq_len(nrow(gene_pie2))) {
-        gene_Cluster_mat[gene_pie2[i,1],gene_pie2[i,2]] <- 1
-    }
-    return(gene_Cluster_mat)
-}
 
 
 

@@ -1,3 +1,60 @@
+##' Prepare pie data for genes in cnetplot.
+##' The function only works for compareClusterResult
+##'
+##' @param y a data.frame converted from compareClusterResult
+##' @return a data.frame
+##' @noRd 
+prepare_pie_gene <- function(y) {
+    gene_pie <- tibble::as_tibble(y[,c("Cluster", "ID", "geneID")])
+    gene_pie$geneID <- strsplit(gene_pie$geneID, '/')
+    gene_pie2 <- as.data.frame(tidyr::unnest(gene_pie, cols=geneID))
+    gene_pie2 <- unique(gene_pie2)
+
+    prepare_pie_data(gene_pie2, pie =  "equal")
+}
+
+
+##' Prepare pie data for categories in cnetplot/emapplot.
+##' The function only works for compareClusterResult
+##'
+##' @param y a data.frame converted from compareClusterResult
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @return a data.frame
+##' @noRd
+prepare_pie_category <- function(y, pie = "equal") {
+    pie <- match.arg(pie, c("equal", "count", "Count"))
+    if (pie == "count") pie <- "Count"
+    
+    pie_data <- y[,c("Cluster", "ID", "Count")]
+
+    prepare_pie_data(pie_data, pie = pie)
+}
+
+
+
+
+prepare_pie_data <- function(pie_data, pie = "equal") {
+    ID_unique <- unique(pie_data[,2])
+    Cluster_unique <- unique(pie_data[,1])
+    ID_Cluster_mat <- matrix(0, nrow = length(ID_unique), ncol = length(Cluster_unique))
+    rownames(ID_Cluster_mat) <- ID_unique
+    colnames(ID_Cluster_mat) <- Cluster_unique
+    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
+    if(pie == "Count") {
+        for(i in seq_len(nrow(pie_data))) {
+            ID_Cluster_mat[pie_data[i,2],pie_data[i,1]] <- pie_data[i,3]
+        }
+        for(kk in seq_len(ncol(ID_Cluster_mat))) {
+            ID_Cluster_mat[,kk] <- as.numeric(ID_Cluster_mat[,kk])
+        }
+        return(ID_Cluster_mat)
+    }
+    for(i in seq_len(nrow(pie_data))) {
+        ID_Cluster_mat[pie_data[i,2],pie_data[i,1]] <- 1
+    }
+    return(ID_Cluster_mat)
+}
+
 
 ##' create color palette for continuous data
 ##'
