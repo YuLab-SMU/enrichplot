@@ -1,5 +1,6 @@
 # enrichplot 1.7.1
 
++ `cnetplot` for `compareClusterResult` (`compareCluster` output) (2019-12-02, Mon)
 + move `barplot`, `dotplot` and `fortify` methods of `compareClusterResult` from `clusterProfiler` (2019-11-2, Sat)
 
 # enrichplot 1.6.0

@@ -163,11 +163,12 @@ deal_data_pie <- function(y, pie = "equal") {
     pie <- match.arg(pie, c("equal", "count", "Count"))
     if (pie == "count") pie <- "Count"
 
-    data_pie <- as.matrix(y[,c(1,2,10)])
+    ## data_pie <- as.matrix(y[,c(1,2,10)])
+    data_pie <- as.matrix(y[,c("Cluster", "ID", "Count")])
     ##rownames(data_pie) <- paste0(data_pie[,1],data_pie[,2])
     ID_unique <- unique(data_pie[,2])
     Cluster_unique <- unique(data_pie[,1])
-    ID_Cluster_mat <- matrix(0,length(ID_unique),length(Cluster_unique))
+    ID_Cluster_mat <- matrix(0, nrow = length(ID_unique), ncol = length(Cluster_unique))
     rownames(ID_Cluster_mat) <- ID_unique
     colnames(ID_Cluster_mat) <- Cluster_unique
     ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
