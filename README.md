@@ -18,6 +18,11 @@ developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repo
 Status](http://www.bioconductor.org/shields/build/devel/bioc/treeio.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/treeio/)
 [![Last-changedate](https://img.shields.io/badge/last%20change-2019--12--02-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
 
+The ‘enrichplot’ package implements several visualization methods for
+interpreting functional enrichment results obtained from ORA or GSEA
+analysis. All the visualization methods are developed based on ‘ggplot2’
+graphics.
+
 For details, please visit
 <https://yulab-smu.github.io/clusterProfiler-book/>.
 

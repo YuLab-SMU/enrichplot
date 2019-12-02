@@ -32,6 +32,11 @@ library("ypages")
 [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
 
 
+```{r comment="", echo=FALSE, results='asis'}
+cat(packageDescription('enrichplot')$Description)
+```
+
+
 For details, please visit <https://yulab-smu.github.io/clusterProfiler-book/>.
 
 
