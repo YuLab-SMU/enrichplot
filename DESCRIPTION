@@ -37,7 +37,8 @@ Suggests:
     knitr,
     org.Hs.eg.db,
     prettydoc,
-    tibble
+    tibble,
+    tidyr
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://github.com/GuangchuangYu/enrichplot
