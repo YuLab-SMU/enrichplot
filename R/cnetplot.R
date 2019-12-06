@@ -149,7 +149,7 @@ cnetplot.compareClusterResult <- function(x,
 
  
     #geneSets <- extract_geneSets(x, showCategory)
-    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
+    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$Description)
     n <- length(geneSets)
     g <- list2graph(geneSets)
     edge_layer <- geom_edge(alpha=.8, colour='darkgrey')
@@ -194,7 +194,7 @@ cnetplot.compareClusterResult <- function(x,
     ID_Cluster_mat2$x <- aa$x[ii]
     ID_Cluster_mat2$y <- aa$y[ii]
     #add the radius of the pie chart, the radius of go terms mean the number of genes
-    ii <- match(rownames(ID_Cluster_mat2)[1:n], y_union$ID)
+    ii <- match(rownames(ID_Cluster_mat2)[1:n], y_union$Description)
     sizee <- sqrt(y_union[ii,9] / sum(y_union[ii,9])) * pie_scale
     ID_Cluster_mat2$radius <- min(sizee)/2
     ID_Cluster_mat2$radius[1:n] <- sizee
