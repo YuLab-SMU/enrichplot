@@ -9,8 +9,7 @@ prepare_pie_gene <- function(y) {
     gene_pie$geneID <- strsplit(gene_pie$geneID, '/')
     gene_pie2 <- as.data.frame(tidyr::unnest(gene_pie, cols=geneID))
     gene_pie2 <- unique(gene_pie2)
-
-    prepare_pie_data(gene_pie2, pie =  "equal")
+    prepare_pie_data(gene_pie2, pie =  "equal", type = "gene")
 }
 
 
@@ -33,8 +32,13 @@ prepare_pie_category <- function(y, pie = "equal") {
 
 
 
-prepare_pie_data <- function(pie_data, pie = "equal") {
-    ID_unique <- unique(pie_data[,2])
+prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
+    if(type == "category"){
+        ID_unique <- unique(pie_data[,2])
+    } else {
+        ID_unique <- unique(pie_data[,3])
+    }
+    
     Cluster_unique <- unique(pie_data[,1])
     ID_Cluster_mat <- matrix(0, nrow = length(ID_unique), ncol = length(Cluster_unique))
     rownames(ID_Cluster_mat) <- ID_unique
@@ -50,7 +54,12 @@ prepare_pie_data <- function(pie_data, pie = "equal") {
         return(ID_Cluster_mat)
     }
     for(i in seq_len(nrow(pie_data))) {
-        ID_Cluster_mat[pie_data[i,2],pie_data[i,1]] <- 1
+        if(type == "category"){
+            ID_Cluster_mat[pie_data[i,2],pie_data[i,1]] <- 1
+        } else {
+            ID_Cluster_mat[pie_data[i,3],pie_data[i,1]] <- 1
+    }
+        
     }
     return(ID_Cluster_mat)
 }
