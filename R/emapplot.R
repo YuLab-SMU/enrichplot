@@ -252,7 +252,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
                                         #get the X-coordinate and y-coordinate of pies
     aa <- p$data
 
-    desc <- y_union$Description[match(rownames(ID_Cluster_mat), y_union$ID)]
+    desc <- y_union$Description[match(rownames(ID_Cluster_mat), y_union$Description)]
     i <- match(desc, aa$name)
 
     ID_Cluster_mat$x <- aa$x[i]

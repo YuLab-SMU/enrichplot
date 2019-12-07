@@ -5,7 +5,7 @@
 ##' @return a data.frame
 ##' @noRd 
 prepare_pie_gene <- function(y) {
-    gene_pie <- tibble::as_tibble(y[,c("Cluster", "ID", "geneID")])
+    gene_pie <- tibble::as_tibble(y[,c("Cluster", "Description", "geneID")])
     gene_pie$geneID <- strsplit(gene_pie$geneID, '/')
     gene_pie2 <- as.data.frame(tidyr::unnest(gene_pie, cols=geneID))
     gene_pie2 <- unique(gene_pie2)
@@ -24,8 +24,8 @@ prepare_pie_category <- function(y, pie = "equal") {
     pie <- match.arg(pie, c("equal", "count", "Count"))
     if (pie == "count") pie <- "Count"
     
-    pie_data <- y[,c("Cluster", "ID", "Count")]
-
+    pie_data <- y[,c("Cluster", "Description", "Count")]
+    pie_data[,"Description"] <- as.character(pie_data[,"Description"])
     prepare_pie_data(pie_data, pie = pie)
 }
 
