@@ -4,8 +4,15 @@
 \alias{barplot.enrichResult}
 \title{barplot}
 \usage{
-\method{barplot}{enrichResult}(height, x = "Count", color = "p.adjust",
-  showCategory = 8, font.size = 12, title = "", ...)
+\method{barplot}{enrichResult}(
+  height,
+  x = "Count",
+  color = "p.adjust",
+  showCategory = 8,
+  font.size = 12,
+  title = "",
+  ...
+)
 }
 \arguments{
 \item{height}{enrichResult object}

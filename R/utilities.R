@@ -105,16 +105,16 @@ fc_readable <- function(x, foldChange = NULL) {
     return(foldChange)
 }
 
-fc_palette <- function(fc) {
-    if (all(fc > 0, na.rm=TRUE)) {
-        palette <- color_palette(c("blue", "red"))
-    } else if (all(fc < 0, na.rm=TRUE)) {
-        palette <- color_palette(c("green", "blue"))
-    } else {
-        palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF6347", "red"))
-    }
-    return(palette)
-}
+# fc_palette <- function(fc) {
+    # if (all(fc > 0, na.rm=TRUE)) {
+        # palette <- color_palette(c("blue", "red"))
+    # } else if (all(fc < 0, na.rm=TRUE)) {
+        # palette <- color_palette(c("green", "blue"))
+    # } else {
+        ## palette <- color_palette(c("darkgreen", "#0AFF34", "#B3B3B3", "#FF6347", "red"))
+    # }
+    # return(palette)
+# }
 
 update_n <- function(x, showCategory) {
     if (!is.numeric(showCategory)) {
