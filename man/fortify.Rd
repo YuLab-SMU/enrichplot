@@ -5,11 +5,25 @@
 \alias{fortify.enrichResult}
 \title{fortify}
 \usage{
-\method{fortify}{compareClusterResult}(model, data, showCategory = 5,
-  by = "geneRatio", split = NULL, includeAll = TRUE)
+\method{fortify}{compareClusterResult}(
+  model,
+  data,
+  showCategory = 5,
+  by = "geneRatio",
+  split = NULL,
+  includeAll = TRUE
+)
 
-\method{fortify}{enrichResult}(model, data, showCategory = 5,
-  by = "Count", order = FALSE, drop = FALSE, split = NULL, ...)
+\method{fortify}{enrichResult}(
+  model,
+  data,
+  showCategory = 5,
+  by = "Count",
+  order = FALSE,
+  drop = FALSE,
+  split = NULL,
+  ...
+)
 }
 \arguments{
 \item{model}{'enrichResult' or 'compareClusterResult' object}

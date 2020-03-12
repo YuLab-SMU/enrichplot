@@ -4,9 +4,17 @@
 \alias{gseaplot2}
 \title{gseaplot2}
 \usage{
-gseaplot2(x, geneSetID, title = "", color = "green", base_size = 11,
-  rel_heights = c(1.5, 0.5, 1), subplots = 1:3, pvalue_table = FALSE,
-  ES_geom = "line")
+gseaplot2(
+  x,
+  geneSetID,
+  title = "",
+  color = "green",
+  base_size = 11,
+  rel_heights = c(1.5, 0.5, 1),
+  subplots = 1:3,
+  pvalue_table = FALSE,
+  ES_geom = "line"
+)
 }
 \arguments{
 \item{x}{gseaResult object}
