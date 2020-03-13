@@ -32,6 +32,7 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' @param node_label select which labels to be displayed.
 ##'                   one of 'category', 'gene', 'all' and 'none', default is "all".
 ##' @importFrom ggraph geom_edge_arc
+##' @importFrom ggplot2 scale_colour_gradient2
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,
                      showCategory = 5,
@@ -74,11 +75,12 @@ cnetplot.enrichResult <- function(x,
         fc <- foldChange[V(g)$name[(n+1):length(V(g))]]
         V(g)$color <- NA
         V(g)$color[(n+1):length(V(g))] <- fc
-        palette <- fc_palette(fc)
+        #palette <- fc_palette(fc)
         p <- ggraph(g, layout=layout, circular = circular) +
             edge_layer +
             geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size)) +
-            scale_color_gradientn(name = "fold change", colors=palette, na.value = "#E5C494")
+            #scale_color_gradientn(name = "fold change", colors=palette, na.value = "#E5C494")
+            scale_colour_gradient2(name = "fold change", low = "green", mid = "blue", high = "red")
     } else {
         V(g)$color <- "#B3B3B3"
         V(g)$color[1:n] <- "#E5C494"
