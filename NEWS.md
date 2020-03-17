@@ -1,3 +1,8 @@
+# enrichplot 1.7.3
+
++ update `cnetplot` color scale to tolerate with skewed foldchange (2020-03-13, Fri)
+  - <https://github.com/YuLab-SMU/enrichplot/pull/40>
+
 # enrichplot 1.7.1
 
 + `cnetplot` for `compareClusterResult` (`compareCluster` output) (2019-12-02, Mon)
