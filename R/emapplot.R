@@ -31,9 +31,10 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param y a data.frame of clusterProfiler result
 ##' @param geneSets a list gene sets with the names of enrichment IDs
 ##' @param color a string, the column name of y for nodes colours
+##' @param line_scale scale of line width
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y,geneSets,color) {
+emap_graph_build <- function(y,geneSets,color,line_scale) {
     if (is.null(dim(y)) | nrow(y) == 1) {
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
@@ -57,7 +58,7 @@ emap_graph_build <- function(y,geneSets,color) {
         wd <- wd[wd[,1] != wd[,2],]
         wd <- wd[!is.na(wd[,3]),]
         g <- graph.data.frame(wd[,-3], directed=FALSE)
-        E(g)$width=sqrt(wd[,3] * 5)
+        E(g)$width=sqrt(wd[,3] * 5) * line_scale 
         g <- delete.edges(g, E(g)[wd[,3] < 0.2])
         ## g <- delete.edges(g, E(g)[wd[,3] < 0.05])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
@@ -94,8 +95,10 @@ emap_graph_build <- function(y,geneSets,color) {
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
 ##' @param pie_scale scale of pie plot
+##' @param line_scale scale of line width
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", pie_scale = 1,...) {
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", 
+                                  pie_scale = 1, line_scale = 1, ...) {
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
@@ -111,12 +114,11 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
         stop("no enriched term found...")
     }
 
-    g <- emap_graph_build(y=y,geneSets=geneSets,color=color)
+    g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
     }
     ##} else {
-
     p <- ggraph(g, layout=layout)
     if (length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
@@ -184,13 +186,14 @@ merge_compareClusterResult <- function(yy) {
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
 ##' @param pie_scale scale of pie plot
+##' @param line_scale scale of line width
 ##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
                                           layout = "nicely", split=NULL, pie = "equal",
-                                          legend_n = 5, pie_scale = 1, ...) {
+                                          legend_n = 5, pie_scale = 1, line_scale = 1, ...) {
 
     region <- radius <- NULL
 
@@ -212,7 +215,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         stop("no enriched term found...")
     }
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
-    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color)
+    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color, line_scale=line_scale)
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
         title <- y$Cluster

@@ -22,6 +22,7 @@ emapplot.enrichResult(
   color = "p.adjust",
   layout = "nicely",
   pie_scale = 1,
+  line_scale = 1,
   ...
 )
 }
@@ -37,6 +38,8 @@ emapplot.enrichResult(
 \item{...}{additional parameters}
 
 \item{pie_scale}{scale of pie plot}
+
+\item{line_scale}{scale of line width}
 }
 \value{
 ggplot object
