@@ -203,7 +203,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
         ymin <- min(p2$data$ymin)
         yy <- max(p2$data$ymax - p2$data$ymin) * .3
         xmin <- which(!duplicated(inv))
-        xmax <- xmin + as.numeric(table(inv)[unique(inv)])
+        xmax <- xmin + as.numeric(table(inv)[as.character(unique(inv))])
         d <- data.frame(ymin = ymin, ymax = yy,
                         xmin = xmin,
                         xmax = xmax,
