@@ -51,7 +51,7 @@ gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "", color='bl
         df2 <- data.frame(x = which(p$data$position == 1))
         df2$y <- p$data$geneList[df2$x]
         p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0), color=color)
-        p.pos <- p.pos + ylab("Ranked list metric") + xlim(0, length(p$data$geneList))
+        p.pos <- p.pos + ylab("Ranked List Metric") + xlim(0, length(p$data$geneList))
     }
     if (by == "runningScore")
         return(p.res + ggtitle(title))
@@ -228,7 +228,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
     df2 <- p$data #data.frame(x = which(p$data$position == 1))
     df2$y <- p$data$geneList[df2$x]
     p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0), color="grey")
-    p.pos <- p.pos + ylab("Ranked list metric") +
+    p.pos <- p.pos + ylab("Ranked List Metric") +
         xlab("Rank in Ordered Dataset") +
         theme(plot.margin=margin(t = -.1, r = .2, b=.2, l=.2, unit="cm"))
 
