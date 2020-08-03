@@ -36,13 +36,11 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @return result of graph.data.frame()
 ##' @noRd
 emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
-	if (missing(min_edge)) {
-		min_edge <- 0.2
-	} else {
-		if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
-			stop('"min_edge" should be a number between 0 and 1.')
-		}
-	}
+
+    if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
+    	stop('"min_edge" should be a number between 0 and 1.')
+    }
+	
     if (is.null(dim(y)) | nrow(y) == 1) {
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
@@ -81,6 +79,33 @@ emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
 }
 
 
+##' Get an iGraph object
+##'
+##' @param x enrichment result.
+##' @param y as.data.frame(x).
+##' @param n number of enriched terms to display.
+##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue.
+##' @param line_scale scale of line width.
+##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2.
+##'
+##' @return an iGraph object 
+get_igraph <- function(x, y,  n, color, line_scale, min_edge){
+    geneSets <- geneInCategory(x) ## use core gene for gsea result
+    # y <- as.data.frame(x)
+    if (is.numeric(n)) {
+        y <- y[1:n,]
+    } else {
+        y <- y[match(n, y$Description),]
+        n <- length(n)
+    }
+
+
+    if (n == 0) {
+        stop("no enriched term found...")
+    }
+    g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge)
+}
+
 
 
 ##' @rdname emapplot
@@ -106,23 +131,26 @@ emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", 
-                                  pie_scale = 1, line_scale = 1, min_edge, ...) {
+                                  pie_scale = 1, line_scale = 1, min_edge=0.2, ...) {
+                                                                      
     n <- update_n(x, showCategory)
-    geneSets <- geneInCategory(x) ## use core gene for gsea result
+    # geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
-    if (is.numeric(n)) {
-        y <- y[1:n,]
-    } else {
-        y <- y[match(n, y$Description),]
-        n <- length(n)
-    }
+    # if (is.numeric(n)) {
+        # y <- y[1:n,]
+    # } else {
+        # y <- y[match(n, y$Description),]
+        # n <- length(n)
+    # }
 
 
-    if (n == 0) {
-        stop("no enriched term found...")
-    }
+    # if (n == 0) {
+        # stop("no enriched term found...")
+    # }
 
-    g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge)
+    # g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale)
+    
+    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale, min_edge=min_edge)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
     }
@@ -196,18 +224,17 @@ merge_compareClusterResult <- function(yy) {
 ##' @param pie_scale scale of pie plot
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
-##' @method fortify compareClusterResult
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
                                           layout = "nicely", split=NULL, pie = "equal",
-                                          legend_n = 5, pie_scale = 1, line_scale = 1, min_edge, ...) {
+                                          legend_n = 5, pie_scale = 1, line_scale = 1, min_edge=0.2, ...) {
 
     region <- radius <- NULL
 
     ## pretreatment of x, just like dotplot do
-    y <- fortify.compareClusterResult(x, showCategory=showCategory,
+    y <- fortify(x, showCategory=showCategory,
                                       includeAll=TRUE, split=split)
 
     y$Cluster = sub("\n.*", "", y$Cluster)

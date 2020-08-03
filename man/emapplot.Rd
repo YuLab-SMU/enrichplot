@@ -23,6 +23,7 @@ emapplot.enrichResult(
   layout = "nicely",
   pie_scale = 1,
   line_scale = 1,
+  min_edge = 0.2,
   ...
 )
 }
@@ -40,6 +41,8 @@ emapplot.enrichResult(
 \item{pie_scale}{scale of pie plot}
 
 \item{line_scale}{scale of line width}
+
+\item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
 }
 \value{
 ggplot object
