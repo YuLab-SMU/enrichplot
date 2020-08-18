@@ -24,6 +24,10 @@ emapplot.enrichResult(
   pie_scale = 1,
   line_scale = 1,
   min_edge = 0.2,
+  method = "other",
+  measure = "Wang",
+  OrgDb = NULL,
+  ont = "BP",
   ...
 )
 }
@@ -43,6 +47,14 @@ emapplot.enrichResult(
 \item{line_scale}{scale of line width}
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
+
+\item{method}{method of calculating the similarity between nodes, one of "goSim", "doSim" and "other"}
+
+\item{measure}{method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods}
+
+\item{OrgDb}{OrgDb object}
+
+\item{ont}{one of 'BP', 'MF', 'CC'}
 }
 \value{
 ggplot object

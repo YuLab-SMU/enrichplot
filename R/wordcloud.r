@@ -18,8 +18,8 @@ get_w <- function(wordd){
 ##' 
 ##' @param cluster a cluster name
 ##' @param pdata2 the data section of the ggraph object
-##' @param N the number of words in the cluster tags 
-wordcloud_i <- function(cluster, pdata2, N){
+##' @param nWords the number of words in the cluster tags 
+wordcloud_i <- function(cluster, pdata2, nWords){
     words <- pdata2$name
     net_tot <- length(words)
 
@@ -33,7 +33,7 @@ wordcloud_i <- function(cluster, pdata2, N){
     net_w <- net_w_all[names(sel_w)]
     tag_size <- (sel_w/sel_tot)/(net_w/net_tot)
     tag_size <- tag_size[order(tag_size, decreasing = TRUE)]
-    tag <- names(tag_size[seq_len(N)])
+    tag <- names(tag_size[seq_len(nWords)])
 
     # Order of words
     dada <- strsplit(words_i, " ")

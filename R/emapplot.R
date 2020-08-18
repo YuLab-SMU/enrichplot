@@ -33,14 +33,40 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param color a string, the column name of y for nodes colours
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
+##' @param method method of calculating the similarity between nodes, one of "goSim", "doSim" and "other" 
+##' @param measure method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods
+##' @param OrgDb OrgDb object
+##' @param ont one of 'BP', 'MF', 'CC'
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
+emap_graph_build <- function(y,geneSets,color,line_scale,min_edge, method, 
+    measure, OrgDb, ont) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
     	stop('"min_edge" should be a number between 0 and 1.')
     }
 	
+    ## Choose the method to calculate the similarity
+    if(method == "goSim") {
+        d <- godata(OrgDb = OrgDb, ont=ont, computeIC=FALSE)
+        fun_sim <- function(id1, id2) {
+            GOSemSim::goSim(id1, id2, semData=d, measure=measure)
+        } 
+    } 
+    
+    if(method == "doSim") {
+    
+        fun_sim <- function(id1, id2) {
+            DOSE::doSim(id1, id2, measure=measure)
+        } 
+    } 
+    
+    if(method == "other") {
+        fun_sim <- function(id1, id2) {   
+            overlap_ratio(geneSets[id1], geneSets[id2])
+        }
+    }
+    
     if (is.null(dim(y)) | nrow(y) == 1) {
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
@@ -56,7 +82,7 @@ emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
 
         for (i in seq_len(n-1)) {
             for (j in (i+1):n) {
-                w[i,j] <- overlap_ratio(geneSets[id[i]], geneSets[id[j]])
+                w[i,j] <- fun_sim(id[i], id[j])
             }
         }
 
@@ -64,7 +90,8 @@ emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
         wd <- wd[wd[,1] != wd[,2],]
         wd <- wd[!is.na(wd[,3]),]
         g <- graph.data.frame(wd[,-3], directed=FALSE)
-        E(g)$width=sqrt(wd[,3] * 5) * line_scale 
+        E(g)$width <- sqrt(wd[,3] * 5) * line_scale 
+        E(g)$weight <- wd[, 3]
         g <- delete.edges(g, E(g)[wd[,3] < min_edge])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
 
@@ -87,9 +114,13 @@ emap_graph_build <- function(y,geneSets,color,line_scale,min_edge) {
 ##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue.
 ##' @param line_scale scale of line width.
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2.
+##' @param method method of calculating the similarity between nodes, one of "goSim", "doSim" and "other" 
+##' @param measure method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods
+##' @param OrgDb OrgDb object
+##' @param ont one of 'BP', 'MF', 'CC'
 ##'
 ##' @return an iGraph object 
-get_igraph <- function(x, y,  n, color, line_scale, min_edge){
+get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, measure, OrgDb, ont){
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     # y <- as.data.frame(x)
     if (is.numeric(n)) {
@@ -103,7 +134,8 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge){
     if (n == 0) {
         stop("no enriched term found...")
     }
-    g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge)
+    g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge, 
+        method = method, measure = measure, OrgDb = OrgDb, ont = ont)
 }
 
 
@@ -129,9 +161,13 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge){
 ##' @param pie_scale scale of pie plot
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
+##' @param method method of calculating the similarity between nodes, one of "goSim", "doSim" and "other" 
+##' @param measure method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods
+##' @param OrgDb OrgDb object
+##' @param ont one of 'BP', 'MF', 'CC'
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", 
-                                  pie_scale = 1, line_scale = 1, min_edge=0.2, ...) {
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", pie_scale = 1, 
+    line_scale = 1, min_edge=0.2, method = "other", measure = "Wang", OrgDb = NULL, ont = "BP", ...) {
                                                                       
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
@@ -150,7 +186,8 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
 
     # g <- emap_graph_build(y=y,geneSets=geneSets,color=color, line_scale=line_scale)
     
-    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale, min_edge=min_edge)
+    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale, min_edge=min_edge, 
+        method = method, measure = measure, OrgDb = OrgDb, ont = ont)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
     }
@@ -224,12 +261,17 @@ merge_compareClusterResult <- function(yy) {
 ##' @param pie_scale scale of pie plot
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
+##' @param method method of calculating the similarity between nodes, one of "goSim", "doSim" and "other" 
+##' @param measure method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods
+##' @param OrgDb OrgDb object
+##' @param ont one of 'BP', 'MF', 'CC'
 ##' @importFrom scatterpie geom_scatterpie
 ##' @importFrom stats setNames
 ##' @noRd
 emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust",
                                           layout = "nicely", split=NULL, pie = "equal",
-                                          legend_n = 5, pie_scale = 1, line_scale = 1, min_edge=0.2, ...) {
+                                          legend_n = 5, pie_scale = 1, line_scale = 1, min_edge=0.2, 
+                                          method = "other", measure = "Wang", OrgDb = NULL, ont = "BP", ...) {
 
     region <- radius <- NULL
 
@@ -251,7 +293,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 5, color = "p.adjust
         stop("no enriched term found...")
     }
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
-    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge)
+    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge, method = method, 
+        measure = measure, OrgDb = OrgDb, ont = ont)
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
         title <- y$Cluster

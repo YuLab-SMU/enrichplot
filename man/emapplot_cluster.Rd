@@ -10,15 +10,16 @@ emapplot_cluster(
   showCategory = nrow(x),
   color = "p.adjust",
   line_scale = 0.1,
-  with_edge = FALSE,
+  with_edge = TRUE,
   method = "other",
-  N = 4,
-  ncluster = NULL,
+  nWords = 4,
+  nCluster = NULL,
   OrgDb = NULL,
   split = NULL,
   ont = "BP",
   measure = "Wang",
-  min_edge = 0.2
+  min_edge = 0.2,
+  cluster_label_scale = 1
 )
 }
 \arguments{
@@ -32,11 +33,11 @@ emapplot_cluster(
 
 \item{with_edge}{if TRUE, draw the edges of the network diagram}
 
-\item{method}{method of enrichment, one of "enrichGO", "enrichDO" and "other"}
+\item{method}{method of calculating the similarity between nodes, one of "goSim", "doSim" and "other"}
 
-\item{N}{the number of words in the cluster tags}
+\item{nWords}{the number of words in the cluster tags}
 
-\item{ncluster}{the number of clusters}
+\item{nCluster}{the number of clusters}
 
 \item{OrgDb}{OrgDb object}
 
@@ -47,6 +48,8 @@ emapplot_cluster(
 \item{measure}{method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods}
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
+
+\item{cluster_label_scale}{scale of cluster labels size}
 }
 \description{
 Functional grouping network diagram for enrichment result of
@@ -56,8 +59,8 @@ over-representation test or gene set enrichment analysis
 \dontrun{
     library(clusterProfiler)
     data(geneList, package = "DOSE")
-    gene <- names(geneList)[abs(geneList) > 2]
-    ego <- enrichGO(gene  = gene,
+       gene <- names(geneList)[abs(geneList) > 2]
+       ego <- enrichGO(gene  = gene,
         universe      = names(geneList),
         OrgDb         = org.Hs.eg.db,
         ont           = "CC",
@@ -65,6 +68,6 @@ over-representation test or gene set enrichment analysis
         pvalueCutoff  = 0.01,
         qvalueCutoff  = 0.05,
         readable      = TRUE)
-    emapplot_cluster(ego)
+     emapplot_cluster(ego)
    }
 }

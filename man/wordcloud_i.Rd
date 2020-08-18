@@ -4,14 +4,14 @@
 \alias{wordcloud_i}
 \title{Get cluster labels}
 \usage{
-wordcloud_i(cluster, pdata2, N)
+wordcloud_i(cluster, pdata2, nWords)
 }
 \arguments{
 \item{cluster}{a cluster name}
 
 \item{pdata2}{the data section of the ggraph object}
 
-\item{N}{the number of words in the cluster tags}
+\item{nWords}{the number of words in the cluster tags}
 }
 \description{
 Get cluster labels
