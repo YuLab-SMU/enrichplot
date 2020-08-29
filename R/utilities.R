@@ -1,6 +1,7 @@
 ##' Prepare pie data for genes in cnetplot.
 ##' The function only works for compareClusterResult
 ##'
+##' @importFrom DOSE geneID
 ##' @param y a data.frame converted from compareClusterResult
 ##' @return a data.frame
 ##' @noRd 
@@ -228,3 +229,57 @@ plotting.clusterProfile <- function(clProf.reshape.df,
     ##                    vjust=vjust.axis.x))
     return(p)
 }
+
+
+
+
+##' Get the distance of the label
+##'
+##' @param dimension one of 1 and 2
+##' @param label_location label_location
+##' @noRd
+get_label_diss <- function(dimension, label_location) {
+    nn <- nrow(label_location)
+    label_dis <- matrix(NA, nrow = nn, ncol = nn)
+    colnames(label_dis) <- rownames(label_dis) <- label_location$label
+    for (i in seq_len(nn - 1)) {
+        for (j in (i + 1):nn) {
+        label_dis[i ,j] <- label_location[i, dimension] -  label_location[j, dimension]
+        }
+    }
+    label_diss <- reshape2::melt(label_dis)
+    label_diss <- label_diss[label_diss[,1] != label_diss[,2], ]
+    label_diss <- label_diss[!is.na(label_diss[,3]), ]
+    label_diss[, 1] <- as.character(label_diss[, 1])
+    label_diss[, 2] <- as.character(label_diss[, 2])
+    return(label_diss)
+}
+
+
+
+# adjust_location <- function(label_location, x_adjust, y_adjust) {
+    # label_diss_x <- get_label_diss(1, label_location)
+    # label_diss_y <- get_label_diss(2, label_location)
+    
+    # label_diss_large <- which(abs(label_diss_y[, 3]) < y_adjust) %>%
+        # intersect(which(label_diss_y[, 3] > 0)) %>%
+        # intersect(which(abs(label_diss_x[, 3]) < x_adjust))
+    
+    # label_diss_small <- which(abs(label_diss_y[, 3]) < y_adjust) %>%
+        # intersect(which(label_diss_y[, 3] < 0)) %>%
+        # intersect(which(abs(label_diss_x[, 3]) < x_adjust))
+    
+    # label_location[label_diss_y[label_diss_large, 1], 2] <- label_location[label_diss_y[label_diss_large, 2], 2] + y_adjust
+    # label_location[label_diss_y[label_diss_small, 1], 2] <- label_location[label_diss_y[label_diss_small, 2], 2] - y_adjust
+    # return(label_location)
+# }
+
+
+
+
+
+
+
+
+
+

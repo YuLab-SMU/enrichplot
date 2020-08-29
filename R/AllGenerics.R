@@ -72,6 +72,49 @@ setGeneric("emapplot",
                standardGeneric("emapplot")
            )
 
+
+
+##' Functional grouping network diagram for enrichment result of
+##' over-representation test or gene set enrichment analysis
+##'
+##'
+##' This function visualizes gene sets as a grouped network (i.e. enrichment map).
+##' Gene sets with high similarity tend to cluster together, making it easier for interpretation.
+##' @title emapplot_cluster
+##' @rdname emapplot_cluster
+##' @param x enrichment result.
+##' @param showCategory number of enriched terms to display
+##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
+##' @param ... additional parameters
+##' @return ggplot object
+##' @export
+##' @examples
+##' \dontrun{
+##'     library(clusterProfiler)
+##'     library(org.Hs.eg.db)
+##'     library(enrichplot)
+##'     library(GOSemSim)
+##'     library(DOSE)
+##'     data(geneList)
+##'     gene <- names(geneList)[abs(geneList) > 2]
+##'     ego <- enrichGO(gene  = gene,
+##'         universe      = names(geneList),
+##'         OrgDb         = org.Hs.eg.db,
+##'         ont           = "CC",
+##'         pAdjustMethod = "BH",
+##'         pvalueCutoff  = 0.01,
+##'         qvalueCutoff  = 0.05,
+##'         readable      = TRUE)
+##'     d <- godata('org.Hs.eg.db', ont="BP")
+##'     emapplot_cluster(ego, showCategory = 80, method = "Wang", semData = d)
+##'    }
+setGeneric("emapplot_cluster",
+           function(x, showCategory = nrow(x), color="p.adjust", ...)
+               standardGeneric("emapplot_cluster")
+           )
+
+
+
 ##' plot induced GO DAG of significant terms
 ##'
 ##'

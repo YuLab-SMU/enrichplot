@@ -31,7 +31,9 @@ Imports:
     utils,
     scatterpie,
     shadowtext,
-    ggnewscale
+    ggnewscale,
+    magrittr,
+    ggrepel
 Suggests:
     clusterProfiler,
     dplyr,

@@ -4,7 +4,7 @@
 \alias{get_igraph}
 \title{Get an iGraph object}
 \usage{
-get_igraph(x, y, n, color, line_scale, min_edge, method, measure, OrgDb, ont)
+get_igraph(x, y, n, color, line_scale, min_edge, method, semData)
 }
 \arguments{
 \item{x}{enrichment result.}
@@ -19,13 +19,10 @@ get_igraph(x, y, n, color, line_scale, min_edge, method, measure, OrgDb, ont)
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2.}
 
-\item{method}{method of calculating the similarity between nodes, one of "goSim", "doSim" and "other"}
+\item{method}{method of calculating the similarity between nodes, one of "Resnik", 
+"Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods}
 
-\item{measure}{method for calculating semantic similarity, one of "Resnik", "Lin", "Rel", "Jiang" and "Wang" methods}
-
-\item{OrgDb}{OrgDb object}
-
-\item{ont}{one of 'BP', 'MF', 'CC'}
+\item{semData}{GOSemSimDATA object}
 }
 \value{
 an iGraph object
