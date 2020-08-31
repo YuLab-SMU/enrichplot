@@ -30,9 +30,10 @@ emapplot_cluster.enrichResult(
   min_edge = 0.2,
   cluster_label_scale = 1,
   semData = NULL,
-  x_adjust = 0.5,
-  y_adjust = 0.5,
-  label_style = "shadowtext"
+  label_style = "shadowtext",
+  legend_scale = 1,
+  fill_legend = FALSE,
+  pie_scale = 1
 )
 
 emapplot_cluster.compareClusterResult(
@@ -48,12 +49,12 @@ emapplot_cluster.compareClusterResult(
   min_edge = 0.2,
   cluster_label_scale = 1,
   semData = NULL,
-  x_adjust = 0.5,
-  y_adjust = 0.2,
   pie = "equal",
   legend_n = 5,
   pie_scale = 1,
-  label_style = "shadowtext"
+  label_style = "shadowtext",
+  legend_scale = 1,
+  fill_legend = FALSE
 )
 }
 \arguments{
@@ -84,15 +85,17 @@ emapplot_cluster.compareClusterResult(
 
 \item{semData}{GOSemSimDATA object}
 
-\item{x_adjust, y_adjust}{If the tag distance of the two groups is less than (x_adjust, y_adjust), adjust them}
-
 \item{label_style}{one of "shadowtext" and "ggforce"}
+
+\item{legend_scale}{scale of legend size}
+
+\item{fill_legend}{If TRUE, the grouping legend will be displayed. The default is FALSE}
+
+\item{pie_scale}{scale of pie chart(for compareClusterResult) or point(for enrichResult)}
 
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'}
 
 \item{legend_n}{number of circle in legend}
-
-\item{pie_scale}{scale of pie plot}
 }
 \value{
 ggplot object
@@ -113,8 +116,8 @@ Gene sets with high similarity tend to cluster together, making it easier for in
     library(GOSemSim)
     library(DOSE)
     data(geneList)
-       gene <- names(geneList)[abs(geneList) > 2]
-       ego <- enrichGO(gene  = gene,
+    gene <- names(geneList)[abs(geneList) > 2]
+    ego <- enrichGO(gene  = gene,
         universe      = names(geneList),
         OrgDb         = org.Hs.eg.db,
         ont           = "CC",
@@ -122,7 +125,7 @@ Gene sets with high similarity tend to cluster together, making it easier for in
         pvalueCutoff  = 0.01,
         qvalueCutoff  = 0.05,
         readable      = TRUE)
-     d <- godata('org.Hs.eg.db', ont="BP")
-     emapplot_cluster(ego, showCategory = 80, method = "Wang", semData = d)
+    d <- godata('org.Hs.eg.db', ont="BP")
+    emapplot_cluster(ego, showCategory = 80, method = "Wang", semData = d)
    }
 }

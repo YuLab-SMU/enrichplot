@@ -31,8 +31,10 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @param cluster_label_scale scale of cluster labels size
 ##' @param semData GOSemSimDATA object
-##' @param x_adjust,y_adjust If the tag distance of the two groups is less than (x_adjust, y_adjust), adjust them
 ##' @param label_style one of "shadowtext" and "ggforce"
+##' @param legend_scale scale of legend size
+##' @param fill_legend If TRUE, the grouping legend will be displayed. The default is FALSE
+##' @param pie_scale scale of pie chart(for compareClusterResult) or point(for enrichResult)
 ##' @importFrom igraph layout_with_fr
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 scale_color_discrete
@@ -49,7 +51,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @importFrom magrittr %>%
 emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x), color = "p.adjust", line_scale = 0.1, with_edge = TRUE,
      method = "JC", nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2, cluster_label_scale = 1, semData = NULL,
-     x_adjust = 0.5, y_adjust = 0.5, label_style = "shadowtext"){
+     label_style = "shadowtext", legend_scale  = 1, fill_legend = FALSE, pie_scale = 1){
 
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
@@ -98,7 +100,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x), color = "p.
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
     ## use spread.labs
     # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cluster_label_scale*y_adjust)
-    show_legend <- c(TRUE, FALSE)
+    show_legend <- c(fill_legend, FALSE)
     names(show_legend) <- c("fill", "color")
 
     if(with_edge) {
@@ -113,19 +115,28 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x), color = "p.
             show.legend = show_legend)
     }
 
-   
-    p <- p + scale_fill_discrete(name = "groups") + new_scale_fill() +
-        geom_point(shape = 21, aes_(x =~ x, y =~ y, fill =~ color2, size =~ size)) +
-        scale_size_continuous(name = "number of genes")  +
+    if(fill_legend) p <- p + scale_fill_discrete(name = "groups") 
+    p <- p + new_scale_fill() + geom_point(shape = 21, aes_(x =~ x, y =~ y, fill =~ color2, size =~ size)) +
+        scale_size_continuous(name = "number of genes", range=c(3, 8) * pie_scale) +
         scale_fill_continuous(low = "red", high = "blue", name = color, guide = guide_colorbar(reverse = TRUE))  
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
             # size = 5 * cluster_label_scale)
     if(label_style == "shadowtext") {
-        p <- p + ggrepel::geom_text_repel(data = label_location, aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-            size = 5 * cluster_label_scale, bg.color = "white", bg.r = 0.3)
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + ggrepel::geom_text_repel(data = label_location, aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
+                size = 5 * cluster_label_scale, bg.color = "white", bg.r = 0.3, show.legend = FALSE)
+        } else {
+            warn <- paste0("The version of ggrepel in your computer is ", utils::packageVersion('ggrepel'), 
+                ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
+            warning(warn)
+            p <- p + ggrepel::geom_text_repel(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
+                size = 5 * cluster_label_scale)
+        }
+        
     }  
 
-    return(p)    
+    p + theme(legend.title = element_text(size = 15 * legend_scale), 
+              legend.text  = element_text(size = 15 * legend_scale))   
 }
 
 
@@ -143,10 +154,9 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x), color = "p.
 ##' @importFrom stats setNames
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
-##' @param pie_scale scale of pie plot
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = "p.adjust", line_scale = 0.1, with_edge = TRUE,
     method = "JC", nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2, cluster_label_scale = 1, semData = NULL,
-    x_adjust = 0.5, y_adjust = 0.2, pie = "equal", legend_n = 5, pie_scale = 1, label_style = "shadowtext"){
+    pie = "equal", legend_n = 5, pie_scale = 1, label_style = "shadowtext", legend_scale  = 1, fill_legend = FALSE){
     
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
     y$Cluster = sub("\n.*", "", y$Cluster)
@@ -217,7 +227,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = 
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
     # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cluster_label_scale*y_adjust)
-    show_legend <- c(TRUE, FALSE)
+    show_legend <- c(fill_legend, FALSE)
     names(show_legend) <- c("fill", "color")
     
     if(with_edge) {
@@ -232,9 +242,9 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = 
             show.legend = show_legend)
     }
     
-       
-    p <- p + scale_fill_discrete(name = "groups") + new_scale_fill() +
-        geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
+    if(fill_legend) p <- p + scale_fill_discrete(name = "groups")   
+    
+    p <- p + new_scale_fill() + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         coord_equal()+ 
         geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1, n = legend_n,
@@ -243,11 +253,22 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = 
             # size = 5 * cluster_label_scale, check_overlap = check_overlap)
             
     if(label_style == "shadowtext") {
-        p <- p + ggrepel::geom_text_repel(data = label_location, aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-            size = 5 * cluster_label_scale, bg.color = "white", bg.r = 0.3)
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + ggrepel::geom_text_repel(data = label_location, aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
+                size = 5 * cluster_label_scale, bg.color = "white", bg.r = 0.3, show.legend = FALSE)
+        } else {
+            warn <- paste0("The version of ggrepel in your computer is ", utils::packageVersion('ggrepel'), 
+                ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
+            warning(warn)
+            p <- p + ggrepel::geom_text_repel(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
+                size = 5 * cluster_label_scale)
+        }
+        
     }
-    
-    return(p)    
+    p + theme(legend.title = element_text(size = 15 * legend_scale), 
+              legend.text  = element_text(size = 15 * legend_scale))
+               
+     
 }
 
 
