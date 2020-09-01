@@ -22,7 +22,7 @@ emapplot.enrichResult(
   showCategory = 30,
   color = "p.adjust",
   layout = "nicely",
-  pie_scale = 1,
+  node_scale = 1,
   line_scale = 1,
   min_edge = 0.2,
   method = "JC",
@@ -55,7 +55,7 @@ emapplot.compareClusterResult(
 
 \item{...}{additional parameters}
 
-\item{pie_scale}{scale of pie chart or point}
+\item{node_scale}{scale of node}
 
 \item{line_scale}{scale of line width}
 
@@ -71,6 +71,8 @@ emapplot.compareClusterResult(
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'}
 
 \item{legend_n}{number of circle in legend}
+
+\item{pie_scale}{scale of pie chart or point}
 }
 \value{
 ggplot object

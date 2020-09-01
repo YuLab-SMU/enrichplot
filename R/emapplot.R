@@ -163,14 +163,14 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
-##' @param pie_scale scale of pie chart or point
+##' @param node_scale scale of node
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @param method method of calculating the similarity between nodes, one of "Resnik", 
 ##' "Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", pie_scale = 1, 
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", node_scale = 1, 
     line_scale = 1, min_edge=0.2, method = "JC", semData = NULL) {
                                                                       
     n <- update_n(x, showCategory)
@@ -189,7 +189,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8) * pie_scale)
+        scale_size(range=c(3, 8) * node_scale)
 
 }
 
