@@ -120,7 +120,7 @@ cnetplot.enrichResult <- function(x,
 ##' @importFrom ggraph geom_edge_arc
 ##' @noRd
 cnetplot.compareClusterResult <- function(x,
-                     showCategory = 5,
+                     showCategory = 30,
                      foldChange   = NULL,
                      layout = "kk",
                      colorEdge = FALSE,
@@ -131,18 +131,20 @@ cnetplot.compareClusterResult <- function(x,
                      pie_scale = 1,
                      legend_n = 5,
                      ...) {
-    n <- update_n(x, showCategory)
-    if (n == 0) {
-        stop("no enriched term found...")
-    }
+    #n <- update_n(x, showCategory)
+    # if (n == 0) {
+        # stop("no enriched term found...")
+    # }
   
-    y <- fortify.compareClusterResult(x, showCategory=showCategory,
+    y <- fortify(x, showCategory=showCategory,
                                       includeAll=TRUE, split=split)
     y$Cluster = sub("\n.*", "", y$Cluster)
     
    
     #n <- update_n(x, showCategory)  
-    y_union <- merge_compareClusterResult(y)
+    #y_union <- merge_compareClusterResult(y)
+    y_union <- get_y_union(y = y, showCategory = showCategory)
+    y <- y[y$ID %in% y_union$ID, ]
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
     ## when y just have one line
    

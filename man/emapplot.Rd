@@ -6,6 +6,7 @@
 \alias{emapplot,gseaResult-method}
 \alias{emapplot,compareClusterResult-method}
 \alias{emapplot.enrichResult}
+\alias{emapplot.compareClusterResult}
 \title{emapplot}
 \usage{
 emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk", ...)
@@ -14,16 +15,33 @@ emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk", ...)
 
 \S4method{emapplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...)
 
-\S4method{emapplot}{compareClusterResult}(x, showCategory = 5, color = "p.adjust", layout = "nicely", ...)
+\S4method{emapplot}{compareClusterResult}(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...)
 
 emapplot.enrichResult(
   x,
   showCategory = 30,
   color = "p.adjust",
   layout = "nicely",
+  node_scale = 1,
+  line_scale = 1,
+  min_edge = 0.2,
+  method = "JC",
+  semData = NULL
+)
+
+emapplot.compareClusterResult(
+  x,
+  showCategory = 30,
+  color = "p.adjust",
+  layout = "nicely",
+  split = NULL,
+  pie = "equal",
+  legend_n = 5,
   pie_scale = 1,
   line_scale = 1,
-  ...
+  min_edge = 0.2,
+  method = "JC",
+  semData = NULL
 )
 }
 \arguments{
@@ -37,9 +55,24 @@ emapplot.enrichResult(
 
 \item{...}{additional parameters}
 
-\item{pie_scale}{scale of pie plot}
+\item{node_scale}{scale of node}
 
 \item{line_scale}{scale of line width}
+
+\item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
+
+\item{method}{method of calculating the similarity between nodes, one of "Resnik", 
+"Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods}
+
+\item{semData}{GOSemSimDATA object}
+
+\item{split}{separate result by 'category' variable}
+
+\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'}
+
+\item{legend_n}{number of circle in legend}
+
+\item{pie_scale}{scale of pie chart or point}
 }
 \value{
 ggplot object
