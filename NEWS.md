@@ -1,5 +1,6 @@
 # enrichplot 1.7.3
 
++ update `barplot` to remove using `coord_flip()` (2020-09-10, Thu)
 + update `cnetplot` color scale to tolerate with skewed foldchange (2020-03-13, Fri)
   - <https://github.com/YuLab-SMU/enrichplot/pull/40>
 

@@ -14,6 +14,6 @@ below to see their documentation.
 \describe{
   \item{cowplot}{\code{\link[cowplot]{plot_grid}}}
 
-  \item{ggplot2}{\code{\link[ggplot2]{ggtitle}}}
+  \item{ggplot2}{\code{\link[ggplot2:labs]{ggtitle}}}
 }}
 

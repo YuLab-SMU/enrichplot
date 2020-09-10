@@ -6,8 +6,8 @@
 ##' @importFrom ggplot2 %+%
 ##' @importFrom ggplot2 scale_fill_continuous
 ##' @importFrom ggplot2 aes
-##' @importFrom ggplot2 geom_bar
-##' @importFrom ggplot2 coord_flip
+##' @importFrom ggplot2 geom_col
+## @importFrom ggplot2 coord_flip
 ##' @importFrom ggplot2 theme
 ##' @importFrom ggplot2 ggtitle
 ##' @importFrom ggplot2 xlab
@@ -45,15 +45,15 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust', showCatego
     df <- fortify(object, showCategory=showCategory, by=x, ...)
 
     if(colorBy %in% colnames(df)) {
-        p <- ggplot(df, aes_string(x = "Description", y = x, fill = colorBy)) +
+        p <- ggplot(df, aes_string(x = x, y = "Description", fill = colorBy)) +
             theme_dose(font.size) +
             scale_fill_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE))
     } else {
-        p <- ggplot(df, aes_string(x = "Description", y = x, fill = "Description")) +
+        p <- ggplot(df, aes_string(x = x, y = "Description", fill = "Description")) +
             theme_dose(font.size) +
             theme(legend.position="none")
     }
-    p + geom_bar(stat = "identity") + coord_flip() +
+    p + geom_col() + # geom_bar(stat = "identity") + coord_flip() +
         ggtitle(title) + xlab(NULL) + ylab(NULL)
 }
 

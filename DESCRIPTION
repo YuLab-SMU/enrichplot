@@ -46,7 +46,7 @@ Suggests:
     ggforce
 VignetteBuilder: knitr
 License: Artistic-2.0
-URL: https://github.com/GuangchuangYu/enrichplot
+URL: https://yulab-smu.top/biomedical-knowledge-mining-book/
 BugReports: https://github.com/GuangchuangYu/enrichplot/issues
 biocViews: Annotation, GeneSetEnrichment, GO, KEGG,
     Pathways, Software, Visualization
