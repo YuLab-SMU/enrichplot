@@ -98,7 +98,12 @@ cnetplot.enrichResult <- function(x,
     } else if (node_label == "gene") {
         p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),], repel=TRUE)
     } else if (node_label == "all") {
-        p <- p + geom_node_text(aes_(label=~name), repel=TRUE)
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, bg.color = "white")
+        } else {
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE)            
+        }
+
     } 
 
     return(p)
