@@ -50,7 +50,8 @@ emapplot_cluster.compareClusterResult(
   semData = NULL,
   pie = "equal",
   legend_n = 5,
-  pie_scale = 1,
+  node_scale = NULL,
+  pie_scale = NULL,
   label_style = "shadowtext",
   group_legend = FALSE
 )
@@ -87,13 +88,13 @@ emapplot_cluster.compareClusterResult(
 
 \item{group_legend}{If TRUE, the grouping legend will be displayed. The default is FALSE}
 
-\item{node_scale}{scale of node}
+\item{node_scale}{scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)}
 
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'}
 
 \item{legend_n}{number of circle in legend}
 
-\item{pie_scale}{scale of pie chart}
+\item{pie_scale}{scale of pie chart or point, this parameter has been changed to "node_scale"}
 }
 \value{
 ggplot object
