@@ -6,12 +6,11 @@ Authors@R: c(
     person(given = "Erqiang",     family = "Hu", email = "13766876214@163.com",       role = "ctb"))
 Description: The 'enrichplot' package implements several visualization methods for interpreting functional enrichment results obtained from ORA or GSEA analysis.
              All the visualization methods are developed based on 'ggplot2' graphics.
-Depends: R (>= 3.4.0)
+Depends: R (>= 3.5.0)
 Imports:
     AnnotationDbi,
     cowplot,
-    DOSE (>= 3.13.1),
-    europepmc,
+    DOSE,
     ggplot2,
     ggplotify,
     ggraph,
@@ -37,6 +36,7 @@ Imports:
 Suggests:
     clusterProfiler,
     dplyr,
+    europepmc,
     ggupset,
     knitr,
     org.Hs.eg.db,

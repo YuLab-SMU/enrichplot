@@ -7,14 +7,14 @@
 ##' @param proportion If TRUE, use query_hits/all_hits, otherwise use query_hits
 ##' @return ggplot object
 ##' @importFrom purrr map_df
-##' @importFrom europepmc epmc_hits_trend
+## @importFrom europepmc epmc_hits_trend
 ##' @importFrom utils modifyList
 ##' @export
 ##' @author guangchuang yu
 pmcplot <- function(query, period, proportion = TRUE) {
     res <- map_df(query, function(x) {
         period <- get("period", parent.env(parent.env(new.env())))
-        y <- epmc_hits_trend(query = x, period = period)
+        y <- europepmc::epmc_hits_trend(query = x, period = period)
         y$query <- x
         return(y)
     })
