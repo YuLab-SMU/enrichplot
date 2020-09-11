@@ -1,3 +1,10 @@
+##' @method as.data.frame compareClusterResult
+##' @export
+as.data.frame.compareClusterResult <- function(x, ...) {
+    as.data.frame(x@compareClusterResult, ...)
+}
+
+
 ##' Prepare pie data for genes in cnetplot.
 ##' The function only works for compareClusterResult
 ##'

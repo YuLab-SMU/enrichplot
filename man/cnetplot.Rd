@@ -24,6 +24,7 @@ cnetplot.enrichResult(
   colorEdge = FALSE,
   circular = FALSE,
   node_label = "all",
+  node_scale = 1,
   ...
 )
 }
@@ -44,6 +45,8 @@ cnetplot.enrichResult(
 
 \item{node_label}{select which labels to be displayed.
 one of 'category', 'gene', 'all' and 'none', default is "all".}
+
+\item{node_scale}{scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)}
 }
 \value{
 ggplot object
