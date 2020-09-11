@@ -31,6 +31,7 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' @param circular whether using circular layout
 ##' @param node_label select which labels to be displayed.
 ##'                   one of 'category', 'gene', 'all' and 'none', default is "all".
+##' @param node_scale scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
 ##' @author Guangchuang Yu
@@ -41,6 +42,7 @@ cnetplot.enrichResult <- function(x,
                      colorEdge = FALSE,
                      circular = FALSE,
                      node_label = "all",
+                     node_scale = 1,
                      ...) {
 
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
@@ -89,7 +91,7 @@ cnetplot.enrichResult <- function(x,
             geom_node_point(aes_(color=~I(color), size=~size))
     }
 
-    p <- p + scale_size(range=c(3, 10), breaks=unique(round(seq(min(size), max(size), length.out=4)))) +
+    p <- p + scale_size(range=c(3, 10) * node_scale, breaks=unique(round(seq(min(size), max(size), length.out=4)))) +
         theme_void()
 
 
@@ -115,7 +117,8 @@ cnetplot.enrichResult <- function(x,
 ##'                   one of 'category', 'gene', 'all' and 'none', default is "all".
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
-##' @param pie_scale scale of pie plot
+##' @param pie_scale scale of pie chart, this parameter has been changed to "node_scale"
+##' @param node_scale scale of pie plot
 ##' @param legend_n number of circle in legend
 ##' @importFrom ggraph geom_edge_arc
 ##' @noRd
@@ -128,13 +131,21 @@ cnetplot.compareClusterResult <- function(x,
                      node_label = "all",
                      split=NULL,
                      pie = "equal",
-                     pie_scale = 1,
+                     node_scale = NULL,
+                     pie_scale = NULL,
                      legend_n = 5,
                      ...) {
-    #n <- update_n(x, showCategory)
-    # if (n == 0) {
-        # stop("no enriched term found...")
-    # }
+                     
+    if (!is.null(pie_scale)) message("pie_scale parameter has been changed to 'node_scale'")
+    
+    if (is.null(node_scale)) {
+        if (!is.null(pie_scale)) {
+            node_scale <- pie_scale 
+        } else {
+            node_scale <- 1
+        }
+    }
+    
   
     y <- fortify(x, showCategory=showCategory,
                                       includeAll=TRUE, split=split)
@@ -172,7 +183,7 @@ cnetplot.compareClusterResult <- function(x,
         p <- p + edge_layer + theme_void() +
             geom_node_point(aes_(color=~I(color), size=~size)) + 
             labs(title= title) +
-            scale_size(range=c(3, 8) * pie_scale) + theme(legend.position="none")+
+            scale_size(range=c(3, 8) * node_scale) + theme(legend.position="none")+
             geom_node_text(aes_(label=~name), data = p$data)            
             
         return(p)
@@ -204,7 +215,7 @@ cnetplot.compareClusterResult <- function(x,
     ID_Cluster_mat2$y <- aa$y[ii]
     #add the radius of the pie chart, the radius of go terms mean the number of genes
     ii <- match(rownames(ID_Cluster_mat2)[1:n], y_union$Description)
-    sizee <- sqrt(y_union[ii,9] / sum(y_union[ii,9])) * pie_scale
+    sizee <- sqrt(y_union[ii,9] / sum(y_union[ii,9])) * node_scale
     ID_Cluster_mat2$radius <- min(sizee)/2
     ID_Cluster_mat2$radius[1:n] <- sizee
     x_loc1 <- min(ID_Cluster_mat2$x)
@@ -257,7 +268,7 @@ cnetplot.compareClusterResult <- function(x,
     p <- ggraph(g, layout=layout, circular=circular)     
     p + edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) + labs(title= title) +
     geom_node_text(aes_(label=~name), data = p$data) +
-    scale_size(range=c(3, 8) * pie_scale) + theme_void() + theme(legend.position="none") 
+    scale_size(range=c(3, 8) * node_scale) + theme_void() + theme(legend.position="none") 
 }
 
 

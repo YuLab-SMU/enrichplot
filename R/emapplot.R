@@ -163,6 +163,7 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
+##' @param node_scale scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)
 ##' @param node_scale scale of node
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
@@ -236,7 +237,8 @@ merge_compareClusterResult <- function(yy) {
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
-##' @param pie_scale scale of pie chart or point
+##' @param node_scale scale of pie chart or point
+##' @param pie_scale scale of pie chart or point, this parameter has been changed to "node_scale"
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @param method method of calculating the similarity between nodes, one of "Resnik", 
@@ -245,8 +247,20 @@ merge_compareClusterResult <- function(yy) {
 ##' @importFrom stats setNames
 emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjust",
                                           layout = "nicely", split=NULL, pie = "equal",
-                                          legend_n = 5, pie_scale = 1, line_scale = 1, min_edge=0.2, 
+                                          legend_n = 5, node_scale = NULL, pie_scale = NULL, 
+                                          line_scale = 1, min_edge=0.2, 
                                           method = "JC", semData = NULL) {
+                                          
+    if (!is.null(pie_scale)) message("pie_scale parameter has been changed to 'node_scale'")
+    
+    if (is.null(node_scale)) {
+        if (!is.null(pie_scale)) {
+            node_scale <- pie_scale 
+        } else {
+            node_scale <- 1
+        }
+    }
+    
 
     ## pretreatment of x, just like dotplot do
     y <- fortify(x, showCategory=showCategory,
@@ -262,7 +276,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge, 
         method = method, semData = semData)
         
-    p <- get_p(y = y, g = g, y_union = y_union, pie_scale = pie_scale, pie = pie, layout = layout)
+    p <- get_p(y = y, g = g, y_union = y_union, node_scale = node_scale, pie = pie, layout = layout)
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1) 
         return(p)
 
@@ -289,7 +303,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
 
     #Change the radius value to fit the pie plot
     radius <- NULL
-    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size)) * pie_scale
+    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size)) * node_scale
     #ID_Cluster_mat$radius <- sqrt(aa$size / pi)
 
     x_loc1 <- min(ID_Cluster_mat$x)
@@ -303,7 +317,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
             coord_equal()+
             geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1, n = legend_n,
-                                   labeller=function(x) round(sum(aa$size)*((x/pie_scale)^2))) +
+                                   labeller=function(x) round(sum(aa$size)*((x/node_scale)^2))) +
             labs(fill = "Cluster")
         return(p)
     }
@@ -312,7 +326,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8) * pie_scale)  +labs(title= title)
+        scale_size(range=c(3, 8) * node_scale)  +labs(title= title)
 }
 
 ##' Get the an ggraph object
@@ -321,15 +335,15 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
 ##' @param y a data.frame
 ##' @param g an igraph object
 ##' @param y_union a data.frame
-##' @param pie_scale scale of pie plot
+##' @param node_scale scale of pie plot
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param layout layout of the map
 ##' @noRd
-get_p <- function(y, g, y_union, pie_scale, pie, layout){
+get_p <- function(y, g, y_union, node_scale, pie, layout){
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
         title <- y$Cluster
-        p <- ggraph(g) + geom_node_point(color="red", size=5 * pie_scale) +
+        p <- ggraph(g) + geom_node_point(color="red", size=5 * node_scale) +
             geom_node_text(aes_(label=~name)) + theme_void() +
             labs(title=title)
         return(p)
@@ -340,7 +354,7 @@ get_p <- function(y, g, y_union, pie_scale, pie, layout){
         p <- ggraph(g)
         ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
     
-        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*pie_scale)
+        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*node_scale)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
     
     

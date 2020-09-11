@@ -37,7 +37,8 @@ emapplot.compareClusterResult(
   split = NULL,
   pie = "equal",
   legend_n = 5,
-  pie_scale = 1,
+  node_scale = NULL,
+  pie_scale = NULL,
   line_scale = 1,
   min_edge = 0.2,
   method = "JC",
@@ -55,7 +56,7 @@ emapplot.compareClusterResult(
 
 \item{...}{additional parameters}
 
-\item{node_scale}{scale of node}
+\item{node_scale}{scale of pie chart or point}
 
 \item{line_scale}{scale of line width}
 
@@ -72,7 +73,7 @@ emapplot.compareClusterResult(
 
 \item{legend_n}{number of circle in legend}
 
-\item{pie_scale}{scale of pie chart or point}
+\item{pie_scale}{scale of pie chart or point, this parameter has been changed to "node_scale"}
 }
 \value{
 ggplot object

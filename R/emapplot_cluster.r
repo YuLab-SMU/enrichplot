@@ -33,7 +33,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @param semData GOSemSimDATA object
 ##' @param label_style one of "shadowtext" and "ggforce"
 ##' @param group_legend If TRUE, the grouping legend will be displayed. The default is FALSE
-##' @param node_scale scale of node
+##' @param node_scale scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)
 ##' @importFrom igraph layout_with_fr
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 scale_color_discrete
@@ -152,11 +152,22 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x), color = "p.
 ##' @importFrom ggnewscale new_scale_fill
 ##' @importFrom stats setNames
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @param pie_scale scale of pie chart or point, this parameter has been changed to "node_scale"
 ##' @param legend_n number of circle in legend
-##' @param pie_scale scale of pie chart
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = "p.adjust", line_scale = 0.1, with_edge = TRUE,
     method = "JC", nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2, cluster_label_scale = 1, semData = NULL,
-    pie = "equal", legend_n = 5, pie_scale = 1, label_style = "shadowtext", group_legend = FALSE){
+    pie = "equal", legend_n = 5, node_scale = NULL, pie_scale = NULL, label_style = "shadowtext", group_legend = FALSE){
+    
+    if (!is.null(pie_scale)) message("pie_scale parameter has been changed to 'node_scale'")
+    
+    if (is.null(node_scale)) {
+        if (!is.null(pie_scale)) {
+            node_scale <- pie_scale 
+        } else {
+            node_scale <- 1
+        }
+    }
+    
     
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
     y$Cluster = sub("\n.*", "", y$Cluster)
@@ -167,7 +178,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge, 
         method = method, semData = semData)
-    p <- get_p(y = y, g = g, y_union = y_union, pie_scale = pie_scale, pie = pie, layout = "nicely")
+    p <- get_p(y = y, g = g, y_union = y_union, node_scale = node_scale, pie = pie, layout = "nicely")
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1) 
         return(p)
           
@@ -213,7 +224,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = 
     
     #Change the radius value to fit the pie plot
     radius <- NULL
-    ID_Cluster_mat$radius <- sqrt(pdata2$size[i] / sum(pdata2$size)) * pie_scale
+    ID_Cluster_mat$radius <- sqrt(pdata2$size[i] / sum(pdata2$size)) * node_scale
     
     x_loc1 <- min(ID_Cluster_mat$x)
     y_loc1 <- min(ID_Cluster_mat$y)
@@ -248,7 +259,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30, color = 
             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
         coord_equal()+ 
         geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1, n = legend_n,
-            labeller=function(x) round(sum(pdata2$size)*((x/pie_scale)^2)))          
+            labeller=function(x) round(sum(pdata2$size)*((x/node_scale)^2)))          
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
             # size = 5 * cluster_label_scale, check_overlap = check_overlap)
             
