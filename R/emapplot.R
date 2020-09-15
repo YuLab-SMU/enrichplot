@@ -40,77 +40,81 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param semData GOSemSimDATA object
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y,geneSets,color,line_scale,min_edge, method, semData) {
+emap_graph_build <- function(y, geneSets, color, line_scale, min_edge, method, semData = NULL) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
     	stop('"min_edge" should be a number between 0 and 1.')
     }
 	
-    ## Choose the method to calculate the similarity
-    if (method == "JC") {
-        fun_sim <- function(id1, id2) {   
-            overlap_ratio(geneSets[id1], geneSets[id2])
-        }
-    } else {
-        y_id <- unlist(strsplit(y$ID[1], ":"))[1]
-        
-        if (y_id == "GO") {
-            if(is.null(semData)) {
-                stop("The semData parameter is missing, 
-                    and it can be obtained through godata function in GOSemSim package.")
-            }
-            
-            fun_sim <- function(id1, id2) {
-                GOSemSim::goSim(id1, id2, semData=semData, measure=method)
-            } 
-        } 
-        
-        if (y_id == "DOID") {
-            fun_sim <- function(id1, id2) {
-                DOSE::doSim(id1, id2, measure=method)
-            } 
-        }
-    }
-        
     if (is.null(dim(y)) | nrow(y) == 1) {  # when just one node
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
-        } else {
-        id <- y[, "ID"]
-        geneSets <- geneSets[id]
-        n <- nrow(y) 
-        w <- matrix(NA, nrow=n, ncol=n)
-        colnames(w) <- rownames(w) <- y$Description
-        
-        ## Calculate the similarity
-        for (i in seq_len(n-1)) {
-            for (j in (i+1):n) {
-                w[i,j] <- fun_sim(id[i], id[j])
-            }
-        }
-
+    } else {
+        w <- get_ww(y = y, geneSets = geneSets, method = method, semData = semData)   
         wd <- melt(w)
         wd <- wd[wd[,1] != wd[,2],]
-        wd <- wd[!is.na(wd[,3]),]
-        g <- graph.data.frame(wd[,-3], directed=FALSE)
-        E(g)$width <- sqrt(wd[,3] * 5) * line_scale 
+        # remove NA
+        wd <- wd[!is.na(wd[,3]),] 
+        if (method != "JC") { 
+            # map id to names
+            wd[, 1] <- y[wd[, 1], "Description"]
+            wd[, 2] <- y[wd[, 2], "Description"]
+        }
+
+        g <- graph.data.frame(wd[, -3], directed=FALSE)
+        E(g)$width <- sqrt(wd[, 3] * 5) * line_scale 
         
         # Use similarity as the weight(length) of an edge 
         E(g)$weight <- wd[, 3]
-        g <- delete.edges(g, E(g)[wd[,3] < min_edge])
+        g <- delete.edges(g, E(g)[wd[, 3] < min_edge])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
-
         cnt <- sapply(geneSets[idx], length)
         V(g)$size <- cnt
-
         colVar <- y[idx, color]
         V(g)$color <- colVar
     }
-
     return(g)
 }
+
+##' Get the similarity matrix
+##'
+##' @param y a data.frame of enrichment result
+##' @param geneSets a list, the names of geneSets are term ids, and every object is a vertor of genes
+##' @param method method of calculating the similarity between nodes, one of "Resnik",
+##' "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods
+##' @param semData GOSemSimDATA object
+##' @noRd
+get_ww <- function(y, geneSets, method, semData = NULL) {
+    id <- y[, "ID"]
+    geneSets <- geneSets[id]
+    n <- nrow(y) 
+    y_id <- unlist(strsplit(y$ID[1], ":"))[1]
+    ## Choose the method to calculate the similarity
+    if (method == "JC") {     
+        w <- matrix(NA, nrow=n, ncol=n)
+        colnames(w) <- rownames(w) <- y$Description
+        for (i in seq_len(n-1)) {
+            for (j in (i+1):n) {
+                w[i,j] <- overlap_ratio(geneSets[id[i]], geneSets[id[j]])
+            }
+        }
+        return(w)        
+    } 
+     
+    if (y_id == "GO") {
+        if(is.null(semData)) {
+            stop("The semData parameter is missing, 
+                and it can be obtained through godata function in GOSemSim package.")
+        }     
+        w <- GOSemSim::mgoSim(id, id, semData=semData, measure=method, combine=NULL)
+    }
+    
+    if (y_id == "DOID") w <- DOSE::doSim(id, id, measure=method)    
+    return(w)               
+}     
+
 
 
 ##' Get an iGraph object
@@ -129,7 +133,7 @@ emap_graph_build <- function(y,geneSets,color,line_scale,min_edge, method, semDa
 get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     if (is.numeric(n)) {
-        y <- y[1:n,]
+        y <- y[1:n, ]
     } else {
         y <- y[match(n, y$Description),]
         n <- length(n)
