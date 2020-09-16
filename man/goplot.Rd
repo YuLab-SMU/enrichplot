@@ -48,7 +48,8 @@ goplot.enrichResult(
 
 \item{showCategory}{number of enriched terms to display}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue}
+\item{color}{variable that used to color enriched terms, e.g. pvalue,
+p.adjust or qvalue}
 
 \item{layout}{layout of the map}
 

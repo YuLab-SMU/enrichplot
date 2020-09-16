@@ -14,8 +14,9 @@
 ##' @method fortify compareClusterResult
 ##' @export
 ##' @author Guangchuang Yu
-fortify.compareClusterResult <- function(model, data, showCategory=5, by="geneRatio",
-                                         split=NULL, includeAll=TRUE) {
+fortify.compareClusterResult <- function(model, data, showCategory=5,
+                                         by="geneRatio", split=NULL,
+                                         includeAll=TRUE) {
     clProf.df <- as.data.frame(model)
     .split <- split
 
@@ -58,7 +59,7 @@ fortify.compareClusterResult <- function(model, data, showCategory=5, by="geneRa
 
     ID <- NULL
     if (includeAll == TRUE) {
-        result = subset(clProf.df, ID %in% result$ID)
+        result <- subset(clProf.df, ID %in% result$ID)
     }
 
     ## remove zero count
@@ -101,8 +102,9 @@ fortify.compareClusterResult <- function(model, data, showCategory=5, by="geneRa
     } else if (by == "geneRatio") {
         gsize <- as.numeric(sub("/\\d+$", "", as.character(result$GeneRatio)))
         gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
-        result$GeneRatio = gsize/gcsize
-        cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")", sep="")
+        result$GeneRatio <- gsize/gcsize
+        cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
+                         sep="")
         lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
         result$Cluster <- factor(cluster, levels = lv)
     } else {
@@ -129,21 +131,21 @@ fortify.compareClusterResult <- function(model, data, showCategory=5, by="geneRa
 ##' @importFrom ggplot2 fortify
 ##' @method fortify enrichResult
 ##' @export
-fortify.enrichResult <- function(model, data, showCategory=5, by = "Count", order=FALSE,
-                                 drop=FALSE, split=NULL, ...) {
+fortify.enrichResult <- function(model, data, showCategory=5, by = "Count",
+                                 order=FALSE, drop=FALSE, split=NULL, ...) {
     fortify.internal(model, data, showCategory, by, order, drop, split, ...)
 }
 
 ##' @method fortify gseaResult
 ##' @export
-fortify.gseaResult <- function(model, data, showCategory=5, by = "Count", order=FALSE,
-                               drop=FALSE, split=NULL, ...) {
+fortify.gseaResult <- function(model, data, showCategory=5, by = "Count",
+                               order=FALSE, drop=FALSE, split=NULL, ...) {
     fortify.internal(model, data, showCategory, by, order, drop, split, ...)
 }
 
 
-fortify.internal <- function(model, data, showCategory=5, by = "Count", order=FALSE,
-                             drop=FALSE, split=NULL, ...) {
+fortify.internal <- function(model, data, showCategory=5, by = "Count",
+                             order=FALSE, drop=FALSE, split=NULL, ...) {
     res <- as.data.frame(model)
     res <- res[!is.na(res$Description), ]
     if (inherits(model, "gseaResult")) {

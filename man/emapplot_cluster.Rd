@@ -61,7 +61,8 @@ emapplot_cluster.compareClusterResult(
 
 \item{showCategory}{number of enriched terms to display}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue}
+\item{color}{variable that used to color enriched terms, e.g. pvalue,
+p.adjust or qvalue}
 
 \item{...}{additional parameters}
 
@@ -69,8 +70,9 @@ emapplot_cluster.compareClusterResult(
 
 \item{with_edge}{if TRUE, draw the edges of the network diagram}
 
-\item{method}{method of calculating the similarity between nodes, one of "Resnik",
-"Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods}
+\item{method}{method of calculating the similarity between nodes,
+one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
+"JC" (Jaccard similarity coefficient) methods}
 
 \item{nWords}{the number of words in the cluster tags}
 
@@ -78,7 +80,8 @@ emapplot_cluster.compareClusterResult(
 
 \item{split}{separate result by 'category' variable}
 
-\item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
+\item{min_edge}{minimum percentage of overlap genes to display the edge,
+should between 0 and 1, default value is 0.2}
 
 \item{cluster_label_scale}{scale of cluster labels size}
 
@@ -86,15 +89,19 @@ emapplot_cluster.compareClusterResult(
 
 \item{label_style}{one of "shadowtext" and "ggforce"}
 
-\item{group_legend}{If TRUE, the grouping legend will be displayed. The default is FALSE}
+\item{group_legend}{If TRUE, the grouping legend will be displayed.
+The default is FALSE}
 
-\item{node_scale}{scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)}
+\item{node_scale}{scale of node(for "enrichResult" data) or
+pie chart(for "compareClusterResult" data)}
 
-\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'}
+\item{pie}{proportion of clusters in the pie chart, one of
+'equal' (default) or 'Count'}
 
 \item{legend_n}{number of circle in legend}
 
-\item{pie_scale}{scale of pie chart or point, this parameter has been changed to "node_scale"}
+\item{pie_scale}{scale of pie chart or point, this parameter has
+been changed to "node_scale"}
 }
 \value{
 ggplot object
@@ -105,7 +112,8 @@ over-representation test or gene set enrichment analysis
 }
 \details{
 This function visualizes gene sets as a grouped network (i.e. enrichment map).
-Gene sets with high similarity tend to cluster together, making it easier for interpretation.
+Gene sets with high similarity tend to cluster together, making it easier
+for interpretation.
 }
 \examples{
 \dontrun{

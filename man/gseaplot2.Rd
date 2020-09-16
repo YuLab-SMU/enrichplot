@@ -33,7 +33,8 @@ gseaplot2(
 
 \item{pvalue_table}{whether add pvalue table}
 
-\item{ES_geom}{geom for plotting running enrichment score, one of 'line' or 'dot'}
+\item{ES_geom}{geom for plotting running enrichment score,
+one of 'line' or 'dot'}
 }
 \value{
 plot

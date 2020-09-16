@@ -45,7 +45,8 @@ gseaplot.gseaResult(
 
 \item{color.line}{color of running enrichment score line}
 
-\item{color.vline}{color of vertical line which indicating the maximum/minimal running enrichment score}
+\item{color.vline}{color of vertical line which indicating the
+maximum/minimal running enrichment score}
 }
 \value{
 ggplot2 object

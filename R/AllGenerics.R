@@ -51,12 +51,14 @@ setGeneric("dotplot",
 ##'
 ##'
 ##' This function visualizes gene sets as a network (i.e. enrichment map).
-##' Mutually overlapping gene sets tend to cluster together, making it easier for interpretation.
+##' Mutually overlapping gene sets tend to cluster together, making it
+##' easier for interpretation.
 ##' @title emapplot
 ##' @rdname emapplot
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
+##' @param color variable that used to color enriched terms, e.g. pvalue,
+##' p.adjust or qvalue
 ##' @param layout layout of the map
 ##' @param ... additional parameters
 ##' @return ggplot object
@@ -79,12 +81,14 @@ setGeneric("emapplot",
 ##'
 ##'
 ##' This function visualizes gene sets as a grouped network (i.e. enrichment map).
-##' Gene sets with high similarity tend to cluster together, making it easier for interpretation.
+##' Gene sets with high similarity tend to cluster together, making it easier
+##' for interpretation.
 ##' @title emapplot_cluster
 ##' @rdname emapplot_cluster
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
+##' @param color variable that used to color enriched terms, e.g. pvalue,
+##' p.adjust or qvalue
 ##' @param ... additional parameters
 ##' @return ggplot object
 ##' @export
@@ -122,14 +126,16 @@ setGeneric("emapplot_cluster",
 ##' @rdname goplot
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue
+##' @param color variable that used to color enriched terms, e.g. pvalue,
+##' p.adjust or qvalue
 ##' @param layout layout of the map
 ##' @param geom label geom, one of 'label' or 'text'
 ##' @param ... additional parameter
 ##' @return ggplot object
 ##' @export
 setGeneric("goplot",
-           function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...)
+           function(x, showCategory = 10, color = "p.adjust",
+                    layout = "sugiyama", geom = "text", ...)
                standardGeneric("goplot")
            )
 

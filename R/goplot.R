@@ -1,17 +1,19 @@
 ##' @rdname goplot
 ##' @exportMethod goplot
 setMethod("goplot", signature(x = "enrichResult"),
-          function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom="text", ...) {
+          function(x, showCategory = 10, color = "p.adjust",
+                   layout = "sugiyama", geom="text", ...) {
               goplot.enrichResult(x, showCategory = showCategory,
-                                  color = color, layout = layout, geom = geom, ...)
+                  color = color, layout = layout, geom = geom, ...)
           })
 
 ##' @rdname goplot
 ##' @exportMethod goplot
 setMethod("goplot", signature(x = "gseaResult"),
-          function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom="text", ...) {
+          function(x, showCategory = 10, color = "p.adjust",
+                   layout = "sugiyama", geom="text", ...) {
               goplot.enrichResult(x, showCategory = showCategory,
-                                  color = color, layout = layout, geom = geom, ...)
+                  color = color, layout = layout, geom = geom, ...)
           })
 
 
@@ -24,9 +26,10 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @import ggraph
 ##' @importFrom ggraph circle
 ##' @importFrom ggraph geom_node_label
-##' @importFrom AnnotationDbi mget
 ##' @author guangchuang yu
-goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust", layout = "sugiyama", geom = "text", ...) {
+goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
+                                layout = "sugiyama", geom = "text", ...) {
+    has_package("AnnotationDbi")
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
@@ -60,16 +63,20 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust", layout
 
     p <- ggraph(g, layout=layout) +
         ## geom_edge_link(aes_(color = ~relationship), arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm')) +
-        geom_edge_link(aes_(linetype = ~relationship), arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm'), colour="darkgrey") +
+        geom_edge_link(aes_(linetype = ~relationship),
+            arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm'),
+            colour="darkgrey") +
         ## geom_node_point(size = 5, aes_(fill=~color), shape=21) +
         geom_node_point(size = 5, aes_(color=~color)) +
         theme_void() +
-        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE))
+        scale_color_continuous(low="red", high="blue", name = color,
+                               guide=guide_colorbar(reverse=TRUE))
     ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE))
 
     if (geom == "label") {
         p <- p + geom_node_label(aes_(label=~Term, fill=~color), repel=TRUE) +
-            scale_fill_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE), na.value="white")
+            scale_fill_continuous(low="red", high="blue", name = color,
+                guide=guide_colorbar(reverse=TRUE), na.value="white")
         ## scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white')
     } else {
         p <- p + geom_node_text(aes_(label=~Term), repel=TRUE)

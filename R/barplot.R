@@ -29,7 +29,8 @@
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' barplot(x)
-barplot.enrichResult <- function(height, x="Count", color='p.adjust', showCategory=8, font.size=12, title="", ...) {
+barplot.enrichResult <- function(height, x="Count", color='p.adjust',
+                                 showCategory=8, font.size=12, title="", ...) {
     ## use *height* to satisy barplot generic definition
     ## actually here is an enrichResult object.
     object <- height
@@ -47,9 +48,11 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust', showCatego
     if(colorBy %in% colnames(df)) {
         p <- ggplot(df, aes_string(x = x, y = "Description", fill = colorBy)) +
             theme_dose(font.size) +
-            scale_fill_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE))
+            scale_fill_continuous(low="red", high="blue", name = color,
+                                  guide=guide_colorbar(reverse=TRUE))
     } else {
-        p <- ggplot(df, aes_string(x = x, y = "Description", fill = "Description")) +
+        p <- ggplot(df, aes_string(x = x, y = "Description",
+                                   fill = "Description")) +
             theme_dose(font.size) +
             theme(legend.position="none")
     }
@@ -58,10 +61,14 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust', showCatego
 }
 
 
-barplot.compareClusterResult <- function(height, color="p.adjust", showCategory=5,
-                                         by="geneRatio", includeAll=TRUE, font.size=12, title="", ...) {
+barplot.compareClusterResult <- function(height, color="p.adjust",
+                                         showCategory=5, by="geneRatio",
+                                         includeAll=TRUE, font.size=12,
+                                         title="", ...) {
     ## use *height* to satisy barplot generic definition
     ## actually here is an compareClusterResult object.
-    df <- fortify(height, showCategory=showCategory, by=by, includeAll=includeAll)
-    plotting.clusterProfile(df, type="bar", colorBy=color, by=by, title=title, font.size=font.size)
+    df <- fortify(height, showCategory=showCategory, by=by,
+                  includeAll=includeAll)
+    plotting.clusterProfile(df, type="bar", colorBy=color, by=by, title=title,
+                            font.size=font.size)
 }

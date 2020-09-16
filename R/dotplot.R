@@ -24,7 +24,8 @@ setMethod("dotplot", signature(object = "enrichResult"),
 setMethod("dotplot", signature(object = "gseaResult"),
           function(object, x = "GeneRatio", color = "p.adjust", showCategory=10,
                    size = NULL, split = NULL, font.size=12, title = "", ...) {
-              dotplot_internal(object, x, color, showCategory, size, split, font.size, title, ...)
+              dotplot_internal(object, x, color, showCategory, size, split,
+                               font.size, title, ...)
           })
 
 
@@ -40,7 +41,8 @@ setMethod("dotplot", signature(object = "gseaResult"),
 ##' @importFrom ggplot2 ggtitle
 dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
-                             font.size=12, title = "", orderBy="x", decreasing=TRUE) {
+                             font.size=12, title = "", orderBy="x",
+                             decreasing=TRUE) {
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {
@@ -71,18 +73,20 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust",
         message('wrong orderBy parameter; set to default `orderBy = "x"`')
         orderBy <- "x"
     }
-    
+
     if (orderBy == "x") {
         df <- dplyr::mutate(df, x = eval(parse(text=x)))
     }
 
     idx <- order(df[[orderBy]], decreasing = decreasing)
-    df$Description <- factor(df$Description, levels=rev(unique(df$Description[idx])))
+    df$Description <- factor(df$Description,
+                          levels=rev(unique(df$Description[idx])))
     ggplot(df, aes_string(x=x, y="Description", size=size, color=colorBy)) +
         geom_point() +
-        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
-        ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
-        ylab(NULL) + ggtitle(title) + theme_dose(font.size) + scale_size(range=c(3, 8))
+        scale_color_continuous(low="red", high="blue", name = color,
+            guide=guide_colorbar(reverse=TRUE)) +
+        ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
+        scale_size(range=c(3, 8))
 
 }
 
@@ -125,7 +129,8 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 
 dotplot.compareClusterResult <- function(object, x=~Cluster, colorBy="p.adjust",
                                          showCategory=5, by="geneRatio",
-                                         split=NULL, includeAll=TRUE, font.size=12, title="") {
+                                         split=NULL, includeAll=TRUE,
+                                         font.size=12, title="") {
 
     df <- fortify(object, showCategory=showCategory, by=by,
                   includeAll=includeAll, split=split)
