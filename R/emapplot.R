@@ -1,7 +1,8 @@
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "enrichResult"),
-          function(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...) {
+          function(x, showCategory = 30, color = "p.adjust",
+                   layout = "nicely", ...) {
               emapplot.enrichResult(x, showCategory = showCategory,
                                     color = color, layout = layout, ...)
           })
@@ -9,7 +10,8 @@ setMethod("emapplot", signature(x = "enrichResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "gseaResult"),
-          function(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...) {
+          function(x, showCategory = 30, color = "p.adjust",
+                   layout = "nicely", ...) {
               emapplot.enrichResult(x, showCategory = showCategory,
                                     color = color, layout = layout, ...)
           })
@@ -17,10 +19,11 @@ setMethod("emapplot", signature(x = "gseaResult"),
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...) {
+          function(x, showCategory = 30, color = "p.adjust",
+                   layout = "nicely", ...) {
 
-              emapplot.compareClusterResult(x, showCategory = showCategory, color=color,
-                                            layout = layout, ...)
+              emapplot.compareClusterResult(x, showCategory = showCategory,
+                                            color=color, layout = layout, ...)
           })
 
 
@@ -35,38 +38,40 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param color a string, the column name of y for nodes colours
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
-##' @param method method of calculating the similarity between nodes, one of "Resnik", 
+##' @param method method of calculating the similarity between nodes, one of "Resnik",
 ##' "Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y, geneSets, color, line_scale, min_edge, method, semData = NULL) {
+emap_graph_build <- function(y, geneSets, color, line_scale, min_edge, method,
+                             semData = NULL) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
     	stop('"min_edge" should be a number between 0 and 1.')
     }
-	
+
     if (is.null(dim(y)) | nrow(y) == 1) {  # when just one node
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
     } else {
-        w <- get_ww(y = y, geneSets = geneSets, method = method, semData = semData)   
+        w <- get_ww(y = y, geneSets = geneSets, method = method,
+            semData = semData)
         wd <- melt(w)
         wd <- wd[wd[,1] != wd[,2],]
         # remove NA
-        wd <- wd[!is.na(wd[,3]),] 
-        if (method != "JC") { 
+        wd <- wd[!is.na(wd[,3]),]
+        if (method != "JC") {
             # map id to names
             wd[, 1] <- y[wd[, 1], "Description"]
             wd[, 2] <- y[wd[, 2], "Description"]
         }
 
         g <- graph.data.frame(wd[, -3], directed=FALSE)
-        E(g)$width <- sqrt(wd[, 3] * 5) * line_scale 
-        
-        # Use similarity as the weight(length) of an edge 
+        E(g)$width <- sqrt(wd[, 3] * 5) * line_scale
+
+        # Use similarity as the weight(length) of an edge
         E(g)$weight <- wd[, 3]
         g <- delete.edges(g, E(g)[wd[, 3] < min_edge])
         idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
@@ -81,18 +86,20 @@ emap_graph_build <- function(y, geneSets, color, line_scale, min_edge, method, s
 ##' Get the similarity matrix
 ##'
 ##' @param y a data.frame of enrichment result
-##' @param geneSets a list, the names of geneSets are term ids, and every object is a vertor of genes
-##' @param method method of calculating the similarity between nodes, one of "Resnik",
-##' "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods
+##' @param geneSets a list, the names of geneSets are term ids,
+##' and every object is a vertor of genes
+##' @param method method of calculating the similarity between nodes,
+##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
+##' "JC" (Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @noRd
 get_ww <- function(y, geneSets, method, semData = NULL) {
     id <- y[, "ID"]
     geneSets <- geneSets[id]
-    n <- nrow(y) 
+    n <- nrow(y)
     y_id <- unlist(strsplit(y$ID[1], ":"))[1]
     ## Choose the method to calculate the similarity
-    if (method == "JC") {     
+    if (method == "JC") {
         w <- matrix(NA, nrow=n, ncol=n)
         colnames(w) <- rownames(w) <- y$Description
         for (i in seq_len(n-1)) {
@@ -100,20 +107,21 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
                 w[i,j] <- overlap_ratio(geneSets[id[i]], geneSets[id[j]])
             }
         }
-        return(w)        
-    } 
-     
+        return(w)
+    }
+
     if (y_id == "GO") {
         if(is.null(semData)) {
-            stop("The semData parameter is missing, 
+            stop("The semData parameter is missing,
                 and it can be obtained through godata function in GOSemSim package.")
-        }     
-        w <- GOSemSim::mgoSim(id, id, semData=semData, measure=method, combine=NULL)
+        }
+        w <- GOSemSim::mgoSim(id, id, semData=semData, measure=method,
+                              combine=NULL)
     }
-    
-    if (y_id == "DOID") w <- DOSE::doSim(id, id, measure=method)    
-    return(w)               
-}     
+
+    if (y_id == "DOID") w <- DOSE::doSim(id, id, measure=method)
+    return(w)
+}
 
 
 
@@ -122,14 +130,17 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
 ##' @param x enrichment result.
 ##' @param y as.data.frame(x).
 ##' @param n number of enriched terms to display.
-##' @param color variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue.
+##' @param color variable that used to color enriched terms, e.g. pvalue,
+##' p.adjust or qvalue.
 ##' @param line_scale scale of line width.
-##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2.
-##' @param method method of calculating the similarity between nodes, one of "Resnik", 
-##' "Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods
+##' @param min_edge minimum percentage of overlap genes to display the edge,
+##' should between 0 and 1, default value is 0.2.
+##' @param method method of calculating the similarity between nodes,
+##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
+##' "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##'
-##' @return an iGraph object 
+##' @return an iGraph object
 get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     if (is.numeric(n)) {
@@ -138,13 +149,14 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
         y <- y[match(n, y$Description),]
         n <- length(n)
     }
-    
+
     if (n == 0) {
         stop("no enriched term found...")
     }
-    
-    g <- emap_graph_build(y = y, geneSets = geneSets, color = color, line_scale = line_scale, min_edge = min_edge, 
-        method = method, semData = semData)
+
+    g <- emap_graph_build(y = y, geneSets = geneSets, color = color,
+             line_scale = line_scale, min_edge = min_edge, method = method,
+             semData = semData)
 }
 
 
@@ -167,33 +179,40 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
-##' @param node_scale scale of node(for "enrichResult" data) or pie chart(for "compareClusterResult" data)
+##' @param node_scale scale of node(for "enrichResult" data) or
+##' pie chart(for "compareClusterResult" data)
 ##' @param node_scale scale of node
 ##' @param line_scale scale of line width
-##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
-##' @param method method of calculating the similarity between nodes, one of "Resnik", 
-##' "Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods
+##' @param min_edge minimum percentage of overlap genes to display the edge,
+##' should between 0 and 1, default value is 0.2
+##' @param method method of calculating the similarity between nodes,
+##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"
+##' and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust", layout = "nicely", node_scale = 1, 
-    line_scale = 1, min_edge=0.2, method = "JC", semData = NULL) {
-                                                                      
+emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
+    layout = "nicely", node_scale = 1, line_scale = 1, min_edge=0.2,
+    method = "JC", semData = NULL) {
+
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
-    y <- as.data.frame(x)    
-    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale, min_edge=min_edge, 
-        method = method, semData = semData)
+    y <- as.data.frame(x)
+    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale,
+                    min_edge=min_edge, method = method, semData = semData)
     if(n == 1) {
-        return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
+        return(ggraph(g) + geom_node_point(color="red", size=5) +
+               geom_node_text(aes_(label=~name)))
     }
 
     p <- ggraph(g, layout=layout)
     if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
+                                colour='darkgrey')
     }
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+        scale_color_continuous(low="red", high="blue", name = color,
+                               guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8) * node_scale)
 
 }
@@ -217,9 +236,9 @@ merge_compareClusterResult <- function(yy) {
     ids <- vapply(yy_ids, function(x) x$ID, character(1))
     cnt <- vapply(yy_ids, function(x) x$cnt, numeric(1))
 
-    yy_union$geneID = ids[yy_union$ID]
-    yy_union$Count = cnt[yy_union$ID]
-    yy_union$Cluster = NULL
+    yy_union$geneID <- ids[yy_union$ID]
+    yy_union$Count <- cnt[yy_union$ID]
+    yy_union$Cluster <- NULL
     yy_union
 }
 
@@ -245,49 +264,56 @@ merge_compareClusterResult <- function(yy) {
 ##' @param pie_scale scale of pie chart or point, this parameter has been changed to "node_scale"
 ##' @param line_scale scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
-##' @param method method of calculating the similarity between nodes, one of "Resnik", 
+##' @param method method of calculating the similarity between nodes, one of "Resnik",
 ##' "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @importFrom stats setNames
-emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjust",
-                                          layout = "nicely", split=NULL, pie = "equal",
-                                          legend_n = 5, node_scale = NULL, pie_scale = NULL, 
-                                          line_scale = 1, min_edge=0.2, 
-                                          method = "JC", semData = NULL) {
-                                          
-    if (!is.null(pie_scale)) message("pie_scale parameter has been changed to 'node_scale'")
-    
+emapplot.compareClusterResult <- function(x, showCategory = 30,
+                                          color = "p.adjust", layout = "nicely",
+                                          split=NULL, pie = "equal",
+                                          legend_n = 5, node_scale = NULL,
+                                          pie_scale = NULL, line_scale = 1,
+                                          min_edge=0.2, method = "JC",
+                                          semData = NULL) {
+
+    if (!is.null(pie_scale))
+        message("pie_scale parameter has been changed to 'node_scale'")
+
     if (is.null(node_scale)) {
         if (!is.null(pie_scale)) {
-            node_scale <- pie_scale 
+            node_scale <- pie_scale
         } else {
             node_scale <- 1
         }
     }
-    
+
 
     ## pretreatment of x, just like dotplot do
     y <- fortify(x, showCategory=showCategory,
                                       includeAll=TRUE, split=split)
-    y$Cluster = sub("\n.*", "", y$Cluster)
+    y$Cluster <- sub("\n.*", "", y$Cluster)
     ## geneSets <- geneInCategory(x) ## use core gene for gsea result
 
-    ## Data structure transformation, combining the same ID (Description) genes 
+    ## Data structure transformation, combining the same ID (Description) genes
     y_union <- get_y_union(y = y, showCategory = showCategory)
     y <- y[y$ID %in% y_union$ID, ]
-      
-    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/", fixed = TRUE), y_union$ID)
-    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color, line_scale=line_scale, min_edge=min_edge, 
-        method = method, semData = semData)
-        
-    p <- get_p(y = y, g = g, y_union = y_union, node_scale = node_scale, pie = pie, layout = layout)
-    if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1) 
+
+    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
+                                  fixed = TRUE), y_union$ID)
+    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
+                          line_scale=line_scale, min_edge=min_edge,
+                          method = method, semData = semData)
+
+    p <- get_p(y = y, g = g, y_union = y_union, node_scale = node_scale,
+               pie = pie, layout = layout)
+    if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
 
-    
+
     p <- ggraph(g, layout=layout)
     if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)), colour='darkgrey')
+        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
+                                colour='darkgrey')
     }
 
     ## then add the pie plot
@@ -299,7 +325,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
     # get the X-coordinate and y-coordinate of pies
     aa <- p$data
 
-    desc <- y_union$Description[match(rownames(ID_Cluster_mat), y_union$Description)]
+    desc <- y_union$Description[match(rownames(ID_Cluster_mat),
+                                      y_union$Description)]
     i <- match(desc, aa$name)
 
     ID_Cluster_mat$x <- aa$x[i]
@@ -316,12 +343,12 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
     if(ncol(ID_Cluster_mat) > 4) {
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
-                                 cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
-
+                cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
             coord_equal()+
             geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1, n = legend_n,
-                                   labeller=function(x) round(sum(aa$size)*((x/node_scale)^2))) +
+            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
+                n = legend_n,
+                labeller=function(x) round(sum(aa$size)*((x/node_scale)^2))) +
             labs(fill = "Cluster")
         return(p)
     }
@@ -329,7 +356,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 30, color = "p.adjus
     title <- colnames(ID_Cluster_mat)[1]
     p + geom_node_point(aes_(color=~color, size=~size)) +
         geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-        scale_color_continuous(low="red", high="blue", name = color, guide=guide_colorbar(reverse=TRUE)) +
+        scale_color_continuous(low="red", high="blue", name = color,
+                               guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8) * node_scale)  +labs(title= title)
 }
 
@@ -352,22 +380,25 @@ get_p <- function(y, g, y_union, node_scale, pie, layout){
             labs(title=title)
         return(p)
     }
-    
+
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
         ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
         p <- ggraph(g)
         ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
-    
+
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*node_scale)
-        colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],"x","y","radius")
-    
-    
+        colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
+            "x", "y", "radius")
+
+
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
-                                 cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA)+
-            xlim(-3,3) + ylim(-3,3) + coord_equal()+ geom_node_text(aes_(label=~name), repel=TRUE) +
+                cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
+                color=NA)+
+            xlim(-3,3) + ylim(-3,3) + coord_equal()+
+            geom_node_text(aes_(label=~name), repel=TRUE) +
             theme_void()+labs(fill = "Cluster")
         return(p)
-    
+
     }
     ggraph(g, layout=layout)
 }
@@ -386,7 +417,7 @@ get_y_union <- function(y, showCategory){
      if (n == 0) {
         stop("no enriched term found...")
     }
-    
+
    return(y_union)
 }
 

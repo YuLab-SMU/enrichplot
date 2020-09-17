@@ -12,7 +12,8 @@ setMethod("gseaplot", signature(x = "gseaResult"),
 ##' @rdname gseaplot
 ##' @param color color of line segments
 ##' @param color.line color of running enrichment score line
-##' @param color.vline color of vertical line which indicating the maximum/minimal running enrichment score
+##' @param color.vline color of vertical line which indicating the
+##' maximum/minimal running enrichment score
 ##' @return ggplot2 object
 ##' @importFrom ggplot2 ggplot
 ##' @importFrom ggplot2 geom_linerange
@@ -32,14 +33,17 @@ setMethod("gseaplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 rel
 ##' @importFrom cowplot plot_grid
 ##' @author Guangchuang Yu
-gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "", color='black', color.line="green", color.vline="#FA5860", ...){
+gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "",
+                                 color='black', color.line="green",
+                                 color.vline="#FA5860", ...){
     by <- match.arg(by, c("runningScore", "preranked", "all"))
     gsdata <- gsInfo(x, geneSetID)
     p <- ggplot(gsdata, aes_(x = ~x)) +
         theme_dose() + xlab("Position in the Ranked List of Genes")
     if (by == "runningScore" || by == "all") {
         p.res <- p + geom_linerange(aes_(ymin=~ymin, ymax=~ymax), color=color)
-        p.res <- p.res + geom_line(aes_(y = ~runningScore), color=color.line, size=1)
+        p.res <- p.res + geom_line(aes_(y = ~runningScore), color=color.line,
+                                   size=1)
         enrichmentScore <- x@result[geneSetID, "enrichmentScore"]
         es.df <- data.frame(es = which.min(abs(p$data$runningScore - enrichmentScore)))
         p.res <- p.res + geom_vline(data = es.df, aes_(xintercept = ~es),
@@ -50,8 +54,10 @@ gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "", color='bl
     if (by == "preranked" || by == "all") {
         df2 <- data.frame(x = which(p$data$position == 1))
         df2$y <- p$data$geneList[df2$x]
-        p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0), color=color)
-        p.pos <- p.pos + ylab("Ranked List Metric") + xlim(0, length(p$data$geneList))
+        p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0),
+                                  color=color)
+        p.pos <- p.pos + ylab("Ranked List Metric") +
+            xlim(0, length(p$data$geneList))
     }
     if (by == "runningScore")
         return(p.res + ggtitle(title))
@@ -84,8 +90,8 @@ gsInfo <- function(object, geneSetID) {
     geneSet <- object@geneSets[[geneSetID]]
     exponent <- object@params[["exponent"]]
     df <- gseaScores(geneList, geneSet, exponent, fortify=TRUE)
-    df$ymin=0
-    df$ymax=0
+    df$ymin <- 0
+    df$ymax <- 0
     pos <- df$position == 1
     h <- diff(range(df$runningScore))/20
     df$ymin[pos] <- -h
@@ -113,7 +119,8 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param rel_heights relative heights of subplots
 ##' @param subplots which subplots to be displayed
 ##' @param pvalue_table whether add pvalue table
-##' @param ES_geom geom for plotting running enrichment score, one of 'line' or 'dot'
+##' @param ES_geom geom for plotting running enrichment score,
+##' one of 'line' or 'dot'
 ##' @return plot
 ##' @export
 ##' @importFrom ggplot2 theme_classic
@@ -132,7 +139,8 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom RColorBrewer brewer.pal
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
-                      rel_heights=c(1.5, .5, 1), subplots = 1:3, pvalue_table = FALSE, ES_geom="line") {
+                      rel_heights=c(1.5, .5, 1), subplots = 1:3,
+                      pvalue_table = FALSE, ES_geom="line") {
     ES_geom <- match.arg(ES_geom, c("line", "dot"))
 
     geneList <- position <- NULL ## to satisfy codetool
@@ -152,9 +160,11 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
         scale_x_continuous(expand=c(0,0))
 
     if (ES_geom == "line") {
-        es_layer <- geom_line(aes_(y = ~runningScore, color= ~Description), size=1)
+        es_layer <- geom_line(aes_(y = ~runningScore, color= ~Description),
+                              size=1)
     } else {
-        es_layer <- geom_point(aes_(y = ~runningScore, color= ~Description), size=1, data = subset(gsdata, position == 1))
+        es_layer <- geom_point(aes_(y = ~runningScore, color= ~Description),
+                               size=1, data = subset(gsdata, position == 1))
     }
 
     p.res <- p + es_layer +
@@ -198,7 +208,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
         inv <- findInterval(rev(cumsum(gsdata$position)), v)
         if (min(inv) == 0) inv <- inv + 1
 
-        col=c(rev(brewer.pal(5, "Blues")), brewer.pal(5, "Reds"))
+        col <- c(rev(brewer.pal(5, "Blues")), brewer.pal(5, "Reds"))
 
         ymin <- min(p2$data$ymin)
         yy <- max(p2$data$ymax - p2$data$ymin) * .3
@@ -227,7 +237,8 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
 
     df2 <- p$data #data.frame(x = which(p$data$position == 1))
     df2$y <- p$data$geneList[df2$x]
-    p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0), color="grey")
+    p.pos <- p + geom_segment(data=df2, aes_(x=~x, xend=~x, y=~y, yend=0),
+                              color="grey")
     p.pos <- p.pos + ylab("Ranked List Metric") +
         xlab("Rank in Ordered Dataset") +
         theme(plot.margin=margin(t = -.1, r = .2, b=.2, l=.2, unit="cm"))
@@ -272,7 +283,8 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
               axis.text.x = element_text())
 
     if (length(subplots) == 1)
-        return(plotlist[[1]] + theme(plot.margin=margin(t=.2, r = .2, b=.2, l=.2, unit="cm")))
+        return(plotlist[[1]] + theme(plot.margin=margin(t=.2, r = .2, b=.2,
+                                                        l=.2, unit="cm")))
 
 
     if (length(rel_heights) > length(subplots))

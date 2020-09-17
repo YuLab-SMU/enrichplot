@@ -70,7 +70,7 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     d <- list2df(geneSets)
 
     category <- split(d[,1], d[, 2])
-    y =tibble::tibble(Description = category,
+    y <- tibble::tibble(Description = category,
                       gene = names(category),
                       foldChange = x@geneList[names(category)])
 

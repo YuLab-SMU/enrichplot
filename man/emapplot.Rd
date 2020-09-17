@@ -50,7 +50,8 @@ emapplot.compareClusterResult(
 
 \item{showCategory}{number of enriched terms to display}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue, p.adjust or qvalue}
+\item{color}{variable that used to color enriched terms, e.g. pvalue,
+p.adjust or qvalue}
 
 \item{layout}{layout of the map}
 
@@ -62,7 +63,7 @@ emapplot.compareClusterResult(
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
 
-\item{method}{method of calculating the similarity between nodes, one of "Resnik", 
+\item{method}{method of calculating the similarity between nodes, one of "Resnik",
 "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods}
 
 \item{semData}{GOSemSimDATA object}
@@ -84,7 +85,8 @@ over-representation test or gene set enrichment analysis
 }
 \details{
 This function visualizes gene sets as a network (i.e. enrichment map).
-Mutually overlapping gene sets tend to cluster together, making it easier for interpretation.
+Mutually overlapping gene sets tend to cluster together, making it
+easier for interpretation.
 }
 \examples{
 library(DOSE)

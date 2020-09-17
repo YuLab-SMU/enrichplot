@@ -8,18 +8,12 @@ Description: The 'enrichplot' package implements several visualization methods f
              All the visualization methods are developed based on 'ggplot2' graphics.
 Depends: R (>= 3.5.0)
 Imports:
-    AnnotationDbi,
     cowplot,
     DOSE,
     ggplot2,
-    ggplotify,
     ggraph,
-    ggridges,
-    GOSemSim,
     graphics,
-    grDevices,
     grid,
-    gridExtra,
     igraph,
     methods,
     plyr,
@@ -30,9 +24,7 @@ Imports:
     utils,
     scatterpie,
     shadowtext,
-    ggnewscale,
-    magrittr,
-    ggrepel
+    GOSemSim
 Suggests:
     clusterProfiler,
     dplyr,
@@ -43,7 +35,15 @@ Suggests:
     prettydoc,
     tibble,
     tidyr,
-    ggforce
+    ggforce,
+    AnnotationDbi,
+    ggplotify,
+    ggridges,
+    grDevices,
+    gridExtra,
+    ggnewscale,
+    magrittr,
+    ggrepel
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://yulab-smu.top/biomedical-knowledge-mining-book/

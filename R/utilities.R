@@ -1,3 +1,12 @@
+# has_package <- function(pkg){
+    # if (!requireNamespace(pkg, quietly  = TRUE)) {
+        # stop(paste0(pkg, " needed for this function to work. Please install it."),
+            # call. = FALSE)
+    # }
+# }
+
+
+
 ##' @method as.data.frame compareClusterResult
 ##' @export
 as.data.frame.compareClusterResult <- function(x, ...) {
@@ -11,7 +20,7 @@ as.data.frame.compareClusterResult <- function(x, ...) {
 ##' @importFrom DOSE geneID
 ##' @param y a data.frame converted from compareClusterResult
 ##' @return a data.frame
-##' @noRd 
+##' @noRd
 prepare_pie_gene <- function(y) {
     gene_pie <- tibble::as_tibble(y[,c("Cluster", "Description", "geneID")])
     gene_pie$geneID <- strsplit(gene_pie$geneID, '/')
@@ -25,13 +34,14 @@ prepare_pie_gene <- function(y) {
 ##' The function only works for compareClusterResult
 ##'
 ##' @param y a data.frame converted from compareClusterResult
-##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default)
+##' or 'Count'
 ##' @return a data.frame
 ##' @noRd
 prepare_pie_category <- function(y, pie = "equal") {
     pie <- match.arg(pie, c("equal", "count", "Count"))
     if (pie == "count") pie <- "Count"
-    
+
     pie_data <- y[,c("Cluster", "Description", "Count")]
     pie_data[,"Description"] <- as.character(pie_data[,"Description"])
     prepare_pie_data(pie_data, pie = pie)
@@ -46,7 +56,7 @@ prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
     } else {
         ID_unique <- unique(pie_data[,3])
     }
-    
+
     Cluster_unique <- unique(pie_data[,1])
     ID_Cluster_mat <- matrix(0, nrow = length(ID_unique), ncol = length(Cluster_unique))
     rownames(ID_Cluster_mat) <- ID_unique
@@ -67,7 +77,7 @@ prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
         } else {
             ID_Cluster_mat[pie_data[i,3],pie_data[i,1]] <- 1
     }
-        
+
     }
     return(ID_Cluster_mat)
 }
@@ -79,12 +89,15 @@ prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
 ##' @title color_palette
 ##' @param colors colors of length >=2
 ##' @return color vector
-##' @importFrom grDevices colorRampPalette
 ##' @export
 ##' @examples
 ##' color_palette(c("red", "yellow", "green"))
 ##' @author guangchuang yu
-color_palette <- function(colors) colorRampPalette(colors)(n = 299)
+color_palette <- function(colors) {
+    # has_package("grDevices")
+    grDevices::colorRampPalette(colors)(n = 299)
+}
+
 
 sig_palette <- color_palette(c("red", "yellow", "blue"))
 
@@ -219,7 +232,8 @@ plotting.clusterProfile <- function(clProf.reshape.df,
             p <- p +
                 geom_point() +
                 aes_string(color=colorBy) +
-                scale_color_continuous(low="red", high="blue", guide=guide_colorbar(reverse=TRUE))
+                scale_color_continuous(low="red", high="blue",
+                                       guide=guide_colorbar(reverse=TRUE))
             ## scale_color_gradientn(guide=guide_colorbar(reverse=TRUE), colors = sig_palette)
         } else {
             p <- p + geom_point(colour="steelblue")
@@ -267,22 +281,19 @@ get_label_diss <- function(dimension, label_location) {
 # adjust_location <- function(label_location, x_adjust, y_adjust) {
     # label_diss_x <- get_label_diss(1, label_location)
     # label_diss_y <- get_label_diss(2, label_location)
-    
+
     # label_diss_large <- which(abs(label_diss_y[, 3]) < y_adjust) %>%
         # intersect(which(label_diss_y[, 3] > 0)) %>%
         # intersect(which(abs(label_diss_x[, 3]) < x_adjust))
-    
+
     # label_diss_small <- which(abs(label_diss_y[, 3]) < y_adjust) %>%
         # intersect(which(label_diss_y[, 3] < 0)) %>%
         # intersect(which(abs(label_diss_x[, 3]) < x_adjust))
-    
+
     # label_location[label_diss_y[label_diss_large, 1], 2] <- label_location[label_diss_y[label_diss_large, 2], 2] + y_adjust
     # label_location[label_diss_y[label_diss_small, 1], 2] <- label_location[label_diss_y[label_diss_small, 2], 2] - y_adjust
     # return(label_location)
 # }
-
-
-
 
 
 
