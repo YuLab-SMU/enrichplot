@@ -17,7 +17,7 @@ setMethod("ridgeplot", signature(x = "gseaResult"),
 ##' @author Guangchuang Yu
 ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
                                  core_enrichment = TRUE) {
-    has_package("ggridges")
+    # has_package("ggridges")
     if (!is(x, "gseaResult"))
         stop("currently only support gseaResult")
 

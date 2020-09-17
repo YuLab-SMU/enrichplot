@@ -1,13 +1,9 @@
-##' Check whether an R package is installed
-##'
-##' @param pkg a package name
-##' @noRd
-has_package <- function(pkg){
-    if (!requireNamespace(pkg, quietly  = TRUE)) {
-        stop(paste0(pkg, " needed for this function to work. Please install it."),
-            call. = FALSE)
-    }
-}
+# has_package <- function(pkg){
+    # if (!requireNamespace(pkg, quietly  = TRUE)) {
+        # stop(paste0(pkg, " needed for this function to work. Please install it."),
+            # call. = FALSE)
+    # }
+# }
 
 
 
@@ -98,7 +94,7 @@ prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
 ##' color_palette(c("red", "yellow", "green"))
 ##' @author guangchuang yu
 color_palette <- function(colors) {
-    has_package("grDevices")
+    # has_package("grDevices")
     grDevices::colorRampPalette(colors)(n = 299)
 }
 

@@ -8,14 +8,14 @@
 ##' @export
 ##' @author guangchuang yu
 ggtable <- function(d, p = NULL) {
-    has_package("ggplotify")
+    # has_package("ggplotify")
     ggplotify::as.ggplot(tableGrob2(d, p))
 }
 
 ##' @importFrom grid gpar
 ##' @importFrom ggplot2 ggplot_build
 tableGrob2 <- function(d, p = NULL) {
-    has_package("gridExtra")
+    # has_package("gridExtra")
     d <- d[order(rownames(d)),]
     tp <- gridExtra::tableGrob(d)
     if (is.null(p)) {

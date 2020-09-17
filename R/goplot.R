@@ -29,7 +29,7 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @author guangchuang yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
                                 layout = "sugiyama", geom = "text", ...) {
-    has_package("AnnotationDbi")
+    # has_package("AnnotationDbi")
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)

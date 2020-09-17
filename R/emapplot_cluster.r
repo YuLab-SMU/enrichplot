@@ -61,7 +61,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
                                           cluster_label_scale = 1, semData = NULL,
      label_style = "shadowtext", group_legend = FALSE, node_scale = 1){
 
-    has_package("ggrepel")
+    # has_package("ggrepel")
 
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
