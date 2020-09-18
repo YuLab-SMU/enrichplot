@@ -189,11 +189,11 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"
 ##' and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
-##' @param node_label_scale scale of node label size
+##' @param node_label_size size of node label, default value is 5
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     layout = "nicely", node_scale = 1, line_scale = 1, min_edge=0.2,
-    method = "JC", semData = NULL, node_label_scale  = 1) {
+    method = "JC", semData = NULL, node_label_size  = 5) {
 
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
@@ -214,10 +214,10 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
-            size = 5 * node_label_scale, bg.color = "white")
+            size = node_label_size, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = 5 * node_label_scale)
+            size = node_label_size)
     }
         # geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
     p + theme_void() + 
@@ -284,7 +284,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           legend_n = 5, node_scale = NULL,
                                           pie_scale = NULL, line_scale = 1,
                                           min_edge=0.2, method = "JC",
-                                          semData = NULL, node_label_scale  = 1) {
+                                          semData = NULL, node_label_size  = 5) {
 
     if (!is.null(pie_scale))
         message("pie_scale parameter has been changed to 'node_scale'")
@@ -357,10 +357,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
             coord_equal()
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
-                size = 5 * node_label_scale, bg.color = "white")
+                size = node_label_size, bg.color = "white")
         } else {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                size = 5 * node_label_scale)
+                size = node_label_size)
         }
         p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
@@ -374,10 +374,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     p + geom_node_point(aes_(color=~color, size=~size)) 
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
-            size = 5 * node_label_scale, bg.color = "white")
+            size = node_label_size, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = 5 * node_label_scale)
+            size = node_label_size)
     }
     p <- p + geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
