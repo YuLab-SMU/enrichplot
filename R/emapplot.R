@@ -189,10 +189,11 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"
 ##' and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
+##' @param node_label_scale scale of node label size
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     layout = "nicely", node_scale = 1, line_scale = 1, min_edge=0.2,
-    method = "JC", semData = NULL) {
+    method = "JC", semData = NULL, node_label_scale  = 1) {
 
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
@@ -209,8 +210,17 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
                                 colour='darkgrey')
     }
-    p + geom_node_point(aes_(color=~color, size=~size)) +
-        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+    p <- p + geom_node_point(aes_(color=~color, size=~size))
+    
+    if (utils::packageVersion("ggrepel") >= "0.9.0") {
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+            size = 5 * node_label_scale, bg.color = "white")
+    } else {
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+            size = 5 * node_label_scale)
+    }
+        # geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+    p + theme_void() + 
         scale_color_continuous(low="red", high="blue", name = color,
                                guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8) * node_scale)
@@ -274,7 +284,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           legend_n = 5, node_scale = NULL,
                                           pie_scale = NULL, line_scale = 1,
                                           min_edge=0.2, method = "JC",
-                                          semData = NULL) {
+                                          semData = NULL, node_label_scale  = 1) {
 
     if (!is.null(pie_scale))
         message("pie_scale parameter has been changed to 'node_scale'")
@@ -343,9 +353,16 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
     if(ncol(ID_Cluster_mat) > 4) {
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
-                cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
-            coord_equal()+
-            geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
+            coord_equal()
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+                size = 5 * node_label_scale, bg.color = "white")
+        } else {
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+                size = 5 * node_label_scale)
+        }
+        p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
                 n = legend_n,
                 labeller=function(x) round(sum(aa$size)*((x/node_scale)^2))) +
@@ -354,8 +371,15 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     }
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
     title <- colnames(ID_Cluster_mat)[1]
-    p + geom_node_point(aes_(color=~color, size=~size)) +
-        geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
+    p + geom_node_point(aes_(color=~color, size=~size)) 
+    if (utils::packageVersion("ggrepel") >= "0.9.0") {
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+            size = 5 * node_label_scale, bg.color = "white")
+    } else {
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+            size = 5 * node_label_scale)
+    }
+    p <- p + geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
                                guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8) * node_scale)  +labs(title= title)

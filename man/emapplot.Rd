@@ -26,7 +26,8 @@ emapplot.enrichResult(
   line_scale = 1,
   min_edge = 0.2,
   method = "JC",
-  semData = NULL
+  semData = NULL,
+  node_label_scale = 1
 )
 
 emapplot.compareClusterResult(
@@ -42,7 +43,8 @@ emapplot.compareClusterResult(
   line_scale = 1,
   min_edge = 0.2,
   method = "JC",
-  semData = NULL
+  semData = NULL,
+  node_label_scale = 1
 )
 }
 \arguments{
@@ -67,6 +69,8 @@ p.adjust or qvalue}
 "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods}
 
 \item{semData}{GOSemSimDATA object}
+
+\item{node_label_scale}{scale of node label size}
 
 \item{split}{separate result by 'category' variable}
 
