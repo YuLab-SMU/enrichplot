@@ -44,7 +44,7 @@ emapplot.compareClusterResult(
   min_edge = 0.2,
   method = "JC",
   semData = NULL,
-  node_label_size = 5
+  node_label_size = 3
 )
 }
 \arguments{
@@ -70,7 +70,7 @@ p.adjust or qvalue}
 
 \item{semData}{GOSemSimDATA object}
 
-\item{node_label_size}{size of node label, default value is 5}
+\item{node_label_size}{size of node label}
 
 \item{split}{separate result by 'category' variable}
 

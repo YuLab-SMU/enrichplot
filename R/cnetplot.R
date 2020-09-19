@@ -33,6 +33,7 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' one of 'category', 'gene', 'all' and 'none', default is "all".
 ##' @param node_scale scale of node(for "enrichResult" data) or
 ##' pie chart(for "compareClusterResult" data)
+##' @param node_label_size size of node label
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
 ##' @author Guangchuang Yu
@@ -44,6 +45,7 @@ cnetplot.enrichResult <- function(x,
                      circular = FALSE,
                      node_label = "all",
                      node_scale = 1,
+                     node_label_size = 5,
                      ...) {
 
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
@@ -99,14 +101,28 @@ cnetplot.enrichResult <- function(x,
 
 
     if (node_label == "category") {
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,])
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,], 
+                size = node_label_size, bg.color = "white")
+        } else {
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,], 
+                size = node_label_size)
+        }
     } else if (node_label == "gene") {
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),], repel=TRUE)
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
+                repel=TRUE, size = node_label_size, bg.color = "white")
+        } else {
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),], 
+            repel=TRUE, size = node_label_size)
+        }
     } else if (node_label == "all") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, bg.color = "white")
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+                size = node_label_size, bg.color = "white")
         } else {
-            p <- p + geom_node_text(aes_(label=~name), repel=TRUE)
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+                size = node_label_size)
         }
 
     }
@@ -137,6 +153,7 @@ cnetplot.compareClusterResult <- function(x,
                      node_scale = NULL,
                      pie_scale = NULL,
                      legend_n = 5,
+                     node_label_size = 2.5,
                      ...) {
 
     if (!is.null(pie_scale)) message("pie_scale parameter has been changed to 'node_scale'")
@@ -187,8 +204,15 @@ cnetplot.compareClusterResult <- function(x,
         p <- p + edge_layer + theme_void() +
             geom_node_point(aes_(color=~I(color), size=~size)) +
             labs(title= title) +
-            scale_size(range=c(3, 8) * node_scale) + theme(legend.position="none")+
-            geom_node_text(aes_(label=~name), data = p$data)
+            scale_size(range=c(3, 8) * node_scale) + theme(legend.position="none")
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + geom_node_text(aes_(label=~name), data = p$data, 
+                size = node_label_size, bg.color = "white" )
+        } else {
+            p <- p + geom_node_text(aes_(label=~name), data = p$data, 
+                size = node_label_size)
+        }
+            
 
         return(p)
     }
@@ -255,17 +279,31 @@ cnetplot.compareClusterResult <- function(x,
                 coord_equal()+
                 geom_scatterpie_legend(ID_Cluster_mat2$radius[(n+1):nrow(ID_Cluster_mat2)],
                     x=x_loc1, y=y_loc1, n = legend_n,
-                    labeller=function(x) round(x*2/(min(sizee)),3)) +
-                geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) +
-                theme_void() + labs(fill = "Cluster")
+                    labeller=function(x) round(x*2/(min(sizee)),3)) 
+            if (utils::packageVersion("ggrepel") >= "0.9.0") {
+                p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+                    size=node_label_size, bg.color = "white")
+            } else {
+                p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+                    size=node_label_size)
+            }
+
+            p <- p + theme_void() + labs(fill = "Cluster")
             return(p)
         }
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
                 cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],
                 color=NA) +
-            coord_equal()+
-            geom_node_text(aes_(label=~name), repel=TRUE, size=2.5) +
-            theme_void() + labs(fill = "Cluster")
+            coord_equal()
+        if (utils::packageVersion("ggrepel") >= "0.9.0") {
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+                size=node_label_size, bg.color = "white")
+        } else {
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
+                size=node_label_size)
+        }
+
+        p <- p + theme_void() + labs(fill = "Cluster")
         return(p)
     }
     title <- colnames(ID_Cluster_mat2)[1]
@@ -274,10 +312,16 @@ cnetplot.compareClusterResult <- function(x,
     V(g)$color[1:n] <- "#E5C494"
 
     p <- ggraph(g, layout=layout, circular=circular)
-    p + edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) +
-        labs(title= title) +
-        geom_node_text(aes_(label=~name), data = p$data) +
-        scale_size(range=c(3, 8) * node_scale) + theme_void() +
+    p <- p + edge_layer + geom_node_point(aes_(color=~I(color), size=~size)) +
+        labs(title= title) 
+    if (utils::packageVersion("ggrepel") >= "0.9.0") {
+        p <- p + geom_node_text(aes_(label=~name), data = p$data, 
+            size = node_label_size, bg.color = "white" )
+    } else {
+        p <- p + geom_node_text(aes_(label=~name), data = p$data, 
+            size = node_label_size)
+    }
+    p + scale_size(range=c(3, 8) * node_scale) + theme_void() +
         theme(legend.position="none")
 }
 

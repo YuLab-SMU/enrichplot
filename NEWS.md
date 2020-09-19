@@ -1,7 +1,3 @@
-# enrichplot 1.9.4
-
-+ add `node_label_size` parameter to adjust the size of node label in `emapplot` function (2020-09-18, Fri)
-
 
 # enrichplot 1.9.2
 
