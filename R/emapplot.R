@@ -36,14 +36,14 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param y a data.frame of clusterProfiler result
 ##' @param geneSets a list gene sets with the names of enrichment IDs
 ##' @param color a string, the column name of y for nodes colours
-##' @param line_scale scale of line width
+##' @param cex_line scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @param method method of calculating the similarity between nodes, one of "Resnik",
 ##' "Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y, geneSets, color, line_scale, min_edge, method,
+emap_graph_build <- function(y, geneSets, color, cex_line, min_edge, method,
                              semData = NULL) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
@@ -69,7 +69,7 @@ emap_graph_build <- function(y, geneSets, color, line_scale, min_edge, method,
         }
 
         g <- graph.data.frame(wd[, -3], directed=FALSE)
-        E(g)$width <- sqrt(wd[, 3] * 5) * line_scale
+        E(g)$width <- sqrt(wd[, 3] * 5) * cex_line
 
         # Use similarity as the weight(length) of an edge
         E(g)$weight <- wd[, 3]
@@ -132,7 +132,7 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
 ##' @param n number of enriched terms to display.
 ##' @param color variable that used to color enriched terms, e.g. pvalue,
 ##' p.adjust or qvalue.
-##' @param line_scale scale of line width.
+##' @param cex_line scale of line width.
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2.
 ##' @param method method of calculating the similarity between nodes,
@@ -141,7 +141,7 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
 ##' @param semData GOSemSimDATA object
 ##'
 ##' @return an iGraph object
-get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
+get_igraph <- function(x, y,  n, color, cex_line, min_edge, method, semData){
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     if (is.numeric(n)) {
         y <- y[1:n, ]
@@ -155,7 +155,7 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
     }
 
     g <- emap_graph_build(y = y, geneSets = geneSets, color = color,
-             line_scale = line_scale, min_edge = min_edge, method = method,
+             cex_line = cex_line, min_edge = min_edge, method = method,
              semData = semData)
 }
 
@@ -179,26 +179,57 @@ get_igraph <- function(x, y,  n, color, line_scale, min_edge, method, semData){
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
-##' @param node_scale scale of node(for "enrichResult" data) or
-##' pie chart(for "compareClusterResult" data)
-##' @param node_scale scale of node
-##' @param line_scale scale of line width
+##' @param node_scale scale of node, this parameter has been changed to cex_category
+##' @param line_scale scale of line width, this parameter has been changed to cex_line
+##' @param cex_line scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2
 ##' @param method method of calculating the similarity between nodes,
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"
 ##' and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
-##' @param node_label_size size of node label
+##' @param node_label_size size of node label, this parameter has been
+##' changed to fontsize_category and fontsize_gene
+##' @param fontsize_category size of category node label
+##' @param cex_category number indicating the amount by which plotting category
+##' nodes should be scaled relative to the default.
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
-    layout = "nicely", node_scale = 1, line_scale = 1, min_edge=0.2,
-    method = "JC", semData = NULL, node_label_size  = 5) {
+    layout = "nicely", node_scale = NULL, line_scale = NULL, min_edge=0.2,
+    method = "JC", semData = NULL, node_label_size = NULL,
+    fontsize_category  = NULL, cex_category = NULL, cex_line = NULL) {
+
+    if (!is.null(node_label_size)) message("node_label_size parameter has been changed to 'fontsize_category'")
+    if (is.null(fontsize_category)) {
+        if (!is.null(node_label_size)) {
+            fontsize_category <- node_label_size
+        } else {
+            fontsize_category <- 5
+        }
+    }
+
+    if (!is.null(node_scale)) message("node_scale parameter has been changed to 'cex_category'")
+    if (is.null(cex_category)) {
+        if (!is.null(node_scale)) {
+            cex_category <- node_scale
+        } else {
+            cex_category <- 1
+        }
+    }
+
+    if (!is.null(line_scale)) message("line_scale parameter has been changed to 'cex_line'")
+    if (is.null(cex_line)) {
+        if (!is.null(line_scale)) {
+            cex_line <- line_scale
+        } else {
+            cex_line <- 1
+        }
+    }
 
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
-    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale,
+    g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
                     min_edge=min_edge, method = method, semData = semData)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) +
@@ -211,19 +242,19 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
                                 colour='darkgrey')
     }
     p <- p + geom_node_point(aes_(color=~color, size=~size))
-    
+
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
-        p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
-            size = node_label_size, bg.color = "white")
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+            size = fontsize_category, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = node_label_size)
+            size = fontsize_category)
     }
         # geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
-    p + theme_void() + 
+    p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
                                guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8) * node_scale)
+        scale_size(range=c(3, 8) * cex_category)
 
 }
 
@@ -270,9 +301,8 @@ merge_compareClusterResult <- function(yy) {
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
-##' @param node_scale scale of pie chart or point
 ##' @param pie_scale scale of pie chart or point, this parameter has been changed to "node_scale"
-##' @param line_scale scale of line width
+##' @param cex_line scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @param method method of calculating the similarity between nodes, one of "Resnik",
 ##' "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods
@@ -281,19 +311,29 @@ merge_compareClusterResult <- function(yy) {
 emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           color = "p.adjust", layout = "nicely",
                                           split=NULL, pie = "equal",
-                                          legend_n = 5, node_scale = NULL,
-                                          pie_scale = NULL, line_scale = 1,
+                                          legend_n = 5, cex_category = NULL,
+                                          pie_scale = NULL, cex_line = 1,
                                           min_edge=0.2, method = "JC",
-                                          semData = NULL, node_label_size  = 3) {
+                                          semData = NULL, fontsize_category  = NULL,
+                                          node_label_size = NULL) {
+    if (!is.null(node_label_size))
+        message("node_label_size parameter has been changed to 'fontsize_category'")
+    if (is.null(fontsize_category)) {
+        if (!is.null(node_label_size)) {
+            fontsize_category <- node_label_size
+        } else {
+            fontsize_category <- 3
+        }
+    }
 
     if (!is.null(pie_scale))
-        message("pie_scale parameter has been changed to 'node_scale'")
+        message("pie_scale parameter has been changed to 'cex_category'")
 
-    if (is.null(node_scale)) {
+    if (is.null(cex_category)) {
         if (!is.null(pie_scale)) {
-            node_scale <- pie_scale
+            cex_category <- pie_scale
         } else {
-            node_scale <- 1
+            cex_category <- 1
         }
     }
 
@@ -311,10 +351,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
-                          line_scale=line_scale, min_edge=min_edge,
+                          cex_line=cex_line, min_edge=min_edge,
                           method = method, semData = semData)
 
-    p <- get_p(y = y, g = g, y_union = y_union, node_scale = node_scale,
+    p <- get_p(y = y, g = g, y_union = y_union, cex_category = cex_category,
                pie = pie, layout = layout)
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
@@ -344,7 +384,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
 
     #Change the radius value to fit the pie plot
     radius <- NULL
-    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size)) * node_scale
+    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size) * cex_category)
     #ID_Cluster_mat$radius <- sqrt(aa$size / pi)
 
     x_loc1 <- min(ID_Cluster_mat$x)
@@ -356,33 +396,33 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
             coord_equal()
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
-                size = node_label_size, bg.color = "white")
+            p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+                size = fontsize_category, bg.color = "white")
         } else {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                size = node_label_size)
+                size = fontsize_category)
         }
         p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
                 n = legend_n,
-                labeller=function(x) round(sum(aa$size)*((x/node_scale)^2))) +
+                labeller=function(x) round(sum(aa$size) * x^2 / cex_category)) +
             labs(fill = "Cluster")
         return(p)
     }
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
     title <- colnames(ID_Cluster_mat)[1]
-    p + geom_node_point(aes_(color=~color, size=~size)) 
+    p + geom_node_point(aes_(color=~color, size=~size))
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
-        p <- p + geom_node_text(aes_(label=~name), repel=TRUE, 
-            size = node_label_size, bg.color = "white")
+        p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+            size = fontsize_category, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = node_label_size)
+            size = fontsize_category)
     }
     p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
                                guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8) * node_scale)  +labs(title= title)
+        scale_size(range=c(3, 8) * cex_category)  +labs(title= title)
 }
 
 ##' Get the an ggraph object
@@ -391,15 +431,15 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
 ##' @param y a data.frame
 ##' @param g an igraph object
 ##' @param y_union a data.frame
-##' @param node_scale scale of pie plot
+##' @param cex_category scale of pie plot
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
 ##' @param layout layout of the map
 ##' @noRd
-get_p <- function(y, g, y_union, node_scale, pie, layout){
+get_p <- function(y, g, y_union, cex_category, pie, layout){
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
         title <- y$Cluster
-        p <- ggraph(g) + geom_node_point(color="red", size=5 * node_scale) +
+        p <- ggraph(g) + geom_node_point(color="red", size=5 * cex_category) +
             geom_node_text(aes_(label=~name)) + theme_void() +
             labs(title=title)
         return(p)
@@ -410,7 +450,7 @@ get_p <- function(y, g, y_union, node_scale, pie, layout){
         p <- ggraph(g)
         ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
 
-        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*node_scale)
+        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*cex_category)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
             "x", "y", "radius")
 
@@ -444,4 +484,3 @@ get_y_union <- function(y, showCategory){
 
    return(y_union)
 }
-

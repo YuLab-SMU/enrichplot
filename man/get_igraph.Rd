@@ -4,7 +4,7 @@
 \alias{get_igraph}
 \title{Get an iGraph object}
 \usage{
-get_igraph(x, y, n, color, line_scale, min_edge, method, semData)
+get_igraph(x, y, n, color, cex_line, min_edge, method, semData)
 }
 \arguments{
 \item{x}{enrichment result.}
@@ -16,7 +16,7 @@ get_igraph(x, y, n, color, line_scale, min_edge, method, semData)
 \item{color}{variable that used to color enriched terms, e.g. pvalue,
 p.adjust or qvalue.}
 
-\item{line_scale}{scale of line width.}
+\item{cex_line}{scale of line width.}
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge,
 should between 0 and 1, default value is 0.2.}

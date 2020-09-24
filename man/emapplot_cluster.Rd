@@ -21,37 +21,36 @@ emapplot_cluster.enrichResult(
   x,
   showCategory = nrow(x),
   color = "p.adjust",
-  line_scale = 0.1,
+  cex_line = 1,
   with_edge = TRUE,
   method = "JC",
   nWords = 4,
   nCluster = NULL,
   split = NULL,
   min_edge = 0.2,
-  cluster_label_scale = 1,
+  cex_group_label = 1,
   semData = NULL,
   label_style = "shadowtext",
   group_legend = FALSE,
-  node_scale = 1
+  cex_category = 1
 )
 
 emapplot_cluster.compareClusterResult(
   x,
   showCategory = 30,
   color = "p.adjust",
-  line_scale = 0.1,
+  cex_line = 1,
   with_edge = TRUE,
   method = "JC",
   nWords = 4,
   nCluster = NULL,
   split = NULL,
   min_edge = 0.2,
-  cluster_label_scale = 1,
+  cex_group_label = 1,
   semData = NULL,
   pie = "equal",
   legend_n = 5,
-  node_scale = NULL,
-  pie_scale = NULL,
+  cex_category = 1,
   label_style = "shadowtext",
   group_legend = FALSE
 )
@@ -66,7 +65,7 @@ p.adjust or qvalue}
 
 \item{...}{additional parameters}
 
-\item{line_scale}{scale of line width}
+\item{cex_line}{scale of line width}
 
 \item{with_edge}{if TRUE, draw the edges of the network diagram}
 
@@ -83,7 +82,7 @@ one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 \item{min_edge}{minimum percentage of overlap genes to display the edge,
 should between 0 and 1, default value is 0.2}
 
-\item{cluster_label_scale}{scale of cluster labels size}
+\item{cex_group_label}{scale of group labels size}
 
 \item{semData}{GOSemSimDATA object}
 
@@ -92,16 +91,13 @@ should between 0 and 1, default value is 0.2}
 \item{group_legend}{If TRUE, the grouping legend will be displayed.
 The default is FALSE}
 
-\item{node_scale}{scale of node(for "enrichResult" data) or
-pie chart(for "compareClusterResult" data)}
+\item{cex_category}{number indicating the amount by which plotting category
+nodes should be scaled relative to the default.}
 
 \item{pie}{proportion of clusters in the pie chart, one of
 'equal' (default) or 'Count'}
 
 \item{legend_n}{number of circle in legend}
-
-\item{pie_scale}{scale of pie chart or point, this parameter has
-been changed to "node_scale"}
 }
 \value{
 ggplot object

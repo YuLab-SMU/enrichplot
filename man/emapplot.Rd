@@ -22,12 +22,15 @@ emapplot.enrichResult(
   showCategory = 30,
   color = "p.adjust",
   layout = "nicely",
-  node_scale = 1,
-  line_scale = 1,
+  node_scale = NULL,
+  line_scale = NULL,
   min_edge = 0.2,
   method = "JC",
   semData = NULL,
-  node_label_size = 5
+  node_label_size = NULL,
+  fontsize_category = NULL,
+  cex_category = NULL,
+  cex_line = NULL
 )
 
 emapplot.compareClusterResult(
@@ -38,13 +41,14 @@ emapplot.compareClusterResult(
   split = NULL,
   pie = "equal",
   legend_n = 5,
-  node_scale = NULL,
+  cex_category = NULL,
   pie_scale = NULL,
-  line_scale = 1,
+  cex_line = 1,
   min_edge = 0.2,
   method = "JC",
   semData = NULL,
-  node_label_size = 3
+  fontsize_category = NULL,
+  node_label_size = NULL
 )
 }
 \arguments{
@@ -59,9 +63,9 @@ p.adjust or qvalue}
 
 \item{...}{additional parameters}
 
-\item{node_scale}{scale of pie chart or point}
+\item{node_scale}{scale of node, this parameter has been changed to cex_category}
 
-\item{line_scale}{scale of line width}
+\item{line_scale}{scale of line width, this parameter has been changed to cex_line}
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
 
@@ -70,7 +74,15 @@ p.adjust or qvalue}
 
 \item{semData}{GOSemSimDATA object}
 
-\item{node_label_size}{size of node label}
+\item{node_label_size}{size of node label, this parameter has been 
+changed to fontsize_category and fontsize_gene}
+
+\item{fontsize_category}{size of category node label}
+
+\item{cex_category}{number indicating the amount by which plotting category
+nodes should be scaled relative to the default.}
+
+\item{cex_line}{scale of line width}
 
 \item{split}{separate result by 'category' variable}
 

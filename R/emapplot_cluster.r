@@ -25,7 +25,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 
 ##' @rdname emapplot_cluster
 ##' @param with_edge if TRUE, draw the edges of the network diagram
-##' @param line_scale scale of line width
+##' @param cex_line scale of line width
 ##' @param method method of calculating the similarity between nodes,
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 ##' "JC" (Jaccard similarity coefficient) methods
@@ -34,13 +34,13 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @param split separate result by 'category' variable
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2
-##' @param cluster_label_scale scale of cluster labels size
+##' @param cex_group_label scale of group labels size
 ##' @param semData GOSemSimDATA object
 ##' @param label_style one of "shadowtext" and "ggforce"
 ##' @param group_legend If TRUE, the grouping legend will be displayed.
 ##' The default is FALSE
-##' @param node_scale scale of node(for "enrichResult" data) or
-##' pie chart(for "compareClusterResult" data)
+##' @param cex_category number indicating the amount by which plotting category
+##' nodes should be scaled relative to the default.
 ##' @importFrom igraph layout_with_fr
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 scale_color_discrete
@@ -54,19 +54,20 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @importFrom GOSemSim godata
 ##' @importFrom shadowtext geom_shadowtext
 emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
-                                          color = "p.adjust", line_scale = 0.1,
+                                          color = "p.adjust", cex_line = 1,
                                           with_edge = TRUE, method = "JC",
                                           nWords = 4, nCluster = NULL,
                                           split = NULL, min_edge = 0.2,
-                                          cluster_label_scale = 1, semData = NULL,
-     label_style = "shadowtext", group_legend = FALSE, node_scale = 1){
+                                          cex_group_label = 1, semData = NULL,
+                                          label_style = "shadowtext", 
+                                          group_legend = FALSE, cex_category = 1){
 
     # has_package("ggrepel")
 
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
 
-    g <- get_igraph(x=x, y=y, n=n, color=color, line_scale=line_scale,
+    g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
                     min_edge=min_edge, method = method, semData = semData)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) +
@@ -112,13 +113,13 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
     ## use spread.labs
-    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cluster_label_scale*y_adjust)
+    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cex_group_label*y_adjust)
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color")
 
     if(with_edge) {
         p <-  p +  ggraph::geom_edge_link(alpha = .8,
-                       aes_(width =~ I(width*line_scale)), colour='darkgrey')
+                       aes_(width =~ I(width*cex_line)), colour='darkgrey')
     }
 
     if(label_style == "shadowtext") {
@@ -134,16 +135,16 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
         geom_point(shape = 21, aes_(x =~ x, y =~ y, fill =~ color2,
                                     size =~ size)) +
         scale_size_continuous(name = "number of genes",
-                              range = c(3, 8) * node_scale) +
+                              range = c(3, 8) * cex_category) +
         scale_fill_continuous(low = "red", high = "blue", name = color,
                               guide = guide_colorbar(reverse = TRUE))
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
-            # size = 5 * cluster_label_scale)
+            # size = 5 * cex_group_label)
     if(label_style == "shadowtext") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-                size = 3 * cluster_label_scale, bg.color = "white", bg.r = 0.3,
+                size = 3 * cex_group_label, bg.color = "white", bg.r = 0.3,
                 show.legend = FALSE)
         } else {
             warn <- paste0("The version of ggrepel in your computer is ",
@@ -152,7 +153,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
             warning(warn)
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label),
-                size = 3 * cluster_label_scale)
+                size = 3 * cex_group_label)
         }
 
     }
@@ -176,26 +177,13 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
 ##' @importFrom stats setNames
 ##' @param pie proportion of clusters in the pie chart, one of
 ##' 'equal' (default) or 'Count'
-##' @param pie_scale scale of pie chart or point, this parameter has
-##' been changed to "node_scale"
 ##' @param legend_n number of circle in legend
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
-    color = "p.adjust", line_scale = 0.1, with_edge = TRUE, method = "JC",
+    color = "p.adjust", cex_line = 1, with_edge = TRUE, method = "JC",
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
-    cluster_label_scale = 1, semData = NULL, pie = "equal", legend_n = 5,
-    node_scale = NULL, pie_scale = NULL, label_style = "shadowtext",
-    group_legend = FALSE){
+    cex_group_label = 1, semData = NULL, pie = "equal", legend_n = 5,
+    cex_category = 1, label_style = "shadowtext", group_legend = FALSE){
 
-    if (!is.null(pie_scale))
-        message("pie_scale parameter has been changed to 'node_scale'")
-
-    if (is.null(node_scale)) {
-        if (!is.null(pie_scale)) {
-            node_scale <- pie_scale
-        } else {
-            node_scale <- 1
-        }
-    }
 
 
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
@@ -207,9 +195,9 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
-        line_scale=line_scale, min_edge=min_edge, method = method,
+        cex_line=cex_line, min_edge=min_edge, method = method,
         semData = semData)
-    p <- get_p(y = y, g = g, y_union = y_union, node_scale = node_scale,
+    p <- get_p(y = y, g = g, y_union = y_union, cex_category = cex_category,
         pie = pie, layout = "nicely")
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
@@ -258,7 +246,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
 
     #Change the radius value to fit the pie plot
     radius <- NULL
-    ID_Cluster_mat$radius <- sqrt(pdata2$size[i] / sum(pdata2$size)) * node_scale
+    ID_Cluster_mat$radius <- sqrt(pdata2$size[i] / sum(pdata2$size) * cex_category) 
 
     x_loc1 <- min(ID_Cluster_mat$x)
     y_loc1 <- min(ID_Cluster_mat$y)
@@ -272,12 +260,12 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     ## Adjust the label position up and down to avoid overlap
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
-    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cluster_label_scale*y_adjust)
+    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cex_group_label*y_adjust)
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color")
 
     if(with_edge) {
-        p <-  p +  geom_edge_link(alpha = .8, aes_(width =~ I(width*line_scale)),
+        p <-  p +  geom_edge_link(alpha = .8, aes_(width =~ I(width*cex_line)),
                                   colour='darkgrey')
     }
 
@@ -297,15 +285,15 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
         coord_equal()+
         geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
             n = legend_n,
-            labeller = function(x) round(sum(pdata2$size)*((x/node_scale)^2)))
+            labeller = function(x) round(sum(pdata2$size) * x^2 / cex_category))
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
-            # size = 5 * cluster_label_scale, check_overlap = check_overlap)
+            # size = 5 * cex_group_label, check_overlap = check_overlap)
 
     if(label_style == "shadowtext") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-                size = 3 * cluster_label_scale, bg.color = "white", bg.r = 0.3,
+                size = 3 * cex_group_label, bg.color = "white", bg.r = 0.3,
                 show.legend = FALSE)
         } else {
             warn <- paste0("The version of ggrepel in your computer is ",
@@ -314,7 +302,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
             warning(warn)
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label),
-                size = 3 * cluster_label_scale)
+                size = 3 * cex_group_label)
         }
 
     }
