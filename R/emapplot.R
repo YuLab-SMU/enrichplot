@@ -189,24 +189,24 @@ get_igraph <- function(x, y,  n, color, cex_line, min_edge, method, semData){
 ##' and "JC"(Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
 ##' @param node_label_size size of node label, this parameter has been
-##' changed to fontsize_category and fontsize_gene
-##' @param fontsize_category size of category node label
+##' changed to cex_label_category
+##' @param cex_label_category scale of category node label size
 ##' @param cex_category number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     layout = "nicely", node_scale = NULL, line_scale = NULL, min_edge=0.2,
     method = "JC", semData = NULL, node_label_size = NULL,
-    fontsize_category  = NULL, cex_category = NULL, cex_line = NULL) {
+    cex_label_category  = 1, cex_category = NULL, cex_line = NULL) {
 
-    if (!is.null(node_label_size)) message("node_label_size parameter has been changed to 'fontsize_category'")
-    if (is.null(fontsize_category)) {
-        if (!is.null(node_label_size)) {
-            fontsize_category <- node_label_size
-        } else {
-            fontsize_category <- 5
-        }
-    }
+    if (!is.null(node_label_size)) message("node_label_size parameter has been changed to 'cex_label_category'")
+    # if (is.null(cex_label_category)) {
+        # if (!is.null(node_label_size)) {
+            # cex_label_category <- node_label_size
+        # } else {
+            # cex_label_category <- 5
+        # }
+    # }
 
     if (!is.null(node_scale)) message("node_scale parameter has been changed to 'cex_category'")
     if (is.null(cex_category)) {
@@ -245,10 +245,10 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
 
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = fontsize_category, bg.color = "white")
+            size = 5 * cex_label_category, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = fontsize_category)
+            size = 5 * cex_label_category)
     }
         # geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
     p + theme_void() +
@@ -314,17 +314,17 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           legend_n = 5, cex_category = NULL,
                                           pie_scale = NULL, cex_line = 1,
                                           min_edge=0.2, method = "JC",
-                                          semData = NULL, fontsize_category  = NULL,
+                                          semData = NULL, cex_label_category  = 1,
                                           node_label_size = NULL) {
     if (!is.null(node_label_size))
-        message("node_label_size parameter has been changed to 'fontsize_category'")
-    if (is.null(fontsize_category)) {
-        if (!is.null(node_label_size)) {
-            fontsize_category <- node_label_size
-        } else {
-            fontsize_category <- 3
-        }
-    }
+        message("node_label_size parameter has been changed to 'cex_label_category'")
+    # if (is.null(cex_label_category)) {
+        # if (!is.null(node_label_size)) {
+            # cex_label_category <- node_label_size
+        # } else {
+            # cex_label_category <- 3
+        # }
+    # }
 
     if (!is.null(pie_scale))
         message("pie_scale parameter has been changed to 'cex_category'")
@@ -397,10 +397,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
             coord_equal()
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                size = fontsize_category, bg.color = "white")
+                size = 3 * cex_label_category, bg.color = "white")
         } else {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                size = fontsize_category)
+                size = 3 * cex_label_category)
         }
         p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
@@ -414,10 +414,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     p + geom_node_point(aes_(color=~color, size=~size))
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = fontsize_category, bg.color = "white")
+            size = 3 * cex_label_category, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = fontsize_category)
+            size = 3 * cex_label_category)
     }
     p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,

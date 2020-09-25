@@ -28,7 +28,7 @@ emapplot_cluster.enrichResult(
   nCluster = NULL,
   split = NULL,
   min_edge = 0.2,
-  cex_group_label = 1,
+  cex_label_group = 1,
   semData = NULL,
   label_style = "shadowtext",
   group_legend = FALSE,
@@ -46,7 +46,7 @@ emapplot_cluster.compareClusterResult(
   nCluster = NULL,
   split = NULL,
   min_edge = 0.2,
-  cex_group_label = 1,
+  cex_label_group = 1,
   semData = NULL,
   pie = "equal",
   legend_n = 5,
@@ -82,7 +82,7 @@ one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 \item{min_edge}{minimum percentage of overlap genes to display the edge,
 should between 0 and 1, default value is 0.2}
 
-\item{cex_group_label}{scale of group labels size}
+\item{cex_label_group}{scale of group labels size}
 
 \item{semData}{GOSemSimDATA object}
 

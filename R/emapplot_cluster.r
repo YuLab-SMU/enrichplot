@@ -34,7 +34,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @param split separate result by 'category' variable
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2
-##' @param cex_group_label scale of group labels size
+##' @param cex_label_group scale of group labels size
 ##' @param semData GOSemSimDATA object
 ##' @param label_style one of "shadowtext" and "ggforce"
 ##' @param group_legend If TRUE, the grouping legend will be displayed.
@@ -58,7 +58,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
                                           with_edge = TRUE, method = "JC",
                                           nWords = 4, nCluster = NULL,
                                           split = NULL, min_edge = 0.2,
-                                          cex_group_label = 1, semData = NULL,
+                                          cex_label_group = 1, semData = NULL,
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1){
 
@@ -113,7 +113,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
     ## use spread.labs
-    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cex_group_label*y_adjust)
+    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cex_label_group*y_adjust)
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color")
 
@@ -139,12 +139,12 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
         scale_fill_continuous(low = "red", high = "blue", name = color,
                               guide = guide_colorbar(reverse = TRUE))
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
-            # size = 5 * cex_group_label)
+            # size = 5 * cex_label_group)
     if(label_style == "shadowtext") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-                size = 3 * cex_group_label, bg.color = "white", bg.r = 0.3,
+                size = 3 * cex_label_group, bg.color = "white", bg.r = 0.3,
                 show.legend = FALSE)
         } else {
             warn <- paste0("The version of ggrepel in your computer is ",
@@ -153,7 +153,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
             warning(warn)
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label),
-                size = 3 * cex_group_label)
+                size = 3 * cex_label_group)
         }
 
     }
@@ -181,7 +181,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     color = "p.adjust", cex_line = 1, with_edge = TRUE, method = "JC",
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
-    cex_group_label = 1, semData = NULL, pie = "equal", legend_n = 5,
+    cex_label_group = 1, semData = NULL, pie = "equal", legend_n = 5,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE){
 
 
@@ -260,7 +260,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     ## Adjust the label position up and down to avoid overlap
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
-    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cex_group_label*y_adjust)
+    # label_location$y <- TeachingDemos::spread.labs(x = label_location$y, mindiff = cex_label_group*y_adjust)
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color")
 
@@ -287,13 +287,13 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
             n = legend_n,
             labeller = function(x) round(sum(pdata2$size) * x^2 / cex_category))
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
-            # size = 5 * cex_group_label, check_overlap = check_overlap)
+            # size = 5 * cex_label_group, check_overlap = check_overlap)
 
     if(label_style == "shadowtext") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-                size = 3 * cex_group_label, bg.color = "white", bg.r = 0.3,
+                size = 3 * cex_label_group, bg.color = "white", bg.r = 0.3,
                 show.legend = FALSE)
         } else {
             warn <- paste0("The version of ggrepel in your computer is ",
@@ -302,7 +302,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
             warning(warn)
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label),
-                size = 3 * cex_group_label)
+                size = 3 * cex_label_group)
         }
 
     }

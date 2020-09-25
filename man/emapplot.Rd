@@ -28,7 +28,7 @@ emapplot.enrichResult(
   method = "JC",
   semData = NULL,
   node_label_size = NULL,
-  fontsize_category = NULL,
+  cex_label_category = 1,
   cex_category = NULL,
   cex_line = NULL
 )
@@ -47,7 +47,7 @@ emapplot.compareClusterResult(
   min_edge = 0.2,
   method = "JC",
   semData = NULL,
-  fontsize_category = NULL,
+  cex_label_category = 1,
   node_label_size = NULL
 )
 }
@@ -74,10 +74,10 @@ p.adjust or qvalue}
 
 \item{semData}{GOSemSimDATA object}
 
-\item{node_label_size}{size of node label, this parameter has been 
-changed to fontsize_category and fontsize_gene}
+\item{node_label_size}{size of node label, this parameter has been
+changed to cex_label_category}
 
-\item{fontsize_category}{size of category node label}
+\item{cex_label_category}{scale of category node label size}
 
 \item{cex_category}{number indicating the amount by which plotting category
 nodes should be scaled relative to the default.}
