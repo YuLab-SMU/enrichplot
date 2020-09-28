@@ -185,7 +185,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE){
 
 
-
+    label_group <- 3
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
 
@@ -293,7 +293,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label, colour =~ label),
-                size = 3 * cex_label_group, bg.color = "white", bg.r = 0.3,
+                size = label_group * cex_label_group, bg.color = "white", bg.r = 0.3,
                 show.legend = FALSE)
         } else {
             warn <- paste0("The version of ggrepel in your computer is ",
@@ -302,7 +302,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
             warning(warn)
             p <- p + ggrepel::geom_text_repel(data = label_location,
                 aes_(x =~ x, y =~ y, label =~ label),
-                size = 3 * cex_label_group)
+                size = label_group * cex_label_group)
         }
 
     }

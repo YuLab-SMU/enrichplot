@@ -57,7 +57,7 @@ nodes should be scaled relative to the default.}
 should be scaled relative to the default.}
 
 \item{node_label_size}{size of node label, this parameter has been
-changed to cex_label_category and 5 * cex_label_gene}
+changed to cex_label_category and cex_label_gene}
 
 \item{cex_label_category}{scale of category node label size}
 

@@ -74,7 +74,8 @@ cnetplot.enrichResult <- function(x,
         # }
     # }
 
-
+    label_category <- 5
+    label_gene <- 5
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
     if (circular) {
         layout <- "linear"
@@ -125,7 +126,6 @@ cnetplot.enrichResult <- function(x,
         V(g)$color[1:n] <- "#E5C494"
         p <- ggraph(g, layout=layout, circular=circular)
         p <- p + edge_layer +
-            # geom_node_point(aes_(color=~I(color), size=~size))
             geom_node_point(aes_(color=~I(color), size=~size), data = p$data[1:n, ]) +
             scale_size(range=c(3, 8) * cex_category) +
             ggnewscale::new_scale("size") +
@@ -140,30 +140,30 @@ cnetplot.enrichResult <- function(x,
     if (node_label == "category") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                size = 5 * cex_label_category, bg.color = "white")
+                size = label_category * cex_label_category, bg.color = "white")
         } else {
             p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                size = 5 * cex_label_category)
+                size = label_category * cex_label_category)
         }
     } else if (node_label == "gene") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-                repel=TRUE, size = 5 * cex_label_gene, bg.color = "white")
+                repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white")
         } else {
             p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-            repel=TRUE, size = 5 * cex_label_gene)
+            repel=TRUE, size = label_gene * cex_label_gene)
         }
     } else if (node_label == "all") {
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                    size = 5 * cex_label_category, bg.color = "white", data = p$data[1:n,]) +
-                geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-                    repel=TRUE, size = 5 * cex_label_gene, bg.color = "white")
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
+                    repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white") + 
+                geom_node_text(aes_(label=~name), repel=TRUE,
+                    size = label_category * cex_label_category, bg.color = "white", data = p$data[1:n,]) 
         } else {
-            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                    size = 5 * cex_label_category) +
-                geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-                    repel=TRUE, size = 5 * cex_label_gene)
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
+                    repel=TRUE, size = label_gene * cex_label_gene) + 
+                geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                    repel=TRUE, size = label_category * cex_label_category)
         }
 
     }
@@ -220,7 +220,7 @@ cnetplot.compareClusterResult <- function(x,
         # }
     # }
 
-
+    
     if (!is.null(pie_scale))
         message("pie_scale parameter has been changed to 'cex_category' and 'cex_gene'")
     if (is.null(cex_category)) {
@@ -238,7 +238,11 @@ cnetplot.compareClusterResult <- function(x,
             cex_gene <- 1
         }
     }
-
+    
+    label_category <- 2.5
+    label_gene <- 2.5
+    range_category_size <- c(3, 8)
+    range_gene_size <- c(3, 3)
     y <- fortify(x, showCategory=showCategory,
         includeAll=TRUE, split=split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
@@ -276,23 +280,23 @@ cnetplot.compareClusterResult <- function(x,
             # scale_size(range=c(3, 8) * mean(node_scales)) + theme(legend.position="none")
             geom_node_point(aes_(color=~I(color), size=~size),
                 data = p$data[1:n, ]) +
-            scale_size(range=c(3, 8) * cex_category) +
+            scale_size(range = range_category_size * cex_category) +
             ggnewscale::new_scale("size") +
             geom_node_point(aes_(color=~I(color), size=~size),
                 data = p$data[-(1:n), ], show.legend = FALSE) +
-            scale_size(range=c(3, 3) * cex_gene) +
+            scale_size(range = range_gene_size * cex_gene) +
             labs(title= title) +
             theme(legend.position="none")
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                    size = 2.5 * cex_label_category, bg.color = "white", repel=TRUE) +
-                geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                    size = 2.5 * cex_label_gene, bg.color = "white", repel=TRUE)
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                    size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+                geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                    size = label_category * cex_label_category, bg.color = "white", repel=TRUE)
         } else {
-            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                    size = 2.5 * cex_label_category, repel=TRUE) +
-                geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                    size = 2.5 * cex_label_gene, repel=TRUE)
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                    size = label_gene * cex_label_gene, repel=TRUE) + 
+                geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                    size = label_category * cex_label_category, repel=TRUE)
         }
 
 
@@ -382,15 +386,15 @@ cnetplot.compareClusterResult <- function(x,
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc + 3, label = "gene number")
 
             if (utils::packageVersion("ggrepel") >= "0.9.0") {
-                p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                        size = 2.5 * cex_label_category, bg.color = "white", repel=TRUE) +
-                    geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                        size = 2.5 * cex_label_gene, bg.color = "white", repel=TRUE)
+                p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                        size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+                    geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                        size = label_category * cex_label_category, bg.color = "white", repel=TRUE)
             } else {
-                p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                        size = 2.5 * cex_label_category, repel=TRUE) +
-                    geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                        size = 2.5 * cex_label_gene, repel=TRUE)
+                p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                        size = label_gene * cex_label_gene, repel=TRUE) + 
+                    geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                        size = label_category * cex_label_category, repel=TRUE)
             }
 
 
@@ -415,15 +419,15 @@ cnetplot.compareClusterResult <- function(x,
             ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "gene number")
 
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                    size = 2.5 * cex_label_category, bg.color = "white", repel=TRUE) +
-                geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                    size = 2.5 * cex_label_gene, bg.color = "white", repel=TRUE)
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                    size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+                geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                    size = label_category * cex_label_category, bg.color = "white", repel=TRUE)
         } else {
-            p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                    size = 2.5 * cex_label_category, repel=TRUE) +
-                geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                    size = 2.5 * cex_label_gene, repel=TRUE)
+            p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                    size = label_gene * cex_label_gene, repel=TRUE) + 
+                geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                    size = label_category * cex_label_category, repel=TRUE)
         }
 
 
@@ -441,23 +445,23 @@ cnetplot.compareClusterResult <- function(x,
     p <- p + edge_layer +
         geom_node_point(aes_(color=~I(color), size=~size),
             data = p$data[1:n, ]) +
-        scale_size(range=c(3, 8) * cex_category) +
+        scale_size(range = range_category_size * cex_category) +
         ggnewscale::new_scale("size") +
         geom_node_point(aes_(color=~I(color), size=~size),
             data = p$data[-(1:n), ], show.legend = FALSE) +
-        scale_size(range=c(3, 3) * cex_gene) +
+        scale_size(range = range_gene_size * cex_gene) +
         labs(title= title)
 
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                size = 2.5 * cex_label_category, bg.color = "white", repel=TRUE) +
-            geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                size = 2.5 * cex_label_gene, bg.color = "white", repel=TRUE)
+        p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+            geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                size = label_category * cex_label_category, bg.color = "white", repel=TRUE)
     } else {
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                size = 2.5 * cex_label_category, repel=TRUE) +
-            geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                size = 2.5 * cex_label_gene, repel=TRUE)
+        p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+                size = label_gene * cex_label_gene, repel=TRUE) + 
+            geom_node_text(aes_(label=~name), data = p$data[1:n,],
+                size = label_category * cex_label_category, repel=TRUE)
     }
 
 

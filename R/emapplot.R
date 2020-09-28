@@ -225,7 +225,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
             cex_line <- 1
         }
     }
-
+    label_category <- 5
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
     y <- as.data.frame(x)
@@ -245,10 +245,10 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
 
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = 5 * cex_label_category, bg.color = "white")
+            size = label_category * cex_label_category, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = 5 * cex_label_category)
+            size = label_category * cex_label_category)
     }
         # geom_node_text(aes_(label=~name), repel=TRUE) + theme_void() +
     p + theme_void() +
@@ -337,7 +337,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
         }
     }
 
-
+    label_category <- 3
     ## pretreatment of x, just like dotplot do
     y <- fortify(x, showCategory=showCategory,
                                       includeAll=TRUE, split=split)
@@ -397,10 +397,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
             coord_equal()
         if (utils::packageVersion("ggrepel") >= "0.9.0") {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                size = 3 * cex_label_category, bg.color = "white")
+                size = label_category * cex_label_category, bg.color = "white")
         } else {
             p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-                size = 3 * cex_label_category)
+                size = label_category * cex_label_category)
         }
         p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
@@ -414,10 +414,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     p + geom_node_point(aes_(color=~color, size=~size))
     if (utils::packageVersion("ggrepel") >= "0.9.0") {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = 3 * cex_label_category, bg.color = "white")
+            size = label_category * cex_label_category, bg.color = "white")
     } else {
         p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
-            size = 3 * cex_label_category)
+            size = label_category * cex_label_category)
     }
     p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
