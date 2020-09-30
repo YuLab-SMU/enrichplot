@@ -24,7 +24,11 @@ cnetplot.enrichResult(
   colorEdge = FALSE,
   circular = FALSE,
   node_label = "all",
-  node_scale = 1,
+  cex_category = 1,
+  cex_gene = 1,
+  node_label_size = NULL,
+  cex_label_category = 1,
+  cex_label_gene = 1,
   ...
 )
 }
@@ -46,8 +50,18 @@ cnetplot.enrichResult(
 \item{node_label}{select which labels to be displayed.
 one of 'category', 'gene', 'all' and 'none', default is "all".}
 
-\item{node_scale}{scale of node(for "enrichResult" data) or
-pie chart(for "compareClusterResult" data)}
+\item{cex_category}{number indicating the amount by which plotting category
+nodes should be scaled relative to the default.}
+
+\item{cex_gene}{number indicating the amount by which plotting gene nodes
+should be scaled relative to the default.}
+
+\item{node_label_size}{size of node label, this parameter has been
+changed to cex_label_category and cex_label_gene}
+
+\item{cex_label_category}{scale of category node label size}
+
+\item{cex_label_gene}{scale of gene node label size}
 }
 \value{
 ggplot object

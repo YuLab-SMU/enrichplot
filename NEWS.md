@@ -1,3 +1,13 @@
+# enrichplot 1.9.4
+
++ add `node_label_size` parameter to adjust the size of node label in `emapplot` function (2020-09-18, Fri)
+
+
+# enrichplot 1.9.2
+
++ add function `emapplot_cluster` (2020-09-01, Tue)
+
+
 # enrichplot 1.7.3
 
 + update `barplot` to remove using `coord_flip()` (2020-09-10, Thu)
