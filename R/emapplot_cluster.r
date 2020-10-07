@@ -1,7 +1,7 @@
 ##' @rdname emapplot_cluster
 ##' @exportMethod emapplot_cluster
 setMethod("emapplot_cluster", signature(x = "enrichResult"),
-    function(x, showCategory = nrow(x), color = "p.adjust", ...) {
+    function(x, showCategory = 30, color = "p.adjust", ...) {
         emapplot_cluster.enrichResult(x, showCategory = showCategory,
             color = color, ...)
     })
@@ -9,7 +9,7 @@ setMethod("emapplot_cluster", signature(x = "enrichResult"),
 ##' @rdname emapplot_cluster
 ##' @exportMethod emapplot_cluster
 setMethod("emapplot_cluster", signature(x = "gseaResult"),
-    function(x, showCategory = nrow(x), color = "p.adjust", ...) {
+    function(x, showCategory = 30, color = "p.adjust", ...) {
         emapplot_cluster.enrichResult(x, showCategory = showCategory,
             color = color, ...)
     })
@@ -53,7 +53,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @importFrom DOSE geneInCategory
 ##' @importFrom GOSemSim godata
 ##' @importFrom shadowtext geom_shadowtext
-emapplot_cluster.enrichResult <- function(x, showCategory = nrow(x),
+emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           color = "p.adjust", cex_line = 1,
                                           with_edge = TRUE, method = "JC",
                                           nWords = 4, nCluster = NULL,
