@@ -1,7 +1,13 @@
 # enrichplot 1.9.4
 
-+ add `node_label_size` parameter to adjust the size of node label in `emapplot` function (2020-09-18, Fri)
++ implement `pairwise_termsim` to calculate similarity of enriched terms (2020-10-09, Fri)
+  - <https://github.com/YuLab-SMU/enrichplot/pull/67>
++ change parameters to be more consistent
+  - <https://github.com/YuLab-SMU/enrichplot/pull/62>
 
+# enrichplot 1.9.3
+
++ add `node_label_size` parameter to adjust the size of node label in `emapplot` function (2020-09-18, Fri)
 
 # enrichplot 1.9.2
 
