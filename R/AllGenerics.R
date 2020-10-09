@@ -117,7 +117,42 @@ setGeneric("emapplot_cluster",
                standardGeneric("emapplot_cluster")
            )
 
-
+##' Get the similarity matrix
+##'
+##'
+##' This function add similarity matrix to the termsim slot of enrichment result.
+##' @title pairwise_termsim
+##' @rdname pairwise_termsim
+##' @param x enrichment result.
+##' @param method method of calculating the similarity between nodes,
+##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and  
+##' "JC"(Jaccard similarity coefficient) methods.
+##' @param semData GOSemSimDATA object
+##' @param showCategory number of enriched terms to display
+##' @examples
+##' \dontrun{
+##'     library(clusterProfiler)
+##'     library(org.Hs.eg.db)
+##'     library(enrichplot)
+##'     library(GOSemSim)
+##'     library(DOSE)
+##'     data(geneList)
+##'     gene <- names(geneList)[abs(geneList) > 2]
+##'     ego <- enrichGO(gene  = gene,
+##'         universe      = names(geneList),
+##'         OrgDb         = org.Hs.eg.db,
+##'         ont           = "BP",
+##'         pAdjustMethod = "BH",
+##'         pvalueCutoff  = 0.01,
+##'         qvalueCutoff  = 0.05,
+##'         readable      = TRUE)
+##'     d <- godata('org.Hs.eg.db', ont="BP")
+##'     ego2 <- pairwise_termsim(ego, method="Wang", semData = d)
+##'    }
+setGeneric("pairwise_termsim",
+           function(x, method = "JC", semData = NULL, showCategory = 30)
+               standardGeneric("pairwise_termsim")
+           )
 
 ##' plot induced GO DAG of significant terms
 ##'
@@ -208,7 +243,7 @@ setGeneric("ridgeplot",
            )
 
 
-#' upsetplot method generics
+##' upsetplot method generics
 ##'
 ##'
 ##' @docType methods
