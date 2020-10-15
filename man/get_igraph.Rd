@@ -4,7 +4,7 @@
 \alias{get_igraph}
 \title{Get an iGraph object}
 \usage{
-get_igraph(x, y, n, color, cex_line, min_edge, method, semData)
+get_igraph(x, y, n, color, cex_line, min_edge)
 }
 \arguments{
 \item{x}{enrichment result.}
@@ -20,12 +20,6 @@ p.adjust or qvalue.}
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge,
 should between 0 and 1, default value is 0.2.}
-
-\item{method}{method of calculating the similarity between nodes,
-one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-"JC"(Jaccard similarity coefficient) methods}
-
-\item{semData}{GOSemSimDATA object}
 }
 \value{
 an iGraph object

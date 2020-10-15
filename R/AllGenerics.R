@@ -68,7 +68,8 @@ setGeneric("dotplot",
 ##' data(geneList)
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
-##' emapplot(x)
+##' x2 <- pairwise_termsim(x)
+##' emapplot(x2)
 setGeneric("emapplot",
            function(x, showCategory = 30, color="p.adjust", layout = "kk", ...)
                standardGeneric("emapplot")
@@ -110,7 +111,8 @@ setGeneric("emapplot",
 ##'         qvalueCutoff  = 0.05,
 ##'         readable      = TRUE)
 ##'     d <- godata('org.Hs.eg.db', ont="BP")
-##'     emapplot_cluster(ego, showCategory = 80, method = "Wang", semData = d)
+##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
+##'     emapplot_cluster(ego2, showCategory = 80)
 ##'    }
 setGeneric("emapplot_cluster",
            function(x, showCategory = nrow(x), color="p.adjust", ...)
@@ -148,6 +150,8 @@ setGeneric("emapplot_cluster",
 ##'         readable      = TRUE)
 ##'     d <- godata('org.Hs.eg.db', ont="BP")
 ##'     ego2 <- pairwise_termsim(ego, method="Wang", semData = d)
+##'     emapplot(ego2)
+##'     emapplot_cluster(ego2)
 ##'    }
 setGeneric("pairwise_termsim",
            function(x, method = "JC", semData = NULL, showCategory = 30)

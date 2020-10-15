@@ -23,13 +23,11 @@ emapplot_cluster.enrichResult(
   color = "p.adjust",
   cex_line = 1,
   with_edge = TRUE,
-  method = "JC",
   nWords = 4,
   nCluster = NULL,
   split = NULL,
   min_edge = 0.2,
   cex_label_group = 1,
-  semData = NULL,
   label_style = "shadowtext",
   group_legend = FALSE,
   cex_category = 1
@@ -41,13 +39,11 @@ emapplot_cluster.compareClusterResult(
   color = "p.adjust",
   cex_line = 1,
   with_edge = TRUE,
-  method = "JC",
   nWords = 4,
   nCluster = NULL,
   split = NULL,
   min_edge = 0.2,
   cex_label_group = 1,
-  semData = NULL,
   pie = "equal",
   legend_n = 5,
   cex_category = 1,
@@ -69,10 +65,6 @@ p.adjust or qvalue}
 
 \item{with_edge}{if TRUE, draw the edges of the network diagram}
 
-\item{method}{method of calculating the similarity between nodes,
-one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-"JC" (Jaccard similarity coefficient) methods}
-
 \item{nWords}{the number of words in the cluster tags}
 
 \item{nCluster}{the number of clusters}
@@ -83,8 +75,6 @@ one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 should between 0 and 1, default value is 0.2}
 
 \item{cex_label_group}{scale of group labels size}
-
-\item{semData}{GOSemSimDATA object}
 
 \item{label_style}{one of "shadowtext" and "ggforce"}
 
@@ -129,6 +119,7 @@ for interpretation.
         qvalueCutoff  = 0.05,
         readable      = TRUE)
     d <- godata('org.Hs.eg.db', ont="BP")
-    emapplot_cluster(ego, showCategory = 80, method = "Wang", semData = d)
+    ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
+    emapplot_cluster(ego2, showCategory = 80)
    }
 }

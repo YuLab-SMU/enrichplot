@@ -11,19 +11,24 @@
 \usage{
 pairwise_termsim(x, method = "JC", semData = NULL, showCategory = 30)
 
-\S4method{pairwise_termsim}{enrichResult}(x, method = "JC", semData = NULL, showCategory = 30)
+\S4method{pairwise_termsim}{enrichResult}(x, method = "JC", semData = NULL, showCategory = 200)
 
-\S4method{pairwise_termsim}{gseaResult}(x, method = "JC", semData = NULL, showCategory = 30)
+\S4method{pairwise_termsim}{gseaResult}(x, method = "JC", semData = NULL, showCategory = 200)
 
-\S4method{pairwise_termsim}{compareClusterResult}(x, method = "JC", semData = NULL, showCategory = 30)
+\S4method{pairwise_termsim}{compareClusterResult}(x, method = "JC", semData = NULL, showCategory = 200)
 
-pairwise_termsim.enrichResult(x, method, semData = NULL, showCategory = 30)
+pairwise_termsim.enrichResult(
+  x,
+  method = "JC",
+  semData = NULL,
+  showCategory = 200
+)
 
 pairwise_termsim.compareClusterResult(
   x,
-  method,
+  method = "JC",
   semData = NULL,
-  showCategory = 30
+  showCategory = 200
 )
 }
 \arguments{
@@ -62,5 +67,7 @@ This function add similarity matrix to the termsim slot of enrichment result.
         readable      = TRUE)
     d <- godata('org.Hs.eg.db', ont="BP")
     ego2 <- pairwise_termsim(ego, method="Wang", semData = d)
+    emapplot(ego2)
+    emapplot_cluster(ego2)
    }
 }

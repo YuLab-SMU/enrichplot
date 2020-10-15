@@ -26,16 +26,12 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @rdname emapplot_cluster
 ##' @param with_edge if TRUE, draw the edges of the network diagram
 ##' @param cex_line scale of line width
-##' @param method method of calculating the similarity between nodes,
-##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-##' "JC" (Jaccard similarity coefficient) methods
 ##' @param nWords the number of words in the cluster tags
 ##' @param nCluster the number of clusters
 ##' @param split separate result by 'category' variable
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2
 ##' @param cex_label_group scale of group labels size
-##' @param semData GOSemSimDATA object
 ##' @param label_style one of "shadowtext" and "ggforce"
 ##' @param group_legend If TRUE, the grouping legend will be displayed.
 ##' The default is FALSE
@@ -55,20 +51,20 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @importFrom shadowtext geom_shadowtext
 emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           color = "p.adjust", cex_line = 1,
-                                          with_edge = TRUE, method = "JC",
+                                          with_edge = TRUE,
                                           nWords = 4, nCluster = NULL,
                                           split = NULL, min_edge = 0.2,
-                                          cex_label_group = 1, semData = NULL,
+                                          cex_label_group = 1, 
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1){
+                                          
 
-    # has_package("ggrepel")
-
+    has_pairsim(x)
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
 
     g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
-                    min_edge=min_edge, method = method, semData = semData)
+                    min_edge=min_edge)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) +
                  geom_node_text(aes_(label=~name)))
@@ -179,12 +175,12 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
 ##' 'equal' (default) or 'Count'
 ##' @param legend_n number of circle in legend
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
-    color = "p.adjust", cex_line = 1, with_edge = TRUE, method = "JC",
+    color = "p.adjust", cex_line = 1, with_edge = TRUE,
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
-    cex_label_group = 1, semData = NULL, pie = "equal", legend_n = 5,
+    cex_label_group = 1, pie = "equal", legend_n = 5,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE){
 
-
+    has_pairsim(x)
     label_group <- 3
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
@@ -194,9 +190,10 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)
+      
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
-        cex_line=cex_line, min_edge=min_edge, method = method,
-        semData = semData)
+        cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
+        method = x@method)
     p <- get_p(y = y, g = g, y_union = y_union, cex_category = cex_category,
         pie = pie, layout = "nicely")
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
@@ -204,7 +201,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
 
     ## then add the pie plot
     ## Get the matrix data for the pie plot
-    ID_Cluster_mat <- prepare_pie_category(y,pie=pie)
+    ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
 
     # Start the cluster diagram
     edge_w <- E(g)$weight

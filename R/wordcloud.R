@@ -33,6 +33,7 @@ wordcloud_i <- function(cluster, pdata2, nWords){
     net_w <- net_w_all[names(sel_w)]
     tag_size <- (sel_w/sel_tot)/(net_w/net_tot)
     tag_size <- tag_size[order(tag_size, decreasing = TRUE)]
+    nWords <- min(nWords, length(tag_size))
     tag <- names(tag_size[seq_len(nWords)])
 
     # Order of words

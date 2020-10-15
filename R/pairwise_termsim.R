@@ -1,7 +1,7 @@
 ##' @rdname pairwise_termsim
 ##' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "enrichResult"),
-    function(x, method = "JC", semData = NULL, showCategory = 30) {
+    function(x, method = "JC", semData = NULL, showCategory = 200) {
         pairwise_termsim.enrichResult(x, method = method,
             semData = semData, showCategory = showCategory)
     })
@@ -9,7 +9,7 @@ setMethod("pairwise_termsim", signature(x = "enrichResult"),
 ##' @rdname pairwise_termsim
 ##' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "gseaResult"),
-    function(x, method = "JC", semData = NULL, showCategory = 30) {
+    function(x, method = "JC", semData = NULL, showCategory = 200) {
         pairwise_termsim.enrichResult(x, method = method,
             semData = semData, showCategory = showCategory)
     })
@@ -17,14 +17,14 @@ setMethod("pairwise_termsim", signature(x = "gseaResult"),
 ##' @rdname pairwise_termsim
 ##' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "compareClusterResult"),
-    function(x, method = "JC", semData = NULL, showCategory = 30) {
+    function(x, method = "JC", semData = NULL, showCategory = 200) {
         pairwise_termsim.compareClusterResult(x, method = method,
             semData = semData, showCategory = showCategory)
     })
 
 
 ##' @rdname pairwise_termsim
-pairwise_termsim.enrichResult <- function(x, method, semData = NULL, showCategory = 30) {
+pairwise_termsim.enrichResult <- function(x, method = "JC", semData = NULL, showCategory = 200) {
     y <- as.data.frame(x)
     geneSets <- geneInCategory(x)
     n <- update_n(x, showCategory)
@@ -44,16 +44,16 @@ pairwise_termsim.enrichResult <- function(x, method, semData = NULL, showCategor
 
 
 ##' @rdname pairwise_termsim
-pairwise_termsim.compareClusterResult <- function(x, method, semData = NULL, 
-                                                  showCategory = 30) {
+pairwise_termsim.compareClusterResult <- function(x, method = "JC", semData = NULL, 
+                                                  showCategory = 200) {
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=NULL)
     y$Cluster <- sub("\n.*", "", y$Cluster)
     y_union <- get_y_union(y = y, showCategory = showCategory)
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
-                                  fixed = TRUE), y_union$ID)
+                                  fixed = TRUE), 
+                         y_union$ID)
     x@termsim <- get_ww(y = y_union, geneSets = geneSets, method = method,
                 semData = semData)                              
     x@method <- method
-    return(x)
-    
+    return(x)    
 }
