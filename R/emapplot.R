@@ -74,11 +74,11 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
 #'
 has_pairsim <- function(x) {
     if (length(x@termsim) == 0) {
-        error_message <- "Term similarity matrix not available.
-            Please use pairwise_termsim function to
-            deal with the results of enrichment analysis."
-        error_message <- gsub("[ ]+", " ", error_message)
-        error_message <- gsub("[\r\n]", "", error_message)
+        error_message <- paste("Term similarity matrix not available.",
+            "Please use pairwise_termsim function to",
+            "deal with the results of enrichment analysis.")
+        # error_message <- gsub("[ ]+", " ", error_message)
+        # error_message <- gsub("[\r\n]", "", error_message)
         stop(error_message)
     }
 
