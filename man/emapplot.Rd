@@ -25,8 +25,6 @@ emapplot.enrichResult(
   node_scale = NULL,
   line_scale = NULL,
   min_edge = 0.2,
-  method = "JC",
-  semData = NULL,
   node_label_size = NULL,
   cex_label_category = 1,
   cex_category = NULL,
@@ -45,8 +43,6 @@ emapplot.compareClusterResult(
   pie_scale = NULL,
   cex_line = 1,
   min_edge = 0.2,
-  method = "JC",
-  semData = NULL,
   cex_label_category = 1,
   node_label_size = NULL
 )
@@ -68,11 +64,6 @@ p.adjust or qvalue}
 \item{line_scale}{scale of line width, this parameter has been changed to cex_line}
 
 \item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
-
-\item{method}{method of calculating the similarity between nodes, one of "Resnik",
-"Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods}
-
-\item{semData}{GOSemSimDATA object}
 
 \item{node_label_size}{size of node label, this parameter has been
 changed to cex_label_category}
@@ -109,7 +100,8 @@ library(DOSE)
 data(geneList)
 de <- names(geneList)[1:100]
 x <- enrichDO(de)
-emapplot(x)
+x2 <- pairwise_termsim(x)
+emapplot(x2)
 }
 \author{
 Guangchuang Yu

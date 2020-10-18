@@ -68,6 +68,22 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
 }
 
 
+#' Check whether the similarity matrix exists
+#'
+#' @param x result of enrichment analysis
+#'
+has_pairsim <- function(x) {
+    if (length(x@termsim) == 0) {
+        error_message <- paste("Term similarity matrix not available.",
+            "Please use pairwise_termsim function to",
+            "deal with the results of enrichment analysis.")
+        # error_message <- gsub("[ ]+", " ", error_message)
+        # error_message <- gsub("[\r\n]", "", error_message)
+        stop(error_message)
+    }
+
+}
+
 
 ##' Get graph.data.frame() result
 ##'
@@ -77,14 +93,16 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
 ##' @param geneSets a list gene sets with the names of enrichment IDs
 ##' @param color a string, the column name of y for nodes colours
 ##' @param cex_line scale of line width
-##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
-##' @param method method of calculating the similarity between nodes, one of "Resnik",
-##' "Lin", "Rel", "Jiang" , "Wang"  and "JC"(Jaccard similarity coefficient) methods
-##' @param semData GOSemSimDATA object
+##' @param min_edge minimum percentage of overlap genes to display the edge,
+##' should between 0 and 1, default value is 0.2
+##' @param pair_sim semantic similarity matrix
+##' @param method method of calculating the similarity between nodes,
+##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
+##' "JC" (Jaccard similarity coefficient) methods
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y, geneSets, color, cex_line, min_edge, method,
-                             semData = NULL, pair_sim  = NULL) {
+emap_graph_build <- function(y, geneSets, color, cex_line, min_edge, 
+                             pair_sim  = NULL, method = NULL) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
     	stop('"min_edge" should be a number between 0 and 1.')
@@ -96,42 +114,35 @@ emap_graph_build <- function(y, geneSets, color, cex_line, min_edge, method,
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
     } else {
-        if (is.null(pair_sim)) {
-            w <- get_ww(y = y, geneSets = geneSets, method = method,
-                semData = semData)
+        w <- pair_sim
+        if (method == "JC") {
+            w <- w[as.character(y$Description), as.character(y$Description)]
         } else {
-            w <- pair_sim
-            if (method == "JC") {
-                w <- w[as.character(y$Description), as.character(y$Description)]
-            } else {
-                w <- w[y$ID, y$ID]
-            }
+            w <- w[y$ID, y$ID]
         }
-        
-
-
-        wd <- melt(w)
-        wd <- wd[wd[,1] != wd[,2],]
-        # remove NA
-        wd <- wd[!is.na(wd[,3]),]
-        if (method != "JC") {
-            # map id to names
-            wd[, 1] <- y[wd[, 1], "Description"]
-            wd[, 2] <- y[wd[, 2], "Description"]
-        }
-
-        g <- graph.data.frame(wd[, -3], directed=FALSE)
-        E(g)$width <- sqrt(wd[, 3] * 5) * cex_line
-
-        # Use similarity as the weight(length) of an edge
-        E(g)$weight <- wd[, 3]
-        g <- delete.edges(g, E(g)[wd[, 3] < min_edge])
-        idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
-        cnt <- sapply(geneSets[idx], length)
-        V(g)$size <- cnt
-        colVar <- y[idx, color]
-        V(g)$color <- colVar
     }
+
+    wd <- melt(w)
+    wd <- wd[wd[,1] != wd[,2],]
+    # remove NA
+    wd <- wd[!is.na(wd[,3]),]
+    if (method != "JC") {
+        # map id to names
+        wd[, 1] <- y[wd[, 1], "Description"]
+        wd[, 2] <- y[wd[, 2], "Description"]
+    }
+
+    g <- graph.data.frame(wd[, -3], directed=FALSE)
+    E(g)$width <- sqrt(wd[, 3] * 5) * cex_line
+
+    # Use similarity as the weight(length) of an edge
+    E(g)$weight <- wd[, 3]
+    g <- delete.edges(g, E(g)[wd[, 3] < min_edge])
+    idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
+    cnt <- sapply(geneSets[idx], length)
+    V(g)$size <- cnt
+    colVar <- y[idx, color]
+    V(g)$color <- colVar
     return(g)
 }
 
@@ -147,13 +158,9 @@ emap_graph_build <- function(y, geneSets, color, cex_line, min_edge, method,
 ##' @param cex_line scale of line width.
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2.
-##' @param method method of calculating the similarity between nodes,
-##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-##' "JC"(Jaccard similarity coefficient) methods
-##' @param semData GOSemSimDATA object
 ##'
 ##' @return an iGraph object
-get_igraph <- function(x, y,  n, color, cex_line, min_edge, method, semData){
+get_igraph <- function(x, y,  n, color, cex_line, min_edge){
     geneSets <- geneInCategory(x) ## use core gene for gsea result
     if (is.numeric(n)) {
         y <- y[1:n, ]
@@ -165,12 +172,10 @@ get_igraph <- function(x, y,  n, color, cex_line, min_edge, method, semData){
     if (n == 0) {
         stop("no enriched term found...")
     }
-    pair_sim <- NULL
-    if (length(x@termsim) > 0) pair_sim <- x@termsim
-    if (length(x@method) > 0) method <- x@method
+    
     g <- emap_graph_build(y = y, geneSets = geneSets, color = color,
-             cex_line = cex_line, min_edge = min_edge, method = method,
-             semData = semData, pair_sim = pair_sim)
+             cex_line = cex_line, min_edge = min_edge,
+             pair_sim = x@termsim, method = x@method)
 }
 
 
@@ -198,10 +203,6 @@ get_igraph <- function(x, y,  n, color, cex_line, min_edge, method, semData){
 ##' @param cex_line scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge,
 ##' should between 0 and 1, default value is 0.2
-##' @param method method of calculating the similarity between nodes,
-##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"
-##' and "JC"(Jaccard similarity coefficient) methods
-##' @param semData GOSemSimDATA object
 ##' @param node_label_size size of node label, this parameter has been
 ##' changed to cex_label_category
 ##' @param cex_label_category scale of category node label size
@@ -210,10 +211,12 @@ get_igraph <- function(x, y,  n, color, cex_line, min_edge, method, semData){
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     layout = "nicely", node_scale = NULL, line_scale = NULL, min_edge=0.2,
-    method = "JC", semData = NULL, node_label_size = NULL,
-    cex_label_category  = 1, cex_category = NULL, cex_line = NULL) {
-
-    if (!is.null(node_label_size)) message("node_label_size parameter has been changed to 'cex_label_category'")
+    node_label_size = NULL, cex_label_category  = 1, cex_category = NULL,
+    cex_line = NULL) {
+    
+    has_pairsim(x)
+    if (!is.null(node_label_size)) 
+        message("node_label_size parameter has been changed to 'cex_label_category'")
     # if (is.null(cex_label_category)) {
         # if (!is.null(node_label_size)) {
             # cex_label_category <- node_label_size
@@ -222,7 +225,8 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         # }
     # }
 
-    if (!is.null(node_scale)) message("node_scale parameter has been changed to 'cex_category'")
+    if (!is.null(node_scale)) 
+        message("node_scale parameter has been changed to 'cex_category'")
     if (is.null(cex_category)) {
         if (!is.null(node_scale)) {
             cex_category <- node_scale
@@ -231,7 +235,8 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         }
     }
 
-    if (!is.null(line_scale)) message("line_scale parameter has been changed to 'cex_line'")
+    if (!is.null(line_scale)) 
+        message("line_scale parameter has been changed to 'cex_line'")
     if (is.null(cex_line)) {
         if (!is.null(line_scale)) {
             cex_line <- line_scale
@@ -242,11 +247,11 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     label_category <- 5
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
-    
-    
+
+
     y <- as.data.frame(x)
     g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
-                    min_edge=min_edge, method = method, semData = semData)
+                    min_edge=min_edge)
     if(n == 1) {
         return(ggraph(g) + geom_node_point(color="red", size=5) +
                geom_node_text(aes_(label=~name)))
@@ -320,18 +325,15 @@ merge_compareClusterResult <- function(yy) {
 ##' @param pie_scale scale of pie chart or point, this parameter has been changed to "node_scale"
 ##' @param cex_line scale of line width
 ##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
-##' @param method method of calculating the similarity between nodes, one of "Resnik",
-##' "Lin", "Rel", "Jiang" , "Wang"  and "JC" (Jaccard similarity coefficient) methods
-##' @param semData GOSemSimDATA object
 ##' @importFrom stats setNames
 emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           color = "p.adjust", layout = "nicely",
                                           split=NULL, pie = "equal",
                                           legend_n = 5, cex_category = NULL,
                                           pie_scale = NULL, cex_line = 1,
-                                          min_edge=0.2, method = "JC",
-                                          semData = NULL, cex_label_category  = 1,
+                                          min_edge=0.2, cex_label_category  = 1,
                                           node_label_size = NULL) {
+    has_pairsim(x)
     if (!is.null(node_label_size))
         message("node_label_size parameter has been changed to 'cex_label_category'")
     # if (is.null(cex_label_category)) {
@@ -366,14 +368,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)
-     
-    pair_sim <- NULL     
-    if (length(x@termsim) > 0) pair_sim <- x@termsim
-    if (length(x@method) > 0) method <- x@method
+
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
                           cex_line=cex_line, min_edge=min_edge,
-                          method = method, semData = semData,
-                          pair_sim = pair_sim)
+                          pair_sim = x@termsim, method = x@method)
 
     p <- get_p(y = y, g = g, y_union = y_union, cex_category = cex_category,
                pie = pie, layout = layout)

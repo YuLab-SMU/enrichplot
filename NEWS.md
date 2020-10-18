@@ -1,3 +1,7 @@
+# enrichplot 1.9.4.991
++ fix `wordcloud_i` (2020-10-15, Thu)
++ Remove similarity calculation from emapplot
+
 # enrichplot 1.9.4
 
 + implement `pairwise_termsim` to calculate similarity of enriched terms (2020-10-09, Fri)
