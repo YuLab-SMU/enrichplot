@@ -17,6 +17,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
+  label_wrap_width = 15,
   ...
 )
 
@@ -29,6 +30,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
+  label_wrap_width = 15,
   ...
 )
 }
@@ -51,6 +53,8 @@ e.g. pvalue, p.adjust or qvalue}
 \item{font.size}{font size}
 
 \item{title}{plot title}
+
+\item{label_wrap_width}{max with in characters before term names are wrapped}
 }
 \value{
 plot
