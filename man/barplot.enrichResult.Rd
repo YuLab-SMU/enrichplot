@@ -11,6 +11,7 @@
   showCategory = 8,
   font.size = 12,
   title = "",
+  label_wrap_width = 30,
   ...
 )
 }
@@ -26,6 +27,8 @@
 \item{font.size}{font size}
 
 \item{title}{plot title}
+
+\item{label_wrap_width}{max with in characters before term names are wrapped}
 
 \item{...}{other parameter, ignored}
 }

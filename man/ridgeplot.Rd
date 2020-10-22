@@ -6,15 +6,28 @@
 \alias{ridgeplot.gseaResult}
 \title{ridgeplot}
 \usage{
-ridgeplot(x, showCategory = 30, fill = "p.adjust", core_enrichment = TRUE)
+ridgeplot(
+  x,
+  showCategory = 30,
+  fill = "p.adjust",
+  core_enrichment = TRUE,
+  label_wrap_width = 30
+)
 
-\S4method{ridgeplot}{gseaResult}(x, showCategory = 30, fill = "p.adjust", core_enrichment = TRUE)
+\S4method{ridgeplot}{gseaResult}(
+  x,
+  showCategory = 30,
+  fill = "p.adjust",
+  core_enrichment = TRUE,
+  label_wrap_width = 30
+)
 
 ridgeplot.gseaResult(
   x,
   showCategory = 30,
   fill = "p.adjust",
-  core_enrichment = TRUE
+  core_enrichment = TRUE,
+  label_wrap_width = 30
 )
 }
 \arguments{
@@ -25,6 +38,8 @@ ridgeplot.gseaResult(
 \item{fill}{one of "pvalue", "p.adjust", "qvalue"}
 
 \item{core_enrichment}{whether only using core_enriched genes}
+
+\item{label_wrap_width}{max with in characters before term names are wrapped}
 }
 \value{
 ggplot object

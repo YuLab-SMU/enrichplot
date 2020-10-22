@@ -2,14 +2,16 @@
 ##' @exportMethod heatplot
 setMethod("heatplot", signature(x = "enrichResult"),
           function(x, showCategory = 30, foldChange = NULL) {
-              heatplot.enrichResult(x, showCategory, foldChange)
+              heatplot.enrichResult(x, showCategory, foldChange,
+                                    label_wrap_width = 30)
           })
 
 ##' @rdname heatplot
 ##' @exportMethod heatplot
 setMethod("heatplot", signature(x = "gseaResult"),
           function(x, showCategory = 30, foldChange = NULL) {
-              heatplot.enrichResult(x, showCategory, foldChange)
+              heatplot.enrichResult(x, showCategory, foldChange,
+                                    label_wrap_width = 30)
           })
 
 
@@ -20,8 +22,10 @@ setMethod("heatplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 theme
 ##' @importFrom ggplot2 element_blank
 ##' @importFrom ggplot2 element_text
+##' @importFrom ggplot2 scale_y_discrete
 ##' @author Guangchuang Yu
-heatplot.enrichResult <- function(x, showCategory=30, foldChange=NULL) {
+heatplot.enrichResult <- function(x, showCategory=30, foldChange=NULL,
+                                  label_wrap_width = 30) {
     n <- update_n(x, showCategory)
     geneSets <- extract_geneSets(x, n)
 
@@ -40,6 +44,11 @@ heatplot.enrichResult <- function(x, showCategory=30, foldChange=NULL) {
         p <- ggplot(d, aes_(~Gene, ~categoryID)) + geom_tile(color = 'white')
     }
     p + xlab(NULL) + ylab(NULL) + theme_minimal() +
+        scale_y_discrete(labels = function(x) {
+                x <- gsub("_", " ", x)
+                stringr::str_wrap(x, width = label_wrap_width)
+            }
+        ) +
         theme(panel.grid.major = element_blank(),
               axis.text.x=element_text(angle = 60, hjust = 1))
 }

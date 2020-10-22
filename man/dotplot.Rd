@@ -17,7 +17,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
-  label_wrap_width = 15,
+  label_wrap_width = 30,
   ...
 )
 
@@ -30,7 +30,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
-  label_wrap_width = 15,
+  label_wrap_width = 30,
   ...
 )
 }

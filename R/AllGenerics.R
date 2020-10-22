@@ -127,7 +127,7 @@ setGeneric("emapplot_cluster",
 ##' @rdname pairwise_termsim
 ##' @param x enrichment result.
 ##' @param method method of calculating the similarity between nodes,
-##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and  
+##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 ##' "JC"(Jaccard similarity coefficient) methods.
 ##' @param semData GOSemSimDATA object
 ##' @param showCategory number of enriched terms to display
@@ -234,6 +234,7 @@ setGeneric("heatplot",
 ##' @param showCategory number of categories for plotting
 ##' @param fill one of "pvalue", "p.adjust", "qvalue"
 ##' @param core_enrichment whether only using core_enriched genes
+##' @param label_wrap_width max with in characters before term names are wrapped
 ##' @return ggplot object
 ##' @export
 ##' @examples
@@ -242,7 +243,8 @@ setGeneric("heatplot",
 ##' x <- gseDO(geneList)
 ##' ridgeplot(x)
 setGeneric("ridgeplot",
-           function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE)
+           function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE,
+                    label_wrap_width = 30)
                standardGeneric("ridgeplot")
            )
 
