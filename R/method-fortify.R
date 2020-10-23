@@ -149,7 +149,7 @@ fortify.internal <- function(model, data, showCategory=5, by = "Count",
     res <- as.data.frame(model)
     res <- res[!is.na(res$Description), ]
     if (inherits(model, "gseaResult")) {
-        res$Count <- str_count(res$core_enrichment, "/") + 1
+        res$Count <- str_count(res$core_enrichment, "/")
         res$.sign <- "activated"
         res$.sign[res$NES < 0] <- "suppressed"
     }
@@ -201,11 +201,7 @@ fortify.internal <- function(model, data, showCategory=5, by = "Count",
 }
 
 str_count <- function(string, pattern="") {
-    sapply(string, str_count_item, pattern=pattern)
-}
-
-str_count_item <- function(string, pattern = "") {
-    length(gregexpr(pattern, string)[[1]])
+    sapply(string, FUN = function(i) length(unlist(strsplit(i, split = pattern))))
 }
 
 parse_ratio <- function(ratio) {
