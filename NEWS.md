@@ -1,4 +1,4 @@
-# enrichplot 1.9.4.991
+# enrichplot 1.9.5
 + fix `wordcloud_i` (2020-10-15, Thu)
 + Remove similarity calculation from emapplot
 
