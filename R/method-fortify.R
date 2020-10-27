@@ -181,7 +181,7 @@ fortify.internal <- function(model, data, showCategory=5, by = "Count",
                 res <- res[1:showCategory,]
             }
         } else { ## selected categories
-            res <- res[res$ID %in% showCategory,]
+            res <- res[res$Description %in% showCategory,]
         }
         return(res)
     }
