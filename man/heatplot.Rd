@@ -17,7 +17,7 @@ heatplot.enrichResult(
   x,
   showCategory = 30,
   foldChange = NULL,
-  label_wrap_width = 30
+  label_format = 30
 )
 }
 \arguments{

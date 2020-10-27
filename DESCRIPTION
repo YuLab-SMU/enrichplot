@@ -24,8 +24,7 @@ Imports:
     utils,
     scatterpie,
     shadowtext,
-    GOSemSim,
-    stringr
+    GOSemSim
 Suggests:
     clusterProfiler,
     dplyr,

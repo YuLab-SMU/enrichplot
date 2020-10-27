@@ -20,7 +20,9 @@
 ##' @param showCategory number of categories to show
 ##' @param font.size font size
 ##' @param title plot title
-##' @param label_wrap_width max with in characters before term names are wrapped
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' by default wraps names longer that 30 characters
 ##' @param ... other parameter, ignored
 ##' @method barplot enrichResult
 ##' @export
@@ -33,7 +35,7 @@
 ##' barplot(x)
 barplot.enrichResult <- function(height, x="Count", color='p.adjust',
                                  showCategory=8, font.size=12, title="",
-                                 label_wrap_width=30, ...) {
+                                 label_format=30, ...) {
     ## use *height* to satisy barplot generic definition
     ## actually here is an enrichResult object.
     object <- height
@@ -59,12 +61,14 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust',
             theme_dose(font.size) +
             theme(legend.position="none")
     }
+
+    label_func <- default_labeller(label_format)
+    if(is.function(label_format)) {
+        label_func <- label_format
+    }
+
     p + geom_col() + # geom_bar(stat = "identity") + coord_flip() +
-        scale_y_discrete(labels = function(x) {
-                x <- gsub("_", " ", x)
-                stringr::str_wrap(x, width = label_wrap_width)
-            }
-        ) +
+        scale_y_discrete(labels = label_func) +
         ggtitle(title) + xlab(NULL) + ylab(NULL)
 }
 

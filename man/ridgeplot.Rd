@@ -11,7 +11,7 @@ ridgeplot(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_wrap_width = 30
+  label_format = 30
 )
 
 \S4method{ridgeplot}{gseaResult}(
@@ -19,7 +19,7 @@ ridgeplot(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_wrap_width = 30
+  label_format = 30
 )
 
 ridgeplot.gseaResult(
@@ -27,7 +27,7 @@ ridgeplot.gseaResult(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_wrap_width = 30
+  label_format = 30
 )
 }
 \arguments{
@@ -39,7 +39,9 @@ ridgeplot.gseaResult(
 
 \item{core_enrichment}{whether only using core_enriched genes}
 
-\item{label_wrap_width}{max with in characters before term names are wrapped}
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.
+by default wraps names longer that 30 characters}
 }
 \value{
 ggplot object
