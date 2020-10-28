@@ -1,4 +1,9 @@
+# enrichplot 1.10.0
+
++ Bioconductor 3.12 release (2020-10-28, Wed)
+
 # enrichplot 1.9.5
+
 + fix `wordcloud_i` (2020-10-15, Thu)
 + Remove similarity calculation from emapplot
 
