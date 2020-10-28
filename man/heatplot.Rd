@@ -13,7 +13,12 @@ heatplot(x, showCategory = 30, foldChange = NULL)
 
 \S4method{heatplot}{gseaResult}(x, showCategory = 30, foldChange = NULL)
 
-heatplot.enrichResult(x, showCategory = 30, foldChange = NULL)
+heatplot.enrichResult(
+  x,
+  showCategory = 30,
+  foldChange = NULL,
+  label_format = 30
+)
 }
 \arguments{
 \item{x}{enrichment result.}

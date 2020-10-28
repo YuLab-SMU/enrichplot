@@ -17,6 +17,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
+  label_format = 30,
   ...
 )
 
@@ -29,6 +30,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
+  label_format = 30,
   ...
 )
 }
@@ -51,6 +53,10 @@ e.g. pvalue, p.adjust or qvalue}
 \item{font.size}{font size}
 
 \item{title}{plot title}
+
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.
+by default wraps names longer that 30 characters}
 }
 \value{
 plot
