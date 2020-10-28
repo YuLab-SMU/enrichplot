@@ -328,6 +328,7 @@ ep_str_wrap <- function(string, width) {
 #'
 #' default labeling function that uses the
 #' internal string wrapping function `ep_str_wrap`
+#' @noRd
 default_labeller <- function(n) {
     function(str){
         str <- gsub("_", " ", str)

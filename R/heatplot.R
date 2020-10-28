@@ -23,6 +23,9 @@ setMethod("heatplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 element_blank
 ##' @importFrom ggplot2 element_text
 ##' @importFrom ggplot2 scale_y_discrete
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' by default wraps names longer that 30 characters
 ##' @author Guangchuang Yu
 heatplot.enrichResult <- function(x, showCategory=30, foldChange=NULL,
                                   label_format = 30) {
