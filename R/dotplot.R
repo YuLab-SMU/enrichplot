@@ -7,15 +7,19 @@
 ##' @param split separate result by 'category' variable
 ##' @param font.size font size
 ##' @param title plot title
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' by default wraps names longer that 30 characters
 ##' @importClassesFrom DOSE enrichResult
 ##' @exportMethod dotplot
 ##' @author guangchuang yu
 setMethod("dotplot", signature(object = "enrichResult"),
           function(object, x = "GeneRatio", color = "p.adjust",
                    showCategory=10, size = NULL,
-                   split = NULL, font.size=12, title = "", ...) {
+                   split = NULL, font.size=12, title = "",
+                   label_format = 30, ...) {
               dotplot_internal(object, x, color, showCategory, size,
-                               split, font.size, title, ...)
+                               split, font.size, title, label_format, ...)
           })
 
 ##' @rdname dotplot
@@ -23,9 +27,10 @@ setMethod("dotplot", signature(object = "enrichResult"),
 ##' @exportMethod dotplot
 setMethod("dotplot", signature(object = "gseaResult"),
           function(object, x = "GeneRatio", color = "p.adjust", showCategory=10,
-                   size = NULL, split = NULL, font.size=12, title = "", ...) {
+                   size = NULL, split = NULL, font.size=12, title = "",
+                   label_format = 30, ...) {
               dotplot_internal(object, x, color, showCategory, size, split,
-                               font.size, title, ...)
+                               font.size, title, label_format, ...)
           })
 
 
@@ -39,10 +44,11 @@ setMethod("dotplot", signature(object = "gseaResult"),
 ##' @importFrom ggplot2 xlab
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggplot2 ggtitle
+##' @importFrom ggplot2 scale_y_discrete
 dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
-                             decreasing=TRUE) {
+                             decreasing=TRUE, label_format = 30) {
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {
@@ -78,6 +84,11 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust",
         df <- dplyr::mutate(df, x = eval(parse(text=x)))
     }
 
+    label_func <- default_labeller(label_format)
+    if(is.function(label_format)) {
+        label_func <- label_format
+    }
+
     idx <- order(df[[orderBy]], decreasing = decreasing)
     df$Description <- factor(df$Description,
                           levels=rev(unique(df$Description[idx])))
@@ -85,6 +96,7 @@ dotplot_internal <- function(object, x = "geneRatio", color = "p.adjust",
         geom_point() +
         scale_color_continuous(low="red", high="blue", name = color,
             guide=guide_colorbar(reverse=TRUE)) +
+        scale_y_discrete(labels = label_func) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
         scale_size(range=c(3, 8))
 

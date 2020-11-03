@@ -35,7 +35,7 @@ pairwise_termsim.compareClusterResult(
 \item{x}{enrichment result.}
 
 \item{method}{method of calculating the similarity between nodes,
-one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and  
+one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 "JC"(Jaccard similarity coefficient) methods.}
 
 \item{semData}{GOSemSimDATA object}

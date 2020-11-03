@@ -13,7 +13,12 @@ heatplot(x, showCategory = 30, foldChange = NULL)
 
 \S4method{heatplot}{gseaResult}(x, showCategory = 30, foldChange = NULL)
 
-heatplot.enrichResult(x, showCategory = 30, foldChange = NULL)
+heatplot.enrichResult(
+  x,
+  showCategory = 30,
+  foldChange = NULL,
+  label_format = 30
+)
 }
 \arguments{
 \item{x}{enrichment result.}
@@ -21,6 +26,10 @@ heatplot.enrichResult(x, showCategory = 30, foldChange = NULL)
 \item{showCategory}{number of enriched terms to display}
 
 \item{foldChange}{fold Change}
+
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.
+by default wraps names longer that 30 characters}
 }
 \value{
 ggplot object

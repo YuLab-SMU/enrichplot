@@ -1,4 +1,16 @@
+# enrichplot 1.11.0.991
+
++ add a `label_format` parameter to support formatting label (2020-10-28, Wed)
+  + if provided with a numeric value will simply string wrap by default
+  + if provided with a function will instead set labels = user_defined_function() within the scale function
+  + <https://github.com/YuLab-SMU/enrichplot/pull/73>
+
+# enrichplot 1.10.0
+
++ Bioconductor 3.12 release (2020-10-28, Wed)
+
 # enrichplot 1.9.5
+
 + fix `wordcloud_i` (2020-10-15, Thu)
 + Remove similarity calculation from emapplot
 

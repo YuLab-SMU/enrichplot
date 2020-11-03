@@ -11,6 +11,7 @@
   showCategory = 8,
   font.size = 12,
   title = "",
+  label_format = 30,
   ...
 )
 }
@@ -26,6 +27,10 @@
 \item{font.size}{font size}
 
 \item{title}{plot title}
+
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.
+by default wraps names longer that 30 characters}
 
 \item{...}{other parameter, ignored}
 }
