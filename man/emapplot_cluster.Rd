@@ -9,13 +9,37 @@
 \alias{emapplot_cluster.compareClusterResult}
 \title{emapplot_cluster}
 \usage{
-emapplot_cluster(x, showCategory = nrow(x), color = "p.adjust", ...)
+emapplot_cluster(
+  x,
+  showCategory = nrow(x),
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
-\S4method{emapplot_cluster}{enrichResult}(x, showCategory = 30, color = "p.adjust", ...)
+\S4method{emapplot_cluster}{enrichResult}(
+  x,
+  showCategory = 30,
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
-\S4method{emapplot_cluster}{gseaResult}(x, showCategory = 30, color = "p.adjust", ...)
+\S4method{emapplot_cluster}{gseaResult}(
+  x,
+  showCategory = 30,
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
-\S4method{emapplot_cluster}{compareClusterResult}(x, showCategory = 30, color = "p.adjust", ...)
+\S4method{emapplot_cluster}{compareClusterResult}(
+  x,
+  showCategory = nrow(x),
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
 emapplot_cluster.enrichResult(
   x,
@@ -30,7 +54,10 @@ emapplot_cluster.enrichResult(
   cex_label_group = 1,
   label_style = "shadowtext",
   group_legend = FALSE,
-  cex_category = 1
+  cex_category = 1,
+  label_format = 30,
+  force = FALSE,
+  ...
 )
 
 emapplot_cluster.compareClusterResult(
@@ -48,7 +75,10 @@ emapplot_cluster.compareClusterResult(
   legend_n = 5,
   cex_category = 1,
   label_style = "shadowtext",
-  group_legend = FALSE
+  group_legend = FALSE,
+  label_format = 30,
+  force = FALSE,
+  ...
 )
 }
 \arguments{
@@ -58,6 +88,9 @@ emapplot_cluster.compareClusterResult(
 
 \item{color}{variable that used to color enriched terms, e.g. pvalue,
 p.adjust or qvalue}
+
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.}
 
 \item{...}{additional parameters}
 
@@ -83,6 +116,8 @@ The default is FALSE}
 
 \item{cex_category}{number indicating the amount by which plotting category
 nodes should be scaled relative to the default.}
+
+\item{force}{of repulsion between overlapping text labels. Defaults to FALSE.}
 
 \item{pie}{proportion of clusters in the pie chart, one of
 'equal' (default) or 'Count'}
