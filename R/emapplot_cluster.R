@@ -134,7 +134,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                      fill =~ color), show.legend = show_legend)
     } else {
         p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color,
-                     fill =~ color, label =~ color),show.legend = show_legend)
+                     fill =~ color, label =~ color), show.legend = show_legend)
     }
 
     if(group_legend) p <- p + scale_fill_discrete(name = "groups")
