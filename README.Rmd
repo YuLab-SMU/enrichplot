@@ -37,8 +37,7 @@ cat(packageDescription('enrichplot')$Description)
 ```
 
 
-For details, please visit <https://yulab-smu.top/clusterProfiler-book/>.
-Or
+For details, please visit <https://yulab-smu.top/clusterProfiler-book/> or
 <https://yulab-smu.top/biomedical-knowledge-mining-book/>.
 
 

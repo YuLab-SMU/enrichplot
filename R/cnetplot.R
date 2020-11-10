@@ -183,7 +183,7 @@ cnetplot.enrichResult <- function(x,
 ##' @importFrom ggraph geom_edge_arc
 ##' @noRd
 cnetplot.compareClusterResult <- function(x,
-                     showCategory = 30,
+                     showCategory = 5,
                      foldChange   = NULL,
                      layout = "kk",
                      colorEdge = FALSE,
@@ -330,9 +330,9 @@ cnetplot.compareClusterResult <- function(x,
     #add the radius of the pie chart, the radius of go terms mean the number of genes
     ii <- match(rownames(ID_Cluster_mat2)[1:n], y_union$Description)
     node_scales <- c(rep(cex_category, n), rep(cex_gene, (length(V(g)) - n)))
-    sum_yunion <- sum(y_union[ii,9])
-    sizee <- sqrt(y_union[ii,9] / sum_yunion)
-    ## sizee <- sqrt(y_union[ii,9] / sum(y_union[ii,9]))
+    # sum_yunion <- sum(y_union[ii,9])
+    sum_yunion <- sum(y_union[ii, "Count"])
+    sizee <- sqrt(y_union[ii, "Count"] / sum_yunion)
     ID_Cluster_mat2$radius <- min(sizee)/2  * sqrt(cex_gene)
     ID_Cluster_mat2$radius[1:n] <- sizee * sqrt(cex_category)
     if(is.null(x_loc)) x_loc <- min(ID_Cluster_mat2$x)

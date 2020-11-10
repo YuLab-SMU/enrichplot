@@ -24,8 +24,7 @@ analysis. All the visualization methods are developed based on ‘ggplot2’
 graphics.
 
 For details, please visit
-<https://yulab-smu.top/clusterProfiler-book/>.
-Or
+<https://yulab-smu.top/clusterProfiler-book/> or
 <https://yulab-smu.top/biomedical-knowledge-mining-book/>.
 
 ## :writing\_hand: Authors
