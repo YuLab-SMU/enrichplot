@@ -56,7 +56,7 @@ emapplot_cluster.enrichResult(
   group_legend = FALSE,
   cex_category = 1,
   label_format = 30,
-  force = FALSE,
+  force = 0,
   ...
 )
 

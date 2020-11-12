@@ -61,7 +61,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           cex_label_group = 1, 
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1, 
-                                          label_format = 30, force = FALSE, ...){
+                                          label_format = 30, force = 0, ...){
                                           
 
     has_pairsim(x)

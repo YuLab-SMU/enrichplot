@@ -24,7 +24,8 @@ Imports:
     utils,
     scatterpie,
     shadowtext,
-    GOSemSim
+    GOSemSim,
+    magrittr
 Suggests:
     clusterProfiler,
     dplyr,
@@ -42,7 +43,6 @@ Suggests:
     grDevices,
     gridExtra,
     ggnewscale,
-    magrittr,
     ggrepel
 VignetteBuilder: knitr
 License: Artistic-2.0
