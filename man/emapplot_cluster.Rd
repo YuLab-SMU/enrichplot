@@ -77,7 +77,7 @@ emapplot_cluster.compareClusterResult(
   label_style = "shadowtext",
   group_legend = FALSE,
   label_format = 30,
-  force = FALSE,
+  force = 0,
   ...
 )
 }
