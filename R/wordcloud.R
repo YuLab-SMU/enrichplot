@@ -26,8 +26,13 @@ wordcloud_i <- function(cluster, pdata2, nWords){
         gsub(" [0-9]+ ", " ", .) %>%
         gsub("^[0-9]+ ", "", .) %>%
         gsub(" [0-9]+$", "", .) %>%
+        gsub(" [A-Za-z] ", " ", .) %>%
+        gsub("^[A-Za-z] ", "", .) %>%
+        gsub(" [A-Za-z]$", "", .) %>%
         gsub(" / ", "", .) %>%
         gsub(" and ", "", .) %>%
+        gsub(" of ", "", .) %>%
+        gsub(",", "", .) %>%
         gsub(" - ", "", .)
     net_tot <- length(words)
 

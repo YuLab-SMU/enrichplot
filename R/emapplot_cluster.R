@@ -39,8 +39,18 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' nodes should be scaled relative to the default.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
-##' @param force of repulsion between overlapping text labels. Defaults to FALSE.
-##' @param ... additional parameters
+##' @param repel whether to correct the position of the label. Defaults to FALSE.
+##' @param ... Additional parameters used to set the position of the group label.
+##' When the parameter repel is set to TRUE, additional parameters will take effect.
+##' 
+##' additional parameters can refer the following parameters.
+##'     \itemize{
+##'        \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
+##'        \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
+##'         the starting position of each text label. 
+##'        \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
+##'     }
+##'
 ##' @importFrom igraph layout_with_fr
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 scale_color_discrete
@@ -61,10 +71,11 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           cex_label_group = 1, 
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1, 
-                                          label_format = 30, force = 0, ...){
+                                          label_format = 30, repel = FALSE, ...){
                                           
 
     has_pairsim(x)
+    label_group <- 3
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
 
@@ -147,27 +158,35 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                               guide = guide_colorbar(reverse = TRUE))
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
             # size = 5 * cex_label_group)
-    if(label_style == "shadowtext") {
-        if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + ggrepel::geom_text_repel(data = label_location,
-                aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-                size = 3 * cex_label_group, bg.color = "white", bg.r = 0.1,
-                show.legend = FALSE, force = force, ...)
-        } else {
-            warn <- paste0("The version of ggrepel in your computer is ",
-                utils::packageVersion('ggrepel'),
-                ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
-            warning(warn)
-            p <- p + ggrepel::geom_text_repel(data = label_location,
-                aes_(x =~ x, y =~ y, label =~ label),
-                size = 3 * cex_label_group, force = force, ...)
-        }
-
+    p <- p + theme(legend.title = element_text(size = 10),
+                   legend.text  = element_text(size = 10)) +
+        theme(panel.background = element_blank())
+    if (label_style == "ggforce") return(p)
+    
+    if (!repel) {
+        p <- p + geom_shadowtext(data = label_location,
+            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+            size = label_group * cex_label_group, bg.color = "white", 
+            bg.r = 0.1)
+        return(p)
     }
 
-    p + theme(legend.title = element_text(size = 10),
-              legend.text  = element_text(size = 10)) +
-    theme(panel.background = element_blank())
+    if (utils::packageVersion("ggrepel") >= "0.9.0") {
+        p <- p + ggrepel::geom_text_repel(data = label_location,
+            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
+            show.legend = FALSE, ...)
+        return(p)
+    }
+    
+    warn <- paste0("The version of ggrepel in your computer is ",
+        utils::packageVersion('ggrepel'),
+        ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
+    warning(warn)        
+    p + ggrepel::geom_text_repel(data = label_location,
+        aes_(x =~ x, y =~ y, label =~ label),
+        size = label_group * cex_label_group, ...)                         
+    
 }
 
 
@@ -190,7 +209,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
     cex_label_group = 1, pie = "equal", legend_n = 5,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE, 
-    label_format = 30, force = 0, ...){
+    label_format = 30, repel = FALSE, ...){
 
     has_pairsim(x)
     label_group <- 3
@@ -304,27 +323,31 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
         # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
             # size = 5 * cex_label_group, check_overlap = check_overlap)
 
-    if(label_style == "shadowtext") {
-        if (utils::packageVersion("ggrepel") >= "0.9.0") {
-            p <- p + ggrepel::geom_text_repel(data = label_location,
-                aes_(x =~ x, y =~ y, label =~ label), colour = "black", 
-                size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-                show.legend = FALSE, force = force, ...)
-        } else {
-            warn <- paste0("The version of ggrepel in your computer is ",
-                utils::packageVersion('ggrepel'),
-                ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
-            warning(warn)
-            p <- p + ggrepel::geom_text_repel(data = label_location,
-                aes_(x =~ x, y =~ y, label =~ label),
-                size = label_group * cex_label_group, force = force,  ...)
-        }
-
-    }
-    p + theme(legend.title = element_text(size = 10),
+    p <- p + theme(legend.title = element_text(size = 10),
               legend.text  = element_text(size = 10)) +
     theme(panel.background = element_blank())
-
+    if (label_style == "ggforce") return(p)
+    
+    if (!repel) {
+        p <- p + geom_shadowtext(data = label_location,
+            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
+        return(p)
+    }
+    if (utils::packageVersion("ggrepel") >=  "0.9.0") {
+        p <- p + ggrepel::geom_text_repel(data = label_location,
+            aes_(x =~ x, y =~ y, label =~ label), colour = "black", 
+            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
+            show.legend = FALSE, ...)
+        return(p)
+    }
+    warn <- paste0("The version of ggrepel in your computer is ",
+        utils::packageVersion('ggrepel'),
+        ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
+    warning(warn)
+    p <- p + ggrepel::geom_text_repel(data = label_location,
+        aes_(x =~ x, y =~ y, label =~ label),
+        size = label_group * cex_label_group, force = force,  ...)
 
 }
 

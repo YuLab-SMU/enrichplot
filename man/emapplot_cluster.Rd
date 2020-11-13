@@ -56,7 +56,7 @@ emapplot_cluster.enrichResult(
   group_legend = FALSE,
   cex_category = 1,
   label_format = 30,
-  force = 0,
+  repel = FALSE,
   ...
 )
 
@@ -77,7 +77,7 @@ emapplot_cluster.compareClusterResult(
   label_style = "shadowtext",
   group_legend = FALSE,
   label_format = 30,
-  force = 0,
+  repel = FALSE,
   ...
 )
 }
@@ -92,7 +92,16 @@ p.adjust or qvalue}
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.}
 
-\item{...}{additional parameters}
+\item{...}{Additional parameters used to set the position of the group label.
+When the parameter repel is set to TRUE, additional parameters will take effect.
+
+additional parameters can refer the following parameters.
+    \itemize{
+       \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
+       \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
+        the starting position of each text label. 
+       \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
+    }}
 
 \item{cex_line}{scale of line width}
 
@@ -117,7 +126,7 @@ The default is FALSE}
 \item{cex_category}{number indicating the amount by which plotting category
 nodes should be scaled relative to the default.}
 
-\item{force}{of repulsion between overlapping text labels. Defaults to FALSE.}
+\item{repel}{whether to correct the position of the label. Defaults to FALSE.}
 
 \item{pie}{proportion of clusters in the pie chart, one of
 'equal' (default) or 'Count'}
