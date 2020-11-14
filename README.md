@@ -24,7 +24,8 @@ analysis. All the visualization methods are developed based on ‘ggplot2’
 graphics.
 
 For details, please visit
-<https://yulab-smu.github.io/clusterProfiler-book/>.
+<https://yulab-smu.top/clusterProfiler-book/> or
+<https://yulab-smu.top/biomedical-knowledge-mining-book/>.
 
 ## :writing\_hand: Authors
 
@@ -52,7 +53,7 @@ Or the development version from github:
 
 ``` r
 ## install.packages("devtools")
-devtools::install_github("GuangchuangYu/enrichplot")
+devtools::install_github("YuLab-SMU/enrichplot")
 ```
 
 ## :sparkling\_heart: Contributing

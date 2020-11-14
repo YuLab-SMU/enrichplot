@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 1.11.0.991
+Version: 1.11.0.992
 Authors@R: c(
     person(given = "Guangchuang", family = "Yu", email = "guangchuangyu@gmail.com",   role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
     person(given = "Erqiang",     family = "Hu", email = "13766876214@163.com",       role = "ctb"))
@@ -24,7 +24,8 @@ Imports:
     utils,
     scatterpie,
     shadowtext,
-    GOSemSim
+    GOSemSim,
+    magrittr
 Suggests:
     clusterProfiler,
     dplyr,
@@ -42,7 +43,6 @@ Suggests:
     grDevices,
     gridExtra,
     ggnewscale,
-    magrittr,
     ggrepel
 VignetteBuilder: knitr
 License: Artistic-2.0

@@ -37,7 +37,8 @@ cat(packageDescription('enrichplot')$Description)
 ```
 
 
-For details, please visit <https://yulab-smu.github.io/clusterProfiler-book/>.
+For details, please visit <https://yulab-smu.top/clusterProfiler-book/> or
+<https://yulab-smu.top/biomedical-knowledge-mining-book/>.
 
 
 ## :writing_hand: Authors
@@ -70,7 +71,7 @@ Or the development version from github:
 
 ```r
 ## install.packages("devtools")
-devtools::install_github("GuangchuangYu/enrichplot")
+devtools::install_github("YuLab-SMU/enrichplot")
 ```
 
 

@@ -115,7 +115,7 @@ setGeneric("emapplot",
 ##'     emapplot_cluster(ego2, showCategory = 80)
 ##'    }
 setGeneric("emapplot_cluster",
-           function(x, showCategory = nrow(x), color="p.adjust", ...)
+           function(x, showCategory = nrow(x), color="p.adjust", label_format = 30, ...)
                standardGeneric("emapplot_cluster")
            )
 

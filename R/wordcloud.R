@@ -1,7 +1,7 @@
 ##' A function for get sel_w and net_w
 ##' 
 ##' @param wordd clusters
-get_w <- function(wordd){
+get_w <- function(wordd){     
     dada <- strsplit(wordd, " ")
     didi <- table(unlist(dada))
     didi <- didi[order(didi, decreasing = TRUE)]
@@ -19,13 +19,25 @@ get_w <- function(wordd){
 ##' @param cluster a cluster name
 ##' @param pdata2 the data section of the ggraph object
 ##' @param nWords the number of words in the cluster tags 
+##' @importFrom magrittr %>%
 wordcloud_i <- function(cluster, pdata2, nWords){
-    words <- pdata2$name
+    words <- pdata2$name %>%
+        gsub(" in ", "", .) %>%
+        gsub(" [0-9]+ ", " ", .) %>%
+        gsub("^[0-9]+ ", "", .) %>%
+        gsub(" [0-9]+$", "", .) %>%
+        gsub(" [A-Za-z] ", " ", .) %>%
+        gsub("^[A-Za-z] ", "", .) %>%
+        gsub(" [A-Za-z]$", "", .) %>%
+        gsub(" / ", "", .) %>%
+        gsub(" and ", "", .) %>%
+        gsub(" of ", "", .) %>%
+        gsub(",", "", .) %>%
+        gsub(" - ", "", .)
     net_tot <- length(words)
 
     clusters <- unique(pdata2$color)
     words_i <- words[which(pdata2$color == cluster)]
-
 
     sel_tot <- length(words_i)
     sel_w <- get_w(words_i)

@@ -9,13 +9,37 @@
 \alias{emapplot_cluster.compareClusterResult}
 \title{emapplot_cluster}
 \usage{
-emapplot_cluster(x, showCategory = nrow(x), color = "p.adjust", ...)
+emapplot_cluster(
+  x,
+  showCategory = nrow(x),
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
-\S4method{emapplot_cluster}{enrichResult}(x, showCategory = 30, color = "p.adjust", ...)
+\S4method{emapplot_cluster}{enrichResult}(
+  x,
+  showCategory = 30,
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
-\S4method{emapplot_cluster}{gseaResult}(x, showCategory = 30, color = "p.adjust", ...)
+\S4method{emapplot_cluster}{gseaResult}(
+  x,
+  showCategory = 30,
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
-\S4method{emapplot_cluster}{compareClusterResult}(x, showCategory = 30, color = "p.adjust", ...)
+\S4method{emapplot_cluster}{compareClusterResult}(
+  x,
+  showCategory = nrow(x),
+  color = "p.adjust",
+  label_format = 30,
+  ...
+)
 
 emapplot_cluster.enrichResult(
   x,
@@ -30,7 +54,10 @@ emapplot_cluster.enrichResult(
   cex_label_group = 1,
   label_style = "shadowtext",
   group_legend = FALSE,
-  cex_category = 1
+  cex_category = 1,
+  label_format = 30,
+  repel = FALSE,
+  ...
 )
 
 emapplot_cluster.compareClusterResult(
@@ -48,7 +75,10 @@ emapplot_cluster.compareClusterResult(
   legend_n = 5,
   cex_category = 1,
   label_style = "shadowtext",
-  group_legend = FALSE
+  group_legend = FALSE,
+  label_format = 30,
+  repel = FALSE,
+  ...
 )
 }
 \arguments{
@@ -59,7 +89,19 @@ emapplot_cluster.compareClusterResult(
 \item{color}{variable that used to color enriched terms, e.g. pvalue,
 p.adjust or qvalue}
 
-\item{...}{additional parameters}
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.}
+
+\item{...}{Additional parameters used to set the position of the group label.
+When the parameter repel is set to TRUE, additional parameters will take effect.
+
+additional parameters can refer the following parameters.
+    \itemize{
+       \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
+       \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
+        the starting position of each text label. 
+       \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
+    }}
 
 \item{cex_line}{scale of line width}
 
@@ -83,6 +125,8 @@ The default is FALSE}
 
 \item{cex_category}{number indicating the amount by which plotting category
 nodes should be scaled relative to the default.}
+
+\item{repel}{whether to correct the position of the label. Defaults to FALSE.}
 
 \item{pie}{proportion of clusters in the pie chart, one of
 'equal' (default) or 'Count'}
