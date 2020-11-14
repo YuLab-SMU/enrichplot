@@ -299,6 +299,7 @@ get_label_diss <- function(dimension, label_location) {
 #' ep_str_wrap internal string wrapping function
 #' @param string the string to be wrapped
 #' @param width the maximum number of characters before wrapping to a new line
+#' @noRd
 ep_str_wrap <- function(string, width) {
     x <- gregexpr(' ', string)
     vapply(seq_along(x),
