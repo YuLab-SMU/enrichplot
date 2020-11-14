@@ -22,7 +22,7 @@ get_w <- function(wordd){
 ##' @importFrom magrittr %>%
 wordcloud_i <- function(cluster, pdata2, nWords){
     words <- pdata2$name %>%
-        gsub("in", "", .) %>%
+        gsub(" in ", "", .) %>%
         gsub(" [0-9]+ ", " ", .) %>%
         gsub("^[0-9]+ ", "", .) %>%
         gsub(" [0-9]+$", "", .) %>%
