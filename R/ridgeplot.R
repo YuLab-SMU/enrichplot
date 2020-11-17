@@ -2,14 +2,16 @@
 ##' @exportMethod ridgeplot
 setMethod("ridgeplot", signature(x = "gseaResult"),
           function(x, showCategory = 30, fill = "p.adjust",
-                   core_enrichment = TRUE, label_format = 30) {
+                   core_enrichment = TRUE, label_format = 30, ...) {
               ridgeplot.gseaResult(x, showCategory = showCategory,
                                    fill = fill, core_enrichment = core_enrichment,
-                                   label_format = label_format)
+                                   label_format = label_format, ...)
           })
 
 
 ##' @rdname ridgeplot
+##' @param orderBy The order of the Y-axis
+##' @param decreasing logical. Should the orderBy order be increasing or decreasing? 
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 aes_string
 ##' @importFrom ggplot2 scale_x_reverse
@@ -18,8 +20,8 @@ setMethod("ridgeplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 scale_y_discrete
 ##' @author Guangchuang Yu
 ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
-                                 core_enrichment = TRUE, label_format = 30) {
-    # has_package("ggridges")
+                                 core_enrichment = TRUE, label_format = 30,
+                                 orderBy = "NES", decreasing = FALSE) {
     if (!is(x, "gseaResult"))
         stop("currently only support gseaResult")
 
@@ -32,7 +34,10 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
     }
 
     ## geom_density_ridges <- get_fun_from_pkg('ggridges', 'geom_density_ridges')
-
+    if (orderBy !=  'NES' && !orderBy %in% colnames(x@result)) {
+        message('wrong orderBy parameter; set to default `orderBy = "NES"`')
+        orderBy <- "NES"
+    }
     n <- showCategory
     if (core_enrichment) {
         gs2id <- geneInCategory(x)[seq_len(n)]
@@ -49,8 +54,8 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
     i <- match(nn, x$ID)
     nn <- x$Description[i]
 
-    j <- order(x$NES[i], decreasing=FALSE)
-
+    # j <- order(x$NES[i], decreasing=FALSE)
+    j <- order(x@result[[orderBy]][i], decreasing = decreasing)
     len <- sapply(gs2val, length)
     gs2val.df <- data.frame(category = rep(nn, times=len),
                             color = rep(x[i, fill], times=len),

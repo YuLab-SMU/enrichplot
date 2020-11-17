@@ -11,7 +11,8 @@ ridgeplot(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_format = 30
+  label_format = 30,
+  ...
 )
 
 \S4method{ridgeplot}{gseaResult}(
@@ -19,7 +20,8 @@ ridgeplot(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_format = 30
+  label_format = 30,
+  ...
 )
 
 ridgeplot.gseaResult(
@@ -27,7 +29,9 @@ ridgeplot.gseaResult(
   showCategory = 30,
   fill = "p.adjust",
   core_enrichment = TRUE,
-  label_format = 30
+  label_format = 30,
+  orderBy = "NES",
+  decreasing = FALSE
 )
 }
 \arguments{
@@ -40,8 +44,14 @@ ridgeplot.gseaResult(
 \item{core_enrichment}{whether only using core_enriched genes}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
-custom function to format axis labels.
+custom function to format axis labels.}
+
+\item{...}{additional parameters
 by default wraps names longer that 30 characters}
+
+\item{orderBy}{The order of the Y-axis}
+
+\item{decreasing}{logical. Should the orderBy order be increasing or decreasing?}
 }
 \value{
 ggplot object

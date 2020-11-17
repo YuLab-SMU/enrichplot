@@ -236,6 +236,7 @@ setGeneric("heatplot",
 ##' @param core_enrichment whether only using core_enriched genes
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
+##' @param ... additional parameters
 ##' by default wraps names longer that 30 characters
 ##' @return ggplot object
 ##' @export
@@ -246,7 +247,7 @@ setGeneric("heatplot",
 ##' ridgeplot(x)
 setGeneric("ridgeplot",
            function(x, showCategory=30, fill="p.adjust", core_enrichment = TRUE,
-                    label_format = 30)
+                    label_format = 30, ...)
                standardGeneric("ridgeplot")
            )
 
