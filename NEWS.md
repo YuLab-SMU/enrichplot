@@ -1,5 +1,9 @@
-# enrichplot 1.11.0.991
+# enrichplot 1.11.1
 
++ add `orderBy` and `decreasing` parameters for `ridgeplot()` (2020-11-19, Thu)
+  - <https://github.com/YuLab-SMU/enrichplot/pull/84/>
++ update `emapplot_cluster()` to label cluster in center by default and use `ggrepel` if setting `repel = TRUE` (2020-11-08, Mon)
+  - <https://github.com/YuLab-SMU/enrichplot/pull/81>
 + add a `label_format` parameter to support formatting label (2020-10-28, Wed)
   + if provided with a numeric value will simply string wrap by default
   + if provided with a function will instead set labels = user_defined_function() within the scale function

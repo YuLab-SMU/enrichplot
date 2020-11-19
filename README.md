@@ -3,21 +3,21 @@
 Visualization of Functional Enrichment Result
 =============================================
 
-[![](https://img.shields.io/badge/release%20version-1.10.0-green.svg)](https://www.bioconductor.org/packages/enrichplot)
-[![](https://img.shields.io/badge/devel%20version-1.11.0.992-green.svg)](https://github.com/guangchuangyu/enrichplot)
+[![](https://img.shields.io/badge/release%20version-1.10.1-green.svg)](https://www.bioconductor.org/packages/enrichplot)
+[![](https://img.shields.io/badge/devel%20version-1.11.1-green.svg)](https://github.com/guangchuangyu/enrichplot)
 [![Bioc](http://www.bioconductor.org/shields/years-in-bioc/enrichplot.svg)](https://www.bioconductor.org/packages/devel/bioc/html/enrichplot.html#since)
 
 [![download](http://www.bioconductor.org/shields/downloads/release/enrichplot.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot)
-[![](https://img.shields.io/badge/download-150167/total-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot)
+[![](https://img.shields.io/badge/download-151107/total-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot)
 [![](https://img.shields.io/badge/download-7947/month-blue.svg)](https://bioconductor.org/packages/stats/bioc/enrichplot)
 
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![platform](http://www.bioconductor.org/shields/availability/devel/treeio.svg)](https://www.bioconductor.org/packages/devel/bioc/html/treeio.html#archives)
+[![platform](http://www.bioconductor.org/shields/availability/devel/enrichplot.svg)](https://www.bioconductor.org/packages/devel/bioc/html/enrichplot.html#archives)
 [![Build
 Status](http://www.bioconductor.org/shields/build/devel/bioc/treeio.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/treeio/)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--11--14-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--11--19-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
 
 The ‘enrichplot’ package implements several visualization methods for
 interpreting functional enrichment results obtained from ORA or GSEA
