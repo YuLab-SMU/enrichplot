@@ -1,4 +1,4 @@
-# enrichplot 1.11.0.993
+# enrichplot 1.11.1
 
 + add `orderBy` and `decreasing` parameters for `ridgeplot()` (2020-11-19, Thu)
   - <https://github.com/YuLab-SMU/enrichplot/pull/84/>
