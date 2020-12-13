@@ -9,7 +9,7 @@
 \alias{pairwise_termsim.compareClusterResult}
 \title{pairwise_termsim}
 \usage{
-pairwise_termsim(x, method = "JC", semData = NULL, showCategory = 30)
+pairwise_termsim(x, method = "JC", semData = NULL, showCategory = 200)
 
 \S4method{pairwise_termsim}{enrichResult}(x, method = "JC", semData = NULL, showCategory = 200)
 

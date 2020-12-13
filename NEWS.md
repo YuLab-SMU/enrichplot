@@ -1,3 +1,8 @@
+# enrichplot 1.11.1.991
+
++ add treeplot function (2020-12-13, Sun)
++ fix `showCategory` for `cnetplot`, `emapplot`, `emapplot_cluster` 
+
 # enrichplot 1.11.1
 
 + add `orderBy` and `decreasing` parameters for `ridgeplot()` (2020-11-19, Thu)

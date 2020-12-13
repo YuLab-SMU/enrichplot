@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 1.11.1
+Version: 1.11.1.991
 Authors@R: c(
     person(given = "Guangchuang", family = "Yu", email = "guangchuangyu@gmail.com",   role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
     person(given = "Erqiang",     family = "Hu", email = "13766876214@163.com",       role = "ctb"))
@@ -25,7 +25,8 @@ Imports:
     scatterpie,
     shadowtext,
     GOSemSim,
-    magrittr
+    magrittr,
+    ggtree
 Suggests:
     clusterProfiler,
     dplyr,
@@ -43,7 +44,9 @@ Suggests:
     grDevices,
     gridExtra,
     ggnewscale,
-    ggrepel
+    ggrepel,
+    treeio,
+    scales
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://yulab-smu.top/biomedical-knowledge-mining-book/

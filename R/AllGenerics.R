@@ -115,9 +115,58 @@ setGeneric("emapplot",
 ##'     emapplot_cluster(ego2, showCategory = 80)
 ##'    }
 setGeneric("emapplot_cluster",
-           function(x, showCategory = nrow(x), color="p.adjust", label_format = 30, ...)
+           function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)
                standardGeneric("emapplot_cluster")
            )
+           
+
+##' Functional grouping tree diagram for enrichment result of 
+##' over-representation test or gene set enrichment analysis.
+##'
+##'
+##' This function visualizes gene sets as a tree.
+##' Gene sets with high similarity tend to cluster together, making it easier
+##' for interpretation.
+##' @title treeplot
+##' @rdname treeplot
+##' @param x enrichment result.
+##' @param showCategory number of enriched terms to display
+##' @param color variable that used to color enriched terms, e.g. pvalue,
+##' p.adjust or qvalue
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' @param ... additional parameters
+##' @return ggplot object
+##' @export
+##' @examples
+##' \dontrun{
+##'     library(clusterProfiler)
+##'     library(org.Hs.eg.db)
+##'     library(enrichplot)
+##'     library(GOSemSim)
+##'     library(DOSE)
+##'     data(geneList)
+##'     gene <- names(geneList)[abs(geneList) > 2]
+##'     ego <- enrichGO(gene  = gene,
+##'         universe      = names(geneList),
+##'         OrgDb         = org.Hs.eg.db,
+##'         ont           = "CC",
+##'         pAdjustMethod = "BH",
+##'         pvalueCutoff  = 0.01,
+##'         qvalueCutoff  = 0.05,
+##'         readable      = TRUE)
+##'     d <- godata('org.Hs.eg.db', ont="BP")
+##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
+##'     treeplot(ego2, showCategory = 30)
+##'    }
+setGeneric("treeplot",
+           function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)
+               standardGeneric("treeplot")
+           )
+           
+           
+
+           
 
 ##' Get the similarity matrix
 ##'
@@ -154,7 +203,7 @@ setGeneric("emapplot_cluster",
 ##'     emapplot_cluster(ego2)
 ##'    }
 setGeneric("pairwise_termsim",
-           function(x, method = "JC", semData = NULL, showCategory = 30)
+           function(x, method = "JC", semData = NULL, showCategory = 200)
                standardGeneric("pairwise_termsim")
            )
 

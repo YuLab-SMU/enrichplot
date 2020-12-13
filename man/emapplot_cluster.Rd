@@ -11,7 +11,7 @@
 \usage{
 emapplot_cluster(
   x,
-  showCategory = nrow(x),
+  showCategory = 30,
   color = "p.adjust",
   label_format = 30,
   ...
@@ -35,7 +35,7 @@ emapplot_cluster(
 
 \S4method{emapplot_cluster}{compareClusterResult}(
   x,
-  showCategory = nrow(x),
+  showCategory = 30,
   color = "p.adjust",
   label_format = 30,
   ...
@@ -123,7 +123,7 @@ should between 0 and 1, default value is 0.2}
 \item{group_legend}{If TRUE, the grouping legend will be displayed.
 The default is FALSE}
 
-\item{cex_category}{number indicating the amount by which plotting category
+\item{cex_category}{number indicating the size by which plotting category
 nodes should be scaled relative to the default.}
 
 \item{repel}{whether to correct the position of the label. Defaults to FALSE.}
