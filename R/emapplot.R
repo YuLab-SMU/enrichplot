@@ -113,6 +113,7 @@ emap_graph_build <- function(y, geneSets, color, cex_line, min_edge,
         g <- add_vertices(g, nv = 1)
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
+        return(g)
     } else {
         w <- pair_sim
         if (method == "JC") {
@@ -253,7 +254,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
     if(n == 1) {
-        return(ggraph(g) + geom_node_point(color="red", size=5) +
+        return(ggraph(g,"tree") + geom_node_point(color="red", size=5) +
                geom_node_text(aes_(label=~name)))
     }
 
