@@ -46,7 +46,8 @@ Suggests:
     ggnewscale,
     ggrepel,
     treeio,
-    scales
+    scales,
+    tidytree
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://yulab-smu.top/biomedical-knowledge-mining-book/

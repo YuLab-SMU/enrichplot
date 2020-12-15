@@ -29,6 +29,7 @@ treeplot.enrichResult(
   fontsize = 4,
   offset = 0.9,
   offset_tiplab = 0.1,
+  hclust_method = "ward.D",
   ...
 )
 
@@ -47,6 +48,7 @@ treeplot.compareClusterResult(
   pie = "equal",
   legend_n = 3,
   offset_tiplab = 0.5,
+  hclust_method = "ward.D",
   ...
 )
 }
@@ -76,6 +78,9 @@ custom function to format axis labels.}
 \item{offset}{distance bar and tree, offset of bar and text from the clade, default is 0.9.}
 
 \item{offset_tiplab}{tiplab offset}
+
+\item{hclust_method}{method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
+"ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
 
 \item{split}{separate result by 'category' variable}
 

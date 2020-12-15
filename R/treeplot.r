@@ -22,37 +22,7 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
             color = color, label_format = label_format, ...)
     })
 
-##' Get all parent nodes of a node
-##'
-##' @param tree_data data of ggtree object
-##' @param node a numeric
-##' @param root_node root node of a tree
-##'
-##' @return a vector of all parent nodes of the node
-##'
-##' @noRd
-get_parent <- function(tree_data, node, root_node) {
-    parents <- parent <- tree_data[node, "parent"]
-    while (parent != root_node) {
-        parent <- tree_data[parent, "parent"]
-        parents <- c(parents, parent)
-    }
-    return(parents)
-}
 
-
-##' Get all parent nodes of a vectory of nodes
-##'
-##' @param tree_data data of ggtree object
-##' @param nodes a vector of nodes
-##'
-##' @return a list of parent nodes
-##'
-##' @noRd
-get_parents <- function(tree_data, nodes) {
-    root_node <- tree_data$node[order(tree_data$branch)][1]
-    lapply(nodes, get_parent, tree_data = tree_data, root_node = root_node)
-}
 
 ##' @rdname treeplot
 ##' @param nWords the number of words in the cluster tags
@@ -62,6 +32,8 @@ get_parents <- function(tree_data, nodes) {
 ##' @param offset distance bar and tree, offset of bar and text from the clade, default is 0.9.
 ##' @param fontsize the size of text, default is 4.
 ##' @param offset_tiplab tiplab offset
+##' @param hclust_method method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
+##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -77,7 +49,8 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   cex_category = 1,
                                   label_format = 30, xlim = c(0,2),
                                   fontsize = 4, offset = .9,
-                                  offset_tiplab = 0.1, ...) {
+                                  offset_tiplab = 0.1, 
+                                  hclust_method = "ward.D", ...) {
     group <- p.adjust <- count<- NULL
 
     if (class(x) == "gseaResult")
@@ -100,9 +73,9 @@ treeplot.enrichResult <- function(x, showCategory = 30,
     ## Fill the upper triangular matrix completely
     termsim2 <- fill_termsim(x, keep)
 
-    ## Use the ward.D2 method to avoid overlapping ancestor nodes of each group
+    ## Use the ward.D method to avoid overlapping ancestor nodes of each group
     hc <- stats::hclust(stats::as.dist(1- termsim2),
-                        method = "ward.D")
+                        method = hclust_method)
     clus <- stats::cutree(hc, nCluster)
     d <- data.frame(label = names(clus),
         node = seq_len(length(clus)),
@@ -111,10 +84,14 @@ treeplot.enrichResult <- function(x, showCategory = 30,
 
     
     ## Group the nodes and find the root node of each group of nodes.
+    p <- group_tree(hc, clus, d, offset_tiplab, 
+        nWords, label_format, offset, fontsize)
     tree <- treeio::as.phylo(hc)
-    roots <- get_roots(tree, clus, d)
-    gtree <- groupClade(tree, .node = as.numeric(roots))
-
+    groups <- lapply(unique(clus),
+      function(x) d$node[which(clus == x)])
+    gtree <- ggtree::groupOTU(tree, .node = groups)
+    roots <- lapply(groups,
+        function(x) Reduce(intersect, get_parents(tree, x))[1])
     p <- ggtree(gtree, aes(color=group), show.legend = F) %<+% d +
         geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = F, align=TRUE)
 
@@ -142,7 +119,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       cex_category = 1, split = NULL,
                                       label_format = 30, xlim = NULL,
                                       fontsize = 4, offset = NULL, pie = "equal",
-                                      legend_n = 3, offset_tiplab = 0.5, ...) {
+                                      legend_n = 3, offset_tiplab = 0.5, 
+                                      hclust_method = "ward.D", ...) {
     group <- NULL
     if (is.numeric(showCategory)) {
         y <- fortify(x, showCategory = showCategory,
@@ -156,29 +134,21 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         y_union <- y_union[match(n, y_union$Description),]
     }
 
-    # y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
-    # y_union <- get_y_union(y = y, showCategory = showCategory)
     y <- y[y$ID %in% y_union$ID, ]
     ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
     ## Fill the upper triangular matrix completely
     termsim2 <- fill_termsim(x, rownames(ID_Cluster_mat))
     hc <- stats::hclust(stats::as.dist(1- termsim2),
-                        method = "ward.D2")
+                        method = hclust_method)
     clus <- stats::cutree(hc, nCluster)
     rownames(y_union) <- y_union$Description
     d <- data.frame(label = names(clus),
         node = seq_len(length(clus)),
         count = y_union[names(clus), "Count"])
-    tree <- treeio::as.phylo(hc)
-    roots <- get_roots(tree, clus, d)
-    gtree <- groupClade(tree, .node = as.numeric(roots))
-
-    p <- ggtree(gtree, aes(color=group), show.legend = F, branch.length = "none") %<+% d +
-        geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = F, align=TRUE)
-
-    p <- add_cladelab(p, nWords, label_format, offset, roots, fontsize) 
-    
+        
+    p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
+        label_format, offset, fontsize, branch.length = "none")
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
@@ -200,6 +170,21 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         labs(fill = "Cluster")
 }
 
+
+
+##' Get all parent nodes of a vectory of nodes
+##'
+##' @param tree_data a phylo object
+##' @param nodes a vector of nodes
+##'
+##' @return a list of parent nodes
+##'
+##' @noRd
+get_parents <- function(tree_data, nodes) {
+    lapply(nodes, function(x) tidytree::ancestor(.data = tree_data, .node = x))
+}
+
+
 ##' Title Fill the upper triangular matrix completely
 ##'
 ##' @param x enrichment result
@@ -216,18 +201,8 @@ fill_termsim <- function(x, keep) {
     return(termsim2)
 }
 
-
-get_roots <- function(tree, clus, d) {
-    tree_data <- as.data.frame(ggtree(tree)$data)
-    groups <- lapply(unique(clus),
-        function(x) d$node[which(clus == x)])
-    roots <- lapply(groups,
-        function(x) Reduce(intersect, get_parents(tree_data, x))[1])
-}
-
-
 add_cladelab <- function(p, nWords, label_format, offset, roots, fontsize) {
-    
+    node <- label <- color <- NULL
     pdata <- data.frame(name = p$data$label, color = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
     cluster_color <- unique(pdata$color)
@@ -240,13 +215,32 @@ add_cladelab <- function(p, nWords, label_format, offset, roots, fontsize) {
     cluster_label <- label_func(cluster_label)
     names(cluster_label) <- cluster_color
     if(is.null(offset)) offset <- 2 * p$data$x[1]
-    for (i in seq_len(length(roots))) {
-        p <- p + geom_cladelab(node=roots[[i]],
+    
+    df <- data.frame(node = as.numeric(roots),
+        label = cluster_label,
+        color = scales::hue_pal()(length(roots) + 1)[-1])
+    p + ggnewscale::new_scale_colour() + 
+        geom_cladelab(
+            data = df,
+            mapping = aes(node = node, label = label, color = color),
             textcolor = "black",
-            barcolor = scales::hue_pal()(length(roots)+1)[i + 1],
-            fontsize = fontsize, offset = offset,
-            label=cluster_label[i])
-    }
-    return(p)    
+            show.legend = F,
+            fontsize = fontsize, offset = offset) + 
+            scale_color_manual(values = df$color, limits = df$color, guide = FALSE)
+ 
 }
 
+group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
+                       label_format, offset, fontsize, ...) {
+    group <- NULL
+    tree <- treeio::as.phylo(hc)
+    groups <- lapply(unique(clus),
+      function(x) d$node[which(clus == x)])
+    gtree <- ggtree::groupOTU(tree, .node = groups)
+    roots <- lapply(groups,
+        function(x) Reduce(intersect, get_parents(tree, x))[1])
+    p <- ggtree(gtree, aes(color=group), show.legend = F, ...) %<+% d +
+        geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = F, align=TRUE)
+    
+    add_cladelab(p, nWords, label_format, offset, roots, fontsize) 
+}
