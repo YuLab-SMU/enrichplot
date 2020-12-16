@@ -208,11 +208,13 @@ add_cladelab <- function(p, nWords, label_format, offset, roots, fontsize) {
     
     df <- data.frame(node = as.numeric(roots),
         label = cluster_label,
+        cluster=cluster_color,
         color = scales::hue_pal()(length(roots) + 1)[-1])
     p + ggnewscale::new_scale_colour() + 
         geom_cladelab(
             data = df,
-            mapping = aes(node = node, label = label, color = color),
+            #mapping = aes(node = node, label = label, color = color),
+            mapping=aes_(node=~node, label=~label, color=~cluster),
             textcolor = "black",
             show.legend = F,
             fontsize = fontsize, offset = offset) + 
@@ -223,13 +225,23 @@ add_cladelab <- function(p, nWords, label_format, offset, roots, fontsize) {
 group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
                        label_format, offset, fontsize, ...) {
     group <- NULL
-    tree <- treeio::as.phylo(hc)
-    groups <- lapply(unique(clus),
-      function(x) d$node[which(clus == x)])
-    gtree <- ggtree::groupOTU(tree, .node = groups)
-    roots <- lapply(groups,
-        function(x) Reduce(intersect, get_parents(tree, x))[1])
-    p <- ggtree(gtree, aes(color=group), show.legend = F, ...) %<+% d +
+   #tree <- treeio::as.phylo(hc)
+   #groups <- lapply(unique(clus),
+   #   function(x) d$node[which(clus == x)])
+   # gtree <- ggtree::groupOTU(tree, .node = groups)
+   # roots <- lapply(groups,
+   #    function(x) Reduce(intersect, get_parents(tree, x))[1])
+   #ggtree可以直接对hclust对象可视化
+   p <- ggtree(hc, branch.length = "none", show.legend=FALSE)
+   #用MRCA取每个cluster的共同祖先节点，这样color就不会错乱。 
+   noids <- lapply(grp, function(x)unlist(lapply(x, function(i)ggtree::nodeid(p, i))))
+   roots <- unlist(lapply(noids, function(x) ggtree::MRCA(p, x))) 
+   #用groupOTU来处理ggtree对象
+   dat <- data.frame(name=names(clus), cls=paste0("cluster_",as.numeric(clus)))
+   grp <- apply(table(dat), 2, function(x)names(x[x==1]))
+   p <- ggtree::groupOTU(p, grp, "group") + aes_(color=~group)
+   #p <- ggtree(gtree, aes(color=group), show.legend = F, ...) %<+% d +
+   p <- p %<+% d +
         geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = F, align=TRUE)
     
     add_cladelab(p, nWords, label_format, offset, roots, fontsize) 
