@@ -102,7 +102,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     colnames(pdata2)[5] <- "color2"
 
     if(is.null(nCluster)){
-        pdata2$color <- kmeans(dat, ceiling(sqrt(nrow(dat))))$cluster
+        pdata2$color <- kmeans(dat, ceiling(sqrt(nrow(dat))),algorithm = "Lloyd")$cluster
     } else {
         if(nCluster > nrow(dat)) nCluster <- nrow(dat)
         pdata2$color <- kmeans(dat, nCluster)$cluster
