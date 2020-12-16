@@ -78,7 +78,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                         method = hclust_method)
     clus <- stats::cutree(hc, nCluster)
     d <- data.frame(label = names(clus),
-        node = seq_len(length(clus)),
+        #node = seq_len(length(clus)),
         color = x[keep, as.character(color)],
         count = x$Count[keep])
 
