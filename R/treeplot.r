@@ -34,6 +34,7 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' @param offset_tiplab tiplab offset
 ##' @param hclust_method method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
+##' @param group_color a vector of group colors.
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -47,10 +48,10 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   color = "p.adjust",
                                   nWords = 4, nCluster = 5,
                                   cex_category = 1,
-                                  label_format = 30, xlim = c(0,2),
-                                  fontsize = 4, offset = .9,
+                                  label_format = 30, xlim = NULL,
+                                  fontsize = 4, offset = NULL,
                                   offset_tiplab = 0.1, 
-                                  hclust_method = "ward.D", ...) {
+                                  hclust_method = "ward.D", group_color = NULL, ...) {
     group <- p.adjust <- count<- NULL
 
     if (class(x) == "gseaResult")
@@ -82,10 +83,10 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         color = x[keep, as.character(color)],
         count = x$Count[keep])
 
-    
     ## Group the nodes and find the root node of each group of nodes.
-    p <- group_tree(hc, clus, d, offset_tiplab, 
-        nWords, label_format, offset, fontsize)
+    p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
+        label_format, offset, fontsize, group_color)
+    if(is.null(xlim)) xlim <- c(0, 5 * p$data$x[1])
     p + coord_cartesian(xlim = xlim) +
         ggnewscale::new_scale_colour() +
         geom_tippoint(aes(color = color, size = count)) +
@@ -110,7 +111,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       label_format = 30, xlim = NULL,
                                       fontsize = 4, offset = NULL, pie = "equal",
                                       legend_n = 3, offset_tiplab = 0.5, 
-                                      hclust_method = "ward.D", ...) {
+                                      hclust_method = "ward.D", group_color = NULL, ...) {
     group <- NULL
     if (is.numeric(showCategory)) {
         y <- fortify(x, showCategory = showCategory,
@@ -134,11 +135,10 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     clus <- stats::cutree(hc, nCluster)
     rownames(y_union) <- y_union$Description
     d <- data.frame(label = names(clus),
-        node = seq_len(length(clus)),
         count = y_union[names(clus), "Count"])
         
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
-        label_format, offset, fontsize, branch.length = "none")
+        label_format, offset, fontsize, group_color)
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
@@ -191,11 +191,12 @@ fill_termsim <- function(x, keep) {
     return(termsim2)
 }
 
-add_cladelab <- function(p, nWords, label_format, offset, roots, fontsize) {
-    node <- label <- color <- NULL
-    pdata <- data.frame(name = p$data$label, color = p$data$group)
-    pdata <- pdata[!is.na(pdata$name), ]
-    cluster_color <- unique(pdata$color)
+add_cladelab <- function(p, nWords, label_format, offset, roots, 
+                         fontsize, group_color, cluster_color, pdata) {
+    #node <- label <- color <- NULL
+    # pdata <- data.frame(name = p$data$label, color = p$data$group)
+    # pdata <- pdata[!is.na(pdata$name), ]
+    # cluster_color <- unique(pdata$color)
     cluster_label <- sapply(cluster_color, wordcloud_i, pdata2 = pdata,
                         nWords = nWords)
     label_func <- default_labeller(label_format)
@@ -203,46 +204,60 @@ add_cladelab <- function(p, nWords, label_format, offset, roots, fontsize) {
         label_func <- label_format
     }
     cluster_label <- label_func(cluster_label)
-    names(cluster_label) <- cluster_color
+    #names(cluster_label) <- cluster_color
     if(is.null(offset)) offset <- 2 * p$data$x[1]
-    
+    n_color <- length(levels(cluster_color)) - length(cluster_color)
+    if (is.null(group_color)) {
+        color2 <- scales::hue_pal()(length(roots) + n_color)[-seq_len(n_color)]
+    } else {
+        color2 <- group_color
+    }
     df <- data.frame(node = as.numeric(roots),
         label = cluster_label,
         cluster=cluster_color,
-        color = scales::hue_pal()(length(roots) + 1)[-1])
-    p + ggnewscale::new_scale_colour() + 
+        # color = scales::hue_pal()(length(roots) + n_color)[-seq_len(n_color)]
+        color = color2
+    )
+    
+    p <- p + ggnewscale::new_scale_colour() + 
         geom_cladelab(
             data = df,
-            #mapping = aes(node = node, label = label, color = color),
-            mapping=aes_(node=~node, label=~label, color=~cluster),
+            mapping = aes_(node =~ node, label =~ label, color =~ cluster),
             textcolor = "black",
             show.legend = F,
             fontsize = fontsize, offset = offset) + 
-            scale_color_manual(values = df$color, limits = df$color, guide = FALSE)
+            scale_color_manual(values = df$color, # limits = df$color, 
+                               guide = FALSE)
+    return(p)
  
 }
 
 group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
-                       label_format, offset, fontsize, ...) {
+                       label_format, offset, fontsize, group_color) {
     group <- NULL
-   #tree <- treeio::as.phylo(hc)
-   #groups <- lapply(unique(clus),
-   #   function(x) d$node[which(clus == x)])
-   # gtree <- ggtree::groupOTU(tree, .node = groups)
-   # roots <- lapply(groups,
-   #    function(x) Reduce(intersect, get_parents(tree, x))[1])
-   #ggtree可以直接对hclust对象可视化
-   p <- ggtree(hc, branch.length = "none", show.legend=FALSE)
-   #用MRCA取每个cluster的共同祖先节点，这样color就不会错乱。 
-   noids <- lapply(grp, function(x)unlist(lapply(x, function(i)ggtree::nodeid(p, i))))
-   roots <- unlist(lapply(noids, function(x) ggtree::MRCA(p, x))) 
-   #用groupOTU来处理ggtree对象
-   dat <- data.frame(name=names(clus), cls=paste0("cluster_",as.numeric(clus)))
-   grp <- apply(table(dat), 2, function(x)names(x[x==1]))
-   p <- ggtree::groupOTU(p, grp, "group") + aes_(color=~group)
-   #p <- ggtree(gtree, aes(color=group), show.legend = F, ...) %<+% d +
-   p <- p %<+% d +
-        geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = F, align=TRUE)
+    # cluster data
+    dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
+    grp <- apply(table(dat), 2, function(x) names(x[x == 1]))  
+
+    p <- ggtree(hc, branch.length = "none", show.legend=FALSE)
+    # extract the most recent common ancestor
+    noids <- lapply(grp, function(x) unlist(lapply(x, function(i) ggtree::nodeid(p, i))))
+    roots <- unlist(lapply(noids, function(x) ggtree::MRCA(p, x)))
+    # cluster data
+    p <- ggtree::groupOTU(p, grp, "group") + aes_(color =~ group)
+    pdata <- data.frame(name = p$data$label, color = p$data$group)
+    pdata <- pdata[!is.na(pdata$name), ]
+    cluster_color <- unique(pdata$color)
+    n_color <- length(levels(cluster_color)) - length(cluster_color)
+    if (!is.null(group_color)) {
+        color2 <- c(rep("black", n_color), group_color)
+        p <- p + scale_color_manual(values = color2, guide = FALSE)
+    }
     
-    add_cladelab(p, nWords, label_format, offset, roots, fontsize) 
+    p <- p %<+% d +
+        geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = FALSE, align=TRUE)
+
+    p <- add_cladelab(p, nWords, label_format, offset, roots, 
+        fontsize, group_color, cluster_color, pdata) 
+    return(p)
 }

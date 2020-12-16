@@ -25,11 +25,12 @@ treeplot.enrichResult(
   nCluster = 5,
   cex_category = 1,
   label_format = 30,
-  xlim = c(0, 2),
+  xlim = NULL,
   fontsize = 4,
-  offset = 0.9,
+  offset = NULL,
   offset_tiplab = 0.1,
   hclust_method = "ward.D",
+  group_color = NULL,
   ...
 )
 
@@ -49,6 +50,7 @@ treeplot.compareClusterResult(
   legend_n = 3,
   offset_tiplab = 0.5,
   hclust_method = "ward.D",
+  group_color = NULL,
   ...
 )
 }
@@ -81,6 +83,8 @@ custom function to format axis labels.}
 
 \item{hclust_method}{method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
+
+\item{group_color}{a vector of group colors.}
 
 \item{split}{separate result by 'category' variable}
 
