@@ -86,16 +86,6 @@ treeplot.enrichResult <- function(x, showCategory = 30,
     ## Group the nodes and find the root node of each group of nodes.
     p <- group_tree(hc, clus, d, offset_tiplab, 
         nWords, label_format, offset, fontsize)
-    tree <- treeio::as.phylo(hc)
-    groups <- lapply(unique(clus),
-      function(x) d$node[which(clus == x)])
-    gtree <- ggtree::groupOTU(tree, .node = groups)
-    roots <- lapply(groups,
-        function(x) Reduce(intersect, get_parents(tree, x))[1])
-    p <- ggtree(gtree, aes(color=group), show.legend = F) %<+% d +
-        geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = F, align=TRUE)
-
-    p <- add_cladelab(p, nWords, label_format, offset, roots, fontsize) 
     p + coord_cartesian(xlim = xlim) +
         ggnewscale::new_scale_colour() +
         geom_tippoint(aes(color = color, size = count)) +
