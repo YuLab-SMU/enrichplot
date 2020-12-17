@@ -157,7 +157,7 @@ for interpretation.
     ego <- enrichGO(gene  = gene,
         universe      = names(geneList),
         OrgDb         = org.Hs.eg.db,
-        ont           = "CC",
+        ont           = "BP",
         pAdjustMethod = "BH",
         pvalueCutoff  = 0.01,
         qvalueCutoff  = 0.05,

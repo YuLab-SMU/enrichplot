@@ -64,6 +64,7 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
     }
 
     if (y_id == "DOID") w <- DOSE::doSim(id, id, measure=method)
+    rownames(w) <- colnames(w) <- y[colnames(w), "Description"]
     return(w)
 }
 

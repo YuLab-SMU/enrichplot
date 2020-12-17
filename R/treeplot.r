@@ -224,6 +224,7 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
             data = df,
             mapping = aes_(node =~ node, label =~ label, color =~ cluster),
             textcolor = "black",
+            extend = 0.3,
             show.legend = F,
             fontsize = fontsize, offset = offset) + 
             scale_color_manual(values = df$color, # limits = df$color, 

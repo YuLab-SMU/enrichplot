@@ -105,7 +105,7 @@ setGeneric("emapplot",
 ##'     ego <- enrichGO(gene  = gene,
 ##'         universe      = names(geneList),
 ##'         OrgDb         = org.Hs.eg.db,
-##'         ont           = "CC",
+##'         ont           = "BP",
 ##'         pAdjustMethod = "BH",
 ##'         pvalueCutoff  = 0.01,
 ##'         qvalueCutoff  = 0.05,
@@ -150,7 +150,7 @@ setGeneric("emapplot_cluster",
 ##'     ego <- enrichGO(gene  = gene,
 ##'         universe      = names(geneList),
 ##'         OrgDb         = org.Hs.eg.db,
-##'         ont           = "CC",
+##'         ont           = "BP",
 ##'         pAdjustMethod = "BH",
 ##'         pvalueCutoff  = 0.01,
 ##'         qvalueCutoff  = 0.05,
@@ -158,6 +158,11 @@ setGeneric("emapplot_cluster",
 ##'     d <- godata('org.Hs.eg.db', ont="BP")
 ##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
 ##'     treeplot(ego2, showCategory = 30)
+##'     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
+##'     keep
+##'     treeplot(ego2, showCategory = keep)
+##'     treeplot(ego2, showCategory = 20, 
+##'         group_color = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442"))
 ##'    }
 setGeneric("treeplot",
            function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)

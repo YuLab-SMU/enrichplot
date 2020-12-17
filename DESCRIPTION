@@ -9,7 +9,7 @@ Description: The 'enrichplot' package implements several visualization methods f
 Depends: R (>= 3.5.0)
 Imports:
     cowplot,
-    DOSE,
+    DOSE (>= 3.16.0),
     ggplot2,
     ggraph,
     graphics,
