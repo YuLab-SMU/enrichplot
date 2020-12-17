@@ -86,7 +86,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
     ## Group the nodes and find the root node of each group of nodes.
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
         label_format, offset, fontsize, group_color)
-    if(is.null(xlim)) xlim <- c(0, 5 * p$data$x[1])
+    if(is.null(xlim)) xlim <- c(0, 3 * p$data$x[1])
     p + coord_cartesian(xlim = xlim) +
         ggnewscale::new_scale_colour() +
         geom_tippoint(aes(color = color, size = count)) +
@@ -205,7 +205,7 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
     }
     cluster_label <- label_func(cluster_label)
     #names(cluster_label) <- cluster_color
-    if(is.null(offset)) offset <- 2 * p$data$x[1]
+    if(is.null(offset)) offset <- p$data$x[1]
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (is.null(group_color)) {
         color2 <- scales::hue_pal()(length(roots) + n_color)[-seq_len(n_color)]
