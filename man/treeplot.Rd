@@ -31,6 +31,7 @@ treeplot.enrichResult(
   offset_tiplab = 0.1,
   hclust_method = "ward.D",
   group_color = NULL,
+  extend = 0.3,
   ...
 )
 
@@ -51,6 +52,7 @@ treeplot.compareClusterResult(
   offset_tiplab = 0.5,
   hclust_method = "ward.D",
   group_color = NULL,
+  extend = 0.3,
   ...
 )
 }
@@ -85,6 +87,8 @@ custom function to format axis labels.}
 "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
 
 \item{group_color}{a vector of group colors.}
+
+\item{extend}{numeric, extend the length of bar, default is 0.}
 
 \item{split}{separate result by 'category' variable}
 

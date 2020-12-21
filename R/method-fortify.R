@@ -105,8 +105,10 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
         result$GeneRatio <- gsize/gcsize
         cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
                          sep="")
-        lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
-        result$Cluster <- factor(cluster, levels = lv)
+        ## fix bug: when ont = "ALL"
+        # lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
+        # result$Cluster <- factor(cluster, levels = lv)
+        result$Cluster <- factor(cluster, levels = unique(cluster))
     } else {
         ## nothing
     }

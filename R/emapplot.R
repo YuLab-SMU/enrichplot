@@ -115,12 +115,13 @@ emap_graph_build <- function(y, geneSets, color, cex_line, min_edge,
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
     } else {
-        w <- pair_sim
-        if (method == "JC") {
-            w <- w[as.character(y$Description), as.character(y$Description)]
-        } else {
-            w <- w[y$ID, y$ID]
-        }
+        # w <- pair_sim
+        # if (method == "JC") {
+            # w <- w[as.character(y$Description), as.character(y$Description)]
+        # } else {
+            # w <- w[y$ID, y$ID]
+        # }
+        w <- pair_sim[as.character(y$Description), as.character(y$Description)]
     }
 
     wd <- melt(w)

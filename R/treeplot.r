@@ -35,6 +35,7 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' @param hclust_method method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 ##' @param group_color a vector of group colors.
+##' @param extend numeric, extend the length of bar, default is 0.3.
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -51,7 +52,8 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   label_format = 30, xlim = NULL,
                                   fontsize = 4, offset = NULL,
                                   offset_tiplab = 0.1, 
-                                  hclust_method = "ward.D", group_color = NULL, ...) {
+                                  hclust_method = "ward.D", group_color = NULL, 
+                                  extend = 0.3, ...) {
     group <- p.adjust <- count<- NULL
 
     if (class(x) == "gseaResult")
@@ -85,7 +87,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
 
     ## Group the nodes and find the root node of each group of nodes.
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
-        label_format, offset, fontsize, group_color)
+        label_format, offset, fontsize, group_color, extend)
     if(is.null(xlim)) xlim <- c(0, 3 * p$data$x[1])
     p + coord_cartesian(xlim = xlim) +
         ggnewscale::new_scale_colour() +
@@ -111,7 +113,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       label_format = 30, xlim = NULL,
                                       fontsize = 4, offset = NULL, pie = "equal",
                                       legend_n = 3, offset_tiplab = 0.5, 
-                                      hclust_method = "ward.D", group_color = NULL, ...) {
+                                      hclust_method = "ward.D", group_color = NULL, 
+                                      extend = 0.3, ...) {
     group <- NULL
     if (is.numeric(showCategory)) {
         y <- fortify(x, showCategory = showCategory,
@@ -138,7 +141,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         count = y_union[names(clus), "Count"])
         
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
-        label_format, offset, fontsize, group_color)
+        label_format, offset, fontsize, group_color, extend)
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
@@ -192,7 +195,7 @@ fill_termsim <- function(x, keep) {
 }
 
 add_cladelab <- function(p, nWords, label_format, offset, roots, 
-                         fontsize, group_color, cluster_color, pdata) {
+                         fontsize, group_color, cluster_color, pdata, extend) {
     #node <- label <- color <- NULL
     # pdata <- data.frame(name = p$data$label, color = p$data$group)
     # pdata <- pdata[!is.na(pdata$name), ]
@@ -224,7 +227,7 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
             data = df,
             mapping = aes_(node =~ node, label =~ label, color =~ cluster),
             textcolor = "black",
-            extend = 0.3,
+            extend = extend,
             show.legend = F,
             fontsize = fontsize, offset = offset) + 
             scale_color_manual(values = df$color, # limits = df$color, 
@@ -234,7 +237,7 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
 }
 
 group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
-                       label_format, offset, fontsize, group_color) {
+                       label_format, offset, fontsize, group_color, extend) {
     group <- NULL
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
@@ -259,6 +262,6 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = FALSE, align=TRUE)
 
     p <- add_cladelab(p, nWords, label_format, offset, roots, 
-        fontsize, group_color, cluster_color, pdata) 
+        fontsize, group_color, cluster_color, pdata, extend) 
     return(p)
 }
