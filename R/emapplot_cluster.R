@@ -35,7 +35,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @param label_style one of "shadowtext" and "ggforce"
 ##' @param group_legend If TRUE, the grouping legend will be displayed.
 ##' The default is FALSE
-##' @param cex_category number indicating the amount by which plotting category
+##' @param cex_category number indicating the size by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
@@ -213,10 +213,24 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
 
     has_pairsim(x)
     label_group <- 3
-    y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
+    
+    if (is.numeric(showCategory)) {
+        y <- fortify(x, showCategory = showCategory,
+                                      includeAll = TRUE, split = split)
+        y_union <- merge_compareClusterResult(y)
+    } else {
+        y <- fortify(x, showCategory=NULL,
+                                      includeAll = TRUE, split = split)
+        n <- update_n(y_union, showCategory)
+        y_union <- merge_compareClusterResult(y)
+        y_union <- y_union[match(n, y_union$Description),]    
+    }   
+    
     y$Cluster <- sub("\n.*", "", y$Cluster)
+    # y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=split)
+    # y$Cluster <- sub("\n.*", "", y$Cluster)
 
-    y_union <- get_y_union(y = y, showCategory = showCategory)
+    # y_union <- get_y_union(y = y, showCategory = showCategory)
     y <- y[y$ID %in% y_union$ID, ]
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",

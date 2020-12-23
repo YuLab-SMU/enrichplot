@@ -105,7 +105,7 @@ setGeneric("emapplot",
 ##'     ego <- enrichGO(gene  = gene,
 ##'         universe      = names(geneList),
 ##'         OrgDb         = org.Hs.eg.db,
-##'         ont           = "CC",
+##'         ont           = "BP",
 ##'         pAdjustMethod = "BH",
 ##'         pvalueCutoff  = 0.01,
 ##'         qvalueCutoff  = 0.05,
@@ -115,10 +115,12 @@ setGeneric("emapplot",
 ##'     emapplot_cluster(ego2, showCategory = 80)
 ##'    }
 setGeneric("emapplot_cluster",
-           function(x, showCategory = nrow(x), color="p.adjust", label_format = 30, ...)
+           function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)
                standardGeneric("emapplot_cluster")
            )
+           
 
+           
 ##' Get the similarity matrix
 ##'
 ##'
@@ -154,7 +156,7 @@ setGeneric("emapplot_cluster",
 ##'     emapplot_cluster(ego2)
 ##'    }
 setGeneric("pairwise_termsim",
-           function(x, method = "JC", semData = NULL, showCategory = 30)
+           function(x, method = "JC", semData = NULL, showCategory = 200)
                standardGeneric("pairwise_termsim")
            )
 

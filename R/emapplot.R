@@ -64,6 +64,7 @@ get_ww <- function(y, geneSets, method, semData = NULL) {
     }
 
     if (y_id == "DOID") w <- DOSE::doSim(id, id, measure=method)
+    rownames(w) <- colnames(w) <- y[colnames(w), "Description"]
     return(w)
 }
 
@@ -114,12 +115,13 @@ emap_graph_build <- function(y, geneSets, color, cex_line, min_edge,
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
     } else {
-        w <- pair_sim
-        if (method == "JC") {
-            w <- w[as.character(y$Description), as.character(y$Description)]
-        } else {
-            w <- w[y$ID, y$ID]
-        }
+        # w <- pair_sim
+        # if (method == "JC") {
+            # w <- w[as.character(y$Description), as.character(y$Description)]
+        # } else {
+            # w <- w[y$ID, y$ID]
+        # }
+        w <- pair_sim[as.character(y$Description), as.character(y$Description)]
     }
 
     wd <- melt(w)
@@ -357,13 +359,28 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
 
     label_category <- 3
     ## pretreatment of x, just like dotplot do
-    y <- fortify(x, showCategory=showCategory,
-                                      includeAll=TRUE, split=split)
+    ## If showCategory is a number, keep only the first showCategory of each group
+    ## Otherwise keep the total showCategory rows
+    if (is.numeric(showCategory)) {
+        y <- fortify(x, showCategory = showCategory,
+                                      includeAll = TRUE, split = split)
+        y_union <- merge_compareClusterResult(y)
+    } else {
+        y <- fortify(x, showCategory=NULL,
+                                      includeAll = TRUE, split = split)
+        n <- update_n(y_union, showCategory)
+        y_union <- merge_compareClusterResult(y)
+        y_union <- y_union[match(n, y_union$Description),]    
+    }   
+    
     y$Cluster <- sub("\n.*", "", y$Cluster)
     ## geneSets <- geneInCategory(x) ## use core gene for gsea result
 
     ## Data structure transformation, combining the same ID (Description) genes
-    y_union <- get_y_union(y = y, showCategory = showCategory)
+        
+    #y_union <- get_y_union(y = y, showCategory = showCategory)
+    
+ 
     y <- y[y$ID %in% y_union$ID, ]
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
