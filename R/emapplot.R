@@ -362,27 +362,9 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     ## pretreatment of x, just like dotplot do
     ## If showCategory is a number, keep only the first showCategory of each group
     ## Otherwise keep the total showCategory rows
-    if (is.numeric(showCategory)) {
-        y <- fortify(x, showCategory = showCategory,
-                                      includeAll = TRUE, split = split)
-        y_union <- merge_compareClusterResult(y)
-    } else {
-        y <- fortify(x, showCategory=NULL,
-                                      includeAll = TRUE, split = split)
-        n <- update_n(y_union, showCategory)
-        y_union <- merge_compareClusterResult(y)
-        y_union <- y_union[match(n, y_union$Description),]    
-    }   
-    
-    y$Cluster <- sub("\n.*", "", y$Cluster)
-    ## geneSets <- geneInCategory(x) ## use core gene for gsea result
-
-    ## Data structure transformation, combining the same ID (Description) genes
-        
-    #y_union <- get_y_union(y = y, showCategory = showCategory)
-    
- 
-    y <- y[y$ID %in% y_union$ID, ]
+    ylist <- keep_showCategory(showCategory, x, split)  
+    y_union <- ylist[["y_union"]]
+    y <- ylist[["y"]]
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)
@@ -522,7 +504,23 @@ get_y_union <- function(y, showCategory){
    return(y_union)
 }
 
-
+keep_showCategory <- function(showCategory, x, split) {
+    if (is.numeric(showCategory)) {
+        y <- fortify(x, showCategory = showCategory,
+                                      includeAll = TRUE, split = split)
+        y_union <- merge_compareClusterResult(y)
+    } else {  
+        y <- as.data.frame(x)  
+        y <- y[y$Description %in% showCategory, ]        
+        y <- fortify(y, showCategory=NULL,
+                                      includeAll = TRUE, split = split)                                              
+        y_union <- merge_compareClusterResult(y)  
+    }  
+    ## Data structure transformation, combining the same ID (Description) genes    
+    y$Cluster <- sub("\n.*", "", y$Cluster)
+    y <- y[y$ID %in% y_union$ID, ]    
+    ylist <- list(y_union =  y_union, y = y)
+}
 
 
 

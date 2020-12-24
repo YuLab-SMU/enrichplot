@@ -1,7 +1,7 @@
 # enrichplot 1.11.1.991
 
-+ fix `pairwise_termsim` (2020-12-23, Wed)
-+ fix `showCategory` for `cnetplot`, `emapplot`, `emapplot_cluster` 
++ fix `pairwise_termsim` for the bug of repeated filtering of `showCategory`(2020-12-23, Wed)
++ fix `showCategory` for `cnetplot`, `emapplot`, `emapplot_cluster` when  `showCategory` is a vector of term descriptions
 
 
 # enrichplot 1.11.1

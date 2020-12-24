@@ -245,27 +245,10 @@ cnetplot.compareClusterResult <- function(x,
     range_gene_size <- c(3, 3)
     ## If showCategory is a number, keep only the first showCategory of each group,
     ## otherwise keep the total showCategory rows
-    if (is.numeric(showCategory)) {
-        y <- fortify(x, showCategory = showCategory,
-                                      includeAll = TRUE, split = split)
-        y_union <- merge_compareClusterResult(y)
-    } else {
-        y <- fortify(x, showCategory=NULL,
-                                      includeAll = TRUE, split = split)
-        n <- update_n(y_union, showCategory)
-        y_union <- merge_compareClusterResult(y)
-        y_union <- y_union[match(n, y_union$Description),]    
-    } 
-    # y <- fortify(x, showCategory=showCategory,
-        # includeAll=TRUE, split=split)
-    y$Cluster <- sub("\n.*", "", y$Cluster)
-
-
-    # y_union <- get_y_union(y = y, showCategory = showCategory)
-    y <- y[y$ID %in% y_union$ID, ]
+    ylist <- keep_showCategory(showCategory, x, split)  
+    y_union <- ylist[["y_union"]]
+    y <- ylist[["y"]]
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
-
-
     if (circular) {
         layout <- "linear"
         geom_edge <- geom_edge_arc
