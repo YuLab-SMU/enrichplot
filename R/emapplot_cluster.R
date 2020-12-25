@@ -213,9 +213,9 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
 
     has_pairsim(x)
     label_group <- 3
-    ylist <- keep_showCategory(showCategory, x, split)  
-    y_union <- ylist[["y_union"]]
-    y <- ylist[["y"]]
+    y <- get_selected_category(showCategory, x, split)  
+    ## Data structure transformation, combining the same ID (Description) genes
+    y_union <- merge_compareClusterResult(y)
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)

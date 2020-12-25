@@ -103,7 +103,7 @@ has_pairsim <- function(x) {
 ##' "JC" (Jaccard similarity coefficient) methods
 ##' @return result of graph.data.frame()
 ##' @noRd
-emap_graph_build <- function(y, geneSets, color, cex_line, min_edge, 
+emap_graph_build <- function(y, geneSets, color, cex_line, min_edge,
                              pair_sim  = NULL, method = NULL) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
@@ -175,7 +175,7 @@ get_igraph <- function(x, y,  n, color, cex_line, min_edge){
     if (n == 0) {
         stop("no enriched term found...")
     }
-    
+
     g <- emap_graph_build(y = y, geneSets = geneSets, color = color,
              cex_line = cex_line, min_edge = min_edge,
              pair_sim = x@termsim, method = x@method)
@@ -216,9 +216,9 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     layout = "nicely", node_scale = NULL, line_scale = NULL, min_edge=0.2,
     node_label_size = NULL, cex_label_category  = 1, cex_category = NULL,
     cex_line = NULL) {
-    
+
     has_pairsim(x)
-    if (!is.null(node_label_size)) 
+    if (!is.null(node_label_size))
         message("node_label_size parameter has been changed to 'cex_label_category'")
     # if (is.null(cex_label_category)) {
         # if (!is.null(node_label_size)) {
@@ -228,7 +228,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         # }
     # }
 
-    if (!is.null(node_scale)) 
+    if (!is.null(node_scale))
         message("node_scale parameter has been changed to 'cex_category'")
     if (is.null(cex_category)) {
         if (!is.null(node_scale)) {
@@ -238,7 +238,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         }
     }
 
-    if (!is.null(line_scale)) 
+    if (!is.null(line_scale))
         message("line_scale parameter has been changed to 'cex_line'")
     if (is.null(cex_line)) {
         if (!is.null(line_scale)) {
@@ -362,9 +362,9 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     ## pretreatment of x, just like dotplot do
     ## If showCategory is a number, keep only the first showCategory of each group
     ## Otherwise keep the total showCategory rows
-    ylist <- keep_showCategory(showCategory, x, split)  
-    y_union <- ylist[["y_union"]]
-    y <- ylist[["y"]]
+    y <- get_selected_category(showCategory, x, split)
+    ## Data structure transformation, combining the same ID (Description) genes
+    y_union <- merge_compareClusterResult(y)
 
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), y_union$ID)
@@ -504,22 +504,25 @@ get_y_union <- function(y, showCategory){
    return(y_union)
 }
 
-keep_showCategory <- function(showCategory, x, split) {
+##' Keep selected category in enrichment result
+##'
+##' @param showCategory a number or a vectory of enriched terms to display
+##' @param x enrichment result
+##' @param split separate result by 'category' variable
+##' @noRd
+get_selected_category <- function(showCategory, x, split) {
     if (is.numeric(showCategory)) {
         y <- fortify(x, showCategory = showCategory,
                                       includeAll = TRUE, split = split)
-        y_union <- merge_compareClusterResult(y)
-    } else {  
-        y <- as.data.frame(x)  
-        y <- y[y$Description %in% showCategory, ]        
+
+    } else {
+        y <- as.data.frame(x)
+        y <- y[y$Description %in% showCategory, ]
         y <- fortify(y, showCategory=NULL,
-                                      includeAll = TRUE, split = split)                                              
-        y_union <- merge_compareClusterResult(y)  
-    }  
-    ## Data structure transformation, combining the same ID (Description) genes    
+                                      includeAll = TRUE, split = split)
+    }
     y$Cluster <- sub("\n.*", "", y$Cluster)
-    y <- y[y$ID %in% y_union$ID, ]    
-    ylist <- list(y_union =  y_union, y = y)
+    return(y)
 }
 
 
