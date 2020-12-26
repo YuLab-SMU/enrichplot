@@ -1,5 +1,6 @@
-# enrichplot 1.11.1.991
+# enrichplot 1.11.1.992
 
++ fix bug in `emapplot` and `cnetplot` when enrichment result is one line (2020-12-26, Sat)
 + fix `pairwise_termsim` for the bug of repeated filtering of `showCategory`(2020-12-23, Wed)
 + fix `showCategory` for `cnetplot`, `emapplot`, `emapplot_cluster` when  `showCategory` is a vector of term descriptions
 

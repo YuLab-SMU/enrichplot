@@ -300,7 +300,7 @@ cnetplot.compareClusterResult <- function(x,
     }
 
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
-        p <- ggraph(g) + edge_layer
+        p <- ggraph(g, "tree") + edge_layer
     } else {
         p <- ggraph(g, layout=layout, circular=circular) + edge_layer
     }

@@ -115,6 +115,7 @@ emap_graph_build <- function(y, geneSets, color, cex_line, min_edge,
         g <- add_vertices(g, nv = 1)
         V(g)$name <- as.character(y$Description)
         V(g)$color <- "red"
+        return(g)
     } else {
         # w <- pair_sim
         # if (method == "JC") {
@@ -256,7 +257,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
     if(n == 1) {
-        return(ggraph(g) + geom_node_point(color="red", size=5) +
+        return(ggraph(g,"tree") + geom_node_point(color="red", size=5) +
                geom_node_text(aes_(label=~name)))
     }
 
@@ -374,7 +375,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                           pair_sim = x@termsim, method = x@method)
 
     p <- get_p(y = y, g = g, y_union = y_union, cex_category = cex_category,
-               pie = pie, layout = layout)
+               pie = pie, layout = layout)               
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
 
@@ -458,7 +459,7 @@ get_p <- function(y, g, y_union, cex_category, pie, layout){
     ## when y just have one line
     if(is.null(dim(y)) | nrow(y) == 1) {
         title <- y$Cluster
-        p <- ggraph(g) + geom_node_point(color="red", size=5 * cex_category) +
+        p <- ggraph(g, "tree") + geom_node_point(color="red", size=5 * cex_category) +
             geom_node_text(aes_(label=~name)) + theme_void() +
             labs(title=title)
         return(p)
@@ -466,7 +467,7 @@ get_p <- function(y, g, y_union, cex_category, pie, layout){
 
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
         ##return(ggraph(g) + geom_node_point(color="red", size=5) + geom_node_text(aes_(label=~name)))
-        p <- ggraph(g)
+        p <- ggraph(g, "tree")
         ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
 
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*cex_category)
