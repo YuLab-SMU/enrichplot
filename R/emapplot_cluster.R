@@ -82,7 +82,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
     if(n == 1) {
-        return(ggraph(g) + geom_node_point(color="red", size=5) +
+        return(ggraph(g, "tree") + geom_node_point(color="red", size=5) +
                  geom_node_text(aes_(label=~name)))
     }
     edgee <- igraph::get.edgelist(g)
@@ -216,10 +216,11 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     y <- get_selected_category(showCategory, x, split)  
     ## Data structure transformation, combining the same ID (Description) genes
     y_union <- merge_compareClusterResult(y)
-
+    
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
-                                  fixed = TRUE), y_union$ID)
-      
+                                  fixed = TRUE), y_union$ID) 
+
+                                  
     g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
         method = x@method)
@@ -242,9 +243,9 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     pdata2 <- p$data
     dat <- data.frame(x = pdata2$x, y = pdata2$y)
     colnames(pdata2)[5] <- "color2"
-
+    
     if (is.null(nCluster)){
-        pdata2$color <- kmeans(dat, ceiling(sqrt(nrow(dat))))$cluster
+        pdata2$color <- kmeans(dat, floor(sqrt(nrow(dat))))$cluster
     } else {
         if (nCluster > nrow(dat)) nCluster <- nrow(dat)
         pdata2$color <- kmeans(dat, nCluster)$cluster

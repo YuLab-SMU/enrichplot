@@ -1,3 +1,9 @@
+# enrichplot 1.11.1.992
+
++ fix bug in `emapplot` and `cnetplot` when enrichment result is one line (2020-12-26, Sat)
+
+
+
 # enrichplot 1.11.1.991
 
 + fix `pairwise_termsim` for the bug of repeated filtering of `showCategory`(2020-12-23, Wed)
