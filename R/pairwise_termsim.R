@@ -36,7 +36,7 @@ pairwise_termsim.enrichResult <- function(x, method = "JC", semData = NULL, show
         n <- length(n)
     }
 
-    x@termsim <- get_ww(y = y, geneSets = geneSets, method = method,
+    x@termsim <- get_similarity_matrix(y = y, geneSets = geneSets, method = method,
                 semData = semData)
     x@method <- method
     return(x)
@@ -53,7 +53,7 @@ pairwise_termsim.compareClusterResult <- function(x, method = "JC", semData = NU
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), 
                          y_union$ID)
-    x@termsim <- get_ww(y = y_union, geneSets = geneSets, method = method,
+    x@termsim <- get_similarity_matrix(y = y_union, geneSets = geneSets, method = method,
                 semData = semData)                              
     x@method <- method
     return(x)    
