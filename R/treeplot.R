@@ -176,9 +176,9 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
 ##' @return a list of parent nodes
 ##'
 ##' @noRd
-get_parents <- function(tree_data, nodes) {
-    lapply(nodes, function(x) tidytree::ancestor(.data = tree_data, .node = x))
-}
+# get_parents <- function(tree_data, nodes) {
+#     lapply(nodes, function(x) tidytree::ancestor(.data = tree_data, .node = x))
+# }
 
 
 ##' Fill the upper triangular matrix completely
