@@ -86,8 +86,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                  geom_node_text(aes_(label=~name)))
     }
     edgee <- igraph::get.edgelist(g)
-    ## Get the semantic similarity or overlap between two nodes
-
+ 
     edge_w <- E(g)$weight
     set.seed(123)
     lw <- layout_with_fr(g, weights=edge_w)
@@ -116,17 +115,17 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     pdata2$color <- cluster_label[as.character(pdata2$color)]
     p$data <- pdata2
     ## Take the location of each group's center nodes as the location of the label
-    label_func <- default_labeller(label_format)
-    if (is.function(label_format)) {
-        label_func <- label_format
-    }
+    # label_func <- default_labeller(label_format)
+    # if (is.function(label_format)) {
+    #     label_func <- label_format
+    # }
 
-    label_x <- stats::aggregate(x ~ color, pdata2, mean)
-    label_y <- stats::aggregate(y ~ color, pdata2, mean)
-    label_location <- data.frame(x = label_x$x, y = label_y$y,
-                                 # label = label_x$color)
-                                 label = label_func(label_x$color))
-
+    # label_x <- stats::aggregate(x ~ color, pdata2, mean)
+    # label_y <- stats::aggregate(y ~ color, pdata2, mean)
+    # label_location <- data.frame(x = label_x$x, y = label_y$y,
+    #                              # label = label_x$color)
+    #                              label = label_func(label_x$color))
+    label_location <- get_label_location(pdata2, label_format)
     ## Adjust the label position up and down to avoid overlap
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
@@ -135,12 +134,12 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color")
 
-    if(with_edge) {
+    if (with_edge) {
         p <-  p +  ggraph::geom_edge_link(alpha = .8,
                        aes_(width =~ I(width*cex_line)), colour='darkgrey')
     }
 
-    if(label_style == "shadowtext") {
+    if (label_style == "shadowtext") {
         p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color,
                      fill =~ color), show.legend = show_legend)
     } else {
@@ -148,7 +147,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                      fill =~ color, label =~ color), show.legend = show_legend)
     }
 
-    if(group_legend) p <- p + scale_fill_discrete(name = "groups")
+    if (group_legend) p <- p + scale_fill_discrete(name = "groups")
     p <- p + ggnewscale::new_scale_fill() +
         geom_point(shape = 21, aes_(x =~ x, y =~ y, fill =~ color2,
                                     size =~ size)) +
@@ -171,22 +170,12 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
         return(p)
     }
 
-    if (utils::packageVersion("ggrepel") >= "0.9.0") {
-        p <- p + ggrepel::geom_text_repel(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-            show.legend = FALSE, ...)
-        return(p)
-    }
-    
-    warn <- paste0("The version of ggrepel in your computer is ",
-        utils::packageVersion('ggrepel'),
-        ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
-    warning(warn)        
+
     p + ggrepel::geom_text_repel(data = label_location,
-        aes_(x =~ x, y =~ y, label =~ label),
-        size = label_group * cex_label_group, ...)                         
-    
+        aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+        size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
+        show.legend = FALSE, ...)
+                         
 }
 
 
@@ -221,10 +210,10 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
                                   fixed = TRUE), y_union$ID) 
 
                                   
-    g <- emap_graph_build(y=y_union,geneSets=geneSets,color=color,
+    g <- build_emap_graph(y=y_union,geneSets=geneSets,color=color,
         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
         method = x@method)
-    p <- get_p(y = y, g = g, y_union = y_union, cex_category = cex_category,
+    p <- build_ggraph(y = y, g = g, y_union = y_union, cex_category = cex_category,
         pie = pie, layout = "nicely")
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
@@ -284,12 +273,12 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
         label_func <- label_format
     }
 
-    label_x <- stats::aggregate(x ~ color, pdata2, mean)
-    label_y <- stats::aggregate(y ~ color, pdata2, mean)
-    label_location <- data.frame(x = label_x$x, y = label_y$y,
-                                 # label = label_x$color)
-                                 label = label_func(label_x$color))
-
+    # label_x <- stats::aggregate(x ~ color, pdata2, mean)
+    # label_y <- stats::aggregate(y ~ color, pdata2, mean)
+    # label_location <- data.frame(x = label_x$x, y = label_y$y,
+    #                              # label = label_x$color)
+    #                              label = label_func(label_x$color))
+    label_location <- get_label_location(pdata2, label_format)
     ## Adjust the label position up and down to avoid overlap
     # rownames(label_location) <- label_location$label
     # label_location <- adjust_location(label_location, x_adjust, y_adjust)
@@ -318,13 +307,10 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
         coord_equal()+
         geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
             n = legend_n,
-            labeller = function(x) round(sum(pdata2$size) * x^2 / cex_category))
-        # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
-            # size = 5 * cex_label_group, check_overlap = check_overlap)
-
-    p <- p + theme(legend.title = element_text(size = 10),
+            labeller = function(x) round(sum(pdata2$size) * x^2 / cex_category)) + 
+        theme(legend.title = element_text(size = 10),
               legend.text  = element_text(size = 10)) +
-    theme(panel.background = element_blank())
+        theme(panel.background = element_blank())
     if (label_style == "ggforce") return(p)
     
     if (!repel) {
@@ -333,21 +319,11 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
             size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
         return(p)
     }
-    if (utils::packageVersion("ggrepel") >=  "0.9.0") {
-        p <- p + ggrepel::geom_text_repel(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black", 
-            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-            show.legend = FALSE, ...)
-        return(p)
-    }
-    warn <- paste0("The version of ggrepel in your computer is ",
-        utils::packageVersion('ggrepel'),
-        ", please install the latest version in Github: devtools::install_github('slowkow/ggrepel')")
-    warning(warn)
-    p <- p + ggrepel::geom_text_repel(data = label_location,
-        aes_(x =~ x, y =~ y, label =~ label),
-        size = label_group * cex_label_group, force = force,  ...)
 
+    p + ggrepel::geom_text_repel(data = label_location,
+        aes_(x =~ x, y =~ y, label =~ label), colour = "black", 
+        size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
+        show.legend = FALSE, ...)
 }
 
 

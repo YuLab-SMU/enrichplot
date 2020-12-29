@@ -26,7 +26,6 @@ cnetplot.enrichResult(
   node_label = "all",
   cex_category = 1,
   cex_gene = 1,
-  node_label_size = NULL,
   cex_label_category = 1,
   cex_label_gene = 1,
   ...
@@ -55,9 +54,6 @@ nodes should be scaled relative to the default.}
 
 \item{cex_gene}{number indicating the amount by which plotting gene nodes
 should be scaled relative to the default.}
-
-\item{node_label_size}{size of node label, this parameter has been
-changed to cex_label_category and cex_label_gene}
 
 \item{cex_label_category}{scale of category node label size}
 
