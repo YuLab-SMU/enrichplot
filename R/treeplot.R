@@ -156,7 +156,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     ID_Cluster_mat$node <- p_data$node
     if(is.null(xlim)) xlim <- c(0, 5 * p_data$x[1])
 
-    p + ggnewscale::new_scale_colour() +
+    # p + ggnewscale::new_scale_colour() +
+    p + ggnewscale::new_scale_fill() +
         scatterpie::geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
                 cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
         scatterpie::geom_scatterpie_legend(cex_category * ID_Cluster_mat$radius,
@@ -240,6 +241,13 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
             show.legend = F,
             fontsize = fontsize, offset = offset) + 
             scale_color_manual(values = df$color, 
+                               guide = FALSE)
+
+    p <- p + ggtree::geom_hilight(
+            data = df,
+            mapping = aes_(node =~ node, label =~ label, fill =~ cluster),
+            show.legend = F) + 
+            scale_fill_manual(values = df$color, 
                                guide = FALSE)
     return(p)
  
