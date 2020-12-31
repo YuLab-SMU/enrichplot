@@ -28,7 +28,7 @@ treeplot.enrichResult(
   xlim = NULL,
   fontsize = 4,
   offset = NULL,
-  offset_tiplab = 0.1,
+  offset_tiplab = 0.35,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,

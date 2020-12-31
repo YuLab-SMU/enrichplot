@@ -54,7 +54,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   cex_category = 1,
                                   label_format = 30, xlim = NULL,
                                   fontsize = 4, offset = NULL,
-                                  offset_tiplab = 0.1, 
+                                  offset_tiplab = 0.35, 
                                   hclust_method = "ward.D", 
                                   group_color = NULL, 
                                   extend = 0.3, hilight = TRUE, ...) {
