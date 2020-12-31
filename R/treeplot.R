@@ -38,6 +38,7 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 ##' @param group_color a vector of group colors.
 ##' @param extend numeric, extend the length of bar, default is 0.3.
+##' @param hilight logical value, if TRUE(default), add ggtree::geom_hilight() layer.
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -56,7 +57,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   offset_tiplab = 0.1, 
                                   hclust_method = "ward.D", 
                                   group_color = NULL, 
-                                  extend = 0.3, ...) {
+                                  extend = 0.3, hilight = TRUE, ...) {
     group <- p.adjust <- count<- NULL
 
     if (class(x) == "gseaResult")
@@ -87,12 +88,13 @@ treeplot.enrichResult <- function(x, showCategory = 30,
 
     ## Group the nodes.
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
-        label_format, offset, fontsize, group_color, extend)
+        label_format, offset, fontsize, group_color, extend, hilight)
     if(is.null(xlim)) xlim <- c(0, 3 * p$data$x[1])
     p + coord_cartesian(xlim = xlim) +
         ggnewscale::new_scale_colour() +
         geom_tippoint(aes(color = color, size = count)) +
-        scale_colour_continuous(name = color, guide = guide_colorbar(reverse = TRUE)) +
+        scale_colour_continuous(low="red", high="blue", name = color, 
+            guide = guide_colorbar(reverse = TRUE)) +
         scale_size_continuous(name = "number of genes",
                               range = c(3, 8) * cex_category)
 }
@@ -114,7 +116,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       fontsize = 4, offset = NULL, pie = "equal",
                                       legend_n = 3, offset_tiplab = 0.5, 
                                       hclust_method = "ward.D", group_color = NULL, 
-                                      extend = 0.3, ...) {
+                                      extend = 0.3, hilight = TRUE, ...) {
     group <- NULL
     # if (is.numeric(showCategory)) {
     #     y <- fortify(x, showCategory = showCategory,
@@ -144,7 +146,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         count = y_union[names(clus), "Count"])
         
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
-        label_format, offset, fontsize, group_color, extend)
+        label_format, offset, fontsize, group_color, extend, hilight)
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
@@ -209,7 +211,7 @@ fill_termsim <- function(x, keep) {
 ##' @return a ggtree object
 ##' @noRd
 add_cladelab <- function(p, nWords, label_format, offset, roots, 
-                         fontsize, group_color, cluster_color, pdata, extend) {
+                         fontsize, group_color, cluster_color, pdata, extend, hilight) {
     cluster_label <- sapply(cluster_color, wordcloud_i, pdata2 = pdata,
                         nWords = nWords)
     label_func <- default_labeller(label_format)
@@ -242,13 +244,16 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
             fontsize = fontsize, offset = offset) + 
             scale_color_manual(values = df$color, 
                                guide = FALSE)
-
-    p <- p + ggtree::geom_hilight(
+    if (hilight) {
+        p <- p + ggtree::geom_hilight(
             data = df,
-            mapping = aes_(node =~ node, label =~ label, fill =~ cluster),
+            mapping = aes_(node =~ node, fill =~ cluster),
             show.legend = F) + 
             scale_fill_manual(values = df$color, 
                                guide = FALSE)
+
+    }
+    
     return(p)
  
 }
@@ -258,7 +263,7 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
 ##' @return a ggtree object
 ##' @noRd
 group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
-                       label_format, offset, fontsize, group_color, extend) {
+                       label_format, offset, fontsize, group_color, extend, hilight) {
     group <- NULL
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
@@ -282,6 +287,6 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = FALSE, align=TRUE)
 
     p <- add_cladelab(p, nWords, label_format, offset, roots, 
-        fontsize, group_color, cluster_color, pdata, extend) 
+        fontsize, group_color, cluster_color, pdata, extend, hilight) 
     return(p)
 }

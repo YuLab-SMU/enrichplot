@@ -32,6 +32,7 @@ treeplot.enrichResult(
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
+  hilight = TRUE,
   ...
 )
 
@@ -53,6 +54,7 @@ treeplot.compareClusterResult(
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
+  hilight = TRUE,
   ...
 )
 }
@@ -91,6 +93,8 @@ default is 0.9.}
 \item{group_color}{a vector of group colors.}
 
 \item{extend}{numeric, extend the length of bar, default is 0.3.}
+
+\item{hilight}{logical value, if TRUE(default), add ggtree::geom_hilight() layer.}
 
 \item{split}{separate result by 'category' variable}
 
