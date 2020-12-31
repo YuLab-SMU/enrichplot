@@ -98,7 +98,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
                                 colour='darkgrey')
     }
-    p <- p + geom_node_point(aes_(color=~color, size=~size)) + 
+    p + geom_node_point(aes_(color=~color, size=~size)) + 
         geom_node_text(aes_(label=~name), repel=TRUE,
             size = label_category * cex_label_category, bg.color = "white") + 
         theme_void() +
@@ -203,9 +203,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     if(ncol(ID_Cluster_mat) > 4) {
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
-            coord_equal()
-
-        p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+            coord_equal() + 
+            geom_node_text(aes_(label=~name), repel=TRUE,
             size = label_category * cex_label_category, bg.color = "white") + 
             theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
@@ -217,7 +216,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
     title <- colnames(ID_Cluster_mat)[1]
     # p + geom_node_point(aes_(color=~color, size=~size))
-    p <- p + geom_node_text(aes_(label=~name), repel=TRUE,
+    p + geom_node_text(aes_(label=~name), repel=TRUE,
         size = label_category * cex_label_category, bg.color = "white") + 
         theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,

@@ -154,10 +154,8 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
         scale_size_continuous(name = "number of genes",
                               range = c(3, 8) * cex_category) +
         scale_fill_continuous(low = "red", high = "blue", name = color,
-                              guide = guide_colorbar(reverse = TRUE))
-        # geom_shadowtext(data = label_location, aes_(x =~ x, y =~ y, label =~ label),
-            # size = 5 * cex_label_group)
-    p <- p + theme(legend.title = element_text(size = 10),
+                              guide = guide_colorbar(reverse = TRUE)) + 
+        theme(legend.title = element_text(size = 10),
                    legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
     if (label_style == "ggforce") return(p)
