@@ -312,7 +312,7 @@ cnetplot.compareClusterResult <- function(x,
             geom_scatterpie_legend(ID_Cluster_mat2$radius[1:n],
                     x=x_loc, y=y_loc, n = legend_n, labeller=function(x) round(x^2 * sum_yunion / cex_category)) +
             ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "gene number")
-
+        ## add node label
         p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
                 size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
             geom_node_text(aes_(label=~name), data = p$data[1:n,],
