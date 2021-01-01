@@ -1,5 +1,6 @@
-# enrichplot 1.11.1.993
+# enrichplot 1.11.1.994
 
++ add `treeplot` function (2020-12-29, Tue)
 + rename function `get_ww` to `get_similarity_matrix` (2020-12-29, Tue)
 + move the `emapplot` related functions to emapplot_utilities.R
 + fix bug in `emapplot` and `cnetplot` when enrichment result is one line (2020-12-26, Sat)
