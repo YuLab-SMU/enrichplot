@@ -1,5 +1,6 @@
-# enrichplot 1.11.1.994
+# enrichplot 1.11.1.995
 
++ update `dotplot`: supports the use of shapes and line colors to distinguish groups (2021-1-3, Sun)
 + add `treeplot` function (2020-12-29, Tue)
 + rename function `get_ww` to `get_similarity_matrix` (2020-12-29, Tue)
 + move the `emapplot` related functions to emapplot_utilities.R

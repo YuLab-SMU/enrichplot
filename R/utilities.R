@@ -215,30 +215,32 @@ plotting.clusterProfile <- function(clProf.reshape.df,
             geom_bar() +
                 coord_flip()
     }
-    if (type == "dot") {
-        if (by == "rowPercentage") {
-            p <- ggplot(clProf.reshape.df,
-                        aes_(x = x, y = ~Description, size = ~Percentage))
-        } else if (by == "count") {
-            p <- ggplot(clProf.reshape.df,
-                        aes_(x = x, y = ~Description, size = ~Count))
-        } else if (by == "geneRatio") {
-            p <- ggplot(clProf.reshape.df,
-                        aes_(x = x, y = ~Description, size = ~GeneRatio))
-        } else {
-            ## nothing here
-        }
-        if (any(colnames(clProf.reshape.df) == colorBy)) {
-            p <- p +
-                geom_point() +
-                aes_string(color=colorBy) +
-                scale_color_continuous(low="red", high="blue",
-                                       guide=guide_colorbar(reverse=TRUE))
-            ## scale_color_gradientn(guide=guide_colorbar(reverse=TRUE), colors = sig_palette)
-        } else {
-            p <- p + geom_point(colour="steelblue")
-        }
-    }
+    # if (type == "dot") {
+    #     if (by == "rowPercentage") {
+    #         p <- ggplot(clProf.reshape.df,
+    #                     aes_(x = x, y = ~Description, size = ~Percentage))
+    #     } else if (by == "count") {
+    #         p <- ggplot(clProf.reshape.df,
+    #                     aes_(x = x, y = ~Description, size = ~Count))
+    #     } else if (by == "geneRatio") {
+    #         p <- ggplot(clProf.reshape.df,
+    #                     aes_(x = x, y = ~Description, size = ~GeneRatio))
+    #     } else {
+    #         ## nothing here
+    #     }
+    #     p <- ggplot(clProf.reshape.df,
+    #                 aes_(x = x, y = ~Description, size = by))
+    #     if (any(colnames(clProf.reshape.df) == colorBy)) {
+    #         p <- p +
+    #             geom_point() +
+    #             aes_string(color=colorBy) +
+    #             scale_color_continuous(low="red", high="blue",
+    #                                    guide=guide_colorbar(reverse=TRUE))
+    #         ## scale_color_gradientn(guide=guide_colorbar(reverse=TRUE), colors = sig_palette)
+    #     } else {
+    #         p <- p + geom_point(colour="steelblue")
+    #     }
+    # }
     p <- p + xlab("") + ylab("") + ggtitle(title) +
         theme_dose(font.size)
     ## theme(axis.text.x = element_text(colour="black", size=font.size, vjust = 1)) +

@@ -4,6 +4,10 @@
 \alias{dotplot}
 \alias{dotplot,enrichResult-method}
 \alias{dotplot,gseaResult-method}
+\alias{dotplot,compareClusterResult-method}
+\alias{dotplot,compareClusterResult,ANY-method}
+\alias{dotplot.enrichResult}
+\alias{dotplot.compareClusterResult}
 \title{dotplot}
 \usage{
 dotplot(object, ...)
@@ -33,30 +37,95 @@ dotplot(object, ...)
   label_format = 30,
   ...
 )
+
+\S4method{dotplot}{compareClusterResult}(
+  object,
+  x = "Cluster",
+  color = "p.adjust",
+  showCategory = 5,
+  split = NULL,
+  font.size = 12,
+  title = "",
+  by = "geneRatio",
+  size = NULL,
+  includeAll = TRUE,
+  label_format = 30,
+  ...
+)
+
+dotplot.enrichResult(
+  object,
+  x = "geneRatio",
+  color = "p.adjust",
+  showCategory = 10,
+  size = NULL,
+  split = NULL,
+  font.size = 12,
+  title = "",
+  orderBy = "x",
+  decreasing = TRUE,
+  label_format = 30
+)
+
+dotplot.compareClusterResult(
+  object,
+  x = "Cluster",
+  colorBy = "p.adjust",
+  showCategory = 5,
+  by = "geneRatio",
+  size = "geneRatio",
+  split = NULL,
+  includeAll = TRUE,
+  font.size = 12,
+  title = "",
+  label_format = 30,
+  group = FALSE,
+  shape = FALSE
+)
 }
 \arguments{
-\item{object}{input object}
+\item{object}{compareClusterResult object}
 
 \item{...}{additional parameters}
 
-\item{x}{variable for x-axis, one of 'GeneRatio' or 'Count'}
+\item{x}{variable for x-axis, one of 'GeneRatio' and 'Count'}
 
 \item{color}{variable that used to color enriched terms,
-e.g. pvalue, p.adjust or qvalue}
+e.g. 'pvalue', 'p.adjust' or 'qvalue'}
 
-\item{showCategory}{number of enriched terms to display}
+\item{showCategory}{A number or a list of terms. If it is a number, 
+the first n terms will be displayed. If it is a list of terms, 
+the selected terms will be displayed.}
 
-\item{size}{variable that used to scale the sizes of categories}
+\item{size}{variable that used to scale the sizes of categories, 
+one of "geneRatio", "Percentage" and "count"}
 
-\item{split}{separate result by 'category' variable}
+\item{split}{ONTOLOGY or NULL}
 
 \item{font.size}{font size}
 
-\item{title}{plot title}
+\item{title}{figure title}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.
 by default wraps names longer that 30 characters}
+
+\item{by}{one of "geneRatio", "Percentage" and "count"}
+
+\item{includeAll}{logical}
+
+\item{orderBy}{The order of the Y-axis}
+
+\item{decreasing}{logical. Should the orderBy order be increasing or decreasing?}
+
+\item{colorBy}{variable that used to color enriched terms,
+e.g. 'pvalue', 'p.adjust' or 'qvalue'}
+
+\item{group}{a logical value, whether to connect the 
+nodes of the same group with wires.}
+
+\item{shape}{a logical value, whether to use nodes of 
+different shapes to distinguish the group it belongs to}
 }
 \value{
 plot
