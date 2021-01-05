@@ -162,8 +162,9 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                    legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
     if (label_style == "ggforce") return(p)  
-    add_group_label(repel, shadowtext, p, label_location, 
-        label_group, cex_label_group, ...)                  
+    add_group_label(repel = repel, shadowtext = shadowtext, p = p, 
+        label_location = label_location, label_group = label_group, 
+        cex_label_group = cex_label_group, ...)                 
 }
 
 
@@ -300,8 +301,9 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
               legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
     if (label_style == "ggforce") return(p)
-    add_group_label(repel, shadowtext, p, label_location, 
-        label_group, cex_label_group, ...)
+    add_group_label(repel = repel, shadowtext = shadowtext, p = p, 
+        label_location = label_location, label_group = label_group, 
+        cex_label_group = cex_label_group, ...) 
 }
 
 

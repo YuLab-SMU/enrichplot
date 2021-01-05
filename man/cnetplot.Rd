@@ -61,7 +61,7 @@ should be scaled relative to the default.}
 \item{cex_label_gene}{scale of gene node label size}
 
 \item{shadowtext}{select which node labels to use shadow font,
-one of 'category', 'gene', 'all' and 'none', default is "all".}
+one of 'category', 'gene', 'all' and 'none', default is 'all'.}
 }
 \value{
 ggplot object
