@@ -53,11 +53,12 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param cex_label_category scale of category node label size
 ##' @param cex_category number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
+##' @param shadowtext a logical value, whether to use shadow font.
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
                                   layout = "nicely", min_edge=0.2,
                                   cex_label_category  = 1, cex_category = 1,
-                                  cex_line = 1) {
+                                  cex_line = 1, shadowtext = TRUE) {
     has_pairsim(x)
     # if (!is.null(node_label_size))
     #     message("node_label_size parameter has been changed to 'cex_label_category'")
@@ -98,10 +99,10 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
                                 colour='darkgrey')
     }
-    p + geom_node_point(aes_(color=~color, size=~size)) + 
-        geom_node_text(aes_(label=~name), repel=TRUE,
-            size = label_category * cex_label_category, bg.color = "white") + 
-        theme_void() +
+    p <- p + geom_node_point(aes_(color=~color, size=~size)) 
+    p <- add_node_label(p, data = NULL, label_category,
+        cex_label_category, shadowtext)
+    p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
                                guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8) * cex_category)
@@ -137,7 +138,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           split = NULL, pie = "equal",
                                           legend_n = 5, cex_category = 1,
                                           cex_line = 1, min_edge=0.2, 
-                                          cex_label_category  = 1) {
+                                          cex_label_category  = 1, 
+                                          shadowtext = TRUE) {
     has_pairsim(x)
     # if (!is.null(node_label_size))
     #     message("node_label_size parameter has been changed to 'cex_label_category'")
@@ -203,10 +205,12 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     if(ncol(ID_Cluster_mat) > 4) {
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
-            coord_equal() + 
-            geom_node_text(aes_(label=~name), repel=TRUE,
-            size = label_category * cex_label_category, bg.color = "white") + 
-            theme_void() +
+            coord_equal() 
+            # geom_node_text(aes_(label=~name), repel=TRUE,
+            # size = label_category * cex_label_category, bg.color = "white") + 
+        p <- add_node_label(p, data = NULL, label_category,
+            cex_label_category, shadowtext)
+        p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
                 n = legend_n,
                 labeller=function(x) round(sum(aa$size) * x^2 / cex_category)) +
@@ -216,9 +220,11 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
     title <- colnames(ID_Cluster_mat)[1]
     # p + geom_node_point(aes_(color=~color, size=~size))
-    p + geom_node_text(aes_(label=~name), repel=TRUE,
-        size = label_category * cex_label_category, bg.color = "white") + 
-        theme_void() +
+    # p + geom_node_text(aes_(label=~name), repel=TRUE,
+    #     size = label_category * cex_label_category, bg.color = "white") + 
+    p <- add_node_label(p, data = NULL, label_category,
+            cex_label_category, shadowtext)
+    p <- p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
                                guide=guide_colorbar(reverse=TRUE)) +
         scale_size(range=c(3, 8) * cex_category)  +labs(title= title)

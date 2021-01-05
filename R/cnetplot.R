@@ -37,6 +37,8 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' should be scaled relative to the default.
 ##' @param cex_label_category scale of category node label size
 ##' @param cex_label_gene scale of gene node label size
+##' @param shadowtext_category a logical value, whether the category nodes should use shadow font.
+##' @param shadowtext_gene a logical value, whether the gene nodes should use shadow font.
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
 ##' @author Guangchuang Yu
@@ -51,6 +53,8 @@ cnetplot.enrichResult <- function(x,
                      cex_gene = 1,
                      cex_label_category = 1,
                      cex_label_gene = 1,
+                     shadowtext_category = TRUE,
+                     shadowtext_gene = TRUE,
                      ...) {
 
     label_category <- 5
@@ -115,19 +119,30 @@ cnetplot.enrichResult <- function(x,
     }
 
     p <- p + theme_void()
+    # if (node_label == "category") {       
+    #     p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
+    #         size = label_category * cex_label_category, bg.color = "white")
+    # } else if (node_label == "gene") {
+    #     p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
+    #         repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white")
+    # } else if (node_label == "all") {
+    #     p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
+    #             repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white") + 
+    #         geom_node_text(aes_(label=~name), repel=TRUE,
+    #             size = label_category * cex_label_category, bg.color = "white", data = p$data[1:n,]) 
+    # }
 
-# gan jue zhe li duo chi yi ju, zhi qian yi jing ba bu xu yao de  she zhi cheng le ""
     if (node_label == "category") {       
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-            size = label_category * cex_label_category, bg.color = "white")
+        p <- add_node_label(p, p$data[1:n,], label_category,
+            cex_label_category, shadowtext_category)
     } else if (node_label == "gene") {
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-            repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white")
+        p <- add_node_label(p, p$data[-c(1:n),], label_gene,
+            cex_label_gene, shadowtext_gene)
     } else if (node_label == "all") {
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-                repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white") + 
-            geom_node_text(aes_(label=~name), repel=TRUE,
-                size = label_category * cex_label_category, bg.color = "white", data = p$data[1:n,]) 
+        p <- add_node_label(p, p$data[-c(1:n),], label_gene,
+            cex_label_gene, shadowtext_gene)
+        p <- add_node_label(p, p$data[1:n,], label_category,
+            cex_label_category, shadowtext_category)
     }
     return(p)
 }
@@ -158,6 +173,8 @@ cnetplot.compareClusterResult <- function(x,
                      y_loc = NULL,
                      cex_label_category = 1,
                      cex_label_gene = 1,
+                     shadowtext_category = TRUE,
+                     shadowtext_gene = TRUE,
                      ...) {
 
     label_category <- 2.5
@@ -199,11 +216,15 @@ cnetplot.compareClusterResult <- function(x,
                 data = p$data[-(1:n), ], show.legend = FALSE) +
             scale_size(range = range_gene_size * cex_gene) +
             labs(title= title) +
-            theme(legend.position="none") +        
-            geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-            geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                size = label_category * cex_label_category, bg.color = "white", repel=TRUE)
+            theme(legend.position="none")    
+        p <- add_node_label(p, p$data[-c(1:n),], label_gene,
+            cex_label_gene, shadowtext_gene)
+        p <- add_node_label(p, p$data[1:n,], label_category,
+            cex_label_category, shadowtext_category)   
+            # geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+            #     size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+            # geom_node_text(aes_(label=~name), data = p$data[1:n,],
+            #     size = label_category * cex_label_category, bg.color = "white", repel=TRUE)
         return(p)
     }
 
@@ -289,11 +310,15 @@ cnetplot.compareClusterResult <- function(x,
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "log2FC")  +
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc + 3, label = "gene number")
 
-            p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                    size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-                geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                    size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
-                theme_void() + labs(fill = "Cluster")
+            # p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+            #         size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+            #     geom_node_text(aes_(label=~name), data = p$data[1:n,],
+            #         size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
+            p <- add_node_label(p, p$data[-c(1:n),], label_gene,
+                cex_label_gene, shadowtext_gene)
+            p <- add_node_label(p, p$data[1:n,], label_category,
+                cex_label_category, shadowtext_category)
+            p <- p + theme_void() + labs(fill = "Cluster")
             return(p)
         }
         ## should not have foldChange
@@ -313,11 +338,15 @@ cnetplot.compareClusterResult <- function(x,
                     x=x_loc, y=y_loc, n = legend_n, labeller=function(x) round(x^2 * sum_yunion / cex_category)) +
             ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "gene number")
         ## add node label
-        p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-                size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-            geom_node_text(aes_(label=~name), data = p$data[1:n,],
-                size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
-            theme_void() + labs(fill = "Cluster")
+        # p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+        #         size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+        #     geom_node_text(aes_(label=~name), data = p$data[1:n,],
+        #         size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
+        p <- add_node_label(p, p$data[-c(1:n),], label_gene,
+            cex_label_gene, shadowtext_gene)
+        p <- add_node_label(p, p$data[1:n,], label_category,
+            cex_label_category, shadowtext_category)
+        p <- p + theme_void() + labs(fill = "Cluster")
         return(p)
     }
     title <- colnames(ID_Cluster_mat2)[1]
@@ -334,15 +363,15 @@ cnetplot.compareClusterResult <- function(x,
         geom_node_point(aes_(color=~I(color), size=~size),
             data = p$data[-(1:n), ], show.legend = FALSE) +
         scale_size(range = range_gene_size * cex_gene) +
-        labs(title= title) + 
-        geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-            size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-        geom_node_text(aes_(label=~name), data = p$data[1:n,],
-            size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
-        theme_void() + theme(legend.position="none")
+        labs(title= title)
+        # geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
+        #     size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
+        # geom_node_text(aes_(label=~name), data = p$data[1:n,],
+        #     size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
+        p <- add_node_label(p, p$data[-c(1:n),], label_gene,
+            cex_label_gene, shadowtext_gene)
+        p <- add_node_label(p, p$data[1:n,], label_category,
+            cex_label_category, shadowtext_category)
+        p <- p + theme_void() + theme(legend.position="none")
 }
-
-
-
-
 
