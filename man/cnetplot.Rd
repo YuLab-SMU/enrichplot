@@ -28,8 +28,7 @@ cnetplot.enrichResult(
   cex_gene = 1,
   cex_label_category = 1,
   cex_label_gene = 1,
-  shadowtext_category = TRUE,
-  shadowtext_gene = TRUE,
+  shadowtext = "all",
   ...
 )
 }
@@ -61,9 +60,8 @@ should be scaled relative to the default.}
 
 \item{cex_label_gene}{scale of gene node label size}
 
-\item{shadowtext_category}{a logical value, whether the category nodes should use shadow font.}
-
-\item{shadowtext_gene}{a logical value, whether the gene nodes should use shadow font.}
+\item{shadowtext}{select which node labels to use shadow font,
+one of 'category', 'gene', 'all' and 'none', default is "all".}
 }
 \value{
 ggplot object

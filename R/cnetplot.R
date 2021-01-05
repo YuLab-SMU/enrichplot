@@ -37,8 +37,8 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' should be scaled relative to the default.
 ##' @param cex_label_category scale of category node label size
 ##' @param cex_label_gene scale of gene node label size
-##' @param shadowtext_category a logical value, whether the category nodes should use shadow font.
-##' @param shadowtext_gene a logical value, whether the gene nodes should use shadow font.
+##' @param shadowtext select which node labels to use shadow font,
+##' one of 'category', 'gene', 'all' and 'none', default is 'all'.
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
 ##' @author Guangchuang Yu
@@ -53,8 +53,7 @@ cnetplot.enrichResult <- function(x,
                      cex_gene = 1,
                      cex_label_category = 1,
                      cex_label_gene = 1,
-                     shadowtext_category = TRUE,
-                     shadowtext_gene = TRUE,
+                     shadowtext = "all",
                      ...) {
 
     label_category <- 5
@@ -66,7 +65,13 @@ cnetplot.enrichResult <- function(x,
     } else {
         geom_edge <- geom_edge_link
     }
-
+    if (is.logical(shadowtext)) {
+        shadowtext <- ifelse(shadowtext, "all", "none")
+    }
+    shadowtext_category <- shadowtext_gene <- FALSE
+    if (shadowtext == "all") shadowtext_category <- shadowtext_gene <- TRUE
+    if (shadowtext == "category") shadowtext_category <- TRUE
+    if (shadowtext == "gene") shadowtext_gene <- TRUE
     geneSets <- extract_geneSets(x, showCategory)
 
     g <- list2graph(geneSets)
@@ -173,14 +178,20 @@ cnetplot.compareClusterResult <- function(x,
                      y_loc = NULL,
                      cex_label_category = 1,
                      cex_label_gene = 1,
-                     shadowtext_category = TRUE,
-                     shadowtext_gene = TRUE,
+                     shadowtext = "all",
                      ...) {
 
     label_category <- 2.5
     label_gene <- 2.5
     range_category_size <- c(3, 8)
     range_gene_size <- c(3, 3)
+    if (is.logical(shadowtext)) {
+        shadowtext <- ifelse(shadowtext, "all", "none")
+    }
+    shadowtext_category <- shadowtext_gene <- FALSE
+    if (shadowtext == "all") shadowtext_category <- shadowtext_gene <- TRUE
+    if (shadowtext == "category") shadowtext_category <- TRUE
+    if (shadowtext == "gene") shadowtext_gene <- TRUE
     ## If showCategory is a number, keep only the first showCategory of each group,
     ## otherwise keep the total showCategory rows
     y <- get_selected_category(showCategory, x, split)  
