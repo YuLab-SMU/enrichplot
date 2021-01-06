@@ -284,3 +284,70 @@ get_label_location <- function(pdata2, label_format) {
     data.frame(x = label_x$x, y = label_y$y,
         label = label_func(label_x$color))
 }
+
+##' Add group label to a ggplot2 object
+##'
+##' @param repel a logical value, whether to correct the position of the label.
+##' @param shadowtext a logical value, whether to use shadow font. 
+##' @param p a ggplot2 object.
+##' @param label_location a data.frame with the location of group label.
+##' @param label_group a numeric value, default size of group label.
+##' @param cex_label_group scale of group labels size.
+##' @param ... additional parameters.
+##' @return a ggplot2 object.
+##' @noRd
+add_group_label <- function(repel, shadowtext, p, label_location, 
+                            label_group, cex_label_group, ...) {
+    if (!repel) {
+        if (shadowtext) {
+            p <- p + geom_shadowtext(data = label_location,
+                aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+                size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
+        } else {
+            p <- p + geom_text(data = label_location,
+                aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+                size = label_group * cex_label_group)
+        }
+        
+        return(p)
+    }
+
+    if (shadowtext) {
+        p <- p + ggrepel::geom_text_repel(data = label_location,
+            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
+            show.legend = FALSE, ...)
+    } else {
+        p <- p + ggrepel::geom_text_repel(data = label_location,
+            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+            size = label_group * cex_label_group, 
+            show.legend = FALSE, ...)
+    }
+    return(p)   
+}
+
+##' Add node label to a ggplot2 object
+##'
+##' @param p a ggplot2 object.
+##' @param data it is uesd as the `data` parameter of function `ggraph::geom_node_text`, a data.frame or NULL.
+##' @param label_location a data.frame with the location of group label.
+##' @param label_size_node a numeric value to indicate the font size of the node label.
+##' @param cex_label_node a numeric value to indicate the scale of node label size.
+##' @param shadowtext  a logical value, whether to use shadow font. 
+##' @return a ggplot2 object.
+##' @noRd
+add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
+    if (shadowtext) {
+        p <- p + geom_node_text(aes_(label=~name), data = data,
+            size = label_size_node * cex_label_node, bg.color = "white", repel=TRUE)
+    } else {
+        p <- p + geom_node_text(aes_(label=~name), data = data,
+            size = label_size_node * cex_label_node, repel=TRUE)
+    }
+    return(p)
+}
+
+
+
+
+
