@@ -56,8 +56,8 @@ cnetplot.enrichResult <- function(x,
                      shadowtext = "all",
                      ...) {
 
-    label_category <- 5
-    label_gene <- 5
+    label_size_category <- 5
+    label_size_gene <- 5
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
     if (circular) {
         layout <- "linear"
@@ -138,15 +138,15 @@ cnetplot.enrichResult <- function(x,
     # }
 
     if (node_label == "category") {       
-        p <- add_node_label(p = p, data = p$data[1:n,], label_node = label_category,
+        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
     } else if (node_label == "gene") {
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_node = label_gene,
+        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
     } else if (node_label == "all") {
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_node = label_gene,
+        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
-        p <- add_node_label(p = p, data = p$data[1:n,], label_node = label_category,
+        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
     }
     return(p)
@@ -181,8 +181,8 @@ cnetplot.compareClusterResult <- function(x,
                      shadowtext = "all",
                      ...) {
 
-    label_category <- 2.5
-    label_gene <- 2.5
+    label_size_category <- 2.5
+    label_size_gene <- 2.5
     range_category_size <- c(3, 8)
     range_gene_size <- c(3, 3)
     if (is.logical(shadowtext)) {
@@ -228,9 +228,9 @@ cnetplot.compareClusterResult <- function(x,
             scale_size(range = range_gene_size * cex_gene) +
             labs(title= title) +
             theme(legend.position="none")    
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_node = label_gene,
+        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
-        p <- add_node_label(p = p, data = p$data[1:n,], label_node = label_category,
+        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)   
             # geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
             #     size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
@@ -325,9 +325,9 @@ cnetplot.compareClusterResult <- function(x,
             #         size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
             #     geom_node_text(aes_(label=~name), data = p$data[1:n,],
             #         size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
-            p <- add_node_label(p = p, data = p$data[-c(1:n),], label_node = label_gene,
+            p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
                 cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
-            p <- add_node_label(p = p, data = p$data[1:n,], label_node = label_category,
+            p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
                 cex_label_node = cex_label_category, shadowtext = shadowtext_category)
             p <- p + theme_void() + labs(fill = "Cluster")
             return(p)
@@ -353,9 +353,9 @@ cnetplot.compareClusterResult <- function(x,
         #         size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
         #     geom_node_text(aes_(label=~name), data = p$data[1:n,],
         #         size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_node = label_gene,
+        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
-        p <- add_node_label(p = p, data = p$data[1:n,], label_node = label_category,
+        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
         p <- p + theme_void() + labs(fill = "Cluster")
         return(p)
@@ -379,9 +379,9 @@ cnetplot.compareClusterResult <- function(x,
         #     size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
         # geom_node_text(aes_(label=~name), data = p$data[1:n,],
         #     size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_node = label_gene,
+        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
-        p <- add_node_label(p = p, data = p$data[1:n,], label_node = label_category,
+        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
         p <- p + theme_void() + theme(legend.position="none")
 }

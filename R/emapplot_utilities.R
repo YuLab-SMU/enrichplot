@@ -287,11 +287,11 @@ get_label_location <- function(pdata2, label_format) {
 
 ##' Add group label to a ggplot2 object
 ##'
-##' @param repel whether to correct the position of the label. Defaults to FALSE.
+##' @param repel a logical value, whether to correct the position of the label.
 ##' @param shadowtext a logical value, whether to use shadow font. 
 ##' @param p a ggplot2 object.
 ##' @param label_location a data.frame with the location of group label.
-##' @param label_group default size of group label.
+##' @param label_group a numeric value, default size of group label.
 ##' @param cex_label_group scale of group labels size.
 ##' @param ... additional parameters.
 ##' @return a ggplot2 object.
@@ -329,20 +329,20 @@ add_group_label <- function(repel, shadowtext, p, label_location,
 ##' Add node label to a ggplot2 object
 ##'
 ##' @param p a ggplot2 object.
-##' @param data data parameter of geom_node_text.
+##' @param data it is uesd as the `data` parameter of function `ggraph::geom_node_text`, a data.frame or NULL.
 ##' @param label_location a data.frame with the location of group label.
-##' @param label_node one of "label_category" and "label_gene".
-##' @param cex_label_node one of cex_label_category and cex_label_gene.
-##' @param shadowtext one of "shadowtext_category" and "shadowtext_gene".
+##' @param label_size_node a numeric value to indicate the font size of the node label.
+##' @param cex_label_node a numeric value to indicate the scale of node label size.
+##' @param shadowtext  a logical value, whether to use shadow font. 
 ##' @return a ggplot2 object.
 ##' @noRd
-add_node_label <- function(p, data, label_node, cex_label_node, shadowtext) {
+add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
     if (shadowtext) {
         p <- p + geom_node_text(aes_(label=~name), data = data,
-            size = label_node * cex_label_node, bg.color = "white", repel=TRUE)
+            size = label_size_node * cex_label_node, bg.color = "white", repel=TRUE)
     } else {
         p <- p + geom_node_text(aes_(label=~name), data = data,
-            size = label_node * cex_label_node, repel=TRUE)
+            size = label_size_node * cex_label_node, repel=TRUE)
     }
     return(p)
 }

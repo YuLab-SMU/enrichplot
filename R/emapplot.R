@@ -81,7 +81,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
     #         cex_line <- 1
     #     }
     # }
-    label_category <- 5
+    label_size_category <- 5
     n <- update_n(x, showCategory)
     # geneSets <- geneInCategory(x) ## use core gene for gsea result
 
@@ -100,7 +100,7 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
                                 colour='darkgrey')
     }
     p <- p + geom_node_point(aes_(color=~color, size=~size)) 
-    p <- add_node_label(p = p, data = NULL, label_node = label_category,
+    p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
         cex_label_node = cex_label_category, shadowtext = shadowtext)
     p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
@@ -155,7 +155,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     #     }
     # }
 
-    label_category <- 3
+    label_size_category <- 3
     ## pretreatment of x, just like dotplot do
     ## If showCategory is a number, keep only the first showCategory of each group
     ## Otherwise keep the total showCategory rows
@@ -208,7 +208,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
             coord_equal() 
             # geom_node_text(aes_(label=~name), repel=TRUE,
             # size = label_category * cex_label_category, bg.color = "white") + 
-        p <- add_node_label(p = p, data = NULL, label_node = label_category,
+        p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext)
         p <- p + theme_void() +
             geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
@@ -222,7 +222,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     # p + geom_node_point(aes_(color=~color, size=~size))
     # p + geom_node_text(aes_(label=~name), repel=TRUE,
     #     size = label_category * cex_label_category, bg.color = "white") + 
-    p <- add_node_label(p = p, data = NULL, label_node = label_category,
+    p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
         cex_label_node = cex_label_category, shadowtext = shadowtext)
     p <- p + theme_void() +
         scale_color_continuous(low="red", high="blue", name = color,
