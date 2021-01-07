@@ -57,6 +57,7 @@ emapplot_cluster.enrichResult(
   cex_category = 1,
   label_format = 30,
   repel = FALSE,
+  shadowtext = TRUE,
   ...
 )
 
@@ -78,6 +79,7 @@ emapplot_cluster.compareClusterResult(
   group_legend = FALSE,
   label_format = 30,
   repel = FALSE,
+  shadowtext = TRUE,
   ...
 )
 }
@@ -127,6 +129,8 @@ The default is FALSE}
 nodes should be scaled relative to the default.}
 
 \item{repel}{whether to correct the position of the label. Defaults to FALSE.}
+
+\item{shadowtext}{a logical value, whether to use shadow font. Defaults to TRUE.}
 
 \item{pie}{proportion of clusters in the pie chart, one of
 'equal' (default) or 'Count'}

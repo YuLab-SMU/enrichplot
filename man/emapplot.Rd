@@ -25,7 +25,8 @@ emapplot.enrichResult(
   min_edge = 0.2,
   cex_label_category = 1,
   cex_category = 1,
-  cex_line = 1
+  cex_line = 1,
+  shadowtext = TRUE
 )
 
 emapplot.compareClusterResult(
@@ -39,7 +40,8 @@ emapplot.compareClusterResult(
   cex_category = 1,
   cex_line = 1,
   min_edge = 0.2,
-  cex_label_category = 1
+  cex_label_category = 1,
+  shadowtext = TRUE
 )
 }
 \arguments{
@@ -62,6 +64,8 @@ p.adjust or qvalue}
 nodes should be scaled relative to the default.}
 
 \item{cex_line}{scale of line width}
+
+\item{shadowtext}{a logical value, whether to use shadow font.}
 
 \item{split}{separate result by 'category' variable}
 
