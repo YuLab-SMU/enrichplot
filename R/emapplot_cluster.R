@@ -40,7 +40,8 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' nodes should be scaled relative to the default.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
-##' @param repel Logical, whether to correct the position of the label. Defaults to FALSE.
+##' @param repel whether to correct the position of the label. Defaults to FALSE.
+##' @param shadowtext a logical value, whether to use shadow font. Defaults to TRUE.
 ##' @param ... Additional parameters used to set the position of the group label.
 ##' When the parameter repel is set to TRUE, additional parameters will take effect.
 ##' 
@@ -57,6 +58,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @importFrom ggplot2 scale_color_discrete
 ##' @importFrom ggplot2 scale_size_continuous
 ##' @importFrom ggplot2 scale_fill_discrete
+##' @importFrom ggplot2 geom_text
 ##' @importFrom stats kmeans
 ##' @importFrom ggraph ggraph
 ##' @importFrom ggraph geom_node_point
@@ -72,7 +74,8 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           cex_label_group = 1, 
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1, 
-                                          label_format = 30, repel = FALSE, ...){
+                                          label_format = 30, repel = FALSE, 
+                                          shadowtext = TRUE, ...){
                                           
 
     has_pairsim(x)
@@ -159,22 +162,10 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
         theme(legend.title = element_text(size = 10),
                    legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
-    if (label_style == "ggforce") return(p)
-    
-    if (!repel) {
-        p <- p + geom_shadowtext(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, bg.color = "white", 
-            bg.r = 0.1)
-        return(p)
-    }
-
-
-    p + ggrepel::geom_text_repel(data = label_location,
-        aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-        size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-        show.legend = FALSE, ...)
-                         
+    if (label_style == "ggforce") return(p)  
+    add_group_label(repel = repel, shadowtext = shadowtext, p = p, 
+        label_location = label_location, label_group = label_group, 
+        cex_label_group = cex_label_group, ...)                 
 }
 
 
@@ -197,7 +188,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
     cex_label_group = 1, pie = "equal", legend_n = 5,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE, 
-    label_format = 30, repel = FALSE, ...){
+    label_format = 30, repel = FALSE, shadowtext = TRUE, ...){
 
     has_pairsim(x)
     label_group <- 3
@@ -311,24 +302,10 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
               legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
     if (label_style == "ggforce") return(p)
-    
-    if (!repel) {
-        p <- p + geom_shadowtext(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
-        return(p)
-    }
-
-    p + ggrepel::geom_text_repel(data = label_location,
-        aes_(x =~ x, y =~ y, label =~ label), colour = "black", 
-        size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-        show.legend = FALSE, ...)
+    add_group_label(repel = repel, shadowtext = shadowtext, p = p, 
+        label_location = label_location, label_group = label_group, 
+        cex_label_group = cex_label_group, ...) 
 }
-
-
-
-
-
 
 
 
