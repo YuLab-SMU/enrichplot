@@ -24,18 +24,19 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 
 
 ##' @rdname emapplot_cluster
-##' @param with_edge if TRUE, draw the edges of the network diagram
-##' @param cex_line scale of line width
-##' @param nWords the number of words in the cluster tags
-##' @param nCluster the number of clusters
-##' @param split separate result by 'category' variable
-##' @param min_edge minimum percentage of overlap genes to display the edge,
-##' should between 0 and 1, default value is 0.2
-##' @param cex_label_group scale of group labels size
-##' @param label_style one of "shadowtext" and "ggforce"
-##' @param group_legend If TRUE, the grouping legend will be displayed.
+##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
+##' @param cex_line Scale of line width
+##' @param nWords Numeric, the number of words in the cluster tags, the default value is 4.
+##' @param nCluster Numeric, the number of clusters, 
+##' the default value is square root of the number of nodes.
+##' @param split Separate result by 'category' variable
+##' @param min_edge The minimum similarity threshold for whether 
+##' two nodes are connected, should between 0 and 1, default value is 0.2.
+##' @param cex_label_group Numeric, scale of group labels size, the default value is 1.
+##' @param label_style style of group label, one of "shadowtext" and "ggforce".
+##' @param group_legend Logical, if TRUE, the grouping legend will be displayed.
 ##' The default is FALSE
-##' @param cex_category number indicating the size by which plotting category
+##' @param cex_category Numeric, indicating the size by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
@@ -112,7 +113,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     goid <- y$ID
     cluster_color <- unique(pdata2$color)
     clusters <- lapply(cluster_color, function(i){goid[which(pdata2$color == i)]})
-    cluster_label <- sapply(cluster_color, wordcloud_i, pdata2 = pdata2,
+    cluster_label <- sapply(cluster_color, get_wordcloud, pdata2 = pdata2,
                             nWords=nWords)
     names(cluster_label) <- cluster_color
     pdata2$color <- cluster_label[as.character(pdata2$color)]
@@ -179,9 +180,9 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
 ##' @importFrom scatterpie geom_scatterpie_legend
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @importFrom stats setNames
-##' @param pie proportion of clusters in the pie chart, one of
-##' 'equal' (default) or 'Count'
-##' @param legend_n number of circle in legend
+##' @param pie Proportion of clusters in the pie chart, one of
+##' 'equal' (default) and 'Count'.
+##' @param legend_n Number of circle in legend, the default value is 5.
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     color = "p.adjust", cex_line = 1, with_edge = TRUE,
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
@@ -232,7 +233,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     goid <- y_union$ID
     cluster_color <- unique(pdata2$color)
     clusters <- lapply(cluster_color, function(i){goid[which(pdata2$color == i)]})
-    cluster_label <- sapply(cluster_color,  wordcloud_i, pdata2 = pdata2,
+    cluster_label <- sapply(cluster_color,  get_wordcloud, pdata2 = pdata2,
                             nWords=nWords)
     names(cluster_label) <- cluster_color
     pdata2$color <- cluster_label[as.character(pdata2$color)]

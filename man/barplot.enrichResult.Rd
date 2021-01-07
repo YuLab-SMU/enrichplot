@@ -20,7 +20,7 @@
 
 \item{x}{one of 'Count' and 'GeneRatio'}
 
-\item{color}{one of 'pvalue', 'p.adjust', 'qvalue'}
+\item{color}{one of 'pvalue', 'p.adjust' and 'qvalue'}
 
 \item{showCategory}{number of categories to show}
 
@@ -46,4 +46,9 @@ data(geneList)
 de <- names(geneList)[1:100]
 x <- enrichDO(de)
 barplot(x)
+# use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
+barplot(x, showCategory = 10)
+categorys <- c("pre-malignant neoplasm", "intestinal disease",
+               "breast ductal carcinoma", "non-small cell lung carcinoma")
+barplot(x, showCategory = categorys)
 }

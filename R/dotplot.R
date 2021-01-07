@@ -169,6 +169,8 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     }
     
     if (shape) {
+        ggstar <- "ggstar"
+        require(ggstar, character.only=TRUE)
         # p <- p + ggsymbol::geom_symbol(aes_string(symbol = "Cluster", fill = colorBy)) +
         p <- p + ggstar::geom_star(aes_string(starshape="Cluster", fill=colorBy)) + 
             scale_fill_continuous(low="red", high="blue", guide=guide_colorbar(reverse=TRUE))
