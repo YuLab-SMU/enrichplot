@@ -32,32 +32,38 @@ cnetplot.enrichResult(
 )
 }
 \arguments{
-\item{x}{enrichment result}
+\item{x}{Enrichment result.}
 
-\item{showCategory}{number of enriched terms to display}
+\item{showCategory}{A number or a vector of terms. If it is a number, 
+the first n terms will be displayed. If it is a vector of terms, 
+the selected terms will be displayed.}
 
-\item{foldChange}{fold Change}
+\item{foldChange}{Fold Change of nodes, the default value is NULL. 
+If the user provides the Fold Change value of the nodes, 
+it can be used to set the color of the gene node.}
 
-\item{layout}{layout of the network}
+\item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+'randomly', 'fr', 'kk', 'drl' or 'lgl'.}
 
-\item{...}{additional parameters}
+\item{...}{Additional parameters}
 
-\item{colorEdge}{whether coloring edge by enriched terms}
+\item{colorEdge}{Logical, whether coloring edge by enriched terms, the default value is FALSE.}
 
-\item{circular}{whether using circular layout}
+\item{circular}{Logical, whether using circular layout, the default value is FALSE.}
 
-\item{node_label}{select which labels to be displayed.
-one of 'category', 'gene', 'all' and 'none', default is "all".}
+\item{node_label}{Select which labels to be displayed.
+one of 'category', 'gene', 'all'(the default) and 'none'.}
 
-\item{cex_category}{number indicating the amount by which plotting category
-nodes should be scaled relative to the default.}
+\item{cex_category}{Number indicating the amount by which plotting category
+nodes should be scaled relative to the default, the default value is 1.}
 
-\item{cex_gene}{number indicating the amount by which plotting gene nodes
-should be scaled relative to the default.}
+\item{cex_gene}{Number indicating the amount by which plotting gene nodes
+should be scaled relative to the default, the default value is 1.}
 
-\item{cex_label_category}{scale of category node label size}
+\item{cex_label_category}{Scale of category node label size, the 
+default value is 1.}
 
-\item{cex_label_gene}{scale of gene node label size}
+\item{cex_label_gene}{Scale of gene node label size, the default value is 1.}
 }
 \value{
 ggplot object
@@ -70,11 +76,30 @@ plot linkages of genes and enriched concepts
 (e.g. GO categories, KEGG pathways)
 }
 \examples{
-library(DOSE)
-data(geneList)
-de <- names(geneList)[1:100]
-x <- enrichDO(de)
-cnetplot(x)
+\dontrun{
+    library(DOSE)
+    data(geneList)
+    de <- names(geneList)[1:100]
+    x <- enrichDO(de)
+    x2 <- pairwise_termsim(x)
+    cnetplot(x2)
+    # use `layout` to change the layout of map
+    cnetplot(x2, layout = "star")
+    # use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
+    cnetplot(x2, showCategory = 10)
+    categorys <- c("pre-malignant neoplasm", "intestinal disease",
+                   "breast ductal carcinoma", "non-small cell lung carcinoma")
+    cnetplot(x2, showCategory = categorys)
+    # It can also graph compareClusterResult
+    data(gcSample)
+    library(clusterProfiler)
+    library(DOSE)
+    library(org.Hs.eg.db)
+    data(gcSample)
+    xx <- compareCluster(gcSample, fun="enrichGO", OrgDb="org.Hs.eg.db")
+    xx2 <- pairwise_termsim(xx)
+    cnetplot(xx2)
+}
 }
 \author{
 Guangchuang Yu

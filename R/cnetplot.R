@@ -27,16 +27,17 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 
 
 ##' @rdname cnetplot
-##' @param colorEdge whether coloring edge by enriched terms
-##' @param circular whether using circular layout
-##' @param node_label select which labels to be displayed.
-##' one of 'category', 'gene', 'all' and 'none', default is "all".
-##' @param cex_category number indicating the amount by which plotting category
-##' nodes should be scaled relative to the default.
-##' @param cex_gene number indicating the amount by which plotting gene nodes
-##' should be scaled relative to the default.
-##' @param cex_label_category scale of category node label size
-##' @param cex_label_gene scale of gene node label size
+##' @param colorEdge Logical, whether coloring edge by enriched terms, the default value is FALSE. 
+##' @param circular Logical, whether using circular layout, the default value is FALSE.
+##' @param node_label Select which labels to be displayed.
+##' one of 'category', 'gene', 'all'(the default) and 'none'.
+##' @param cex_category Number indicating the amount by which plotting category
+##' nodes should be scaled relative to the default, the default value is 1.
+##' @param cex_gene Number indicating the amount by which plotting gene nodes
+##' should be scaled relative to the default, the default value is 1.
+##' @param cex_label_category Scale of category node label size, the 
+##' default value is 1.
+##' @param cex_label_gene Scale of gene node label size, the default value is 1.
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
 ##' @author Guangchuang Yu
@@ -132,14 +133,11 @@ cnetplot.enrichResult <- function(x,
     return(p)
 }
 
-##' @param colorEdge whether coloring edge by enriched terms
-##' @param circular whether using circular layout
-##' @param node_label select which labels to be displayed.
-##'                   one of 'category', 'gene', 'all' and 'none', default is "all".
-##' @param split separate result by 'category' variable
-##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
-##' @param legend_n number of circle in legend
-##' @param x_loc,y_loc the location of scatterpie legend
+
+##' @param split Separate result by 'category' variable.
+##' @param pie Proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+##' @param legend_n Number of circle in legend, the default value is 5.
+##' @param x_loc,y_loc The location of scatterpie legend.
 ##' @importFrom ggraph geom_edge_arc
 ##' @noRd
 cnetplot.compareClusterResult <- function(x,

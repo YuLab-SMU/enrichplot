@@ -47,11 +47,11 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
-##' @param cex_line scale of line width
-##' @param min_edge minimum percentage of overlap genes to display the edge,
-##' should between 0 and 1, default value is 0.2
-##' @param cex_label_category scale of category node label size
-##' @param cex_category number indicating the amount by which plotting category
+##' @param cex_line Scale of line width
+##' @param min_edge The minimum similarity threshold for whether 
+##' two nodes are connected, should between 0 and 1, default value is 0.2.
+##' @param cex_label_category Scale of category node label size.
+##' @param cex_category Number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
@@ -127,10 +127,8 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
 ##' @importFrom scatterpie geom_scatterpie_legend
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @param split separate result by 'category' variable
-##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
 ##' @param legend_n number of circle in legend
-##' @param cex_line scale of line width
-##' @param min_edge minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2
 ##' @importFrom stats setNames
 emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           color = "p.adjust", layout = "nicely",

@@ -1,9 +1,9 @@
 ##' Get the similarity matrix
 ##'
-##' @param y a data.frame of enrichment result
-##' @param geneSets a list, the names of geneSets are term ids,
-##' and every object is a vertor of genes
-##' @param method method of calculating the similarity between nodes,
+##' @param y A data.frame of enrichment result
+##' @param geneSets A list, the names of geneSets are term ids,
+##' and every object is a vertor of genes.
+##' @param method Method of calculating the similarity between nodes,
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 ##' "JC" (Jaccard similarity coefficient) methods
 ##' @param semData GOSemSimDATA object
@@ -61,14 +61,14 @@ has_pairsim <- function(x) {
 ##'
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph graph.data.frame
-##' @param y a data.frame of clusterProfiler result
-##' @param geneSets a list gene sets with the names of enrichment IDs
+##' @param y A data.frame of enrichment result.
+##' @param geneSets A list gene sets with the names of enrichment IDs
 ##' @param color a string, the column name of y for nodes colours
-##' @param cex_line scale of line width
-##' @param min_edge minimum percentage of overlap genes to display the edge,
-##' should between 0 and 1, default value is 0.2
-##' @param pair_sim semantic similarity matrix
-##' @param method method of calculating the similarity between nodes,
+##' @param cex_line Numeric, scale of line width
+##' @param min_edge The minimum similarity threshold for whether 
+##' two nodes are connected, should between 0 and 1, default value is 0.2.
+##' @param pair_sim Semantic similarity matrix.
+##' @param method Method of calculating the similarity between nodes,
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 ##' "JC" (Jaccard similarity coefficient) methods
 ##' @return result of graph.data.frame()
@@ -118,14 +118,14 @@ build_emap_graph <- function(y, geneSets, color, cex_line, min_edge,
 
 ##' Get an iGraph object
 ##'
-##' @param x enrichment result.
+##' @param x Enrichment result.
 ##' @param y as.data.frame(x).
-##' @param n number of enriched terms to display.
-##' @param color variable that used to color enriched terms, e.g. pvalue,
-##' p.adjust or qvalue.
-##' @param cex_line scale of line width.
-##' @param min_edge minimum percentage of overlap genes to display the edge,
-##' should between 0 and 1, default value is 0.2.
+##' @param n Number of enriched terms to display.
+##' @param color variable that used to color enriched terms, e.g. 'pvalue',
+##' 'p.adjust' or 'qvalue'.
+##' @param cex_line Scale of line width.
+##' @param min_edge The minimum similarity threshold for whether 
+##' two nodes are connected, should between 0 and 1, default value is 0.2.
 ##'
 ##' @return an iGraph object
 ##' @noRd
@@ -150,7 +150,7 @@ get_igraph <- function(x, y,  n, color, cex_line, min_edge){
 
 ##' Merge the compareClusterResult file
 ##'
-##' @param yy a data.frame of clusterProfiler result
+##' @param yy A data.frame of enrichment result.
 ##'
 ##' @return a data.frame
 ##' @noRd
@@ -174,12 +174,12 @@ merge_compareClusterResult <- function(yy) {
 ##' Get the an ggraph object
 ##'
 ##' @importFrom ggplot2 ylim
-##' @param y a data.frame
-##' @param g an igraph object
-##' @param y_union a data.frame
-##' @param cex_category scale of pie plot
-##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'
-##' @param layout layout of the map
+##' @param y A data.frame of enrichment result.
+##' @param g An igraph object.
+##' @param y_union A data.frame of enrichment result.
+##' @param cex_category Numeric, scale of pie plot.
+##' @param pie Proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'.
+##' @param layout Layout of the map.
 ##' @noRd
 build_ggraph <- function(y, g, y_union, cex_category, pie, layout){
     ## when y just have one line
@@ -215,9 +215,11 @@ build_ggraph <- function(y, g, y_union, cex_category, pie, layout){
 
 ##' Keep selected category in enrichment result
 ##'
-##' @param showCategory a number or a vectory of enriched terms to display
-##' @param x enrichment result
-##' @param split separate result by 'category' variable
+##' @param showCategory A number or a vector of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a vector of terms, 
+##' the selected terms will be displayed.
+##' @param x Enrichment result
+##' @param split Separate result by 'category' variable.
 ##' @noRd
 get_selected_category <- function(showCategory, x, split) {
     if (is.numeric(showCategory)) {
@@ -234,12 +236,12 @@ get_selected_category <- function(showCategory, x, split) {
     return(y)
 }
 
-##' convert a list of gene IDs to igraph object.
+##' Convert a list of gene IDs to igraph object.
 ##'
 ##'
-##' @title convert gene IDs to igraph object
-##' @param inputList a list of gene IDs
-##' @return a igraph object.
+##' @title Convert gene IDs to igraph object
+##' @param inputList A list of gene IDs.
+##' @return A igraph object.
 ##' @importFrom igraph graph.data.frame
 ##' @author Guangchuang Yu
 ##' @noRd
@@ -249,11 +251,11 @@ list2graph <- function(inputList) {
     return(g)
 }
 
-##' convert a list of gene IDs to data.frame object.
+##' Convert a list of gene IDs to data.frame object.
 ##'
 ##'
-##' @title convert gene IDs to data.frame object
-##' @param inputList a list of gene IDs
+##' @title Convert gene IDs to data.frame object
+##' @param inputList A list of gene IDs
 ##' @return a data.frame object.
 ##' @noRd
 list2df <- function(inputList) {
@@ -270,7 +272,7 @@ list2df <- function(inputList) {
 ##' Get the location of group label
 ##'
 ##' @param pdata2 data of a ggraph object
-##' @param label_format a numeric value sets wrap length, alternatively a
+##' @param label_format A numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
 ##' @return a data.frame object.
 ##' @noRd

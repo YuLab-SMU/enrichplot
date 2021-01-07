@@ -134,11 +134,31 @@ plot
 dotplot for enrichment result
 }
 \examples{
-library(DOSE)
-data(geneList)
-de <- names(geneList)[1:100]
-x <- enrichDO(de)
-dotplot(x)
+\dontrun{
+    library(DOSE)
+    data(geneList)
+    de <- names(geneList)[1:100]
+    x <- enrichDO(de)
+    dotplot(x)
+    # use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
+    dotplot(x, showCategory = 10)
+    categorys <- c("pre-malignant neoplasm", "intestinal disease",
+                   "breast ductal carcinoma", "non-small cell lung carcinoma")
+    dotplot(x, showCategory = categorys)
+    # It can also graph compareClusterResult
+    data(gcSample)
+    library(clusterProfiler)
+    library(DOSE)
+    library(org.Hs.eg.db)
+    data(gcSample)
+    xx <- compareCluster(gcSample, fun="enrichGO", OrgDb="org.Hs.eg.db")
+    xx2 <- pairwise_termsim(xx)
+    library(ggstar)
+    dotplot(xx2)
+    dotplot(xx2, shape = TRUE)
+    dotplot(xx2, group = TRUE)
+    dotplot(xx2, x = "GeneRatio", group = TRUE, size = "count")
+}
 }
 \author{
 guangchuang yu

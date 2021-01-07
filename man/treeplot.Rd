@@ -71,37 +71,39 @@ custom function to format axis labels.}
 
 \item{...}{additional parameters}
 
-\item{nWords}{the number of words in the cluster tags}
+\item{nWords}{The number of words in the cluster tags.}
 
-\item{nCluster}{the number of clusters}
+\item{nCluster}{The number of clusters, the default value is 5.}
 
-\item{cex_category}{number indicating the amount by which plotting category
+\item{cex_category}{Number indicating the amount by which plotting category.
 nodes should be scaled relative to the default.}
 
-\item{xlim}{Limits for the x axes}
+\item{xlim}{Limits for the x axes, e.g. c(0, 40). If the picture is not 
+displayed completely, the user can increase this value.}
 
-\item{fontsize}{the size of text, default is 4.}
+\item{fontsize}{The size of text, default is 4.}
 
-\item{offset}{distance bar and tree, offset of bar and text from the clade,
-default is 0.9.}
+\item{offset}{Distance bar and tree, offset of bar and text from the clade.}
 
-\item{offset_tiplab}{tiplab offset}
+\item{offset_tiplab}{Tiplab offset, the bigger the number, 
+the farther the distance between the node and the branch. 
+The default value is 0.35.}
 
-\item{hclust_method}{method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
+\item{hclust_method}{Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
 
-\item{group_color}{a vector of group colors.}
+\item{group_color}{A vector of group colors, the length of the vector should be the same as nCluster.}
 
-\item{extend}{numeric, extend the length of bar, default is 0.3.}
+\item{extend}{Numeric, extend the length of bar, default is 0.3.}
 
-\item{hilight}{logical value, if TRUE(default), add ggtree::geom_hilight() layer.}
+\item{hilight}{Logical value, if TRUE(default), add ggtree::geom_hilight() layer.}
 
-\item{split}{separate result by 'category' variable}
+\item{split}{Separate result by 'category' variable.}
 
-\item{pie}{proportion of clusters in the pie chart, one of
-'equal' (default) or 'Count'}
+\item{pie}{Proportion of clusters in the pie chart, one of
+'equal' (default) and 'Count'.}
 
-\item{legend_n}{number of circle in legend}
+\item{legend_n}{Number of circle in legend, the default value is 3.}
 }
 \value{
 ggplot object
@@ -135,6 +137,12 @@ for interpretation.
     d <- godata('org.Hs.eg.db', ont="BP")
     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
     treeplot(ego2, showCategory = 30)
+    # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
+    treeplot(ego2, showCategory = 30, hilight = FALSE)
+    # use `offset` parameter to adjust the distance of bar and tree.
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 8)
+    # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 0.3)
     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
     keep
     treeplot(ego2, showCategory = keep)
