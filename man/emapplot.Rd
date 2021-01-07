@@ -45,31 +45,35 @@ emapplot.compareClusterResult(
 )
 }
 \arguments{
-\item{x}{enrichment result.}
+\item{x}{Enrichment result.}
 
-\item{showCategory}{number of enriched terms to display}
+\item{showCategory}{A number or a vector of terms. If it is a number, 
+the first n terms will be displayed. If it is a vector of terms, 
+the selected terms will be displayed.}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue,
-p.adjust or qvalue}
+\item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
+'p.adjust' or 'qvalue'.}
 
-\item{layout}{layout of the map}
+\item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+'randomly', 'fr', 'kk', 'drl' or 'lgl'.}
 
-\item{...}{additional parameters}
+\item{...}{Additional parameters}
 
-\item{min_edge}{minimum percentage of overlap genes to display the edge, should between 0 and 1, default value is 0.2}
+\item{min_edge}{The minimum similarity threshold for whether 
+two nodes are connected, should between 0 and 1, default value is 0.2.}
 
-\item{cex_label_category}{scale of category node label size}
+\item{cex_label_category}{Scale of category node label size.}
 
-\item{cex_category}{number indicating the amount by which plotting category
+\item{cex_category}{Number indicating the amount by which plotting category
 nodes should be scaled relative to the default.}
 
-\item{cex_line}{scale of line width}
+\item{cex_line}{Scale of line width}
 
 \item{shadowtext}{a logical value, whether to use shadow font.}
 
 \item{split}{separate result by 'category' variable}
 
-\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'}
+\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
 
 \item{legend_n}{number of circle in legend}
 }
@@ -83,15 +87,38 @@ over-representation test or gene set enrichment analysis
 \details{
 This function visualizes gene sets as a network (i.e. enrichment map).
 Mutually overlapping gene sets tend to cluster together, making it
-easier for interpretation.
+easier for interpretation. When the similarity between terms meets 
+a certain threshold (default is 0.2, adjusted by parameter `min_edge`),
+there will be edges between terms. The stronger the similarity, 
+the shorter and thicker the edges. The similarity between terms is 
+obtained by function `pairwise_termsim`, the details of similarity 
+calculation can be found in its documentation: \link{pairwise_termsim}.
 }
 \examples{
-library(DOSE)
-data(geneList)
-de <- names(geneList)[1:100]
-x <- enrichDO(de)
-x2 <- pairwise_termsim(x)
-emapplot(x2)
+\dontrun{
+    library(DOSE)
+    data(geneList)
+    de <- names(geneList)[1:100]
+    x <- enrichDO(de)
+    x2 <- pairwise_termsim(x)
+    emapplot(x2)
+    # use `layout` to change the layout of map
+    emapplot(x2, layout = "star")
+    # use `showCategory` to  select the displayed terms. It can be a number of a vector of terms.
+    emapplot(x2, showCategory = 10)
+    categorys <- c("pre-malignant neoplasm", "intestinal disease",
+                   "breast ductal carcinoma", "non-small cell lung carcinoma")
+    emapplot(x2, showCategory = categorys)
+    # It can also graph compareClusterResult
+    data(gcSample)
+    library(clusterProfiler)
+    library(DOSE)
+    library(org.Hs.eg.db)
+    data(gcSample)
+    xx <- compareCluster(gcSample, fun="enrichGO", OrgDb="org.Hs.eg.db")
+    xx2 <- pairwise_termsim(xx)
+    emapplot(xx2)
+}
 }
 \author{
 Guangchuang Yu
