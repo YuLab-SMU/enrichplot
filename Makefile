@@ -4,7 +4,7 @@ PKGSRC  := $(shell basename `pwd`)
 
 all: rd check clean
 
-for-release: rd check-dontrun clean
+for-release: rd check-dontrun clean readme
 
 alldocs: rd
 
