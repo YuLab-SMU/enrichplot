@@ -109,6 +109,7 @@ calculation can be found in its documentation: \link{pairwise_termsim}.
     categorys <- c("pre-malignant neoplasm", "intestinal disease",
                    "breast ductal carcinoma", "non-small cell lung carcinoma")
     emapplot(x2, showCategory = categorys)
+
     # It can also graph compareClusterResult
     data(gcSample)
     library(clusterProfiler)

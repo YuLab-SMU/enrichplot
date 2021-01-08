@@ -173,18 +173,6 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
 
 
 
-##' Get all parent nodes of a vectory of nodes
-##'
-##' @param tree_data a phylo object
-##' @param nodes a vector of nodes
-##'
-##' @return a list of parent nodes
-##'
-##' @noRd
-# get_parents <- function(tree_data, nodes) {
-#     lapply(nodes, function(x) tidytree::ancestor(.data = tree_data, .node = x))
-# }
-
 
 ##' Fill the upper triangular matrix completely
 ##'

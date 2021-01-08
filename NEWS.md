@@ -1,4 +1,4 @@
-# enrichplot 1.11.1.997
+# enrichplot 1.11.2
 
 + update document (2021-1-7, Thu)
 + update `dotplot`: replace `ggsymbol::geom_symbol` with `ggstar::geom_star`(2021-1-6, Wed)

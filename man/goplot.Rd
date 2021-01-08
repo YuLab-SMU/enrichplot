@@ -65,14 +65,14 @@ plot induced GO DAG of significant terms
 }
 \examples{
 \dontrun{
-    data(geneList, package = "DOSE")
+	library(clusterProfiler)
+  data(geneList, package = "DOSE")
 	de <- names(geneList)[1:100]
-	library(org.Hs.eg.db)
 	yy <- enrichGO(de, 'org.Hs.eg.db', ont="BP", pvalueCutoff=0.01)
     goplot(yy)
     goplot(yy, showCategory = 5)
 }
 }
 \author{
-guangchuang yu
+Guangchuang Yu
 }
