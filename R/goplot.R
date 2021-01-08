@@ -26,7 +26,7 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @import ggraph
 ##' @importFrom ggraph circle
 ##' @importFrom ggraph geom_node_label
-##' @author guangchuang yu
+##' @author Guangchuang Yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
                                 layout = "sugiyama", geom = "text", ...) {
     # has_package("AnnotationDbi")

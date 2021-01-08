@@ -25,20 +25,22 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 
 
 ##' @rdname treeplot
-##' @param nWords the number of words in the cluster tags
-##' @param nCluster the number of clusters
-##' @param cex_category number indicating the amount by which plotting category
+##' @param nWords The number of words in the cluster tags.
+##' @param nCluster The number of clusters, the default value is 5.
+##' @param cex_category Number indicating the amount by which plotting category.
 ##' nodes should be scaled relative to the default.
-##' @param xlim Limits for the x axes
-##' @param offset distance bar and tree, offset of bar and text from the clade,
-##' default is 0.9.
-##' @param fontsize the size of text, default is 4.
-##' @param offset_tiplab tiplab offset
-##' @param hclust_method method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
+##' @param xlim Limits for the x axes, e.g. c(0, 40). If the picture is not 
+##' displayed completely, the user can increase this value.
+##' @param offset Distance bar and tree, offset of bar and text from the clade.
+##' @param fontsize The size of text, default is 4.
+##' @param offset_tiplab Tiplab offset, the bigger the number, 
+##' the farther the distance between the node and the branch. 
+##' The default value is 0.35.
+##' @param hclust_method Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
-##' @param group_color a vector of group colors.
-##' @param extend numeric, extend the length of bar, default is 0.3.
-##' @param hilight logical value, if TRUE(default), add ggtree::geom_hilight() layer.
+##' @param group_color A vector of group colors, the length of the vector should be the same as nCluster.
+##' @param extend Numeric, extend the length of bar, default is 0.3.
+##' @param hilight Logical value, if TRUE(default), add ggtree::geom_hilight() layer.
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -101,10 +103,10 @@ treeplot.enrichResult <- function(x, showCategory = 30,
 
 
 ##' @rdname treeplot
-##' @param pie proportion of clusters in the pie chart, one of
-##' 'equal' (default) or 'Count'
-##' @param split separate result by 'category' variable
-##' @param legend_n number of circle in legend
+##' @param pie Proportion of clusters in the pie chart, one of
+##' 'equal' (default) and 'Count'.
+##' @param split Separate result by 'category' variable.
+##' @param legend_n Number of circle in legend, the default value is 3.
 ##' @importFrom ggtree nodepie
 ##' @importFrom ggtree geom_inset
 ##' @importFrom ggplot2 scale_fill_manual
@@ -171,18 +173,6 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
 
 
 
-##' Get all parent nodes of a vectory of nodes
-##'
-##' @param tree_data a phylo object
-##' @param nodes a vector of nodes
-##'
-##' @return a list of parent nodes
-##'
-##' @noRd
-# get_parents <- function(tree_data, nodes) {
-#     lapply(nodes, function(x) tidytree::ancestor(.data = tree_data, .node = x))
-# }
-
 
 ##' Fill the upper triangular matrix completely
 ##'
@@ -212,7 +202,7 @@ fill_termsim <- function(x, keep) {
 ##' @noRd
 add_cladelab <- function(p, nWords, label_format, offset, roots, 
                          fontsize, group_color, cluster_color, pdata, extend, hilight) {
-    cluster_label <- sapply(cluster_color, wordcloud_i, pdata2 = pdata,
+    cluster_label <- sapply(cluster_color, get_wordcloud, pdata2 = pdata,
                         nWords = nWords)
     label_func <- default_labeller(label_format)
     if (is.function(label_format)) {

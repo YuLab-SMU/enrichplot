@@ -5,19 +5,43 @@
 ##' (e.g. GO categories, KEGG pathways)
 ##' @title cnetplot
 ##' @rdname cnetplot
-##' @param x enrichment result
-##' @param showCategory number of enriched terms to display
-##' @param foldChange fold Change
-##' @param layout layout of the network
-##' @param ... additional parameters
+##' @param x Enrichment result.
+##' @param showCategory A number or a vector of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a vector of terms, 
+##' the selected terms will be displayed.
+##' @param foldChange Fold Change of nodes, the default value is NULL. 
+##' If the user provides the Fold Change value of the nodes, 
+##' it can be used to set the color of the gene node.
+##' @param layout Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+##' 'randomly', 'fr', 'kk', 'drl' or 'lgl'.
+##' @param ... Additional parameters
 ##' @return ggplot object
 ##' @export
 ##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' de <- names(geneList)[1:100]
-##' x <- enrichDO(de)
-##' cnetplot(x)
+##' \dontrun{
+##'     library(DOSE)
+##'     data(geneList)
+##'     de <- names(geneList)[1:100]
+##'     x <- enrichDO(de)
+##'     x2 <- pairwise_termsim(x)
+##'     cnetplot(x2)
+##'     # use `layout` to change the layout of map
+##'     cnetplot(x2, layout = "star")
+##'     # use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
+##'     cnetplot(x2, showCategory = 10)
+##'     categorys <- c("pre-malignant neoplasm", "intestinal disease",
+##'                    "breast ductal carcinoma", "non-small cell lung carcinoma")
+##'     cnetplot(x2, showCategory = categorys)
+##'     # It can also graph compareClusterResult
+##'     data(gcSample)
+##'     library(clusterProfiler)
+##'     library(DOSE)
+##'     library(org.Hs.eg.db)
+##'     data(gcSample)
+##'     xx <- compareCluster(gcSample, fun="enrichGO", OrgDb="org.Hs.eg.db")
+##'     xx2 <- pairwise_termsim(xx)
+##'     cnetplot(xx2)
+##' }
 setGeneric("cnetplot",
            function(x, showCategory = 5,
                     foldChange = NULL, layout = "kk", ...)
@@ -36,11 +60,31 @@ setGeneric("cnetplot",
 ##' @importFrom methods setGeneric
 ##' @export
 ##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' de <- names(geneList)[1:100]
-##' x <- enrichDO(de)
-##' dotplot(x)
+##' \dontrun{
+##'     library(DOSE)
+##'     data(geneList)
+##'     de <- names(geneList)[1:100]
+##'     x <- enrichDO(de)
+##'     dotplot(x)
+##'     # use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
+##'     dotplot(x, showCategory = 10)
+##'     categorys <- c("pre-malignant neoplasm", "intestinal disease",
+##'                    "breast ductal carcinoma", "non-small cell lung carcinoma")
+##'     dotplot(x, showCategory = categorys)
+##'     # It can also graph compareClusterResult
+##'     data(gcSample)
+##'     library(clusterProfiler)
+##'     library(DOSE)
+##'     library(org.Hs.eg.db)
+##'     data(gcSample)
+##'     xx <- compareCluster(gcSample, fun="enrichGO", OrgDb="org.Hs.eg.db")
+##'     xx2 <- pairwise_termsim(xx)
+##'     library(ggstar)
+##'     dotplot(xx2)
+##'     dotplot(xx2, shape = TRUE)
+##'     dotplot(xx2, group = TRUE)
+##'     dotplot(xx2, x = "GeneRatio", group = TRUE, size = "count")
+##' }
 setGeneric("dotplot",
            function(object,  ...)
                standardGeneric("dotplot")
@@ -52,24 +96,51 @@ setGeneric("dotplot",
 ##'
 ##' This function visualizes gene sets as a network (i.e. enrichment map).
 ##' Mutually overlapping gene sets tend to cluster together, making it
-##' easier for interpretation.
+##' easier for interpretation. When the similarity between terms meets 
+##' a certain threshold (default is 0.2, adjusted by parameter `min_edge`),
+##' there will be edges between terms. The stronger the similarity, 
+##' the shorter and thicker the edges. The similarity between terms is 
+##' obtained by function `pairwise_termsim`, the details of similarity 
+##' calculation can be found in its documentation: \link{pairwise_termsim}.
 ##' @title emapplot
 ##' @rdname emapplot
-##' @param x enrichment result.
-##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue,
-##' p.adjust or qvalue
-##' @param layout layout of the map
-##' @param ... additional parameters
+##' @param x Enrichment result.
+##' @param showCategory A number or a vector of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a vector of terms, 
+##' the selected terms will be displayed.
+##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
+##' 'p.adjust' or 'qvalue'.
+##' @param layout Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+##' 'randomly', 'fr', 'kk', 'drl' or 'lgl'.
+##' @param ... Additional parameters
 ##' @return ggplot object
 ##' @export
 ##' @examples
-##' library(DOSE)
-##' data(geneList)
-##' de <- names(geneList)[1:100]
-##' x <- enrichDO(de)
-##' x2 <- pairwise_termsim(x)
-##' emapplot(x2)
+##' \dontrun{
+##'     library(DOSE)
+##'     data(geneList)
+##'     de <- names(geneList)[1:100]
+##'     x <- enrichDO(de)
+##'     x2 <- pairwise_termsim(x)
+##'     emapplot(x2)
+##'     # use `layout` to change the layout of map
+##'     emapplot(x2, layout = "star")
+##'     # use `showCategory` to  select the displayed terms. It can be a number of a vector of terms.
+##'     emapplot(x2, showCategory = 10)
+##'     categorys <- c("pre-malignant neoplasm", "intestinal disease",
+##'                    "breast ductal carcinoma", "non-small cell lung carcinoma")
+##'     emapplot(x2, showCategory = categorys)
+##' 
+##'     # It can also graph compareClusterResult
+##'     data(gcSample)
+##'     library(clusterProfiler)
+##'     library(DOSE)
+##'     library(org.Hs.eg.db)
+##'     data(gcSample)
+##'     xx <- compareCluster(gcSample, fun="enrichGO", OrgDb="org.Hs.eg.db")
+##'     xx2 <- pairwise_termsim(xx)
+##'     emapplot(xx2)
+##' }
 setGeneric("emapplot",
            function(x, showCategory = 30, color="p.adjust", layout = "kk", ...)
                standardGeneric("emapplot")
@@ -83,14 +154,18 @@ setGeneric("emapplot",
 ##'
 ##' This function visualizes gene sets as a grouped network (i.e. enrichment map).
 ##' Gene sets with high similarity tend to cluster together, making it easier
-##' for interpretation.
+##' for interpretation. It adds clustering on the basis of emapplot's network graph.
+##' 
+##' For more details, please refer to the documentation of \link{emapplot}. 
 ##' @title emapplot_cluster
 ##' @rdname emapplot_cluster
-##' @param x enrichment result.
-##' @param showCategory number of enriched terms to display
-##' @param color variable that used to color enriched terms, e.g. pvalue,
-##' p.adjust or qvalue
-##' @param ... additional parameters
+##' @param x Enrichment result.
+##' @param showCategory A number or a vector of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a vector of terms, 
+##' the selected terms will be displayed.
+##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
+##' 'p.adjust' or 'qvalue'.
+##' @param ... Additional parameters
 ##' @return ggplot object
 ##' @export
 ##' @examples
@@ -125,14 +200,21 @@ setGeneric("emapplot_cluster",
 ##'
 ##'
 ##' This function add similarity matrix to the termsim slot of enrichment result.
+##' Users can use the `method` parameter to select the method of calculating similarity.
+##' The Jaccard correlation coefficient(JC) is used by default, and it applies to all situations.
+##' When users want to calculate the correlation between GO terms or DO terms, they can also choose
+##' "Resnik", "Lin", "Rel" or "Jiang" (they are semantic similarity calculation methods from GOSemSim packages),
+##' and at this time, the user needs to provide `semData` parameter, which can be obtained through
+##' \link{godata} function in GOSemSim package.
 ##' @title pairwise_termsim
 ##' @rdname pairwise_termsim
 ##' @param x enrichment result.
 ##' @param method method of calculating the similarity between nodes,
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 ##' "JC"(Jaccard similarity coefficient) methods.
-##' @param semData GOSemSimDATA object
-##' @param showCategory number of enriched terms to display
+##' @param semData GOSemSimDATA object, can be obtained through
+##' \link{godata} function in GOSemSim package.
+##' @param showCategory number of enriched terms to display, default value is 200.
 ##' @examples
 ##' \dontrun{
 ##'     library(clusterProfiler)
@@ -174,6 +256,15 @@ setGeneric("pairwise_termsim",
 ##' @param ... additional parameter
 ##' @return ggplot object
 ##' @export
+##' @examples
+##' \dontrun{
+##' 	library(clusterProfiler)
+##'   data(geneList, package = "DOSE")
+##' 	de <- names(geneList)[1:100]
+##' 	yy <- enrichGO(de, 'org.Hs.eg.db', ont="BP", pvalueCutoff=0.01)
+##'     goplot(yy)
+##'     goplot(yy, showCategory = 5)
+##' }
 setGeneric("goplot",
            function(x, showCategory = 10, color = "p.adjust",
                     layout = "sugiyama", geom = "text", ...)
@@ -306,6 +397,12 @@ setGeneric("upsetplot", function(x, ...) standardGeneric("upsetplot"))
 ##'     d <- godata('org.Hs.eg.db', ont="BP")
 ##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
 ##'     treeplot(ego2, showCategory = 30)
+##'     # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE)
+##'     # use `offset` parameter to adjust the distance of bar and tree.
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 8)
+##'     # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 0.3)
 ##'     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
 ##'     keep
 ##'     treeplot(ego2, showCategory = keep)

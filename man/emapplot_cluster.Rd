@@ -57,6 +57,7 @@ emapplot_cluster.enrichResult(
   cex_category = 1,
   label_format = 30,
   repel = FALSE,
+  shadowtext = TRUE,
   ...
 )
 
@@ -78,16 +79,19 @@ emapplot_cluster.compareClusterResult(
   group_legend = FALSE,
   label_format = 30,
   repel = FALSE,
+  shadowtext = TRUE,
   ...
 )
 }
 \arguments{
-\item{x}{enrichment result.}
+\item{x}{Enrichment result.}
 
-\item{showCategory}{number of enriched terms to display}
+\item{showCategory}{A number or a vector of terms. If it is a number, 
+the first n terms will be displayed. If it is a vector of terms, 
+the selected terms will be displayed.}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue,
-p.adjust or qvalue}
+\item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
+'p.adjust' or 'qvalue'.}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.}
@@ -103,35 +107,38 @@ additional parameters can refer the following parameters.
        \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
     }}
 
-\item{cex_line}{scale of line width}
+\item{cex_line}{Scale of line width}
 
-\item{with_edge}{if TRUE, draw the edges of the network diagram}
+\item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
 
-\item{nWords}{the number of words in the cluster tags}
+\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.}
 
-\item{nCluster}{the number of clusters}
+\item{nCluster}{Numeric, the number of clusters, 
+the default value is square root of the number of nodes.}
 
-\item{split}{separate result by 'category' variable}
+\item{split}{Separate result by 'category' variable}
 
-\item{min_edge}{minimum percentage of overlap genes to display the edge,
-should between 0 and 1, default value is 0.2}
+\item{min_edge}{The minimum similarity threshold for whether 
+two nodes are connected, should between 0 and 1, default value is 0.2.}
 
-\item{cex_label_group}{scale of group labels size}
+\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.}
 
-\item{label_style}{one of "shadowtext" and "ggforce"}
+\item{label_style}{style of group label, one of "shadowtext" and "ggforce".}
 
-\item{group_legend}{If TRUE, the grouping legend will be displayed.
+\item{group_legend}{Logical, if TRUE, the grouping legend will be displayed.
 The default is FALSE}
 
-\item{cex_category}{number indicating the size by which plotting category
+\item{cex_category}{Numeric, indicating the size by which plotting category
 nodes should be scaled relative to the default.}
 
 \item{repel}{whether to correct the position of the label. Defaults to FALSE.}
 
-\item{pie}{proportion of clusters in the pie chart, one of
-'equal' (default) or 'Count'}
+\item{shadowtext}{a logical value, whether to use shadow font. Defaults to TRUE.}
 
-\item{legend_n}{number of circle in legend}
+\item{pie}{Proportion of clusters in the pie chart, one of
+'equal' (default) and 'Count'.}
+
+\item{legend_n}{Number of circle in legend, the default value is 5.}
 }
 \value{
 ggplot object
@@ -143,7 +150,9 @@ over-representation test or gene set enrichment analysis
 \details{
 This function visualizes gene sets as a grouped network (i.e. enrichment map).
 Gene sets with high similarity tend to cluster together, making it easier
-for interpretation.
+for interpretation. It adds clustering on the basis of emapplot's network graph.
+
+For more details, please refer to the documentation of \link{emapplot}.
 }
 \examples{
 \dontrun{

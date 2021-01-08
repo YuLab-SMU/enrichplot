@@ -24,22 +24,24 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 
 
 ##' @rdname emapplot_cluster
-##' @param with_edge if TRUE, draw the edges of the network diagram
-##' @param cex_line scale of line width
-##' @param nWords the number of words in the cluster tags
-##' @param nCluster the number of clusters
-##' @param split separate result by 'category' variable
-##' @param min_edge minimum percentage of overlap genes to display the edge,
-##' should between 0 and 1, default value is 0.2
-##' @param cex_label_group scale of group labels size
-##' @param label_style one of "shadowtext" and "ggforce"
-##' @param group_legend If TRUE, the grouping legend will be displayed.
+##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
+##' @param cex_line Scale of line width
+##' @param nWords Numeric, the number of words in the cluster tags, the default value is 4.
+##' @param nCluster Numeric, the number of clusters, 
+##' the default value is square root of the number of nodes.
+##' @param split Separate result by 'category' variable
+##' @param min_edge The minimum similarity threshold for whether 
+##' two nodes are connected, should between 0 and 1, default value is 0.2.
+##' @param cex_label_group Numeric, scale of group labels size, the default value is 1.
+##' @param label_style style of group label, one of "shadowtext" and "ggforce".
+##' @param group_legend Logical, if TRUE, the grouping legend will be displayed.
 ##' The default is FALSE
-##' @param cex_category number indicating the size by which plotting category
+##' @param cex_category Numeric, indicating the size by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
 ##' @param repel whether to correct the position of the label. Defaults to FALSE.
+##' @param shadowtext a logical value, whether to use shadow font. Defaults to TRUE.
 ##' @param ... Additional parameters used to set the position of the group label.
 ##' When the parameter repel is set to TRUE, additional parameters will take effect.
 ##' 
@@ -56,6 +58,7 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' @importFrom ggplot2 scale_color_discrete
 ##' @importFrom ggplot2 scale_size_continuous
 ##' @importFrom ggplot2 scale_fill_discrete
+##' @importFrom ggplot2 geom_text
 ##' @importFrom stats kmeans
 ##' @importFrom ggraph ggraph
 ##' @importFrom ggraph geom_node_point
@@ -71,7 +74,8 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           cex_label_group = 1, 
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1, 
-                                          label_format = 30, repel = FALSE, ...){
+                                          label_format = 30, repel = FALSE, 
+                                          shadowtext = TRUE, ...){
                                           
 
     has_pairsim(x)
@@ -109,7 +113,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     goid <- y$ID
     cluster_color <- unique(pdata2$color)
     clusters <- lapply(cluster_color, function(i){goid[which(pdata2$color == i)]})
-    cluster_label <- sapply(cluster_color, wordcloud_i, pdata2 = pdata2,
+    cluster_label <- sapply(cluster_color, get_wordcloud, pdata2 = pdata2,
                             nWords=nWords)
     names(cluster_label) <- cluster_color
     pdata2$color <- cluster_label[as.character(pdata2$color)]
@@ -158,22 +162,10 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
         theme(legend.title = element_text(size = 10),
                    legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
-    if (label_style == "ggforce") return(p)
-    
-    if (!repel) {
-        p <- p + geom_shadowtext(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, bg.color = "white", 
-            bg.r = 0.1)
-        return(p)
-    }
-
-
-    p + ggrepel::geom_text_repel(data = label_location,
-        aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-        size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-        show.legend = FALSE, ...)
-                         
+    if (label_style == "ggforce") return(p)  
+    add_group_label(repel = repel, shadowtext = shadowtext, p = p, 
+        label_location = label_location, label_group = label_group, 
+        cex_label_group = cex_label_group, ...)                 
 }
 
 
@@ -188,15 +180,15 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
 ##' @importFrom scatterpie geom_scatterpie_legend
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @importFrom stats setNames
-##' @param pie proportion of clusters in the pie chart, one of
-##' 'equal' (default) or 'Count'
-##' @param legend_n number of circle in legend
+##' @param pie Proportion of clusters in the pie chart, one of
+##' 'equal' (default) and 'Count'.
+##' @param legend_n Number of circle in legend, the default value is 5.
 emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     color = "p.adjust", cex_line = 1, with_edge = TRUE,
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
     cex_label_group = 1, pie = "equal", legend_n = 5,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE, 
-    label_format = 30, repel = FALSE, ...){
+    label_format = 30, repel = FALSE, shadowtext = TRUE, ...){
 
     has_pairsim(x)
     label_group <- 3
@@ -241,7 +233,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     goid <- y_union$ID
     cluster_color <- unique(pdata2$color)
     clusters <- lapply(cluster_color, function(i){goid[which(pdata2$color == i)]})
-    cluster_label <- sapply(cluster_color,  wordcloud_i, pdata2 = pdata2,
+    cluster_label <- sapply(cluster_color,  get_wordcloud, pdata2 = pdata2,
                             nWords=nWords)
     names(cluster_label) <- cluster_color
     pdata2$color <- cluster_label[as.character(pdata2$color)]
@@ -310,24 +302,10 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
               legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank())
     if (label_style == "ggforce") return(p)
-    
-    if (!repel) {
-        p <- p + geom_shadowtext(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
-        return(p)
-    }
-
-    p + ggrepel::geom_text_repel(data = label_location,
-        aes_(x =~ x, y =~ y, label =~ label), colour = "black", 
-        size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-        show.legend = FALSE, ...)
+    add_group_label(repel = repel, shadowtext = shadowtext, p = p, 
+        label_location = label_location, label_group = label_group, 
+        cex_label_group = cex_label_group, ...) 
 }
-
-
-
-
-
 
 
 
