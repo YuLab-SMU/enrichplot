@@ -1,6 +1,7 @@
 # enrichplot 1.11.1.997
 
-+ update document (2021-1-7)
++ update document (2021-1-7, Thu)
++ update `dotplot`: replace `ggsymbol::geom_symbol` with `ggstar::geom_star`(2021-1-6, Wed)
 + add parameter `shadowtext` for three functions: `emapplot`, `emapplot_cluster` and `cnetplot`. (2021-1-5, Tue)
 + update `dotplot`: supports the use of shapes and line colors to distinguish groups (2021-1-3, Sun)
 + add `treeplot` function (2020-12-29, Tue)
