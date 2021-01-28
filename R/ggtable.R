@@ -21,7 +21,14 @@ tableGrob2 <- function(d, p = NULL) {
     if (is.null(p)) {
         return(tp)
     }
-    pcol <- unique(ggplot_build(p)$data[[1]][["colour"]])
+
+    # Fix bug: The 'group' order of lines and dots/path is different
+    p_data <- ggplot_build(p)$data[[1]]
+    # pcol <- unique(ggplot_build(p)$data[[1]][["colour"]])
+    p_data <- p_data[order(p_data[["group"]]), ]
+    pcol <- unique(p_data[["colour"]])
+    ## This is fine too
+    ## pcol <- unique(p_data[["colour"]])[unique(p_data[["group"]])]  
     j <- which(tp$layout$name == "rowhead-fg")
 
     for (i in seq_along(pcol)) {
