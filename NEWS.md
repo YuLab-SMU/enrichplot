@@ -1,3 +1,7 @@
+# enrichplot 1.11.2.991
+
++ fix bug in `gseaplot2`(2021-1-28, Thu)
+
 # enrichplot 1.11.2
 
 + update document (2021-1-7, Thu)
