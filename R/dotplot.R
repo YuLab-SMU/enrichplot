@@ -5,9 +5,13 @@ setMethod("dotplot", signature(object = "enrichResult"),
           function(object, x = "GeneRatio", color = "p.adjust",
                    showCategory=10, size = NULL,
                    split = NULL, font.size=12, title = "",
-                   label_format = 30, ...) {
-              dotplot.enrichResult(object, x, color, showCategory, size,
-                               split, font.size, title, label_format, ...)
+                   orderBy="x", label_format = 30, ...) {
+              dotplot.enrichResult(object = object, x = x, color = color, 
+                                   showCategory = showCategory, 
+                                   size = size, split = split, 
+                                   font.size = font.size, 
+                                   title = title, orderBy = orderBy, 
+                                   label_format = label_format, ...)
           })
 
 ##' @rdname dotplot
@@ -15,9 +19,13 @@ setMethod("dotplot", signature(object = "enrichResult"),
 setMethod("dotplot", signature(object = "gseaResult"),
           function(object, x = "GeneRatio", color = "p.adjust", showCategory=10,
                    size = NULL, split = NULL, font.size=12, title = "",
-                   label_format = 30, ...) {
-              dotplot.enrichResult(object, x, color, showCategory, size, split,
-                               font.size, title, label_format, ...)
+                   orderBy="x", label_format = 30, ...) {
+                dotplot.enrichResult(object = object, x = x, color = color, 
+                       showCategory = showCategory, 
+                       size = size, split = split, 
+                       font.size = font.size, 
+                       title = title, orderBy = orderBy, 
+                       label_format = label_format, ...)
           })
 
 ##' @rdname dotplot
@@ -75,7 +83,7 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
-                             decreasing=TRUE, label_format = 30) {
+                             label_format = 30, decreasing=TRUE) {
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {

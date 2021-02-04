@@ -21,6 +21,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
+  orderBy = "x",
   label_format = 30,
   ...
 )
@@ -34,6 +35,7 @@ dotplot(object, ...)
   split = NULL,
   font.size = 12,
   title = "",
+  orderBy = "x",
   label_format = 30,
   ...
 )
@@ -63,8 +65,8 @@ dotplot.enrichResult(
   font.size = 12,
   title = "",
   orderBy = "x",
-  decreasing = TRUE,
-  label_format = 30
+  label_format = 30,
+  decreasing = TRUE
 )
 
 dotplot.compareClusterResult(
@@ -106,6 +108,8 @@ one of "geneRatio", "Percentage" and "count"}
 
 \item{title}{figure title}
 
+\item{orderBy}{The order of the Y-axis}
+
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.
 by default wraps names longer that 30 characters}
@@ -113,8 +117,6 @@ by default wraps names longer that 30 characters}
 \item{by}{one of "geneRatio", "Percentage" and "count"}
 
 \item{includeAll}{logical}
-
-\item{orderBy}{The order of the Y-axis}
 
 \item{decreasing}{logical. Should the orderBy order be increasing or decreasing?}
 
