@@ -1,5 +1,6 @@
-# enrichplot 1.11.2.991
+# enrichplot 1.11.2.992
 
++ fix `dotplot` for `label_format` parameter doesn't work(2021-2-3, Wed).
 + fix bug in `gseaplot2`(2021-1-28, Thu)
 
 # enrichplot 1.11.2
