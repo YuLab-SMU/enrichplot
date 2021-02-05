@@ -164,7 +164,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     p + ggnewscale::new_scale_fill() +
         scatterpie::geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
                 cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
-        scatterpie::geom_scatterpie_legend(cex_category * ID_Cluster_mat$radius,
+        # scatterpie::geom_scatterpie_legend(cex_category * ID_Cluster_mat$radius,
+        scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius,
             x = 0.8, y = 0.1, n = legend_n,
             labeller = function(x) round(sum(p_data$count) * x^2 / cex_category)) +
         coord_equal(xlim = xlim) +
