@@ -58,6 +58,7 @@ emapplot_cluster.enrichResult(
   label_format = 30,
   repel = FALSE,
   shadowtext = TRUE,
+  layout = "nicely",
   ...
 )
 
@@ -80,6 +81,7 @@ emapplot_cluster.compareClusterResult(
   label_format = 30,
   repel = FALSE,
   shadowtext = TRUE,
+  layout = "nicely",
   ...
 )
 }
@@ -134,6 +136,9 @@ nodes should be scaled relative to the default.}
 \item{repel}{whether to correct the position of the label. Defaults to FALSE.}
 
 \item{shadowtext}{a logical value, whether to use shadow font. Defaults to TRUE.}
+
+\item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+'randomly', 'fr', 'kk', 'drl' or 'lgl'.}
 
 \item{pie}{Proportion of clusters in the pie chart, one of
 'equal' (default) and 'Count'.}
