@@ -42,6 +42,8 @@ setMethod("emapplot_cluster", signature(x = "compareClusterResult"),
 ##' custom function to format axis labels.
 ##' @param repel whether to correct the position of the label. Defaults to FALSE.
 ##' @param shadowtext a logical value, whether to use shadow font. Defaults to TRUE.
+##' @param layout Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+##' 'randomly', 'fr', 'kk', 'drl' or 'lgl'.
 ##' @param ... Additional parameters used to set the position of the group label.
 ##' When the parameter repel is set to TRUE, additional parameters will take effect.
 ##' 
@@ -75,7 +77,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
                                           label_style = "shadowtext", 
                                           group_legend = FALSE, cex_category = 1, 
                                           label_format = 30, repel = FALSE, 
-                                          shadowtext = TRUE, ...){
+                                          shadowtext = TRUE, layout = "nicely", ...){
                                           
 
     has_pairsim(x)
@@ -91,11 +93,12 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     }
     edgee <- igraph::get.edgelist(g)
  
-    edge_w <- E(g)$weight
-    set.seed(123)
-    lw <- layout_with_fr(g, weights=edge_w)
+    #edge_w <- E(g)$weight
+    ## set.seed(123)
+    #lw <- layout_with_fr(g, weights=edge_w)
 
-    p <- ggraph::ggraph(g, layout=lw)
+    #p <- ggraph::ggraph(g, layout=lw)
+    p <- ggraph(g, layout = layout)
     # cluster_label1 <- lapply(clusters, function(i){i[order(y[i, "pvalue"])[1]]})
 
     ## Using k-means clustering to group
@@ -104,7 +107,7 @@ emapplot_cluster.enrichResult <- function(x, showCategory = 30,
     colnames(pdata2)[5] <- "color2"
 
     if(is.null(nCluster)){
-        pdata2$color <- kmeans(dat, ceiling(sqrt(nrow(dat))))$cluster
+        pdata2$color <- kmeans(dat, floor(sqrt(nrow(dat))))$cluster
     } else {
         if(nCluster > nrow(dat)) nCluster <- nrow(dat)
         pdata2$color <- kmeans(dat, nCluster)$cluster
@@ -188,7 +191,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     nWords = 4, nCluster = NULL, split = NULL, min_edge = 0.2,
     cex_label_group = 1, pie = "equal", legend_n = 5,
     cex_category = 1, label_style = "shadowtext", group_legend = FALSE, 
-    label_format = 30, repel = FALSE, shadowtext = TRUE, ...){
+    label_format = 30, repel = FALSE, shadowtext = TRUE, layout = "nicely", ...){
 
     has_pairsim(x)
     label_group <- 3
@@ -204,7 +207,7 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
         method = x@method)
     p <- build_ggraph(y = y, g = g, y_union = y_union, cex_category = cex_category,
-        pie = pie, layout = "nicely")
+        pie = pie, layout = layout)
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
 
@@ -213,11 +216,11 @@ emapplot_cluster.compareClusterResult <- function(x, showCategory = 30,
     ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
 
     # Start the cluster diagram
-    edge_w <- E(g)$weight
-    set.seed(123)
-    lw <- layout_with_fr(g, weights=edge_w)
-    p <- ggraph(g, layout=lw)
-
+    # edge_w <- E(g)$weight
+    ## set.seed(123)
+    # lw <- layout_with_fr(g, weights=edge_w)
+    # p <- ggraph(g, layout=lw)
+    p <- ggraph(g, layout = layout) 
     ## Using k-means clustering to group
     pdata2 <- p$data
     dat <- data.frame(x = pdata2$x, y = pdata2$y)
