@@ -414,4 +414,41 @@ setGeneric("treeplot",
                standardGeneric("treeplot")
            )
            
+##' principal multidimensional scaling(MDS) diagram of enrichment analysis results.
+##'
+##' @title mdsplot
+##' @rdname mdsplot
+##' @param x enrichment result.
+##' @param showCategory number of enriched terms to display
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' @param ... additional parameters
+##' @return ggplot object
+##' @export
+##' @examples
+##' \dontrun{
+##'     library(clusterProfiler)
+##'     library(org.Hs.eg.db)
+##'     library(enrichplot)
+##'     library(GOSemSim)
+##'     library(DOSE)
+##'     data(geneList)
+##'     gene <- names(geneList)[abs(geneList) > 2]
+##'     ego <- enrichGO(gene  = gene,
+##'         universe      = names(geneList),
+##'         OrgDb         = org.Hs.eg.db,
+##'         ont           = "BP",
+##'         pAdjustMethod = "BH",
+##'         pvalueCutoff  = 0.01,
+##'         qvalueCutoff  = 0.05,
+##'         readable      = TRUE)
+##'     d <- godata('org.Hs.eg.db', ont="BP")
+##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
+##'     mdsplot(ego2)    
+##' }
+setGeneric("mdsplot",
+           function(x, ...)
+               standardGeneric("mdsplot")
+           )
            
+                      
