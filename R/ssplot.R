@@ -1,24 +1,24 @@
-##' @rdname mdsplot
-##' @exportMethod mdsplot
-setMethod("mdsplot", signature(x = "enrichResult"),
+##' @rdname ssplot
+##' @exportMethod ssplot
+setMethod("ssplot", signature(x = "enrichResult"),
     function(x, showCategory = 30, color = "p.adjust", label_format = 30, ...) {
-        mdsplot.enrichResult(x, showCategory = showCategory,
+        ssplot.enrichResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
 
-##' @rdname mdsplot
-##' @exportMethod mdsplot
-setMethod("mdsplot", signature(x = "gseaResult"),
+##' @rdname ssplot
+##' @exportMethod ssplot
+setMethod("ssplot", signature(x = "gseaResult"),
     function(x, showCategory = 30, color = "p.adjust", label_format = 30, ...) {
-        mdsplot.enrichResult(x, showCategory = showCategory,
+        ssplot.enrichResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
 
-##' @rdname mdsplot
-##' @exportMethod mdsplot
-setMethod("mdsplot", signature(x = "compareClusterResult"),
+##' @rdname ssplot
+##' @exportMethod ssplot
+setMethod("ssplot", signature(x = "compareClusterResult"),
     function(x, showCategory = 30, label_format = 30, ...) {
-        mdsplot.compareClusterResult(x, showCategory = showCategory,
+        ssplot.compareClusterResult(x, showCategory = showCategory,
             label_format = label_format, ...)
     })
 
@@ -26,7 +26,7 @@ setMethod("mdsplot", signature(x = "compareClusterResult"),
 
 
 
-##' @rdname mdsplot
+##' @rdname ssplot
 ##' @param x Enrichment result.
 ##' @param showCategory A number or a vector of terms. If it is a number, 
 ##' the first n terms will be displayed. If it is a vector of terms, 
@@ -46,7 +46,7 @@ setMethod("mdsplot", signature(x = "compareClusterResult"),
 ##' custom function to format axis labels.
 ##' @param repel whether to correct the position of the label. Defaults to FALSE.
 ##' @param shadowtext a logical value, whether to use shadow font. Defaults to TRUE.
-##' @param engine The function used for MDS, 
+##' @param method The function used for MDS, 
 ##' one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
 ##' @param group_category Logical, if TRUE (the default), group the terms.
 ##' @param cex_label_category Scale of category node label size.
@@ -64,8 +64,7 @@ setMethod("mdsplot", signature(x = "compareClusterResult"),
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 scale_size_continuous
 ##' @importFrom stats kmeans
-##' @export
-mdsplot.enrichResult <- function(x, showCategory = 30,
+ssplot.enrichResult <- function(x, showCategory = 30,
                     color = "p.adjust", label_format = 30,
                     nWords = 4, nCluster = NULL,
                     split = NULL,
@@ -73,7 +72,7 @@ mdsplot.enrichResult <- function(x, showCategory = 30,
                     group_legend = FALSE, cex_category = 1,
                     repel = FALSE,
                     shadowtext = TRUE, 
-                    engine = "cmdscale", 
+                    method = "cmdscale", 
                     group_category = TRUE, 
                     cex_label_category = 1, ...) {
     has_pairsim(x)
@@ -95,7 +94,7 @@ mdsplot.enrichResult <- function(x, showCategory = 30,
     }
 
     termsim2 <- fill_termsim(x, keep)
-    data <- get_cluster(termsim2, nCluster = nCluster, engine = engine)
+    data <- get_cluster(termsim2, nCluster = nCluster, method = method)
     terms <- rownames(termsim2)
     object <- as.data.frame(x)
     rownames(object) <- object$Description
@@ -120,7 +119,7 @@ mdsplot.enrichResult <- function(x, showCategory = 30,
 }
 
 
-##' @rdname mdsplot
+##' @rdname ssplot
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 coord_equal
 ##' @importFrom scatterpie geom_scatterpie
@@ -128,7 +127,7 @@ mdsplot.enrichResult <- function(x, showCategory = 30,
 ##' @param pie Proportion of clusters in the pie chart, one of
 ##' 'equal' (default) and 'Count'.
 ##' @param legend_n Number of circle in legend, the default value is 5.
-mdsplot.compareClusterResult <- function(x, showCategory = 30,
+ssplot.compareClusterResult <- function(x, showCategory = 30,
                                          nWords = 4, nCluster = NULL, 
                                          split = NULL, 
                                          cex_label_group = 1, 
@@ -137,7 +136,7 @@ mdsplot.compareClusterResult <- function(x, showCategory = 30,
                                          group_legend = FALSE,
                                          label_format = 30, 
                                          repel = FALSE, shadowtext = TRUE,
-                                         engine = "cmdscale", 
+                                         method = "cmdscale", 
                                          group_category = TRUE, 
                                          cex_label_category = 1, ...) {
     has_pairsim(x)
@@ -150,7 +149,7 @@ mdsplot.compareClusterResult <- function(x, showCategory = 30,
     ## Fill the upper triangular matrix completely
 
     termsim2 <- fill_termsim(x = x, keep = rownames(ID_Cluster_mat))
-    data <- get_cluster(termsim2  = termsim2, nCluster = nCluster, engine = engine)
+    data <- get_cluster(termsim2  = termsim2, nCluster = nCluster, method = method)
     data <- cbind(data, y_union)
     ID_Cluster_mat$radius <- sqrt(data$Count / sum(data$Count) * cex_category * 0.0125)
     ID_Cluster_mat$x <- data$x
@@ -189,18 +188,18 @@ mdsplot.compareClusterResult <- function(x, showCategory = 30,
 #' @param nCluster Numeric, the number of cluster.
 #'
 #' @noRd
-get_cluster <- function(termsim2 = termsim2, nCluster, engine) {
+get_cluster <- function(termsim2 = termsim2, nCluster, method) {
     ## If the similarity between the two terms is 1, an error will be reported, so fine-tuning.
     termsim2[which(termsim2 == 1)] <- 0.99999
     for (i in seq_len(nrow(termsim2))) termsim2[i, i] <- 1
     
     dune.dist <- stats::as.dist(1- termsim2)
     # res <- ape::pcoa(dune.dist, correction="none")
-    if (engine == "cmdscale") {
+    if (method == "cmdscale") {
         res <- stats::cmdscale(dune.dist, eig = T)   
     }
 
-    if (engine == "sammon") {
+    if (method == "sammon") {
         y <- stats::cmdscale(dune.dist)
         ## If the matrix y has duplicate rows it will report an error, so perturb slightly  
         dup <- which(duplicated(y) == TRUE)  
@@ -208,8 +207,8 @@ get_cluster <- function(termsim2 = termsim2, nCluster, engine) {
         res <- MASS::sammon(d = dune.dist, y = y)
     }  
     
-    if (engine == "monoMDS" || engine == "isoMDS") {
-        res <- vegan::metaMDS(dune.dist, engine = engine)
+    if (method == "monoMDS" || method == "isoMDS") {
+        res <- vegan::metaMDS(dune.dist, method = method)
     }
     data <- as.data.frame(res$points[, 1:2])
     colnames(data) <- c('x', 'y')
@@ -221,7 +220,7 @@ get_cluster <- function(termsim2 = termsim2, nCluster, engine) {
         data$color <- kmeans(data, nCluster)$cluster
     }
     data$color <- as.character(data$color)
-    if (engine == "cmdscale") {
+    if (method == "cmdscale") {
         data$pocas <- 0
         data$pocas[seq_len(length(res$eig))] <- as.numeric(res$eig)
     } else {

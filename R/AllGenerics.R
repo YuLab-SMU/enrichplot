@@ -414,10 +414,10 @@ setGeneric("treeplot",
                standardGeneric("treeplot")
            )
            
-##' principal multidimensional scaling(MDS) diagram of enrichment analysis results.
+##' Semantic space plot of enrichment analysis results.
 ##'
-##' @title mdsplot
-##' @rdname mdsplot
+##' @title ssplot
+##' @rdname ssplot
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
 ##' @param label_format a numeric value sets wrap length, alternatively a
@@ -444,11 +444,11 @@ setGeneric("treeplot",
 ##'         readable      = TRUE)
 ##'     d <- godata('org.Hs.eg.db', ont="BP")
 ##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
-##'     mdsplot(ego2)    
+##'     ssplot(ego2)    
 ##' }
-setGeneric("mdsplot",
+setGeneric("ssplot",
            function(x, ...)
-               standardGeneric("mdsplot")
+               standardGeneric("ssplot")
            )
            
                       
