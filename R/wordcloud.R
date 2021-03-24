@@ -38,8 +38,8 @@ get_wordcloud <- function(cluster, pdata2, nWords){
         gsub(" - ", " ", .)
     net_tot <- length(words)
 
-    clusters <- unique(pdata2$color)
-    words_i <- words[which(pdata2$color == cluster)]
+    clusters <- unique(pdata2$color2)
+    words_i <- words[which(pdata2$color2 == cluster)]
 
     sel_tot <- length(words_i)
     sel_w <- get_word_freq(words_i)

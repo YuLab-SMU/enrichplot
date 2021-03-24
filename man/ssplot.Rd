@@ -11,111 +11,128 @@
 \usage{
 ssplot(x, ...)
 
-\S4method{ssplot}{enrichResult}(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+\S4method{ssplot}{enrichResult}(x, showCategory = 30, ...)
 
-\S4method{ssplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+\S4method{ssplot}{gseaResult}(x, showCategory = 30, ...)
 
-\S4method{ssplot}{compareClusterResult}(x, showCategory = 30, label_format = 30, ...)
+\S4method{ssplot}{compareClusterResult}(x, showCategory = 30, ...)
 
 ssplot.enrichResult(
   x,
   showCategory = 30,
   color = "p.adjust",
+  min_edge = 0.2,
+  cex_label_category = 1,
+  cex_category = 1,
+  cex_line = 1,
+  shadowtext = TRUE,
+  group_category = FALSE,
+  node_label = "category",
+  with_edge = FALSE,
   label_format = 30,
+  group_legend = FALSE,
+  label_style = "shadowtext",
+  repel = FALSE,
+  cex_label_group = 1,
   nWords = 4,
   nCluster = NULL,
-  split = NULL,
-  cex_label_group = 1,
-  group_legend = FALSE,
-  cex_category = 1,
-  repel = FALSE,
-  shadowtext = TRUE,
   method = "cmdscale",
-  group_category = TRUE,
-  cex_label_category = 1,
   ...
 )
 
 ssplot.compareClusterResult(
   x,
   showCategory = 30,
+  split = NULL,
+  pie = "equal",
+  legend_n = 5,
+  cex_category = 1,
+  cex_line = 1,
+  min_edge = 0.2,
+  cex_label_category = 1,
+  shadowtext = TRUE,
+  with_edge = FALSE,
+  group_category = FALSE,
+  label_format = 30,
+  group_legend = FALSE,
+  node_label = "category",
+  label_style = "shadowtext",
+  repel = FALSE,
+  cex_label_group = 1,
   nWords = 4,
   nCluster = NULL,
-  split = NULL,
-  cex_label_group = 1,
-  pie = "equal",
-  legend_n = 3,
-  cex_category = 1,
-  group_legend = FALSE,
-  label_format = 30,
-  repel = FALSE,
-  shadowtext = TRUE,
   method = "cmdscale",
-  group_category = TRUE,
-  cex_label_category = 1,
   ...
 )
 }
 \arguments{
-\item{x}{Enrichment result.}
+\item{x}{enrichment result.}
 
-\item{...}{Additional parameters used to set the position of the group label.
-When the parameter repel is set to TRUE, additional parameters will take effect.
+\item{...}{additional parameters}
 
-additional parameters can refer the following parameters.
-    \itemize{
-       \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1.
-       \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge
-        the starting position of each text label.
-       \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
-    }}
+\item{showCategory}{number of enriched terms to display}
 
-\item{showCategory}{A number or a vector of terms. If it is a number, 
-the first n terms will be displayed. If it is a vector of terms, 
-the selected terms will be displayed.}
+\item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
+'p.adjust' or 'qvalue'.}
 
-\item{color}{variable that used to color enriched terms, e.g. pvalue,
-p.adjust or qvalue}
+\item{min_edge}{The minimum similarity threshold for whether 
+two nodes are connected, should between 0 and 1, default value is 0.2.}
+
+\item{cex_label_category}{Scale of category node label size.}
+
+\item{cex_category}{Number indicating the amount by which plotting category
+nodes should be scaled relative to the default.}
+
+\item{cex_line}{Scale of line width}
+
+\item{shadowtext}{a logical value, whether to use shadow font.}
+
+\item{group_category}{a logical, if TRUE(the default), group the category.}
+
+\item{node_label}{Select which labels to be displayed,
+one of 'category', 'group', 'all' and 'none'.}
+
+\item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.}
 
-\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.}
-
-\item{nCluster}{Numeric, the number of clusters,
-the default value is square root of the number of nodes.}
-
-\item{split}{Separate result by 'category' variable}
-
-\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.}
-
 \item{group_legend}{Logical, if TRUE, the grouping legend will be displayed.
-The default is FALSE}
+The default is FALSE.}
 
-\item{cex_category}{Numeric, indicating the size by which plotting category
-nodes should be scaled relative to the default.}
+\item{label_style}{style of group label, one of "shadowtext" and "ggforce".}
 
 \item{repel}{whether to correct the position of the label. Defaults to FALSE.}
 
-\item{shadowtext}{a logical value, whether to use shadow font. Defaults to TRUE.}
+\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.}
+
+\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.}
+
+\item{nCluster}{Numeric, the number of clusters, 
+the default value is square root of the number of nodes.}
 
 \item{method}{The function used for MDS, 
-one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".}
+one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
 
-\item{group_category}{Logical, if TRUE (the default), group the terms.}
+additional parameters can refer the following parameters.
+    \itemize{
+       \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
+       \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
+        the starting position of each text label. 
+       \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
+    }}
 
-\item{cex_label_category}{Scale of category node label size.}
+\item{split}{separate result by 'category' variable}
 
-\item{pie}{Proportion of clusters in the pie chart, one of
-'equal' (default) and 'Count'.}
+\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
 
-\item{legend_n}{Number of circle in legend, the default value is 5.}
+\item{legend_n}{number of circle in legend}
 }
 \value{
 ggplot object
 }
 \description{
-Semantic space plot of enrichment analysis results.
+Similarity space plot of enrichment analysis results.
 }
 \examples{
 \dontrun{

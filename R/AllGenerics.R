@@ -142,58 +142,11 @@ setGeneric("dotplot",
 ##'     emapplot(xx2)
 ##' }
 setGeneric("emapplot",
-           function(x, showCategory = 30, color="p.adjust", layout = "kk", ...)
+           function(x, showCategory = 30,  ...)
                standardGeneric("emapplot")
            )
 
 
-
-##' Functional grouping network diagram for enrichment result of
-##' over-representation test or gene set enrichment analysis
-##'
-##'
-##' This function visualizes gene sets as a grouped network (i.e. enrichment map).
-##' Gene sets with high similarity tend to cluster together, making it easier
-##' for interpretation. It adds clustering on the basis of emapplot's network graph.
-##' 
-##' For more details, please refer to the documentation of \link{emapplot}. 
-##' @title emapplot_cluster
-##' @rdname emapplot_cluster
-##' @param x Enrichment result.
-##' @param showCategory A number or a vector of terms. If it is a number, 
-##' the first n terms will be displayed. If it is a vector of terms, 
-##' the selected terms will be displayed.
-##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
-##' 'p.adjust' or 'qvalue'.
-##' @param ... Additional parameters
-##' @return ggplot object
-##' @export
-##' @examples
-##' \dontrun{
-##'     library(clusterProfiler)
-##'     library(org.Hs.eg.db)
-##'     library(enrichplot)
-##'     library(GOSemSim)
-##'     library(DOSE)
-##'     data(geneList)
-##'     gene <- names(geneList)[abs(geneList) > 2]
-##'     ego <- enrichGO(gene  = gene,
-##'         universe      = names(geneList),
-##'         OrgDb         = org.Hs.eg.db,
-##'         ont           = "BP",
-##'         pAdjustMethod = "BH",
-##'         pvalueCutoff  = 0.01,
-##'         qvalueCutoff  = 0.05,
-##'         readable      = TRUE)
-##'     d <- godata('org.Hs.eg.db', ont="BP")
-##'     ego2 <- pairwise_termsim(ego, method = "Wang", semData = d)
-##'     emapplot_cluster(ego2, showCategory = 80)
-##'    }
-setGeneric("emapplot_cluster",
-           function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)
-               standardGeneric("emapplot_cluster")
-           )
-           
 
            
 ##' Get the similarity matrix
@@ -414,7 +367,7 @@ setGeneric("treeplot",
                standardGeneric("treeplot")
            )
            
-##' Semantic space plot of enrichment analysis results.
+##' Similarity space plot of enrichment analysis results.
 ##'
 ##' @title ssplot
 ##' @rdname ssplot

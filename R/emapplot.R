@@ -1,29 +1,29 @@
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "enrichResult"),
-          function(x, showCategory = 30, color = "p.adjust",
+          function(x, showCategory = 30, 
                    layout = "nicely", ...) {
               emapplot.enrichResult(x, showCategory = showCategory,
-                                    color = color, layout = layout, ...)
+                                    layout = layout, ...)
           })
 
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "gseaResult"),
-          function(x, showCategory = 30, color = "p.adjust",
+          function(x, showCategory = 30, 
                    layout = "nicely", ...) {
               emapplot.enrichResult(x, showCategory = showCategory,
-                                    color = color, layout = layout, ...)
+                                    layout = layout, ...)
           })
 
 ##' @rdname emapplot
 ##' @exportMethod emapplot
 setMethod("emapplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 30, color = "p.adjust",
+          function(x, showCategory = 30, 
                    layout = "nicely", ...) {
 
               emapplot.compareClusterResult(x, showCategory = showCategory,
-                                            color=color, layout = layout, ...)
+                                            layout = layout, ...)
           })
 
 
@@ -47,66 +47,106 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @importFrom ggraph geom_node_text
 ##' @importFrom ggraph geom_edge_link
 ##' @importFrom DOSE geneInCategory
+##' @importFrom ggplot2 scale_color_discrete
+##' @importFrom ggplot2 scale_size_continuous
+##' @importFrom ggplot2 scale_fill_discrete
+##' @importFrom ggplot2 geom_text
+##' @importFrom shadowtext geom_shadowtext
 ##' @param cex_line Scale of line width
 ##' @param min_edge The minimum similarity threshold for whether 
 ##' two nodes are connected, should between 0 and 1, default value is 0.2.
 ##' @param cex_label_category Scale of category node label size.
+##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
+##' 'p.adjust' or 'qvalue'.
 ##' @param cex_category Number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @param shadowtext a logical value, whether to use shadow font.
+##' @param group_category a logical, if TRUE(the default), group the category.
+##' @param node_label Select which labels to be displayed,
+##' one of 'category', 'group', 'all' and 'none'.
+##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' @param group_legend Logical, if TRUE, the grouping legend will be displayed.
+##' The default is FALSE.
+##' @param label_style style of group label, one of "shadowtext" and "ggforce".
+##' @param repel whether to correct the position of the label. Defaults to FALSE.
+##' @param cex_label_group Numeric, scale of group labels size, the default value is 1.
+##' @param nWords Numeric, the number of words in the cluster tags, the default value is 4.
+##' @param nCluster Numeric, the number of clusters, 
+##' the default value is square root of the number of nodes.
+##' @param ... additional parameters
+##' 
+##' additional parameters can refer the following parameters.
+##'     \itemize{
+##'        \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
+##'        \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
+##'         the starting position of each text label. 
+##'        \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
+##'     }
+##' 
 ##' @author Guangchuang Yu
-emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
-                                  layout = "nicely", min_edge=0.2,
+emapplot.enrichResult <- function(x, showCategory = 30, 
+                                  layout = "nicely",
+                                  color="p.adjust", min_edge=0.2,
                                   cex_label_category  = 1, cex_category = 1,
-                                  cex_line = 1, shadowtext = TRUE) {
+                                  cex_line = 1, shadowtext = TRUE,
+                                  group_category = FALSE,
+                                  node_label  = "category",
+                                  with_edge = TRUE, label_format = 30,
+                                  group_legend = FALSE, 
+                                  label_style = "shadowtext", repel = FALSE,
+                                  cex_label_group = 1, nWords = 4, 
+                                  nCluster = NULL, ...) {
     has_pairsim(x)
-    # if (!is.null(node_label_size))
-    #     message("node_label_size parameter has been changed to 'cex_label_category'")
-    # if (!is.null(node_scale))
-    #     message("node_scale parameter has been changed to 'cex_category'")
-    # if (is.null(cex_category)) {
-    #     if (!is.null(node_scale)) {
-    #         cex_category <- node_scale
-    #     } else {
-    #         cex_category <- 1
-    #     }
-    # }
-
-    # if (!is.null(line_scale))
-    #     message("line_scale parameter has been changed to 'cex_line'")
-    # if (is.null(cex_line)) {
-    #     if (!is.null(line_scale)) {
-    #         cex_line <- line_scale
-    #     } else {
-    #         cex_line <- 1
-    #     }
-    # }
     label_size_category <- 5
+    label_group <- 3
     n <- update_n(x, showCategory)
-    # geneSets <- geneInCategory(x) ## use core gene for gsea result
-
-
     y <- as.data.frame(x)
+    ## get graph.data.frame() object
     g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
+    ## If there is only one point, then add a dot and label, then return directly.
     if(n == 1) {
         return(ggraph(g,"tree") + geom_node_point(color="red", size=5) +
                geom_node_text(aes_(label=~name)))
     }
-
+    ## get ggraph object
     p <- ggraph(g, layout=layout)
-    if (length(E(g)$width) > 0) {
+
+    ## add edge
+    if (with_edge & length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
                                 colour='darkgrey')
     }
-    p <- p + geom_node_point(aes_(color=~color, size=~size)) 
-    p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
-        cex_label_node = cex_label_category, shadowtext = shadowtext)
-    p + theme_void() +
-        scale_color_continuous(low="red", high="blue", name = color,
-                               guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8) * cex_category)
 
+    pdata2 <- p$data
+    # if show group cricle or group label, Process p$data and assign color to the group label
+    if (group_category || node_label == "all" || node_label == "group") {         
+        pdata2 <- groupNode(pdata2, y = y, nWords = nWords, nCluster = nCluster)
+        p$data <- pdata2  
+    }
+
+    ## if group_category, add circles
+    if (group_category) {
+        p <- add_ellipse(p = p, group_legend = group_legend, 
+            label_style = label_style)
+    }
+
+    ## add dot
+    p <- add_category_nodes(p = p, cex_category = cex_category, color = color)
+    ## add node label
+    if (node_label == "all" || node_label == "category") 
+        p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
+            cex_label_node = cex_label_category, shadowtext = shadowtext)
+    ## add group label
+    if (node_label == "all" || node_label == "group") {   
+        label_location <- get_label_location(pdata2, label_format)
+        p <- add_group_label(repel = repel, shadowtext = shadowtext, p = p,
+            label_location = label_location, label_group = label_group,
+            cex_label_group = cex_label_group)
+    }
+    return(p + coord_equal())
 }
 
 
@@ -132,99 +172,74 @@ emapplot.enrichResult <- function(x, showCategory = 30, color="p.adjust",
 ##' @param legend_n number of circle in legend
 ##' @importFrom stats setNames
 emapplot.compareClusterResult <- function(x, showCategory = 30,
-                                          color = "p.adjust", layout = "nicely",
+                                          layout = "nicely",
                                           split = NULL, pie = "equal",
                                           legend_n = 5, cex_category = 1,
                                           cex_line = 1, min_edge=0.2, 
                                           cex_label_category  = 1, 
-                                          shadowtext = TRUE) {
+                                          shadowtext = TRUE, 
+                                          with_edge = TRUE,
+                                          group_category = FALSE, 
+                                          label_format = 30,
+                                          group_legend = FALSE,
+                                          node_label  = "category",
+                                          label_style = "shadowtext", 
+                                          repel = FALSE, cex_label_group = 1,
+                                          nWords = 4, nCluster = NULL, ...) {
+                                       
     has_pairsim(x)
-    # if (!is.null(node_label_size))
-    #     message("node_label_size parameter has been changed to 'cex_label_category'")
-
-    # if (!is.null(pie_scale))
-    #     message("pie_scale parameter has been changed to 'cex_category'")
-
-    # if (is.null(cex_category)) {
-    #     if (!is.null(pie_scale)) {
-    #         cex_category <- pie_scale
-    #     } else {
-    #         cex_category <- 1
-    #     }
-    # }
-
     label_size_category <- 3
-    ## pretreatment of x, just like dotplot do
-    ## If showCategory is a number, keep only the first showCategory of each group
-    ## Otherwise keep the total showCategory rows
+    label_group <- 3
     y <- get_selected_category(showCategory, x, split)
     ## Data structure transformation, combining the same ID (Description) genes
     y_union <- merge_compareClusterResult(y)
-
-    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
-                                  fixed = TRUE), y_union$ID)
-
-    g <- build_emap_graph(y=y_union,geneSets=geneSets,color=color,
-                          cex_line=cex_line, min_edge=min_edge,
-                          pair_sim = x@termsim, method = x@method)
-
-    p <- build_ggraph(y = y, g = g, y_union = y_union, cex_category = cex_category,
-               pie = pie, layout = layout)               
+     
+    ## get ggraph object and add edge
+    p <- build_ggraph(x = x, y = y, y_union = y_union, cex_category = cex_category, 
+        pie = pie, layout = layout, cex_line=cex_line,
+                        min_edge=min_edge, pair_sim = x@termsim,
+                        method = x@method, with_edge = with_edge)
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
-    p <- ggraph(g, layout=layout)
-    if (length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
-                                colour='darkgrey')
-    }
 
+    pdata2 <- p$data
+    # if show group cricle or group label, Process p$data and assign color to the group label
+    if (group_category || node_label == "all" || node_label == "group") {    
+       pdata2 <- groupNode(pdata2, y = y, nWords = nWords, nCluster = nCluster)
+       p$data <- pdata2
+    }      
+    ## add circle
+    if (group_category) {
+        p <- add_ellipse(p = p, group_legend = group_legend, 
+            label_style = label_style)
+    }
+    
+    
     ## then add the pie plot
     ## Get the matrix data for the pie plot
-    ID_Cluster_mat <- prepare_pie_category(y,pie=pie)
+    ID_Cluster_mat <- get_pie_data(y = y, pie = pie, y_union = y_union, aes_axis = 1, 
+                                   pdata2 = pdata2, cex_category = cex_category)
 
-    # plot the edge
-    # get the X-coordinate and y-coordinate of pies
-    aa <- p$data
-    desc <- y_union$Description[match(rownames(ID_Cluster_mat),
-                                      y_union$Description)]
-    i <- match(desc, aa$name)
-    ID_Cluster_mat$x <- aa$x[i]
-    ID_Cluster_mat$y <- aa$y[i]
-
-    #Change the radius value to fit the pie plot
-    radius <- NULL
-    ID_Cluster_mat$radius <- sqrt(aa$size[i] / sum(aa$size) * cex_category)
-    #ID_Cluster_mat$radius <- sqrt(aa$size / pi)
-
+    ## get the location of legend for size of pie
     x_loc1 <- min(ID_Cluster_mat$x)
     y_loc1 <- min(ID_Cluster_mat$y)
-    ## x_loc2 <- min(ID_Cluster_mat$x)
-    ## y_loc2 <- min(ID_Cluster_mat$y)+0.1*(max(ID_Cluster_mat$y)-min(ID_Cluster_mat$y))
-    if(ncol(ID_Cluster_mat) > 4) {
-        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
-            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
-            coord_equal() 
-            # geom_node_text(aes_(label=~name), repel=TRUE,
-            # size = label_category * cex_label_category, bg.color = "white") + 
-        p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
-            cex_label_node = cex_label_category, shadowtext = shadowtext)
-        p <- p + theme_void() +
-            geom_scatterpie_legend(ID_Cluster_mat$radius, x=x_loc1, y=y_loc1,
-                n = legend_n,
-                labeller=function(x) round(sum(aa$size) * x^2 / cex_category)) +
-            labs(fill = "Cluster")
-        return(p)
-    }
-    ## annotate("text", label = "gene number", x = x_loc2, y = y_loc2, size = 4, colour = "red")
-    title <- colnames(ID_Cluster_mat)[1]
-    # p + geom_node_point(aes_(color=~color, size=~size))
-    # p + geom_node_text(aes_(label=~name), repel=TRUE,
-    #     size = label_category * cex_label_category, bg.color = "white") + 
-    p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
-        cex_label_node = cex_label_category, shadowtext = shadowtext)
-    p <- p + theme_void() +
-        scale_color_continuous(low="red", high="blue", name = color,
-                               guide=guide_colorbar(reverse=TRUE)) +
-        scale_size(range=c(3, 8) * cex_category)  +labs(title= title)
+    
+    ## add dot and node label
+    p <- add_pie_node(p = p, ID_Cluster_mat = ID_Cluster_mat, 
+                  node_label = node_label, cex_category = cex_category,
+                  aes_axis = 1, 
+                  cex_label_category = cex_label_category,
+                  x_loc1 = x_loc1, y_loc1 = y_loc1,
+                  shadowtext = shadowtext, legend_n = legend_n,
+                  pdata2 = pdata2, 
+                  label_size_category = label_size_category)
+    ## add group label
+    if (node_label == "all" || node_label == "group") {   
+        label_location <- get_label_location(pdata2, label_format)
+        p <- add_group_label(repel = repel, shadowtext = shadowtext, p = p,
+            label_location = label_location, label_group = label_group,
+            cex_label_group = cex_label_group)
+    }    
+    return(p)
 }
 
