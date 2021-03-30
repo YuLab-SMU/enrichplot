@@ -20,23 +20,9 @@ ssplot(x, ...)
 ssplot.enrichResult(
   x,
   showCategory = 30,
-  color = "p.adjust",
-  min_edge = 0.2,
-  cex_label_category = 1,
-  cex_category = 1,
-  cex_line = 1,
-  shadowtext = TRUE,
-  group_category = FALSE,
-  node_label = "category",
-  with_edge = FALSE,
-  label_format = 30,
-  group_legend = FALSE,
-  label_style = "shadowtext",
-  repel = FALSE,
-  cex_label_group = 1,
-  nWords = 4,
   nCluster = NULL,
   method = "cmdscale",
+  with_edge = FALSE,
   ...
 )
 
@@ -45,88 +31,32 @@ ssplot.compareClusterResult(
   showCategory = 30,
   split = NULL,
   pie = "equal",
-  legend_n = 5,
-  cex_category = 1,
-  cex_line = 1,
-  min_edge = 0.2,
-  cex_label_category = 1,
-  shadowtext = TRUE,
-  with_edge = FALSE,
-  group_category = FALSE,
-  label_format = 30,
-  group_legend = FALSE,
-  node_label = "category",
-  label_style = "shadowtext",
-  repel = FALSE,
-  cex_label_group = 1,
-  nWords = 4,
   nCluster = NULL,
   method = "cmdscale",
+  with_edge = FALSE,
   ...
 )
 }
 \arguments{
 \item{x}{enrichment result.}
 
-\item{...}{additional parameters}
+\item{...}{additional parameters
+
+additional parameters can refer the emapplot function: \link{emapplot}.}
 
 \item{showCategory}{number of enriched terms to display}
-
-\item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
-'p.adjust' or 'qvalue'.}
-
-\item{min_edge}{The minimum similarity threshold for whether 
-two nodes are connected, should between 0 and 1, default value is 0.2.}
-
-\item{cex_label_category}{Scale of category node label size.}
-
-\item{cex_category}{Number indicating the amount by which plotting category
-nodes should be scaled relative to the default.}
-
-\item{cex_line}{Scale of line width}
-
-\item{shadowtext}{a logical value, whether to use shadow font.}
-
-\item{group_category}{a logical, if TRUE(the default), group the category.}
-
-\item{node_label}{Select which labels to be displayed,
-one of 'category', 'group', 'all' and 'none'.}
-
-\item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
-
-\item{label_format}{a numeric value sets wrap length, alternatively a
-custom function to format axis labels.}
-
-\item{group_legend}{Logical, if TRUE, the grouping legend will be displayed.
-The default is FALSE.}
-
-\item{label_style}{style of group label, one of "shadowtext" and "ggforce".}
-
-\item{repel}{whether to correct the position of the label. Defaults to FALSE.}
-
-\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.}
-
-\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.}
 
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
 
 \item{method}{The function used for MDS, 
-one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
+one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".}
 
-additional parameters can refer the following parameters.
-    \itemize{
-       \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
-       \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
-        the starting position of each text label. 
-       \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
-    }}
+\item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
 
 \item{split}{separate result by 'category' variable}
 
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
-
-\item{legend_n}{number of circle in legend}
 }
 \value{
 ggplot object

@@ -75,6 +75,7 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param nWords Numeric, the number of words in the cluster tags, the default value is 4.
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
+##' @param data a matrix of MDS result.
 ##' @param ... additional parameters
 ##' 
 ##' additional parameters can refer the following parameters.
@@ -97,7 +98,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                                   group_legend = FALSE, 
                                   label_style = "shadowtext", repel = FALSE,
                                   cex_label_group = 1, nWords = 4, 
-                                  nCluster = NULL, ...) {
+                                  nCluster = NULL, data = NULL, ...) {
     has_pairsim(x)
     label_size_category <- 5
     label_group <- 3
@@ -112,8 +113,16 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                geom_node_text(aes_(label=~name)))
     }
     ## get ggraph object
-    p <- ggraph(g, layout=layout)
-
+    if (layout == "ssplot") {
+        p <- ggraph(g, layout = "nicely")
+        pdata2 <- p$data
+        pdata2$x <- data$x
+        pdata2$y <- data$y
+        p$data <- pdata2  
+    } else {
+        p <- ggraph(g, layout=layout)
+    }
+    
     ## add edge
     if (with_edge & length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
@@ -144,7 +153,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
         label_location <- get_label_location(pdata2, label_format)
         p <- add_group_label(repel = repel, shadowtext = shadowtext, p = p,
             label_location = label_location, label_group = label_group,
-            cex_label_group = cex_label_group)
+            cex_label_group = cex_label_group, label_style = label_style)
     }
     return(p + coord_equal())
 }
@@ -185,7 +194,8 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           node_label  = "category",
                                           label_style = "shadowtext", 
                                           repel = FALSE, cex_label_group = 1,
-                                          nWords = 4, nCluster = NULL, ...) {
+                                          nWords = 4, nCluster = NULL, 
+                                          data = NULL, ...) {
                                        
     has_pairsim(x)
     label_size_category <- 3
@@ -238,7 +248,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
         label_location <- get_label_location(pdata2, label_format)
         p <- add_group_label(repel = repel, shadowtext = shadowtext, p = p,
             label_location = label_location, label_group = label_group,
-            cex_label_group = cex_label_group)
+            cex_label_group = cex_label_group, label_style = label_style)
     }    
     return(p)
 }

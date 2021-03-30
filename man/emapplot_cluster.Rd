@@ -16,5 +16,5 @@ emapplot_cluster(x, ...)
 ggplot2 object
 }
 \description{
-Thins function has been replaced by `emapplot`.
+This function has been replaced by `emapplot`.
 }

@@ -173,6 +173,7 @@ merge_compareClusterResult <- function(yy) {
 ##' Get the an ggraph object
 ##'
 ##' @importFrom ggplot2 ylim
+##' @param x enrichment result.
 ##' @param y A data.frame of enrichment result.
 ##' @param y_union A data.frame of enrichment result.
 ##' @param cex_category Numeric, scale of pie plot.
@@ -185,7 +186,8 @@ merge_compareClusterResult <- function(yy) {
 ##' @param pair_sim Semantic similarity matrix.
 ##' @param method Method of calculating the similarity between nodes,
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-##' "JC" (Jaccard similarity coefficient) methods
+##' "JC" (Jaccard similarity coefficient) methods.
+##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
 ##' @noRd
 build_ggraph <- function(x, y, y_union, cex_category, pie, layout, cex_line,
                         min_edge, pair_sim, method, with_edge){
@@ -222,7 +224,16 @@ build_ggraph <- function(x, y, y_union, cex_category, pie, layout, cex_line,
         return(p)
 
     }
-    p <- ggraph(g, layout=layout)
+    if (layout == "ssplot") {
+        p <- ggraph(g, layout = "nicely")
+        pdata2 <- p$data
+        pdata2$x <- data$x
+        pdata2$y <- data$y
+        p$data <- pdata2
+    } else {
+        p <- ggraph(g, layout = layout)
+    }
+    
     ## add edges
     if (with_edge & length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
@@ -313,11 +324,13 @@ get_label_location <- function(pdata2, label_format) {
 ##' @param label_location a data.frame with the location of group label.
 ##' @param label_group a numeric value, default size of group label.
 ##' @param cex_label_group scale of group labels size.
+##' @param label_style style of group label, one of "shadowtext" and "ggforce".
 ##' @param ... additional parameters.
 ##' @return a ggplot2 object.
 ##' @noRd
 add_group_label <- function(repel, shadowtext, p, label_location, 
-                            label_group, cex_label_group, ...) {
+                            label_group, cex_label_group, label_style, ...) {
+    if (label_style != "shadowtext") return(p)
     if (!repel) {
         if (shadowtext) {
             p <- p + geom_shadowtext(data = label_location,
@@ -370,9 +383,13 @@ add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext)
 
 
 
-##' Group the node
-##'
-##' @param pdata2 p$data
+##' Cluster similar nodes together by k-means
+##' 
+##' @param pdata2 data of a ggraph object.
+##' @param y data.frame of enrichment result.
+##' @param nWords Numeric, the number of words in the cluster tags.
+##' @param nCluster Numeric, the number of clusters, 
+##' the default value is square root of the number of nodes.
 ##' @noRd
 groupNode <- function(pdata2, y, nWords, nCluster) {
     if (!"color2" %in% colnames(pdata2)) {
@@ -440,7 +457,7 @@ add_category_nodes <- function(p, cex_category, color) {
 ##' Adjust axis label according to the MDS method
 ##'
 ##' @param p ggplot2 object
-##' @param data data of MDS
+##' @param data a matrix data of MDS result
 ##' @noRd
 adj_axis <- function(p, data) {
     if ("pocas" %in% colnames(data)) {
@@ -486,6 +503,11 @@ get_pie_data <- function(y, pie, y_union, aes_axis, pdata2, cex_category) {
 ##' @param aes_axis aes for axis
 ##' @param theme_g theme of the ggplot2 object
 ##' @param cex_label_category Scale of category node label size.
+##' @param shadowtext a logical value, whether to use shadow font.
+##' @param legend_n number of circle in legend
+##' @param pdata2 data of a ggraph object.
+##' @param x_loc1,y_loc1 location of scatterpie legend.
+##' @param label_size_category Base size of node label.
 ##' @noRd
 add_pie_node <- function(p, ID_Cluster_mat, node_label, 
                          cex_category, aes_axis,
@@ -494,11 +516,11 @@ add_pie_node <- function(p, ID_Cluster_mat, node_label,
                          label_size_category) {
     color = "p.adjust"
     if(ncol(ID_Cluster_mat) > 4) {
-        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
+        p <- p + ggnewscale::new_scale_fill() + 
+            geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
             coord_equal() 
-            # geom_node_text(aes_(label=~name), repel=TRUE,
-            # size = label_category * cex_label_category, bg.color = "white") + 
+
         if (node_label == "all" || node_label == "category") {
             p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
                 cex_label_node = cex_label_category, shadowtext = shadowtext)

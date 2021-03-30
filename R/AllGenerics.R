@@ -373,8 +373,6 @@ setGeneric("treeplot",
 ##' @rdname ssplot
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
-##' @param label_format a numeric value sets wrap length, alternatively a
-##' custom function to format axis labels.
 ##' @param ... additional parameters
 ##' @return ggplot object
 ##' @export

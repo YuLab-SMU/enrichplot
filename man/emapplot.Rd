@@ -37,6 +37,7 @@ emapplot.enrichResult(
   cex_label_group = 1,
   nWords = 4,
   nCluster = NULL,
+  data = NULL,
   ...
 )
 
@@ -62,6 +63,7 @@ emapplot.compareClusterResult(
   cex_label_group = 1,
   nWords = 4,
   nCluster = NULL,
+  data = NULL,
   ...
 )
 }
@@ -123,6 +125,8 @@ The default is FALSE.}
 
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
+
+\item{data}{a matrix of MDS result.}
 
 \item{split}{separate result by 'category' variable}
 
