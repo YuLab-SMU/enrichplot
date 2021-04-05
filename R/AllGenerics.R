@@ -108,10 +108,6 @@ setGeneric("dotplot",
 ##' @param showCategory A number or a vector of terms. If it is a number, 
 ##' the first n terms will be displayed. If it is a vector of terms, 
 ##' the selected terms will be displayed.
-##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
-##' 'p.adjust' or 'qvalue'.
-##' @param layout Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
-##' 'randomly', 'fr', 'kk', 'drl' or 'lgl'.
 ##' @param ... Additional parameters
 ##' @return ggplot object
 ##' @export

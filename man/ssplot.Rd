@@ -34,6 +34,7 @@ ssplot.compareClusterResult(
   nCluster = NULL,
   method = "cmdscale",
   with_edge = FALSE,
+  cex_pie2axis = 0.0125,
   ...
 )
 }
@@ -49,7 +50,7 @@ additional parameters can refer the emapplot function: \link{emapplot}.}
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
 
-\item{method}{The function used for MDS, 
+\item{method}{The function used for dimension reduction, 
 one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".}
 
 \item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
@@ -57,6 +58,9 @@ one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".}
 \item{split}{separate result by 'category' variable}
 
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
+
+\item{cex_pie2axis}{It is used to adjust the relative size of the pie chart on the coordinate axis, 
+the default value is 0.0125.}
 }
 \value{
 ggplot object

@@ -27,7 +27,7 @@ setMethod("ssplot", signature(x = "compareClusterResult"),
 ##' @rdname ssplot
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
-##' @param method The function used for MDS, 
+##' @param method The function used for dimension reduction, 
 ##' one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
 ##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
 ##' @param ... additional parameters
@@ -36,8 +36,8 @@ setMethod("ssplot", signature(x = "compareClusterResult"),
 ssplot.enrichResult <- function(x, showCategory = 30, 
                                 nCluster = NULL, method = "cmdscale", 
                                 with_edge = FALSE, ...) {
+    method <- match.arg(method, c("cmdscale", "sammon", "monoMDS", "isoMDS"))                                
     n <- update_n(x, showCategory)
-    ## Use the similarity matrix to reduce the dimension and redistribute the node coordinates.
     if (is.numeric(n)) {
         keep <- seq_len(n)
     } else {
@@ -48,19 +48,19 @@ ssplot.enrichResult <- function(x, showCategory = 30,
     }
     ## Complete similarity matrix
     termsim2 <- fill_termsim(x, keep)
-
-    ## Dimensionality reduction and K-means clustering using similarity matrix
-    data <- get_cluster(termsim2, nCluster = nCluster, method = method)
-
+    
+    ## Dimensionality reduction 
+    res <- reduction_dim(termsim2, nCluster = nCluster, method = method)
+    coords <- as.data.frame(res$points[, 1:2])
+    colnames(coords) <- c('x', 'y')
     p <- emapplot(x = x, showCategory = showCategory, 
-                  layout = "ssplot",
-                  nCluster = nCluster,
-                  data = data,
+                  coords = coords,
+                  nCluster = nCluster,                 
                   with_edge = with_edge,
                   ...)
 
     ## Set axis label according to method
-    p <- adj_axis(p = p, data = data)
+    p <- adj_axis(p = p, DSdata = res, method = method)
     return(p + theme_classic())
 }
 
@@ -73,13 +73,16 @@ ssplot.enrichResult <- function(x, showCategory = 30,
 ##' @importClassesFrom DOSE compareClusterResult
 ##' @param split separate result by 'category' variable
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
+##' @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis, 
+##' the default value is 0.0125.
 ##' @importFrom stats setNames
 ssplot.compareClusterResult <- function(x, showCategory = 30,
                                         split = NULL, pie = "equal",
                                         nCluster = NULL, 
                                         method = "cmdscale", 
-                                        with_edge = FALSE, ...) {
-
+                                        with_edge = FALSE, 
+                                        cex_pie2axis = 0.0125, ...) {
+    method <- match.arg(method, c("cmdscale", "sammon", "monoMDS", "isoMDS"))  
     ## Complete the similarity matrix and retain the required nodes                                   
     y <- get_selected_category(showCategory, x, split)
     ## Then the similarity matrix is used to reduce the 
@@ -93,38 +96,37 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
      
 
     ## Use the similarity matrix to reduce the dimension and redistribute the node coordinates.
-    ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
-    termsim2 <- fill_termsim(x, rownames(ID_Cluster_mat))
-
-    ## Dimensionality reduction and K-means clustering using similarity matrix
-    data <- get_cluster(termsim2, nCluster = nCluster, method = method)
-
-    p <- emapplot(x, showCategory = 30,
-                  layout = "nicely",
-                  split = NULL, pie = "equal",
-                  nCluster = NULL, data = data, 
-                  with_edge = with_edge, ...)
+    ## Dimensionality reduction 
+    res <- reduction_dim(termsim2, nCluster = nCluster, method = method)
+    coords <- as.data.frame(res$points[, 1:2])
+    colnames(coords) <- c('x', 'y')
+    p <- emapplot(x, showCategory = showCategory,
+                  coords = coords,
+                  split = split, pie = pie,
+                  nCluster = nCluster,  
+                  with_edge = with_edge, 
+                  cex_pie2axis = cex_pie2axis, ...)
     ## Set axis label according to the method parameter
-    p <- adj_axis(p = p, data = data)
+    p <- adj_axis(p = p, DSdata = res, method = method)
    
     return(p + theme_classic())
 }
 
 
-##' Group terms
+##' Dimensionality reduction 
 ##'
-##' @param termsim2 Similarity matrix of terms.
+##' @param similarity_mat Similarity matrix of terms.
 ##' @param nCluster Numeric, the number of cluster.
-##' @param method The function used for MDS, 
+##' @param method The function used for dimension reduction, 
 ##' one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
 ##'
 ##' @noRd
-get_cluster <- function(termsim2, nCluster, method) {
+reduction_dim <- function(similarity_mat, nCluster, method) {
     ## If the similarity between the two terms is 1, an error will be reported, so fine-tuning.
-    termsim2[which(termsim2 == 1)] <- 0.99999
-    for (i in seq_len(nrow(termsim2))) termsim2[i, i] <- 1
+    similarity_mat[which(similarity_mat == 1)] <- 0.99999
+    for (i in seq_len(nrow(similarity_mat))) similarity_mat[i, i] <- 1
     
-    dune.dist <- stats::as.dist(1- termsim2)
+    dune.dist <- stats::as.dist(1- similarity_mat)
     # res <- ape::pcoa(dune.dist, correction="none")
     if (method == "cmdscale") {
         res <- stats::cmdscale(dune.dist, eig = T)   
@@ -139,16 +141,38 @@ get_cluster <- function(termsim2, nCluster, method) {
     }  
     
     if (method == "monoMDS" || method == "isoMDS") {
-        res <- vegan::metaMDS(dune.dist, method = method)
+        res <- vegan::metaMDS(dune.dist, engine = method)
     }
-    data <- as.data.frame(res$points[, 1:2])
-    colnames(data) <- c('x', 'y')
+    # coords <- as.data.frame(res$points[, 1:2])
+    # colnames(coords) <- c('x', 'y')
 
+    # if (method == "cmdscale") {
+    #     coords$pocas <- 0
+    #     coords$pocas[seq_len(length(res$eig))] <- as.numeric(res$eig)
+    # } else {
+    #     coords$stress <- res$stress
+    # }
+    return(res)
+}
+
+##' Adjust axis label according to the dimension reduction method
+##'
+##' @param p ggplot2 object
+##' @param DSdata a matrix data of dimension reduction result
+##' @param method The function used for dimension reduction, 
+##' one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
+##' @noRd
+adj_axis <- function(p, DSdata, method) {
     if (method == "cmdscale") {
-        data$pocas <- 0
-        data$pocas[seq_len(length(res$eig))] <- as.numeric(res$eig)
+        pocas <- as.numeric(DSdata$eig)
+        xlab = paste("pcoa 1 (", format(100 * pocas[1] / sum(pocas), digits=4), "%)", sep = "")
+        ylab = paste("pcoa 2 (", format(100 * pocas[2] / sum(pocas), digits=4), "%)", sep = "")
+        title = "PCoA"
     } else {
-        data$stress <- res$stress
+        xlab = "Dimension1"
+        ylab = "Dimension2"
+        title = paste(method, " (stress = ", format(DSdata$stress, digits=4), ")", sep = "")
     }
-    return(data)
+    p <- p +  labs(x = xlab, y = ylab, title = title) 
+    return(p)
 }
