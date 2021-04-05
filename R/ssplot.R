@@ -60,7 +60,7 @@ ssplot.enrichResult <- function(x, showCategory = 30,
                   ...)
 
     ## Set axis label according to method
-    p <- adj_axis(p = p, DSdata = res, method = method)
+    p <- adj_axis(p = p, dim_reduction_data = res, method = method)
     return(p + theme_classic())
 }
 
@@ -107,7 +107,7 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
                   with_edge = with_edge, 
                   cex_pie2axis = cex_pie2axis, ...)
     ## Set axis label according to the method parameter
-    p <- adj_axis(p = p, DSdata = res, method = method)
+    p <- adj_axis(p = p, dim_reduction_data = res, method = method)
    
     return(p + theme_classic())
 }
@@ -158,20 +158,20 @@ reduction_dim <- function(similarity_mat, nCluster, method) {
 ##' Adjust axis label according to the dimension reduction method
 ##'
 ##' @param p ggplot2 object
-##' @param DSdata a matrix data of dimension reduction result
+##' @param dim_reduction_data a matrix data of dimension reduction result
 ##' @param method The function used for dimension reduction, 
 ##' one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".
 ##' @noRd
-adj_axis <- function(p, DSdata, method) {
+adj_axis <- function(p, dim_reduction_data, method) {
     if (method == "cmdscale") {
-        pocas <- as.numeric(DSdata$eig)
+        pocas <- as.numeric(dim_reduction_data$eig)
         xlab = paste("pcoa 1 (", format(100 * pocas[1] / sum(pocas), digits=4), "%)", sep = "")
         ylab = paste("pcoa 2 (", format(100 * pocas[2] / sum(pocas), digits=4), "%)", sep = "")
         title = "PCoA"
     } else {
         xlab = "Dimension1"
         ylab = "Dimension2"
-        title = paste(method, " (stress = ", format(DSdata$stress, digits=4), ")", sep = "")
+        title = paste(method, " (stress = ", format(dim_reduction_data$stress, digits=4), ")", sep = "")
     }
     p <- p +  labs(x = xlab, y = ylab, title = title) 
     return(p)
