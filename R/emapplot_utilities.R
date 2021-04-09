@@ -423,45 +423,46 @@ groupNode <- function(ggData, y, nWords, nCluster) {
 ##' @param ellipse_pro numeric indicating confidence value for the ellipses
 ##' @param alpha the transparency of ellipse fill.
 ##' @noRd
-add_ellipse <- function(p, group_legend, label_style, 
-    ellipse_style = "ggforce", ellipse_pro = 0.95, alpha = 0.3) {
+add_ellipse <- function(p, group_legend, label_style) {
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color") 
-    ellipse_style <- match.arg(ellipse_style, c("ggforce", "polygon"))
-    if (ellipse_style == "ggforce") {
-        if (label_style == "shadowtext") {
+    if (label_style == "shadowtext") {
             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-                        fill =~ color2), alpha = alpha, show.legend = show_legend)
+                         fill =~ color2), show.legend = show_legend)
         } else {
             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-                        fill =~ color2, label =~ color2), alpha = alpha,
-                        show.legend = show_legend)
+                         fill =~ color2, label =~ color2), show.legend = show_legend)
         }
-        if (group_legend) p <- p + scale_fill_discrete(name = "groups")
-     } 
-    
-    if (ellipse_style == "polygon") {
-        p <- p + ggplot2::stat_ellipse(aes_(x =~ x, y =~ y, fill =~ color2),
-                                       geom = "polygon", level = ellipse_pro,
-                                       alpha = alpha,
-                                       show.legend = group_legend)
-    }
-
+    if (group_legend) p <- p + scale_fill_discrete(name = "groups")
     return(p)
 }
-# add_ellipse <- function(p, group_legend, label_style) {
-#     show_legend <- c(group_legend, FALSE)
-#     names(show_legend) <- c("fill", "color") 
-#     if (label_style == "shadowtext") {
-#             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-#                          fill =~ color2), show.legend = show_legend)
-#         } else {
-#             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-#                          fill =~ color2, label =~ color2), show.legend = show_legend)
-#         }
-#     if (group_legend) p <- p + scale_fill_discrete(name = "groups")
-#     return(p)
+# add_ellipse <- function(p, group_legend, label_style, 
+    # ellipse_style = "ggforce", ellipse_pro = 0.95, alpha = 0.3) {
+    # show_legend <- c(group_legend, FALSE)
+    # names(show_legend) <- c("fill", "color") 
+    # ellipse_style <- match.arg(ellipse_style, c("ggforce", "polygon"))
+    # if (ellipse_style == "ggforce") {
+        # if (label_style == "shadowtext") {
+            # p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
+                        # fill =~ color2), alpha = alpha, show.legend = show_legend)
+        # } else {
+            # p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
+                        # fill =~ color2, label =~ color2), alpha = alpha,
+                        # show.legend = show_legend)
+        # }
+        # if (group_legend) p <- p + scale_fill_discrete(name = "groups")
+     # } 
+    
+    # if (ellipse_style == "polygon") {
+        # p <- p + ggplot2::stat_ellipse(aes_(x =~ x, y =~ y, fill =~ color2),
+                                       # geom = "polygon", level = ellipse_pro,
+                                       # alpha = alpha,
+                                       # show.legend = group_legend)
+    # }
+
+    # return(p)
 # }
+
 
 ##' add category nodes 
 ##'
