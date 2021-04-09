@@ -1,5 +1,6 @@
-# enrichplot 1.11.2.994
+# enrichplot 1.11.2.995
 
++ Reconstruct the `emapplot` function and replace `emapplot_cluster` by `emapplot(group_category = TRUE)` 
 + fix bug in `emapplot_cluster.enrichResult` when the number of cluster is 2 (2021-2-24, Wed)
 + fix bug in `treeplot`: The legend is not the right size (2021-2-6, Sat).
 + fix `dotplot` for `label_format` parameter doesn't work(2021-2-3, Wed).

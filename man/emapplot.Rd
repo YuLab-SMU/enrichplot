@@ -9,31 +9,43 @@
 \alias{emapplot.compareClusterResult}
 \title{emapplot}
 \usage{
-emapplot(x, showCategory = 30, color = "p.adjust", layout = "kk", ...)
+emapplot(x, showCategory = 30, ...)
 
-\S4method{emapplot}{enrichResult}(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...)
+\S4method{emapplot}{enrichResult}(x, showCategory = 30, ...)
 
-\S4method{emapplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...)
+\S4method{emapplot}{gseaResult}(x, showCategory = 30, ...)
 
-\S4method{emapplot}{compareClusterResult}(x, showCategory = 30, color = "p.adjust", layout = "nicely", ...)
+\S4method{emapplot}{compareClusterResult}(x, showCategory = 30, ...)
 
 emapplot.enrichResult(
   x,
   showCategory = 30,
+  layout = NULL,
+  coords = NULL,
   color = "p.adjust",
-  layout = "nicely",
   min_edge = 0.2,
   cex_label_category = 1,
   cex_category = 1,
   cex_line = 1,
-  shadowtext = TRUE
+  shadowtext = TRUE,
+  label_style = "shadowtext",
+  repel = FALSE,
+  node_label = "category",
+  with_edge = TRUE,
+  group_category = FALSE,
+  group_legend = FALSE,
+  cex_label_group = 1,
+  nWords = 4,
+  label_format = 30,
+  nCluster = NULL,
+  ...
 )
 
 emapplot.compareClusterResult(
   x,
   showCategory = 30,
-  color = "p.adjust",
-  layout = "nicely",
+  layout = NULL,
+  coords = NULL,
   split = NULL,
   pie = "equal",
   legend_n = 5,
@@ -41,7 +53,19 @@ emapplot.compareClusterResult(
   cex_line = 1,
   min_edge = 0.2,
   cex_label_category = 1,
-  shadowtext = TRUE
+  shadowtext = TRUE,
+  with_edge = TRUE,
+  group_category = FALSE,
+  label_format = 30,
+  group_legend = FALSE,
+  node_label = "category",
+  label_style = "shadowtext",
+  repel = FALSE,
+  cex_label_group = 1,
+  nWords = 4,
+  nCluster = NULL,
+  cex_pie2axis = 1,
+  ...
 )
 }
 \arguments{
@@ -51,13 +75,27 @@ emapplot.compareClusterResult(
 the first n terms will be displayed. If it is a vector of terms, 
 the selected terms will be displayed.}
 
-\item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
-'p.adjust' or 'qvalue'.}
+\item{...}{additional parameters
+
+additional parameters can refer the following parameters.
+    \itemize{
+       \item \code{force} Force of repulsion between overlapping text labels. Defaults to 1. 
+       \item \code{nudge_x, nudge_y} Horizontal and vertical adjustments to nudge 
+        the starting position of each text label. 
+       \item \code{direction} "both", "x", or "y" – direction in which to adjust position of labels.
+       \item \code{ellipse_style} style of ellipse, one of "ggforce" an "polygon".
+       \item \code{ellipse_pro} numeric indicating confidence value for the ellipses, 
+        it can be used only when ellipse_style = "polygon".
+       \item \code{alpha} the transparency of ellipse fill.
+    }}
 
 \item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
 'randomly', 'fr', 'kk', 'drl' or 'lgl'.}
 
-\item{...}{Additional parameters}
+\item{coords}{a data.frame with two columns: 'x' for X-axis coordinate and 'y' for Y-axis coordinate.}
+
+\item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
+'p.adjust' or 'qvalue'.}
 
 \item{min_edge}{The minimum similarity threshold for whether 
 two nodes are connected, should between 0 and 1, default value is 0.2.}
@@ -71,11 +109,38 @@ nodes should be scaled relative to the default.}
 
 \item{shadowtext}{a logical value, whether to use shadow font.}
 
+\item{label_style}{style of group label, one of "shadowtext" and "ggforce".}
+
+\item{repel}{whether to correct the position of the label. Defaults to FALSE.}
+
+\item{node_label}{Select which labels to be displayed,
+one of 'category', 'group', 'all' and 'none'.}
+
+\item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
+
+\item{group_category}{a logical, if TRUE(the default), group the category.}
+
+\item{group_legend}{Logical, if TRUE, the grouping legend will be displayed.
+The default is FALSE.}
+
+\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.}
+
+\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.}
+
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.}
+
+\item{nCluster}{Numeric, the number of clusters, 
+the default value is square root of the number of nodes.}
+
 \item{split}{separate result by 'category' variable}
 
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
 
 \item{legend_n}{number of circle in legend}
+
+\item{cex_pie2axis}{It is used to adjust the relative size of the pie chart on the coordinate axis, 
+the default value is 1.}
 }
 \value{
 ggplot object

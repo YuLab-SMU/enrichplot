@@ -203,7 +203,7 @@ fill_termsim <- function(x, keep) {
 ##' @noRd
 add_cladelab <- function(p, nWords, label_format, offset, roots, 
                          fontsize, group_color, cluster_color, pdata, extend, hilight) {
-    cluster_label <- sapply(cluster_color, get_wordcloud, pdata2 = pdata,
+    cluster_label <- sapply(cluster_color, get_wordcloud, ggData = pdata,
                         nWords = nWords)
     label_func <- default_labeller(label_format)
     if (is.function(label_format)) {
@@ -265,9 +265,9 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
     roots <- unlist(lapply(noids, function(x) ggtree::MRCA(p, x)))
     # cluster data
     p <- ggtree::groupOTU(p, grp, "group") + aes_(color =~ group)
-    pdata <- data.frame(name = p$data$label, color = p$data$group)
+    pdata <- data.frame(name = p$data$label, color2 = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
-    cluster_color <- unique(pdata$color)
+    cluster_color <- unique(pdata$color2)
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (!is.null(group_color)) {
         color2 <- c(rep("black", n_color), group_color)
