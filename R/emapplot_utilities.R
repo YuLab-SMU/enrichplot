@@ -387,20 +387,23 @@ add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext)
 
 ##' Cluster similar nodes together by k-means
 ##' 
-##' @param ggData data of a ggraph object.
+##' @param p a ggraph object.
 ##' @param y data.frame of enrichment result.
 ##' @param nWords Numeric, the number of words in the cluster tags.
+##' @param clusterFunction function of Clustering method, such as stats::kmeans, cluster::clara,
+##' cluster::fanny or cluster::pam.
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
 ##' @noRd
-groupNode <- function(ggData, y, nWords, nCluster) {
+groupNode <- function(p, y, nWords, clusterFunction =  stats::kmeans, nCluster) {
+    ggData <- p$data
     if (!"color2" %in% colnames(ggData)) {
         dat <- data.frame(x = ggData$x, y = ggData$y)
         if(is.null(nCluster)){
-            ggData$color2 <- stats::kmeans(dat, floor(sqrt(nrow(dat))))$cluster
+            ggData$color2 <- clusterFunction(dat, floor(sqrt(nrow(dat))))$cluster
         } else {
             if(nCluster > nrow(dat)) nCluster <- nrow(dat)
-                ggData$color2 <- stats::kmeans(dat, nCluster)$cluster
+                ggData$color2 <- clusterFunction(dat, nCluster)$cluster
         }
     }
     goid <- y$ID
@@ -423,44 +426,44 @@ groupNode <- function(ggData, y, nWords, nCluster) {
 ##' @param ellipse_pro numeric indicating confidence value for the ellipses
 ##' @param alpha the transparency of ellipse fill.
 ##' @noRd
-add_ellipse <- function(p, group_legend, label_style) {
+add_ellipse <- function(p, group_legend, label_style, 
+    ellipse_style = "ggforce", ellipse_pro = 0.95, alpha = 0.3, ...) {
     show_legend <- c(group_legend, FALSE)
     names(show_legend) <- c("fill", "color") 
-    if (label_style == "shadowtext") {
+    ellipse_style <- match.arg(ellipse_style, c("ggforce", "polygon"))
+    if (ellipse_style == "ggforce") {
+        if (label_style == "shadowtext") {
             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-                         fill =~ color2), show.legend = show_legend)
+                        fill =~ color2), alpha = alpha, show.legend = show_legend)
         } else {
             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-                         fill =~ color2, label =~ color2), show.legend = show_legend)
+                        fill =~ color2, label =~ color2), alpha = alpha,
+                        show.legend = show_legend)
         }
-    if (group_legend) p <- p + scale_fill_discrete(name = "groups")
+        if (group_legend) p <- p + scale_fill_discrete(name = "groups")
+     } 
+    
+    if (ellipse_style == "polygon") {
+        p <- p + ggplot2::stat_ellipse(aes_(x =~ x, y =~ y, fill =~ color2),
+                                       geom = "polygon", level = ellipse_pro,
+                                       alpha = alpha,
+                                       show.legend = group_legend, ...)
+    }
+
     return(p)
 }
-# add_ellipse <- function(p, group_legend, label_style, 
-    # ellipse_style = "ggforce", ellipse_pro = 0.95, alpha = 0.3) {
-    # show_legend <- c(group_legend, FALSE)
-    # names(show_legend) <- c("fill", "color") 
-    # ellipse_style <- match.arg(ellipse_style, c("ggforce", "polygon"))
-    # if (ellipse_style == "ggforce") {
-        # if (label_style == "shadowtext") {
-            # p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-                        # fill =~ color2), alpha = alpha, show.legend = show_legend)
-        # } else {
-            # p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
-                        # fill =~ color2, label =~ color2), alpha = alpha,
-                        # show.legend = show_legend)
-        # }
-        # if (group_legend) p <- p + scale_fill_discrete(name = "groups")
-     # } 
-    
-    # if (ellipse_style == "polygon") {
-        # p <- p + ggplot2::stat_ellipse(aes_(x =~ x, y =~ y, fill =~ color2),
-                                       # geom = "polygon", level = ellipse_pro,
-                                       # alpha = alpha,
-                                       # show.legend = group_legend)
-    # }
-
-    # return(p)
+# add_ellipse <- function(p, group_legend, label_style) {
+#     show_legend <- c(group_legend, FALSE)
+#     names(show_legend) <- c("fill", "color") 
+#     if (label_style == "shadowtext") {
+#             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
+#                          fill =~ color2), show.legend = show_legend)
+#         } else {
+#             p <- p + ggforce::geom_mark_ellipse(aes_(x =~ x, y =~ y, color =~ color2,
+#                          fill =~ color2, label =~ color2), show.legend = show_legend)
+#         }
+#     if (group_legend) p <- p + scale_fill_discrete(name = "groups")
+#     return(p)
 # }
 
 
@@ -493,11 +496,12 @@ add_category_nodes <- function(p, cex_category, color) {
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
 ##' @param y_union A data.frame of enrichment result.
 ##' @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis.
-##' @param ggData data of a ggraph object.
+##' @param p a ggraph object.
 ##' @param cex_category Number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @noRd
-get_pie_data <- function(y, pie, y_union, cex_pie2axis, ggData, cex_category) {
+get_pie_data <- function(y, pie, y_union, cex_pie2axis, p, cex_category) {
+    ggData <- p$data
     ID_Cluster_mat <- prepare_pie_category(y = y, pie=pie) 
     desc <- y_union$Description[match(rownames(ID_Cluster_mat),
                                       y_union$Description)]

@@ -72,6 +72,8 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param nWords Numeric, the number of words in the cluster tags, the default value is 4.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
+##' @param clusterFunction function of Clustering method, such as stats::kmeans(the default),
+##' cluster::clara, cluster::fanny or cluster::pam.
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
 ##' @param ... additional parameters
@@ -86,6 +88,9 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##'        \item \code{ellipse_pro} numeric indicating confidence value for the ellipses, 
 ##'         it can be used only when ellipse_style = "polygon".
 ##'        \item \code{alpha} the transparency of ellipse fill.
+##'        \item \code{type} The type of ellipse. The default "t" assumes a multivariate t-distribution, 
+##'         and "norm" assumes a multivariate normal distribution. "euclid" draws a circle with the 
+##'         radius equal to level, representing the euclidean distance from the center. 
 ##'     }
 ##' 
 ##' @author Guangchuang Yu
@@ -100,6 +105,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                                   group_legend = FALSE,                             
                                   cex_label_group = 1, nWords = 4, 
                                   label_format = 30,
+                                  clusterFunction = stats::kmeans,
                                   nCluster = NULL,  ...) {
     has_pairsim(x)
     label_size_category <- 5
@@ -134,10 +140,11 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                                 colour='darkgrey')
     }
 
-    ggData <- p$data
+    # ggData <- p$data
     # if show group cricle or group label, Process p$data and assign color to the group label
     if (group_category || node_label == "all" || node_label == "group") {         
-        ggData <- groupNode(ggData = ggData, y = y, nWords = nWords, nCluster = nCluster)
+        ggData <- groupNode(p = p, y = y, nWords = nWords, 
+            clusterFunction =  clusterFunction, nCluster = nCluster)
         p$data <- ggData  
     }
 
@@ -204,7 +211,9 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           node_label  = "category",
                                           label_style = "shadowtext", 
                                           repel = FALSE, cex_label_group = 1,
-                                          nWords = 4, nCluster = NULL, 
+                                          nWords = 4, 
+                                          clusterFunction = stats::kmeans,
+                                          nCluster = NULL, 
                                           cex_pie2axis = 1, 
                                           ...) {
                                        
@@ -223,11 +232,12 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
         return(p)
 
-    ggData <- p$data
+    # ggData <- p$data
     # if show group cricle or group label, Process p$data and assign color to the group label
     if (group_category || node_label == "all" || node_label == "group") {    
-       ggData <- groupNode(ggData = ggData, y = y, nWords = nWords, nCluster = nCluster)
-       p$data <- ggData
+        ggData <- groupNode(p = p, y = y, nWords = nWords, 
+            clusterFunction =  clusterFunction, nCluster = nCluster)
+        p$data <- ggData
     }      
     ## add circle
     if (group_category) {
@@ -238,7 +248,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     ## then add the pie plot
     ## Get the matrix data for the pie plot
     ID_Cluster_mat <- get_pie_data(y = y, pie = pie, y_union = y_union, cex_pie2axis = cex_pie2axis, 
-                                   ggData = ggData, cex_category = cex_category)
+                                   p = p, cex_category = cex_category)
 
 
     

@@ -18,7 +18,8 @@ get_word_freq <- function(wordd){
 ##' Use wordcloud algorithm to get group tags
 ##' 
 ##' @param cluster a cluster name
-##' @param ggData the data section of the ggraph object
+##' @param ggData the data section of the ggraph object, 
+##' which contains clustering information.
 ##' @param nWords the number of words in the cluster tags 
 ##' @importFrom magrittr %>%
 ##' @noRd
