@@ -113,7 +113,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
     ## get graph.data.frame() object
-    g <- get_igraph(x=x, y=y, n=n, color=color, cex_line=cex_line,
+    g <- get_igraph(x=x, nCategory=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
     ## If there is only one point, then add a dot and label, then return directly.
     if(n == 1) {
@@ -143,7 +143,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     # ggData <- p$data
     # if show group cricle or group label, Process p$data and assign color to the group label
     if (group_category || node_label == "all" || node_label == "group") {         
-        ggData <- groupNode(p = p, y = y, nWords = nWords, 
+        ggData <- groupNode(p = p, enrichDf = y, nWords = nWords, 
             clusterFunction =  clusterFunction, nCluster = nCluster)
         p$data <- ggData  
     }
@@ -222,20 +222,20 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     label_group <- 3
     y <- get_selected_category(showCategory, x, split)
     ## Data structure transformation, combining the same ID (Description) genes
-    y_union <- merge_compareClusterResult(y)
+    mergedEnrichDf <- merge_compareClusterResult(y)
      
     ## get ggraph object and add edge
-    p <- build_ggraph(x = x, y = y, y_union = y_union, cex_category = cex_category, 
+    p <- build_ggraph(x = x, enrichDf = y, mergedEnrichDf = mergedEnrichDf, cex_category = cex_category, 
         pie = pie, layout = layout, coords = coords, cex_line=cex_line,
                         min_edge=min_edge, pair_sim = x@termsim,
                         method = x@method, with_edge = with_edge)
-    if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(y_union)) | nrow(y_union) == 1)
+    if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(mergedEnrichDf)) | nrow(mergedEnrichDf) == 1)
         return(p)
 
     # ggData <- p$data
     # if show group cricle or group label, Process p$data and assign color to the group label
     if (group_category || node_label == "all" || node_label == "group") {    
-        ggData <- groupNode(p = p, y = y, nWords = nWords, 
+        ggData <- groupNode(p = p, enrichDf = y, nWords = nWords, 
             clusterFunction =  clusterFunction, nCluster = nCluster)
         p$data <- ggData
     }      
@@ -247,7 +247,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
        
     ## then add the pie plot
     ## Get the matrix data for the pie plot
-    ID_Cluster_mat <- get_pie_data(y = y, pie = pie, y_union = y_union, cex_pie2axis = cex_pie2axis, 
+    ID_Cluster_mat <- get_pie_data(enrichDf = y, pie = pie, mergedEnrichDf = mergedEnrichDf, cex_pie2axis = cex_pie2axis, 
                                    p = p, cex_category = cex_category)
 
 

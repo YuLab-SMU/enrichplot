@@ -61,7 +61,7 @@ has_pairsim <- function(x) {
 ##'
 ##' @importFrom igraph graph.empty
 ##' @importFrom igraph graph.data.frame
-##' @param y A data.frame of enrichment result.
+##' @param enrichDf A data.frame of enrichment result.
 ##' @param geneSets A list gene sets with the names of enrichment IDs
 ##' @param color a string, the column name of y for nodes colours
 ##' @param cex_line Numeric, scale of line width
@@ -73,21 +73,22 @@ has_pairsim <- function(x) {
 ##' "JC" (Jaccard similarity coefficient) methods
 ##' @return result of graph.data.frame()
 ##' @noRd
-build_emap_graph <- function(y, geneSets, color, cex_line, min_edge,
+build_emap_graph <- function(enrichDf, geneSets, color, cex_line, min_edge,
                              pair_sim, method) {
 
     if (!is.numeric(min_edge) | min_edge < 0 | min_edge > 1) {
     	stop('"min_edge" should be a number between 0 and 1.')
     }
 
-    if (is.null(dim(y)) | nrow(y) == 1) {  # when just one node
+    if (is.null(dim(enrichDf)) | nrow(enrichDf) == 1) {  # when just one node
         g <- graph.empty(0, directed=FALSE)
         g <- add_vertices(g, nv = 1)
-        V(g)$name <- as.character(y$Description)
+        V(g)$name <- as.character(enrichDf$Description)
         V(g)$color <- "red"
         return(g)
     } else {
-        w <- pair_sim[as.character(y$Description), as.character(y$Description)]
+        w <- pair_sim[as.character(enrichDf$Description), 
+            as.character(enrichDf$Description)]
     }
 
     wd <- melt(w)
@@ -96,8 +97,8 @@ build_emap_graph <- function(y, geneSets, color, cex_line, min_edge,
     wd <- wd[!is.na(wd[,3]),]
     if (method != "JC") {
         # map id to names
-        wd[, 1] <- y[wd[, 1], "Description"]
-        wd[, 2] <- y[wd[, 2], "Description"]
+        wd[, 1] <- enrichDf[wd[, 1], "Description"]
+        wd[, 2] <- enrichDf[wd[, 2], "Description"]
     }
 
     g <- graph.data.frame(wd[, -3], directed=FALSE)
@@ -105,10 +106,10 @@ build_emap_graph <- function(y, geneSets, color, cex_line, min_edge,
     # Use similarity as the weight(length) of an edge
     E(g)$weight <- wd[, 3]
     g <- delete.edges(g, E(g)[wd[, 3] < min_edge])
-    idx <- unlist(sapply(V(g)$name, function(x) which(x == y$Description)))
+    idx <- unlist(sapply(V(g)$name, function(x) which(x == enrichDf$Description)))
     cnt <- sapply(geneSets[idx], length)
     V(g)$size <- cnt
-    colVar <- y[idx, color]
+    colVar <- enrichDf[idx, color]
     V(g)$color <- colVar
     return(g)
 }
@@ -118,8 +119,7 @@ build_emap_graph <- function(y, geneSets, color, cex_line, min_edge,
 ##' Get an iGraph object
 ##'
 ##' @param x Enrichment result.
-##' @param y as.data.frame(x).
-##' @param n Number of enriched terms to display.
+##' @param nCategory Number of enriched terms to display.
 ##' @param color variable that used to color enriched terms, e.g. 'pvalue',
 ##' 'p.adjust' or 'qvalue'.
 ##' @param cex_line Scale of line width.
@@ -128,20 +128,21 @@ build_emap_graph <- function(y, geneSets, color, cex_line, min_edge,
 ##'
 ##' @return an iGraph object
 ##' @noRd
-get_igraph <- function(x, y,  n, color, cex_line, min_edge){
+get_igraph <- function(x, nCategory, color, cex_line, min_edge){
+    y <- as.data.frame(x)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
-    if (is.numeric(n)) {
-        y <- y[1:n, ]
+    if (is.numeric(nCategory)) {
+        y <- y[1:nCategory, ]
     } else {
-        y <- y[match(n, y$Description),]
-        n <- length(n)
+        y <- y[match(nCategory, y$Description),]
+        nCategory <- length(nCategory)
     }
 
-    if (n == 0) {
+    if (nCategory == 0) {
         stop("no enriched term found...")
     }
 
-    g <- build_emap_graph(y = y, geneSets = geneSets, color = color,
+    g <- build_emap_graph(enrichDf = y, geneSets = geneSets, color = color,
              cex_line = cex_line, min_edge = min_edge,
              pair_sim = x@termsim, method = x@method)
 }
@@ -174,8 +175,8 @@ merge_compareClusterResult <- function(yy) {
 ##'
 ##' @importFrom ggplot2 ylim
 ##' @param x enrichment result.
-##' @param y A data.frame of enrichment result.
-##' @param y_union A data.frame of enrichment result.
+##' @param enrichDf A data.frame of enrichment result.
+##' @param mergedEnrichDf A data.frame of merged enrichment result.
 ##' @param cex_category Numeric, scale of pie plot.
 ##' @param pie Proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'.
 ##' @param layout Layout of the map.
@@ -189,26 +190,27 @@ merge_compareClusterResult <- function(yy) {
 ##' "JC" (Jaccard similarity coefficient) methods.
 ##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
 ##' @noRd
-build_ggraph <- function(x, y, y_union, cex_category, pie, layout, coords, cex_line,
-                        min_edge, pair_sim, method, with_edge){
-    geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
-                              fixed = TRUE), y_union$ID) 
+build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie, 
+                         layout, coords, cex_line, min_edge, pair_sim,
+                         method, with_edge){
+    geneSets <- setNames(strsplit(as.character(mergedEnrichDf$geneID), "/",
+                              fixed = TRUE), mergedEnrichDf$ID) 
                               
-    g <- build_emap_graph(y=y_union,geneSets=geneSets,color="p.adjust",
+    g <- build_emap_graph(enrichDf=mergedEnrichDf,geneSets=geneSets,color="p.adjust",
         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
         method = x@method)
-    ## when y just have one line
-    if(is.null(dim(y)) | nrow(y) == 1) {
-        title <- y$Cluster
+    ## when enrichDf just have one line
+    if(is.null(dim(enrichDf)) | nrow(enrichDf) == 1) {
+        title <- enrichDf$Cluster
         p <- ggraph(g, "tree") + geom_node_point(color="red", size=5 * cex_category) +
             geom_node_text(aes_(label=~name)) + theme_void() +
             labs(title=title)
         return(p)
     }
 
-    if(is.null(dim(y_union)) | nrow(y_union) == 1) {
+    if(is.null(dim(mergedEnrichDf)) | nrow(mergedEnrichDf) == 1) {
         p <- ggraph(g, "tree")
-        ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
+        ID_Cluster_mat <- prepare_pie_category(enrichDf = enrichDf, pie=pie)
 
         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*cex_category)
         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
@@ -388,25 +390,31 @@ add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext)
 ##' Cluster similar nodes together by k-means
 ##' 
 ##' @param p a ggraph object.
-##' @param y data.frame of enrichment result.
+##' @param enrichDf data.frame of enrichment result.
 ##' @param nWords Numeric, the number of words in the cluster tags.
 ##' @param clusterFunction function of Clustering method, such as stats::kmeans, cluster::clara,
 ##' cluster::fanny or cluster::pam.
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
 ##' @noRd
-groupNode <- function(p, y, nWords, clusterFunction =  stats::kmeans, nCluster) {
+groupNode <- function(p, enrichDf, nWords, clusterFunction =  stats::kmeans, nCluster) {
     ggData <- p$data
+    wrongMessage <- "wrong clusterFunction parameter; set to default `clusterFunction = kmeans`"
     if (!"color2" %in% colnames(ggData)) {
         dat <- data.frame(x = ggData$x, y = ggData$y)
-        if(is.null(nCluster)){
-            ggData$color2 <- clusterFunction(dat, floor(sqrt(nrow(dat))))$cluster
-        } else {
-            if(nCluster > nrow(dat)) nCluster <- nrow(dat)
-                ggData$color2 <- clusterFunction(dat, nCluster)$cluster
+        nCluster <- ifelse(is.null(nCluster), floor(sqrt(nrow(dat))), 
+                           min(nCluster, nrow(dat)))
+        ggData$color2 <- tryCatch(expr  = clusterFunction(dat, nCluster)$cluster, 
+                                  error = function(e) {
+                                      message(wrongMessage)
+                                      stats::kmeans(dat, nCluster)$cluster
+                                  })
+        if (is.null(ggData$color2)) {
+            message(wrongMessage)
+            ggData$color2 <- stats::kmeans(dat, nCluster)$cluster
         }
     }
-    goid <- y$ID
+    goid <- enrichDf$ID
     cluster_color <- unique(ggData$color2)
     clusters <- lapply(cluster_color, function(i){goid[which(ggData$color2 == i)]})
     cluster_label <- sapply(cluster_color, get_wordcloud, ggData = ggData,
@@ -492,19 +500,19 @@ add_category_nodes <- function(p, cex_category, color) {
 
 ##' Get data for pie plot 
 ##'
-##' @param y A data.frame of enrichment result.
+##' @param enrichDf A data.frame of enrichment result.
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
-##' @param y_union A data.frame of enrichment result.
+##' @param mergedEnrichDf A data.frame of merged enrichment result.
 ##' @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis.
 ##' @param p a ggraph object.
 ##' @param cex_category Number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @noRd
-get_pie_data <- function(y, pie, y_union, cex_pie2axis, p, cex_category) {
+get_pie_data <- function(enrichDf, pie, mergedEnrichDf, cex_pie2axis, p, cex_category) {
     ggData <- p$data
-    ID_Cluster_mat <- prepare_pie_category(y = y, pie=pie) 
-    desc <- y_union$Description[match(rownames(ID_Cluster_mat),
-                                      y_union$Description)]
+    ID_Cluster_mat <- prepare_pie_category(enrichDf = enrichDf, pie=pie) 
+    desc <- mergedEnrichDf$Description[match(rownames(ID_Cluster_mat),
+                                      mergedEnrichDf$Description)]
     i <- match(desc, ggData$name)
     ID_Cluster_mat$x <- ggData$x[i]
     ID_Cluster_mat$y <- ggData$y[i]
