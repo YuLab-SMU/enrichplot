@@ -399,7 +399,8 @@ add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext)
 ##' @noRd
 groupNode <- function(p, enrichDf, nWords, clusterFunction =  stats::kmeans, nCluster) {
     ggData <- p$data
-    wrongMessage <- "wrong clusterFunction parameter; set to default `clusterFunction = kmeans`"
+    wrongMessage <- paste("Wrong clusterFunction parameter or unsupported clustering method;",
+         "set to default `clusterFunction = kmeans`")
     if (!"color2" %in% colnames(ggData)) {
         dat <- data.frame(x = ggData$x, y = ggData$y)
         nCluster <- ifelse(is.null(nCluster), floor(sqrt(nrow(dat))), 
