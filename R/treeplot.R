@@ -120,32 +120,18 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       hclust_method = "ward.D", group_color = NULL, 
                                       extend = 0.3, hilight = TRUE, ...) {
     group <- NULL
-    # if (is.numeric(showCategory)) {
-    #     y <- fortify(x, showCategory = showCategory,
-    #         includeAll = TRUE, split = split)
-    #     y_union <- merge_compareClusterResult(y)
-    # } else {
-    #     y <- fortify(x, showCategory=NULL,
-    #         includeAll = TRUE, split = split)
-    #     n <- update_n(y_union, showCategory)
-    #     y_union <- merge_compareClusterResult(y)
-    #     y_union <- y_union[match(n, y_union$Description),]
-    # }
-
-    # y$Cluster <- sub("\n.*", "", y$Cluster)
-    # y <- y[y$ID %in% y_union$ID, ]
     y <- get_selected_category(showCategory, x, split)  
     ## Data structure transformation, combining the same ID (Description) genes
-    y_union <- merge_compareClusterResult(y)
+    merged_ggData <- merge_compareClusterResult(y)
     ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
     ## Fill the upper triangular matrix completely
     termsim2 <- fill_termsim(x, rownames(ID_Cluster_mat))
     hc <- stats::hclust(stats::as.dist(1- termsim2),
                         method = hclust_method)
     clus <- stats::cutree(hc, nCluster)
-    rownames(y_union) <- y_union$Description
+    rownames(merged_ggData) <- merged_ggData$Description
     d <- data.frame(label = names(clus),
-        count = y_union[names(clus), "Count"])
+        count = merged_ggData[names(clus), "Count"])
         
     p <- group_tree(hc, clus, d, offset_tiplab, nWords, 
         label_format, offset, fontsize, group_color, extend, hilight)
@@ -203,7 +189,7 @@ fill_termsim <- function(x, keep) {
 ##' @noRd
 add_cladelab <- function(p, nWords, label_format, offset, roots, 
                          fontsize, group_color, cluster_color, pdata, extend, hilight) {
-    cluster_label <- sapply(cluster_color, get_wordcloud, pdata2 = pdata,
+    cluster_label <- sapply(cluster_color, get_wordcloud, ggData = pdata,
                         nWords = nWords)
     label_func <- default_labeller(label_format)
     if (is.function(label_format)) {
@@ -265,9 +251,9 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
     roots <- unlist(lapply(noids, function(x) ggtree::MRCA(p, x)))
     # cluster data
     p <- ggtree::groupOTU(p, grp, "group") + aes_(color =~ group)
-    pdata <- data.frame(name = p$data$label, color = p$data$group)
+    pdata <- data.frame(name = p$data$label, color2 = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
-    cluster_color <- unique(pdata$color)
+    cluster_color <- unique(pdata$color2)
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (!is.null(group_color)) {
         color2 <- c(rep("black", n_color), group_color)

@@ -37,6 +37,7 @@ emapplot.enrichResult(
   cex_label_group = 1,
   nWords = 4,
   label_format = 30,
+  clusterFunction = stats::kmeans,
   nCluster = NULL,
   ...
 )
@@ -63,6 +64,7 @@ emapplot.compareClusterResult(
   repel = FALSE,
   cex_label_group = 1,
   nWords = 4,
+  clusterFunction = stats::kmeans,
   nCluster = NULL,
   cex_pie2axis = 1,
   ...
@@ -87,6 +89,9 @@ additional parameters can refer the following parameters.
        \item \code{ellipse_pro} numeric indicating confidence value for the ellipses, 
         it can be used only when ellipse_style = "polygon".
        \item \code{alpha} the transparency of ellipse fill.
+       \item \code{type} The type of ellipse. The default "t" assumes a multivariate t-distribution, 
+        and "norm" assumes a multivariate normal distribution. "euclid" draws a circle with the 
+        radius equal to level, representing the euclidean distance from the center. 
     }}
 
 \item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
@@ -129,6 +134,9 @@ The default is FALSE.}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.}
+
+\item{clusterFunction}{function of Clustering method, such as stats::kmeans(the default),
+cluster::clara, cluster::fanny or cluster::pam.}
 
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
