@@ -1,4 +1,4 @@
-# enrichplot 1.11.2.995
+# enrichplot 1.11.3
 
 + Reconstruct the `emapplot` function and replace `emapplot_cluster` by `emapplot(group_category = TRUE)` 
 + fix bug in `emapplot_cluster.enrichResult` when the number of cluster is 2 (2021-2-24, Wed)
