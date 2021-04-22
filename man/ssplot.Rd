@@ -21,7 +21,7 @@ ssplot.enrichResult(
   x,
   showCategory = 30,
   nCluster = NULL,
-  method = "cmdscale",
+  reductFunction = "stats::cmdscale",
   with_edge = FALSE,
   ...
 )
@@ -32,7 +32,7 @@ ssplot.compareClusterResult(
   split = NULL,
   pie = "equal",
   nCluster = NULL,
-  method = "cmdscale",
+  reductFunction = "stats::cmdscale",
   with_edge = FALSE,
   cex_pie2axis = 0.0125,
   ...
@@ -50,8 +50,8 @@ additional parameters can refer the emapplot function: \link{emapplot}.}
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
 
-\item{method}{The function used for dimension reduction, 
-one of "cmdscale" (the default), "sammon", "monoMDS" and "isoMDS".}
+\item{reductFunction}{The function used for dimension reduction, 
+e.g. stats::cmdscale (the default), vegan::metaMDS, or vegan::metaMDS.}
 
 \item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
 

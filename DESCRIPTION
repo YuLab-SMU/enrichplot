@@ -48,9 +48,7 @@ Suggests:
     ggstar,
     treeio,
     scales,
-    tidytree,
-    MASS,
-    vegan
+    tidytree
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://yulab-smu.top/biomedical-knowledge-mining-book/

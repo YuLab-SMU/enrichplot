@@ -401,6 +401,9 @@ groupNode <- function(p, enrichDf, nWords, clusterFunction =  stats::kmeans, nCl
     ggData <- p$data
     wrongMessage <- paste("Wrong clusterFunction parameter or unsupported clustering method;",
          "set to default `clusterFunction = kmeans`")
+    if (is.character(clusterFunction)) {
+        clusterFunction <- eval(parse(text=clusterFunction))
+    }   
     if (!"color2" %in% colnames(ggData)) {
         dat <- data.frame(x = ggData$x, y = ggData$y)
         nCluster <- ifelse(is.null(nCluster), floor(sqrt(nrow(dat))), 
