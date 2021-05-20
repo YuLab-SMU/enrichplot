@@ -1,4 +1,4 @@
-# enrichplot 1.11.2.995
+# enrichplot 1.11.3
 
 + add function `ssplot` for similarity space plot. (2021-4-22, Thu).
 + Reconstruct the `emapplot` function and replace `emapplot_cluster` by `emapplot(group_category = TRUE)` 
