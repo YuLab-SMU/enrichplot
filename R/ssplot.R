@@ -119,7 +119,7 @@ dr <- function(enrichResult, drfun, drfunName, showCategory, split = NULL, pie =
 }
 
 
-#' as.drs
+#' Dimension reduction
 #'
 #' @param distance_matrix Distance matrix
 #' @param ... extra args
@@ -181,7 +181,7 @@ get_pairwise_sim <- function(enrichResult, showCategory, split = NULL, pie = NUL
 }
 
 
-#' as.drs
+#' Extract the results after dimensionality reduction
 #'
 #' @param dim_reduction_data dim reduction data
 #' @noRd
