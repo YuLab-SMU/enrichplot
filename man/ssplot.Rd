@@ -21,7 +21,7 @@ ssplot.enrichResult(
   x,
   showCategory = 30,
   nCluster = NULL,
-  reductFunction = "stats::cmdscale",
+  drfun = stats::cmdscale,
   with_edge = FALSE,
   ...
 )
@@ -32,7 +32,7 @@ ssplot.compareClusterResult(
   split = NULL,
   pie = "equal",
   nCluster = NULL,
-  reductFunction = "stats::cmdscale",
+  drfun = stats::cmdscale,
   with_edge = FALSE,
   cex_pie2axis = 0.0125,
   ...
@@ -47,11 +47,11 @@ additional parameters can refer the emapplot function: \link{emapplot}.}
 
 \item{showCategory}{number of enriched terms to display}
 
-\item{nCluster}{Numeric, the number of clusters, 
+\item{nCluster}{Numeric, the number of clusters,
 the default value is square root of the number of nodes.}
 
-\item{reductFunction}{The function used for dimension reduction, 
-e.g. stats::cmdscale (the default), vegan::metaMDS, or vegan::metaMDS.}
+\item{drfun}{The function used for dimension reduction,
+e.g. 'stats::cmdscale' (the default), 'vegan::metaMDS', or 'vegan::metaMDS'.}
 
 \item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
 
@@ -59,7 +59,7 @@ e.g. stats::cmdscale (the default), vegan::metaMDS, or vegan::metaMDS.}
 
 \item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
 
-\item{cex_pie2axis}{It is used to adjust the relative size of the pie chart on the coordinate axis, 
+\item{cex_pie2axis}{It is used to adjust the relative size of the pie chart on the coordinate axis,
 the default value is 0.0125.}
 }
 \value{
