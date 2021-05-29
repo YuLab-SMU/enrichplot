@@ -206,6 +206,9 @@ as.drs.pco <- function(distance_matrix, drfun) {
     dim_reduction_data <- drfun(distance_matrix)
     if (!is.null(dim_reduction_data$vectors)) {
         coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
+        ## result of ecodist::pco has no rownames
+        rownames(coords) <- attr(distance_matrix, "Labels")
+
     }
     ## labdsv::pco
     if (!is.null(dim_reduction_data$points)) {
