@@ -18,12 +18,13 @@ get_word_freq <- function(wordd){
 ##' Use wordcloud algorithm to get group tags
 ##' 
 ##' @param cluster a cluster name
-##' @param pdata2 the data section of the ggraph object
+##' @param ggData the data section of the ggraph object, 
+##' which contains clustering information.
 ##' @param nWords the number of words in the cluster tags 
 ##' @importFrom magrittr %>%
 ##' @noRd
-get_wordcloud <- function(cluster, pdata2, nWords){
-    words <- pdata2$name %>%
+get_wordcloud <- function(cluster, ggData, nWords){
+    words <- ggData$name %>%
         gsub(" in ", " ", .) %>%
         gsub(" [0-9]+ ", " ", .) %>%
         gsub("^[0-9]+ ", "", .) %>%
@@ -38,8 +39,8 @@ get_wordcloud <- function(cluster, pdata2, nWords){
         gsub(" - ", " ", .)
     net_tot <- length(words)
 
-    clusters <- unique(pdata2$color)
-    words_i <- words[which(pdata2$color == cluster)]
+    clusters <- unique(ggData$color2)
+    words_i <- words[which(ggData$color2 == cluster)]
 
     sel_tot <- length(words_i)
     sel_w <- get_word_freq(words_i)

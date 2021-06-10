@@ -33,16 +33,16 @@ prepare_pie_gene <- function(y) {
 ##' Prepare pie data for categories in cnetplot/emapplot.
 ##' The function only works for compareClusterResult
 ##'
-##' @param y a data.frame converted from compareClusterResult
+##' @param enrichDf a data.frame converted from compareClusterResult
 ##' @param pie proportion of clusters in the pie chart, one of 'equal' (default)
 ##' or 'Count'
 ##' @return a data.frame
 ##' @noRd
-prepare_pie_category <- function(y, pie = "equal") {
+prepare_pie_category <- function(enrichDf, pie = "equal") {
     pie <- match.arg(pie, c("equal", "count", "Count"))
     if (pie == "count") pie <- "Count"
 
-    pie_data <- y[,c("Cluster", "Description", "Count")]
+    pie_data <- enrichDf[,c("Cluster", "Description", "Count")]
     pie_data[,"Description"] <- as.character(pie_data[,"Description"])
     prepare_pie_data(pie_data, pie = pie)
 }
