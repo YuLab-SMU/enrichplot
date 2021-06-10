@@ -192,7 +192,10 @@ cnetplot.compareClusterResult <- function(x,
     if (shadowtext == "gene") shadowtext_gene <- TRUE
     ## If showCategory is a number, keep only the first showCategory of each group,
     ## otherwise keep the total showCategory rows
-    y <- get_selected_category(showCategory, x, split)  
+    # y <- get_selected_category(showCategory, x, split)  
+    y <- fortify(x, showCategory = showCategory,
+                 includeAll = TRUE, split = split)
+    y$Cluster <- sub("\n.*", "", y$Cluster)
     ## Data structure transformation, combining the same ID (Description) genes
     y_union <- merge_compareClusterResult(y)
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
