@@ -1,7 +1,7 @@
 
 ##' barplot of enrichResult
 ##'
-##'
+##' @rdname barplot
 ##' @importFrom graphics barplot
 ##' @importFrom ggplot2 %+%
 ##' @importFrom ggplot2 scale_fill_continuous
@@ -76,6 +76,13 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust',
         scale_y_discrete(labels = label_func) +
         ggtitle(title) + xlab(NULL) + ylab(NULL)
 }
+
+##' @export
+##' @rdname barplot
+barplot.gseaResult <- function(height, ...) {
+    barplot.enrichResult(height, ...)
+}
+
 
 
 barplot.compareClusterResult <- function(height, color="p.adjust",

@@ -2,6 +2,7 @@
 % Please edit documentation in R/barplot.R
 \name{barplot.enrichResult}
 \alias{barplot.enrichResult}
+\alias{barplot.gseaResult}
 \title{barplot}
 \usage{
 \method{barplot}{enrichResult}(
@@ -14,6 +15,8 @@
   label_format = 30,
   ...
 )
+
+\method{barplot}{gseaResult}(height, ...)
 }
 \arguments{
 \item{height}{enrichResult object}

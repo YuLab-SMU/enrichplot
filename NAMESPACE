@@ -2,6 +2,7 @@
 
 S3method(as.data.frame,compareClusterResult)
 S3method(barplot,enrichResult)
+S3method(barplot,gseaResult)
 S3method(fortify,compareClusterResult)
 S3method(fortify,enrichResult)
 S3method(fortify,gseaResult)
