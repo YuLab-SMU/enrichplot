@@ -119,8 +119,12 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       legend_n = 3, offset_tiplab = 0.5, 
                                       hclust_method = "ward.D", group_color = NULL, 
                                       extend = 0.3, hilight = TRUE, ...) {
+    has_pairsim(x)
     group <- NULL
-    y <- get_selected_category(showCategory, x, split)  
+    # y <- get_selected_category(showCategory, x, split)  
+    y <- fortify(x, showCategory = showCategory,
+             includeAll = TRUE, split = split)
+    y$Cluster <- sub("\n.*", "", y$Cluster)
     ## Data structure transformation, combining the same ID (Description) genes
     merged_ggData <- merge_compareClusterResult(y)
     ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
@@ -200,12 +204,13 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
     if(is.null(offset)) offset <- p$data$x[1]
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (is.null(group_color)) {
-        color2 <- scales::hue_pal()(length(roots) + n_color)[-seq_len(n_color)]
+        color2 <- scales::hue_pal()(length(roots) + n_color)
+        if (n_color > 0) color2 <- color2[-seq_len(n_color)]
     } else {
         color2 <- group_color
     }
     df <- data.frame(node = as.numeric(roots),
-        label = cluster_label,
+        labels = cluster_label,
         cluster=cluster_color,
         # color = scales::hue_pal()(length(roots) + n_color)[-seq_len(n_color)]
         color = color2
@@ -214,7 +219,7 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
     p <- p + ggnewscale::new_scale_colour() + 
         geom_cladelab(
             data = df,
-            mapping = aes_(node =~ node, label =~ label, color =~ cluster),
+            mapping = aes_(node =~ node, label =~ labels, color =~ cluster),
             textcolor = "black",
             extend = extend,
             show.legend = F,
