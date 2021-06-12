@@ -25,6 +25,8 @@ cnetplot.enrichResult(
   circular = FALSE,
   node_label = "all",
   cex_category = 1,
+  color_category = "#B3B3B3",
+  color_gene = "#E5C494",
   cex_gene = 1,
   cex_label_category = 1,
   cex_label_gene = 1,
@@ -57,6 +59,10 @@ one of 'category', 'gene', 'all'(the default) and 'none'.}
 
 \item{cex_category}{Number indicating the amount by which plotting category
 nodes should be scaled relative to the default, the default value is 1.}
+
+\item{color_category}{Color of category node.}
+
+\item{color_gene}{Color of gene node.}
 
 \item{cex_gene}{Number indicating the amount by which plotting gene nodes
 should be scaled relative to the default, the default value is 1.}
