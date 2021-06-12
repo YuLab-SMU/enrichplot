@@ -207,7 +207,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     has_pairsim(x)
     label_size_category <- 3
     label_group <- 3
-    y <- get_selected_category(showCategory, x, split)
+    # y <- get_selected_category(showCategory, x, split)
+    y <- fortify(x, showCategory = showCategory,
+                 includeAll = TRUE, split = split)
+    y$Cluster <- sub("\n.*", "", y$Cluster)
     ## Data structure transformation, combining the same ID (Description) genes
     mergedEnrichDf <- merge_compareClusterResult(y)
      

@@ -268,30 +268,29 @@ adj_layout <- function(g, layout, coords) {
 }
 
 
+## Keep selected category in enrichment result
+##
+## @param showCategory A number or a vector of terms. If it is a number, 
+## the first n terms will be displayed. If it is a vector of terms, 
+## the selected terms will be displayed.
+## @param x Enrichment result
+## @param split Separate result by 'category' variable.
+## @noRd
+# get_selected_category <- function(showCategory, x, split) {
+#     if (is.numeric(showCategory)) {
+#         y <- fortify(x, showCategory = showCategory,
+#                                       includeAll = TRUE, split = split)
 
+#     } else {
+#         y <- as.data.frame(x)
+#         y <- y[y$Description %in% showCategory, ]
+#         y <- fortify(y, showCategory=NULL,
+#                                       includeAll = TRUE, split = split)
+#     }
+#     y$Cluster <- sub("\n.*", "", y$Cluster)
+#     return(y)
+# }
 
-##' Keep selected category in enrichment result
-##'
-##' @param showCategory A number or a vector of terms. If it is a number, 
-##' the first n terms will be displayed. If it is a vector of terms, 
-##' the selected terms will be displayed.
-##' @param x Enrichment result
-##' @param split Separate result by 'category' variable.
-##' @noRd
-get_selected_category <- function(showCategory, x, split) {
-    if (is.numeric(showCategory)) {
-        y <- fortify(x, showCategory = showCategory,
-                                      includeAll = TRUE, split = split)
-
-    } else {
-        y <- as.data.frame(x)
-        y <- y[y$Description %in% showCategory, ]
-        y <- fortify(y, showCategory=NULL,
-                                      includeAll = TRUE, split = split)
-    }
-    y$Cluster <- sub("\n.*", "", y$Cluster)
-    return(y)
-}
 
 ##' Convert a list of gene IDs to igraph object.
 ##'

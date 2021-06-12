@@ -1,3 +1,6 @@
+# enrichplot 1.13.0.991
++ Enables `showCategory` parameter to support character input in `dotplot.compareClusterResult`(2021-6-10, Thu)
+
 # enrichplot 1.11.3
 
 + add function `ssplot` for similarity space plot. (2021-4-22, Thu).
