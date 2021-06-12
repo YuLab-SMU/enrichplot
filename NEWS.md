@@ -1,3 +1,7 @@
+# enrichplot 1.13.0.992
++ add `color_category` and `color_gene` parameters for `cnetplot`(2021-6-11, Fri) 
++ Enables `showCategory` parameter to support character input in `dotplot.compareClusterResult`(2021-6-10, Thu)
+
 # enrichplot 1.11.3
 
 + Reconstruct the `emapplot` function and replace `emapplot_cluster` by `emapplot(group_category = TRUE)` 

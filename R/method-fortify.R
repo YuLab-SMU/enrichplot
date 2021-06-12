@@ -23,7 +23,7 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
     ## get top 5 (default) categories of each gene cluster.
     if (is.null(showCategory)) {
         result <- clProf.df
-    } else {
+    } else if(is.numeric(showCategory)){
         Cluster <- NULL # to satisfy codetools
 
         topN <- function(res, showCategory) {
@@ -55,6 +55,8 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
             result <- topN(clProf.df, showCategory)
         }
 
+    } else {
+        result <- subset(clProf.df, Description %in% showCategory)
     }
 
     ID <- NULL
