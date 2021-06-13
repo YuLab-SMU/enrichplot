@@ -8,7 +8,7 @@ Description: The 'enrichplot' package implements several visualization methods f
              All the visualization methods are developed based on 'ggplot2' graphics.
 Depends: R (>= 3.5.0)
 Imports:
-    cowplot,
+    aplot,
     DOSE (>= 3.16.0),
     ggplot2,
     ggraph,

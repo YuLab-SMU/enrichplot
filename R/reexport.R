@@ -2,6 +2,6 @@
 ##' @export
 ggplot2::ggtitle
 
-##' @importFrom cowplot plot_grid
+##' @importFrom aplot plot_list
 ##' @export
-cowplot::plot_grid
+aplot::plot_list

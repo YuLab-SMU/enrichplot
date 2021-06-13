@@ -31,7 +31,7 @@ setMethod("gseaplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 ggtitle
 ##' @importFrom ggplot2 element_text
 ##' @importFrom ggplot2 rel
-##' @importFrom cowplot plot_grid
+##' @importFrom aplot plot_list
 ##' @author Guangchuang Yu
 gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "",
                                  color='black', color.line="green",
@@ -68,7 +68,8 @@ gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "",
                                         axis.ticks.x = element_blank())
     p.pos <- p.pos + ggtitle(title) +
         theme(plot.title=element_text(hjust=0.5, size=rel(2)))
-    plot_grid(p.pos, p.res, ncol=1, align="v")
+    #plot_grid(p.pos, p.res, ncol=1, align="v")
+    plot_list(gglist = list(p.pos, p.res), ncol=1)
 }
 
 
@@ -137,6 +138,7 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @importFrom ggplot2 annotation_custom
 ##' @importFrom stats quantile
 ##' @importFrom RColorBrewer brewer.pal
+##' @importFrom aplot plot_list
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
                       rel_heights=c(1.5, .5, 1), subplots = 1:3,
@@ -290,7 +292,8 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
     if (length(rel_heights) > length(subplots))
         rel_heights <- rel_heights[subplots]
 
-    plot_grid(plotlist = plotlist, ncol=1, align="v", rel_heights=rel_heights)
+    #plot_grid(plotlist = plotlist, ncol=1, align="v", rel_heights=rel_heights)
+    plot_list(gglist = plotlist, ncol=1, heights=rel_heights)
 }
 
 
