@@ -161,13 +161,13 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     ## add node label
     if (node_label == "all" || node_label == "category") 
         p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
-            cex_label_node = cex_label_category, shadowtext = shadowtext)
+            cex_label_node = cex_label_category, shadowtext = shadowtext, ...)
     ## add group label
     if (node_label == "all" || node_label == "group") {   
         label_location <- get_label_location(ggData = ggData, label_format = label_format)
         p <- add_group_label(label_style = label_style, repel = repel, shadowtext = shadowtext, p = p,
             label_location = label_location, label_group = label_group,
-            cex_label_group = cex_label_group)
+            cex_label_group = cex_label_group, ...)
     }
     return(p + coord_equal())
 }

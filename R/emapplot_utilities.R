@@ -373,13 +373,13 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
 ##' @param shadowtext  a logical value, whether to use shadow font. 
 ##' @return a ggplot2 object.
 ##' @noRd
-add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
+add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext, ...) {
     if (shadowtext) {
         p <- p + geom_node_text(aes_(label=~name), data = data,
-            size = label_size_node * cex_label_node, bg.color = "white", repel=TRUE)
+            size = label_size_node * cex_label_node, bg.color = "white", repel=TRUE, ...)
     } else {
         p <- p + geom_node_text(aes_(label=~name), data = data,
-            size = label_size_node * cex_label_node, repel=TRUE)
+            size = label_size_node * cex_label_node, repel=TRUE, ...)
     }
     return(p)
 }
