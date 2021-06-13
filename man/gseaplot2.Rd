@@ -13,7 +13,10 @@ gseaplot2(
   rel_heights = c(1.5, 0.5, 1),
   subplots = 1:3,
   pvalue_table = FALSE,
-  ES_geom = "line"
+  ES_geom = "line",
+  lineSize1 = 1,
+  lineSize2 = 0.5,
+  legendKeySize = 1
 )
 }
 \arguments{
@@ -35,6 +38,12 @@ gseaplot2(
 
 \item{ES_geom}{geom for plotting running enrichment score,
 one of 'line' or 'dot'}
+
+\item{lineSize1}{Size of lines in enrichment score line chart}
+
+\item{lineSize2}{Size of lines in the leading-edge subset.}
+
+\item{legendKeySize}{Size of legend key in enrichment score line chart.}
 }
 \value{
 plot

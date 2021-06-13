@@ -121,6 +121,9 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param pvalue_table whether add pvalue table
 ##' @param ES_geom geom for plotting running enrichment score,
 ##' one of 'line' or 'dot'
+##' @param lineSize1 Size of lines in enrichment score line chart
+##' @param lineSize2 Size of lines in the leading-edge subset.
+##' @param legendKeySize Size of legend key in enrichment score line chart.
 ##' @return plot
 ##' @export
 ##' @importFrom ggplot2 theme_classic
@@ -140,7 +143,8 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
                       rel_heights=c(1.5, .5, 1), subplots = 1:3,
-                      pvalue_table = FALSE, ES_geom="line") {
+                      pvalue_table = FALSE, ES_geom="line", lineSize1 = 1,
+                      lineSize2 = .5, legendKeySize = 1) {
     ES_geom <- match.arg(ES_geom, c("line", "dot"))
 
     geneList <- position <- NULL ## to satisfy codetool
@@ -161,10 +165,10 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
 
     if (ES_geom == "line") {
         es_layer <- geom_line(aes_(y = ~runningScore, color= ~Description),
-                              size=1)
+                              size=lineSize1)
     } else {
         es_layer <- geom_point(aes_(y = ~runningScore, color= ~Description),
-                               size=1, data = subset(gsdata, position == 1))
+                               size=lineSize1, data = subset(gsdata, position == 1))
     }
 
     p.res <- p + es_layer +
@@ -175,7 +179,8 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
         theme(axis.text.x=element_blank(),
               axis.ticks.x=element_blank(),
               axis.line.x=element_blank(),
-              plot.margin=margin(t=.2, r = .2, b=0, l=.2, unit="cm"))
+              plot.margin=margin(t=.2, r = .2, b=0, l=.2, unit="cm"),
+              legend.key.size = unit(legendKeySize, 'cm'))
 
     i <- 0
     for (term in unique(gsdata$Description)) {
@@ -185,7 +190,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
         i <- i + 1
     }
     p2 <- ggplot(gsdata, aes_(x = ~x)) +
-        geom_linerange(aes_(ymin=~ymin, ymax=~ymax, color=~Description)) +
+        geom_linerange(aes_(ymin=~ymin, ymax=~ymax, color=~Description), size = lineSize2) +
         xlab(NULL) + ylab(NULL) + theme_classic(base_size) +
         theme(legend.position = "none",
               plot.margin = margin(t=-.1, b=0,unit="cm"),

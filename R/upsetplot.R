@@ -62,7 +62,8 @@ upsetplot.enrichResult <- function(x, n=10, ...) {
 
 ##' @importFrom ggplot2 geom_violin
 ##' @importFrom ggplot2 geom_jitter
-upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
+##' @param nodeSize Size of nodes
+upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", nodeSize = 2, ...) {
     n <- update_n(x, n)
     geneSets <- extract_geneSets(x, n)
 
@@ -75,14 +76,14 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
                       foldChange = x@geneList[names(category)])
 
     if (type == "boxplot") {
-        ly_dist <- geom_boxplot()
+        ly_dist <- geom_boxplot(outlier.size = nodeSize, ...)
     } else {
-        ly_dist <- geom_violin()
+        ly_dist <- geom_violin(...)
     }
 
     ggplot(y, aes_(x = ~Description, y = ~foldChange)) +
         ly_dist +
-        geom_jitter(width = .2, alpha = .6) +
+        geom_jitter(width = .2, alpha = .6, size = nodeSize) +
         theme_dose(font.size = 12) +
         xlab(NULL) + ylab(NULL) +
         ggupset::scale_x_upset(order_by = "degree")
