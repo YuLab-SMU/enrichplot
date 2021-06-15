@@ -4,7 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{ggtitle}
-\alias{plot_grid}
+\alias{plot_list}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -12,7 +12,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{cowplot}{\code{\link[cowplot]{plot_grid}}}
+  \item{aplot}{\code{\link[aplot]{plot_list}}}
 
   \item{ggplot2}{\code{\link[ggplot2:labs]{ggtitle}}}
 }}
