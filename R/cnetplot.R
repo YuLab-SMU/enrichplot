@@ -38,6 +38,8 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' @param cex_label_category Scale of category node label size, the 
 ##' default value is 1.
 ##' @param cex_label_gene Scale of gene node label size, the default value is 1.
+##' @param color_category Color of category node.
+##' @param color_gene Color of gene node.
 ##' @param shadowtext select which node labels to use shadow font,
 ##' one of 'category', 'gene', 'all' and 'none', default is 'all'.
 ##' @importFrom ggraph geom_edge_arc
@@ -54,6 +56,8 @@ cnetplot.enrichResult <- function(x,
                      cex_gene = 1,
                      cex_label_category = 1,
                      cex_label_gene = 1,
+                     color_category = "#E5C494",
+                     color_gene = "#B3B3B3",
                      shadowtext = "all",
                      ...) {
 
@@ -112,8 +116,8 @@ cnetplot.enrichResult <- function(x,
                                    mid = "white", high = "red")
                                    
     } else {
-        V(g)$color <- "#B3B3B3"
-        V(g)$color[1:n] <- "#E5C494"
+        V(g)$color <- color_gene
+        V(g)$color[1:n] <- color_category
         p <- ggraph(g, layout=layout, circular=circular)
         p <- p + edge_layer +
             geom_node_point(aes_(color=~I(color), size=~size), data = p$data[1:n, ]) +

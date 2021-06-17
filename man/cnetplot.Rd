@@ -28,6 +28,8 @@ cnetplot.enrichResult(
   cex_gene = 1,
   cex_label_category = 1,
   cex_label_gene = 1,
+  color_category = "#E5C494",
+  color_gene = "#B3B3B3",
   shadowtext = "all",
   ...
 )
@@ -65,6 +67,10 @@ should be scaled relative to the default, the default value is 1.}
 default value is 1.}
 
 \item{cex_label_gene}{Scale of gene node label size, the default value is 1.}
+
+\item{color_category}{Color of category node.}
+
+\item{color_gene}{Color of gene node.}
 
 \item{shadowtext}{select which node labels to use shadow font,
 one of 'category', 'gene', 'all' and 'none', default is 'all'.}
