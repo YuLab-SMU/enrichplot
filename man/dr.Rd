@@ -4,12 +4,10 @@
 \alias{dr}
 \title{Dimension reduction}
 \usage{
-dr(enrichResult, drfun, drfunName, showCategory, split = NULL, pie = NULL)
+dr(x, drfunName, showCategory, split = NULL, pie = NULL)
 }
 \arguments{
-\item{enrichResult}{Enrichment result}
-
-\item{drfun}{Dimension reduction function}
+\item{x}{Enrichment result}
 
 \item{drfunName}{Name of dimension reduction function}
 

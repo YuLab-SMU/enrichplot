@@ -248,15 +248,20 @@ adj_layout <- function(g, layout, coords) {
     } else {
         p <- ggraph(g, layout="nicely")
         if (!is.null(coords)) {
-            ggData <- p$data
-            rownames(ggData) <- ggData$name
-            ids <- intersect(ggData$name, rownames(coords))
+            # ggData <- p$data
+            # rownames(ggData) <- ggData$name
+            # ids <- intersect(ggData$name, rownames(coords))
+            # if (length(ids) > 0) {
+            #     coords <- coords[ids, ]
+            #     ggData[ids, "x"] <- coords$x
+            #     ggData[ids, "y"] <- coords$y
+            #     rownames(ggData) <- rownames(p$data)
+            #     p$data <- ggData 
+            ids <- match(p$data$name, rownames(coords))
+            ids <- ids[!is.na(ids)]
             if (length(ids) > 0) {
-                coords <- coords[ids, ]
-                ggData[ids, "x"] <- coords$x
-                ggData[ids, "y"] <- coords$y
-                rownames(ggData) <- rownames(p$data)
-                p$data <- ggData 
+                p$data[ids, "x"] <- coords$x
+                p$data[ids, "y"] <- coords$y
             } else {
                 wm <-  paste("Invalid coords parameter, the rownames of the coords", 
                     "must be the term names found in the emapplot diagram")

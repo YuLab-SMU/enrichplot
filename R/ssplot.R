@@ -43,7 +43,7 @@ ssplot.enrichResult <- function(x, showCategory = 30,
          "dimensionality reduction method;",
          "set to default `drfun = 'stats::cmdscale'`")
 
-    x <- dr(enrichResult = x, drfun = drfun, drfunName = drfunName, showCategory = showCategory)
+    x <- dr(x = x, drfunName = drfunName, showCategory = showCategory)
     coords <- x@dr$coords
     colnames(coords) <- c("x", "y")
     p <- emapplot(x = x, showCategory = showCategory,
@@ -81,7 +81,7 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
     drfunName <- as.character(eval(substitute(alist(drfun))))
     ## Use the similarity matrix to reduce the dimension and redistribute the node coordinates.
     ## Dimensionality reduction
-    x <- dr(enrichResult = x, drfun = drfun, drfunName = drfunName,
+    x <- dr(x = x, drfunName = drfunName,
         showCategory = showCategory, split = split, pie = pie)
     coords <- x@dr$coords
     colnames(coords) <- c("x", "y")
@@ -100,29 +100,28 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
 
 #' Dimension reduction
 #'
-#' @param enrichResult Enrichment result
-#' @param drfun Dimension reduction function
+#' @param x Enrichment result
 #' @param drfunName Name of dimension reduction function 
 ##' @param showCategory A number or a vector of terms. If it is a number, 
 ##' the first n terms will be displayed. If it is a vector of terms, 
 ##' the selected terms will be displayed.
 #' @param split separate result by 'category' variable
 #' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
-dr <- function(enrichResult, drfun, drfunName, showCategory, split = NULL, pie = NULL) {
-    sim = get_pairwise_sim(enrichResult = enrichResult, showCategory = showCategory,
+dr <- function(x, drfunName, showCategory, split = NULL, pie = NULL) {
+    sim = get_pairwise_sim(x = x, showCategory = showCategory,
         split = split, pie = pie)
     ## If the similarity between the two terms is 1,
     ## an error will be reported in some method, so fine-tuning.
     sim[which(sim == 1)] <- 0.99999
     for (i in seq_len(nrow(sim))) sim[i, i] <- 1
-
+    drfun <- eval(parse(text=drfunName)) 
     drfunName <- gsub(".*::", "", drfunName)
     distance_matrix <- stats::as.dist(1- sim)
-    class(distance_matrix) <- c(drfunName, class(distance_matrix))
+    class(distance_matrix) <- c(drfunName, class(distance_matrix)) 
     drs <- as.drs(distance_matrix = distance_matrix, drfun = drfun)
     # drs$method <- drfunName
-    enrichResult@dr <- drs
-    return(enrichResult)
+    x@dr <- drs
+    return(x)
 }
 
 
@@ -231,22 +230,25 @@ as.drs.dudi.pco <- function(distance_matrix, drfun) {
 
 
 
-get_pairwise_sim <- function(enrichResult, showCategory, split = NULL, pie = NULL) {
-    if (class(enrichResult) == "compareClusterResult") {
-        y <- get_selected_category(showCategory, enrichResult, split)
+get_pairwise_sim <- function(x, showCategory, split = NULL, pie = NULL) {
+    if (class(x) == "compareClusterResult") {
+        # y <- get_selected_category(showCategory, enrichResult, split)
+        y <- fortify(model = x, showCategory = showCategory,
+                     includeAll = TRUE, split = split)
+        y$Cluster <- sub("\n.*", "", y$Cluster)
         keep <- rownames(prepare_pie_category(y, pie=pie))
     } else {
-        n <- update_n(enrichResult, showCategory)
+        n <- update_n(x, showCategory)
         if (is.numeric(n)) {
             keep <- seq_len(n)
         } else {
-            keep <- match(n, rownames(enrichResult@termsim))
+            keep <- match(n, rownames(x@termsim))
         }
     }
     if (length(keep) == 0) {
         stop("no enriched term found...")
     }
-    fill_termsim(enrichResult, keep)
+    fill_termsim(x, keep)
 }
 
 
