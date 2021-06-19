@@ -299,7 +299,7 @@ setGeneric("ridgeplot",
 ##'
 ##' @docType methods
 ##' @name upsetplot
-##' @rdname upsetplot-methods
+##' @rdname upsetplot
 ##' @title upsetplot method
 ##' @param x object
 ##' @param ... additional parameters

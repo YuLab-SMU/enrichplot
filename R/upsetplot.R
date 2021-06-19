@@ -1,9 +1,12 @@
 ##' upsetplot
 ##'
 ##'
-##' @rdname upsetplot-methods
+##' @rdname upsetplot
 ##' @aliases upsetplot,enrichResult,ANY-method
-##' @param n number of categories to be plotted
+##' @param n A number or a list of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a list of terms, 
+##' the selected terms will be displayed.
+##' @param enrichment_only whether only using enriched gene(for enrichResult) or core_enriched genes(for gseaResult) 
 ##' @author Guangchuang Yu
 ##' @exportMethod upsetplot
 ##' @examples
@@ -17,7 +20,7 @@ setMethod("upsetplot", signature(x="enrichResult"),
               upsetplot.enrichResult(x, n, ...)
           })
 
-##' @rdname upsetplot-methods
+##' @rdname upsetplot
 ##' @aliases upsetplot,gseaResult
 ##' @exportMethod upsetplot
 setMethod("upsetplot", signature(x="gseaResult"),
@@ -25,12 +28,11 @@ setMethod("upsetplot", signature(x="gseaResult"),
               upsetplot.gseaResult(x, n, ...)
           })
 
-upsetplot.enrichResult <- function(x, n=10, ...) {
-    df <- as.data.frame(x)
-    id <- df$ID[1:n]
-    des <- df$Description[1:n]
-    glist <- geneInCategory(x)[id]
-    names(glist) <- des
+##' @rdname upsetplot
+upsetplot.enrichResult <- function(x, n=10, enrichment_only = TRUE, ...) {
+    # df <- as.data.frame(x)
+    n <- update_n(x, n)
+    glist <- get_geneSets(x = x, n = n, enrichment_only = enrichment_only)
     ## g <- unique(unlist(glist))
 
 
@@ -60,20 +62,20 @@ upsetplot.enrichResult <- function(x, n=10, ...) {
         ggupset::scale_x_upset(order_by = "freq")
 }
 
+##' @rdname upsetplot
 ##' @importFrom ggplot2 geom_violin
 ##' @importFrom ggplot2 geom_jitter
+##' @param type one of "boxplot" and "geom_violin"
 ##' @param nodeSize Size of nodes
-upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", nodeSize = 2, ...) {
+upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", nodeSize = 2, enrichment_only = TRUE, ...) {
     n <- update_n(x, n)
-    geneSets <- extract_geneSets(x, n)
-
-    ## foldChange <- fc_readable(x, x@geneList)
+    geneSets <- get_geneSets(x = x, n = n, enrichment_only = enrichment_only)
     d <- list2df(geneSets)
-
     category <- split(d[,1], d[, 2])
     y <- tibble::tibble(Description = category,
-                      gene = names(category),
-                      foldChange = x@geneList[names(category)])
+          gene = names(category),
+          foldChange = x@geneList[names(category)])
+
 
     if (type == "boxplot") {
         ly_dist <- geom_boxplot(outlier.size = nodeSize, ...)
@@ -88,3 +90,39 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", nodeSize = 2, ...)
         xlab(NULL) + ylab(NULL) +
         ggupset::scale_x_upset(order_by = "degree")
 }
+
+
+##' Get geneSets
+##'
+##' @param x enrichment result
+##' @param n A number or a list of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a list of terms, 
+##' the selected terms will be displayed.
+##' @param enrichment_only whether only using enriched gene(for enrichResult) or core_enriched genes(for gseaResult) 
+##' @noRd
+get_geneSets <- function(x, n, enrichment_only) {
+    if (enrichment_only) {
+        geneSets <- extract_geneSets(x, n)
+        ## foldChange <- fc_readable(x, x@geneList)
+    } else {
+        if (is.numeric(n)) {
+            geneSets <- x@geneSets[x$ID[seq_len(n)]]
+        } else {
+            i <- match(n, x$Description)
+            i <- i[!is.na(i)]
+            nn <- x@result[i, "ID"]
+            geneSets <- x@geneSets[nn]
+            names(geneSets) <- x@result[i, "Description"]
+        }
+    }
+    return(geneSets)
+}
+
+
+
+
+
+
+
+
+
