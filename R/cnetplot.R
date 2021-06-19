@@ -53,11 +53,11 @@ cnetplot.enrichResult <- function(x,
                      circular = FALSE,
                      node_label = "all",
                      cex_category = 1,
-                     color_category = "#E5C494",
-                     color_gene = "#B3B3B3",
                      cex_gene = 1,
                      cex_label_category = 1,
                      cex_label_gene = 1,
+                     color_category = "#E5C494",
+                     color_gene = "#B3B3B3",
                      shadowtext = "all",
                      ...) {
 
