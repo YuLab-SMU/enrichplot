@@ -141,9 +141,66 @@ as.drs.default <- function(distance_matrix, drfun) {
                     message(wrongMessage)
                     stats::cmdscale(distance_matrix, eig = TRUE)
                 })
-    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    pcoa <- as.numeric(dim_reduction_data$eig)
-    list(coords = coords, pcoa = pcoa)
+
+    coords <- stress <- pcoa <- NULL
+    # get coords
+    if ("points" %in% names(dim_reduction_data)) {
+        coords <- as.data.frame(dim_reduction_data$points[, 1:2])
+    }
+    
+    ## ape::pcoa
+    ## ecodist::pco
+    if ("vectors" %in% names(dim_reduction_data)) {
+        coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
+    }
+
+    ## smacof::mds
+    if ("conf" %in% names(dim_reduction_data)) {
+        coords <- as.data.frame(dim_reduction_data$conf[, 1:2])
+    }
+
+    ## ade4::dudi.pco
+    if ("tab" %in% names(dim_reduction_data)) {
+        coords <- as.data.frame(dim_reduction_data$tab[, 1:2])
+    }  
+
+    if (!is.null(coords)) {
+        ## result of some functions(e.g. ecodist::pco) has no rownames    
+        rownames(coords) <- attr(distance_matrix, "Labels")
+    }
+    
+    # get pcoa
+    if ("eig" %in% names(dim_reduction_data)) {
+        pcoa <- as.numeric(dim_reduction_data$eig)
+    } 
+
+    if ("values" %in% names(dim_reduction_data)) {
+        pcoa <- dim_reduction_data$values
+        if ("Eigenvalues" %in% names(pcoa)) {
+            ## ape::pcoa
+            pcoa <- as.numeric(pcoa$Eigenvalues)
+        } else {
+            ## ecodist::pco
+            pcoa <- as.numeric(pcoa)
+        }
+    }
+    
+
+    if (is.null(coords)) {
+        message(wrongMessage)
+        dim_reduction_data <- stats::cmdscale(distance_matrix, eig = TRUE)
+        coords <- as.data.frame(dim_reduction_data$points[, 1:2])
+        pcoa <- as.numeric(dim_reduction_data$eig)
+        return(list(coords = coords, pcoa = pcoa))      
+    }
+
+    if ("stress" %in% names(dim_reduction_data)) {
+        stress <- dim_reduction_data$stress
+        drs <- list(coords = coords, stress = format(stress, digits=4))
+    } else {
+        drs <- list(coords = coords, pcoa = pcoa)
+    }
+    return(drs)
 }
 
 
@@ -274,9 +331,3 @@ adj_axis <- function(p, drs) {
     p <- p +  labs(x = xlab, y = ylab, title = title)
     return(p)
 }
-
-
-
-
-
-
