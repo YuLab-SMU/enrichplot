@@ -107,11 +107,11 @@ cnetplot.enrichResult <- function(x,
             geom_node_point(aes_(color=~I("#E5C494"), size=~size),
                 data = p$data[1:n, ]) +
             scale_size(range=c(3, 8) * cex_category) +
-            ggnewscale::new_scale("size") +
+            ## ggnewscale::new_scale("size") +
             ggnewscale::new_scale_color() +
-            geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size),
-                data = p$data[-(1:n), ], show.legend = show_legend) +
-            scale_size(range=c(3, 3) * cex_gene) +
+            geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~I(3 * cex_gene)),
+                            data = p$data[-(1:n), ], show.legend = show_legend) +
+            ## scale_size(range=c(3, 3) * cex_gene) +
             scale_colour_gradient2(name = "fold change", low = "blue",
                                    mid = "white", high = "red")
                                    
@@ -122,10 +122,10 @@ cnetplot.enrichResult <- function(x,
         p <- p + edge_layer +
             geom_node_point(aes_(color=~I(color), size=~size), data = p$data[1:n, ]) +
             scale_size(range=c(3, 8) * cex_category) +
-            ggnewscale::new_scale("size") +
-            geom_node_point(aes_(color=~I(color), size=~size),
-                data = p$data[-(1:n), ], show.legend = FALSE) +
-            scale_size(range=c(3, 3) * cex_gene)
+            ## ggnewscale::new_scale("size") +
+            geom_node_point(aes_(color=~I(color), size=~I(3 * cex_gene)),
+                            data = p$data[-(1:n), ], show.legend = FALSE) 
+            ## scale_size(range=c(3, 3) * cex_gene)
     }
 
     p <- p + theme_void()
