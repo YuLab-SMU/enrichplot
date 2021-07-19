@@ -1,6 +1,10 @@
+# enrichplot 1.13.1.991
+
++ add `barplot.compareClusterResult` (2021-07-19, Mon)
+
 # enrichplot 1.13.1
 
-+ use `aplot::plot_list` instead of `cowplot::plot_grid` (2021-06-13, Sun
++ use `aplot::plot_list` instead of `cowplot::plot_grid` (2021-06-13, Sun)
 + add `color_category` and `color_gene` parameters for `cnetplot`(2021-6-11, Fri)
 + Enables `showCategory` parameter to support character input in `dotplot.compareClusterResult`(2021-6-10, Thu)
 
