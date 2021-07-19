@@ -51,7 +51,7 @@ additional parameters can refer the emapplot function: \link{emapplot}.}
 the default value is square root of the number of nodes.}
 
 \item{drfun}{The function used for dimension reduction,
-e.g. 'stats::cmdscale' (the default), 'vegan::metaMDS', or 'vegan::metaMDS'.}
+e.g. stats::cmdscale (the default), vegan::metaMDS, or ape::pcoa.}
 
 \item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
 

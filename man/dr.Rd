@@ -4,12 +4,12 @@
 \alias{dr}
 \title{Dimension reduction}
 \usage{
-dr(x, drfunName, showCategory, split = NULL, pie = NULL)
+dr(x, drfun, showCategory, split = NULL, pie = NULL)
 }
 \arguments{
 \item{x}{Enrichment result}
 
-\item{drfunName}{Name of dimension reduction function}
+\item{drfun}{dimension reduction function}
 
 \item{showCategory}{A number or a vector of terms. If it is a number, 
 the first n terms will be displayed. If it is a vector of terms, 

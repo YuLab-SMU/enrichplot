@@ -27,7 +27,7 @@ setMethod("ssplot", signature(x = "compareClusterResult"),
 ##' @param nCluster Numeric, the number of clusters,
 ##' the default value is square root of the number of nodes.
 ##' @param drfun The function used for dimension reduction,
-##' e.g. 'stats::cmdscale' (the default), 'vegan::metaMDS', or 'vegan::metaMDS'.
+##' e.g. stats::cmdscale (the default), vegan::metaMDS, or ape::pcoa.
 ##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
 ##' @param ... additional parameters
 ##'
@@ -38,12 +38,12 @@ ssplot.enrichResult <- function(x, showCategory = 30,
     if (is.character(drfun)) {
         drfun <- eval(parse(text=drfun))
     }
-    drfunName <- as.character(eval(substitute(alist(drfun))))
+    # drfunName <- as.character(eval(substitute(alist(drfun))))
     wrongMessage <- paste("Wrong drfun parameter or unsupported",
          "dimensionality reduction method;",
          "set to default `drfun = 'stats::cmdscale'`")
 
-    x <- dr(x = x, drfunName = drfunName, showCategory = showCategory)
+    x <- quiet(dr(x = x, drfun = drfun, showCategory = showCategory))
     coords <- x@dr$coords
     colnames(coords) <- c("x", "y")
     p <- emapplot(x = x, showCategory = showCategory,
@@ -78,11 +78,10 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
     if (is.character(drfun)) {
         drfun <- eval(parse(text=drfun))
     }
-    drfunName <- as.character(eval(substitute(alist(drfun))))
-    ## Use the similarity matrix to reduce the dimension and redistribute the node coordinates.
-    ## Dimensionality reduction
-    x <- dr(x = x, drfunName = drfunName,
-        showCategory = showCategory, split = split, pie = pie)
+
+    x <- quiet(dr(x = x, drfun = drfun,
+                  showCategory = showCategory, 
+                  split = split, pie = pie))
     coords <- x@dr$coords
     colnames(coords) <- c("x", "y")
     p <- emapplot(x, showCategory = showCategory,
@@ -98,28 +97,30 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
 
 
 
-#' Dimension reduction
-#'
-#' @param x Enrichment result
-#' @param drfunName Name of dimension reduction function 
+##' Dimension reduction
+##'
+##' @param x Enrichment result
+##' @param drfun dimension reduction function 
 ##' @param showCategory A number or a vector of terms. If it is a number, 
 ##' the first n terms will be displayed. If it is a vector of terms, 
 ##' the selected terms will be displayed.
-#' @param split separate result by 'category' variable
-#' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
-dr <- function(x, drfunName, showCategory, split = NULL, pie = NULL) {
+##' @param split separate result by 'category' variable
+##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
+dr <- function(x, drfun, showCategory, split = NULL, pie = NULL) {
     sim = get_pairwise_sim(x = x, showCategory = showCategory,
         split = split, pie = pie)
     ## If the similarity between the two terms is 1,
     ## an error will be reported in some method, so fine-tuning.
     sim[which(sim == 1)] <- 0.99999
     for (i in seq_len(nrow(sim))) sim[i, i] <- 1
-    drfun <- eval(parse(text=drfunName)) 
-    drfunName <- gsub(".*::", "", drfunName)
+    # drfun <- eval(parse(text=drfunName)) 
+    # drfunName <- gsub(".*::", "", drfunName)
+    drfun_env <- environment(fun = drfun) %>%
+        rlang::env_name() %>%
+        sub(".*:", "", .)
     distance_matrix <- stats::as.dist(1- sim)
-    class(distance_matrix) <- c(drfunName, class(distance_matrix)) 
+    class(distance_matrix) <- c(drfun_env, class(distance_matrix)) 
     drs <- as.drs(distance_matrix = distance_matrix, drfun = drfun)
-    # drs$method <- drfunName
     x@dr <- drs
     return(x)
 }
@@ -135,150 +136,89 @@ as.drs <- function(distance_matrix, drfun) UseMethod("as.drs")
 as.drs.default <- function(distance_matrix, drfun) {
     wrongMessage <- paste("Wrong drfun parameter or unsupported",
         "dimensionality reduction method;",
-        "set to default `drfun = 'stats::cmdscale'`")
-    dim_reduction_data <- tryCatch(expr  = drfun(distance_matrix),
-                error = function(e) {
-                    message(wrongMessage)
-                    stats::cmdscale(distance_matrix, eig = TRUE)
-                })
-
-    coords <- stress <- pcoa <- NULL
-    # get coords
-    if ("points" %in% names(dim_reduction_data)) {
-        coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    }
-    
-    ## ape::pcoa
-    ## ecodist::pco
-    if ("vectors" %in% names(dim_reduction_data)) {
-        coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
-    }
-
-    ## smacof::mds
-    if ("conf" %in% names(dim_reduction_data)) {
-        coords <- as.data.frame(dim_reduction_data$conf[, 1:2])
-    }
-
-    ## ade4::dudi.pco
-    if ("tab" %in% names(dim_reduction_data)) {
-        coords <- as.data.frame(dim_reduction_data$tab[, 1:2])
-    }  
-
-    if (!is.null(coords)) {
-        ## result of some functions(e.g. ecodist::pco) has no rownames    
-        rownames(coords) <- attr(distance_matrix, "Labels")
-    }
-    
-    # get pcoa
-    if ("eig" %in% names(dim_reduction_data)) {
-        pcoa <- as.numeric(dim_reduction_data$eig)
-    } 
-
-    if ("values" %in% names(dim_reduction_data)) {
-        pcoa <- dim_reduction_data$values
-        if ("Eigenvalues" %in% names(pcoa)) {
-            ## ape::pcoa
-            pcoa <- as.numeric(pcoa$Eigenvalues)
-        } else {
-            ## ecodist::pco
-            pcoa <- as.numeric(pcoa)
-        }
-    }
-    
-
-    if (is.null(coords)) {
-        message(wrongMessage)
-        dim_reduction_data <- stats::cmdscale(distance_matrix, eig = TRUE)
-        coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-        pcoa <- as.numeric(dim_reduction_data$eig)
-        return(list(coords = coords, pcoa = pcoa))      
-    }
-
-    if ("stress" %in% names(dim_reduction_data)) {
-        stress <- dim_reduction_data$stress
-        drs <- list(coords = coords, stress = format(stress, digits=4))
-    } else {
-        drs <- list(coords = coords, pcoa = pcoa)
-    }
-    return(drs)
+        "set to default `drfun = 'stats::cmdscale'`")       
+    message(wrongMessage)
+    dim_reduction_data <- stats::cmdscale(distance_matrix, eig = TRUE)
+    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
+    pcoa <- as.numeric(dim_reduction_data$eig)
+    list(coords = coords, pcoa = pcoa)
 }
 
 
-#' @method reduce_dim cmdscale
-as.drs.cmdscale <- function(distance_matrix, drfun) {
+
+#' @method as.drs stats
+as.drs.stats <- function(distance_matrix, drfun) {
     dim_reduction_data <- drfun(distance_matrix, eig = TRUE)
     coords <- as.data.frame(dim_reduction_data$points[, 1:2])
     pcoa <- as.numeric(dim_reduction_data$eig)
     list(coords = coords, pcoa = pcoa)
 }
 
-#' @method reduce_dim sammon
-as.drs.sammon <- function(distance_matrix, drfun) {
+#' @method as.drs MASS
+as.drs.MASS <- function(distance_matrix, drfun) {
     y <- stats::cmdscale(distance_matrix)
     ## If the matrix y has duplicate rows it will report an error, so perturb slightly  
     dup <- which(duplicated(y) == TRUE)  
     y[dup, 1] <- y[dup, 1] + 10^-7 * seq_len(length(dup))  
     dim_reduction_data <- drfun(d = distance_matrix, y = y)
-    # class:  list
     coords <- as.data.frame(dim_reduction_data$points[, 1:2])
     stress <- dim_reduction_data$stress
     list(coords = coords, stress = format(stress, digits=4))
 }
 
-#' @method reduce_dim metaMDS
-as.drs.metaMDS <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix, engine = "monoMDS")
-    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    stress <- dim_reduction_data$stress
-    list(coords = coords, stress = format(stress, digits=4))
+#' @method as.drs vegan
+as.drs.vegan <- function(distance_matrix, drfun) {
+    if("engine" %in% names(as.list(rlang::get_expr(drfun)))) {
+       dim_reduction_data <- drfun(distance_matrix, engine = "monoMDS")
+       coords <- as.data.frame(dim_reduction_data$points[, 1:2])
+       stress <- dim_reduction_data$stress
+       return(list(coords = coords, stress = format(stress, digits=4)))
+    } else {
+       dim_reduction_data <- drfun(distance_matrix, eig = TRUE)
+       coords <- as.data.frame(dim_reduction_data$points[, 1:2])
+       pcoa <- as.numeric(dim_reduction_data$eig)
+       return(list(coords = coords, pcoa = pcoa))
+    }
 }
 
-#' @method reduce_dim pcoa
-as.drs.pcoa <- function(distance_matrix, drfun) {
-    dim_reduction_data<- drfun(distance_matrix)
+#' @method as.drs ape
+as.drs.ape <- function(distance_matrix, drfun) {
+    dim_reduction_data <- drfun(distance_matrix)
     coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
     pcoa <- as.numeric(dim_reduction_data$values$Eigenvalues)
     list(coords = coords, pcoa = pcoa)
 }
 
-#' @method reduce_dim mds
-as.drs.mds<- function(distance_matrix, drfun) {
+#' @method as.drs smacof
+as.drs.smacof<- function(distance_matrix, drfun) {
     dim_reduction_data <- drfun(distance_matrix)
     coords <- as.data.frame(dim_reduction_data$conf[, 1:2])
     stress <- dim_reduction_data$stress
     list(coords = coords, stress = format(stress, digits=4))
 }
 
-#' @method reduce_dim wcmdscale
-as.drs.wcmdscale <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix, eig = TRUE)
+
+#' @method as.drs ecodist
+as.drs.ecodist <- function(distance_matrix, drfun) {
+    dim_reduction_data <- drfun(distance_matrix)
+    coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
+    rownames(coords) <- attr(distance_matrix, "Labels")
+    pcoa <- as.numeric(dim_reduction_data$values)
+    list(coords = coords, pcoa = pcoa)
+}
+
+#' @method as.drs labdsv
+as.drs.labdsv <- function(distance_matrix, drfun) {
+    dim_reduction_data <- drfun(distance_matrix)
     coords <- as.data.frame(dim_reduction_data$points[, 1:2])
     pcoa <- as.numeric(dim_reduction_data$eig)
     list(coords = coords, pcoa = pcoa)
 }
 
-#' @method reduce_dim pco
-as.drs.pco <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix)
-    if (!is.null(dim_reduction_data$vectors)) {
-        coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
-        ## result of ecodist::pco has no rownames
-        rownames(coords) <- attr(distance_matrix, "Labels")
 
-    }
-    ## labdsv::pco
-    if (!is.null(dim_reduction_data$points)) {
-        coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    }
-    pcoa <- as.numeric(dim_reduction_data$eig)
-    if (is.null(pcoa) || length(pcoa) == 0) {
-        pcoa <- as.numeric(dim_reduction_data$values)
-    }
-    list(coords = coords, pcoa = pcoa)
-}
 
-#' @method reduce_dim dudi.pco
-as.drs.dudi.pco <- function(distance_matrix, drfun) {
+#' @method as.drs ade4
+as.drs.ade4 <- function(distance_matrix, drfun) {
     dim_reduction_data <- drfun(distance_matrix, scannf = FALSE)
     coords <- as.data.frame(dim_reduction_data$tab[, 1:2])
     pcoa <- as.numeric(dim_reduction_data$eig)
@@ -331,3 +271,4 @@ adj_axis <- function(p, drs) {
     p <- p +  labs(x = xlab, y = ylab, title = title)
     return(p)
 }
+
