@@ -90,6 +90,46 @@ setGeneric("dotplot",
                standardGeneric("dotplot")
            )
 
+##' barplot for enrichment result
+##'
+##'
+##' @title barplot
+##' @rdname barplot
+##' @param height enrichResult object
+##' @param x one of 'Count' and 'GeneRatio'
+##' @param color one of 'pvalue', 'p.adjust' and 'qvalue'
+##' @param showCategory number of categories to show
+##' @param font.size font size
+##' @param title plot title
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
+##' by default wraps names longer that 30 characters
+##' @param ... other parameter, ignored
+##' @return plot
+##' @importFrom methods setGeneric
+##' @export
+##' @examples
+##' \dontrun{
+##'     library(DOSE)
+##'     data(geneList)
+##'     de <- names(geneList)[1:100]
+##'     x <- enrichDO(de)
+##'     dotplot(x)
+##'     # use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
+##'     barplot(x, showCategory = 10)
+##'     categorys <- c("pre-malignant neoplasm", "intestinal disease",
+##'                    "breast ductal carcinoma", "non-small cell lung carcinoma")
+##'     barplot(x, showCategory = categorys)
+##' }
+setGeneric("barplot",
+           function(height,  ...)
+               standardGeneric("barplot")
+           )
+
+
+
+
+
 ##' Enrichment Map for enrichment result of
 ##' over-representation test or gene set enrichment analysis
 ##'
