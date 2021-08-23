@@ -9,6 +9,15 @@ setMethod("cnetplot", signature(x = "enrichResult"),
 
 ##' @rdname cnetplot
 ##' @exportMethod cnetplot
+setMethod("cnetplot", signature(x = "list"),
+          function(x, showCategory = 5,
+                   foldChange = NULL, layout = "kk", ...) {
+              cnetplot.enrichResult(x, showCategory = showCategory,
+                                    foldChange = foldChange, layout = layout, ...)
+          })
+
+##' @rdname cnetplot
+##' @exportMethod cnetplot
 setMethod("cnetplot", signature(x = "gseaResult"),
           function(x, showCategory = 5,
                    foldChange = NULL, layout = "kk", ...) {
@@ -81,7 +90,9 @@ cnetplot.enrichResult <- function(x,
 
     g <- list2graph(geneSets)
 
-    foldChange <- fc_readable(x, foldChange)
+    if (!inherits(x,  "list")) {
+        foldChange <- fc_readable(x, foldChange)        
+    }
 
     size <- sapply(geneSets, length)
     V(g)$size <- min(size)/2
@@ -104,7 +115,7 @@ cnetplot.enrichResult <- function(x,
         p <- ggraph(g, layout=layout, circular = circular)
         p <- p + edge_layer +
             # geom_node_point(aes_(color=~as.numeric(as.character(color)),
-            geom_node_point(aes_(color=~I("#E5C494"), size=~size),
+            geom_node_point(aes_(color=~I(color_category), size=~size),
                 data = p$data[1:n, ]) +
             scale_size(range=c(3, 8) * cex_category) +
             ## ggnewscale::new_scale("size") +
