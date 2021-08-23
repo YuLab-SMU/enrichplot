@@ -1,3 +1,7 @@
+# enrichplot 1.13.1.991
+
++ `cnetplot` now works with a named list (2021-08-23, Mon; #362)
+
 # enrichplot 1.13.1
 
 + use `aplot::plot_list` instead of `cowplot::plot_grid` (2021-06-13, Sun

@@ -3,6 +3,7 @@
 \name{cnetplot}
 \alias{cnetplot}
 \alias{cnetplot,enrichResult-method}
+\alias{cnetplot,list-method}
 \alias{cnetplot,gseaResult-method}
 \alias{cnetplot,compareClusterResult-method}
 \alias{cnetplot.enrichResult}
@@ -11,6 +12,8 @@
 cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 
 \S4method{cnetplot}{enrichResult}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+
+\S4method{cnetplot}{list}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 
 \S4method{cnetplot}{gseaResult}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
 

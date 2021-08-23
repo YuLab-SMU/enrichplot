@@ -139,13 +139,21 @@ fc_readable <- function(x, foldChange = NULL) {
 
 update_n <- function(x, showCategory) {
     if (!is.numeric(showCategory)) {
+        if (inherits(x, 'list')) {
+            showCategory <- showCategory[showCategory %in% names(x)]
+        }
         return(showCategory)
     }
 
     ## geneSets <- geneInCategory(x) ## use core gene for gsea result
     n <- showCategory
-    if (nrow(x) < n) {
-        n <- nrow(x)
+    if (inherits(x, 'list')) {
+        nn <- length(x)
+    } else {
+        nn <- nrow(x)
+    }
+    if (nn < n) {
+        n <- nn
     }
 
     return(n)
@@ -153,10 +161,15 @@ update_n <- function(x, showCategory) {
 
 extract_geneSets <- function(x, n) {
     n <- update_n(x, n)
-    geneSets <- geneInCategory(x) ## use core gene for gsea result
-    y <- as.data.frame(x)
-    geneSets <- geneSets[y$ID]
-    names(geneSets) <- y$Description
+
+    if (inherits(x, 'list')) {
+        geneSets <- x
+    } else {
+        geneSets <- geneInCategory(x) ## use core gene for gsea result
+        y <- as.data.frame(x)
+        geneSets <- geneSets[y$ID]
+        names(geneSets) <- y$Description        
+    }
     if (is.numeric(n)) {
         return(geneSets[1:n])
     }
