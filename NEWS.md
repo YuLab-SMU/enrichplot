@@ -1,6 +1,6 @@
 # enrichplot 1.13.1.991
 
-+ `cnetplot` now works with a named list (2021-08-23, Mon; #362)
++ `cnetplot` now works with a named list (2021-08-23, Mon; clusterProfiler#362)
 
 # enrichplot 1.13.1
 

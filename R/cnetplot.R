@@ -124,8 +124,8 @@ cnetplot.enrichResult <- function(x,
                             data = p$data[-(1:n), ], show.legend = show_legend) +
             ## scale_size(range=c(3, 3) * cex_gene) +
             scale_colour_gradient2(name = "fold change", low = "blue",
-                                   mid = "white", high = "red")
-                                   
+                                   mid = "white", high = "red",
+                                   guide = guide_colorbar(order = 2))
     } else {
         V(g)$color <- color_gene
         V(g)$color[1:n] <- color_category
