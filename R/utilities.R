@@ -348,6 +348,10 @@ ep_str_wrap <- function(string, width) {
                    n <- nchar(st)
                    y <- c(y,n)
                    idx <- which(y < width)
+                   # When the length of first word > width
+                   if (length(idx) == 0) idx <- 1
+                   # Split the string into two pieces
+                   # The length of first piece is small than witdh
                    words[[i]] <- substring(st, 1, y[idx[length(idx)]] - 1)
                    st <- substring(st, y[idx[length(idx)]] + 1, n)  
                    i <- i + 1
