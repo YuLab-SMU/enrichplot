@@ -1,5 +1,6 @@
-# enrichplot 1.13.1.991
+# enrichplot 1.13.1.992
 
++ update `ep_str_wrap` (2021-08-28, Sat)
 + `cnetplot` now works with a named list (2021-08-23, Mon; clusterProfiler#362)
 
 # enrichplot 1.13.1
