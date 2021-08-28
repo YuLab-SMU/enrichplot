@@ -158,15 +158,18 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                                          font.size=12, title="", label_format = 30,
                                          group = FALSE, shape = FALSE) {
     color <- NULL
-    df <- fortify(object, showCategory=showCategory, by=by,
+    if (is.null(size)) size <- by ## by may deprecated in future release
+
+    df <- fortify(object, showCategory=showCategory, by=size,
                   includeAll=includeAll, split=split)
+
     if (by != "geneRatio")
         df$GeneRatio <- parse_ratio(df$GeneRatio)
     label_func <- default_labeller(label_format)
     if(is.function(label_format)) {
         label_func <- label_format
     }
-    if (is.null(size)) size <- by
+
     by2 <- switch(size, rowPercentage = "Percentage", 
                         count         = "Count", 
                         geneRatio     = "GeneRatio")    

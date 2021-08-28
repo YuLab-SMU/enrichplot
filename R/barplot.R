@@ -74,7 +74,7 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust',
 
     p + geom_col() + # geom_bar(stat = "identity") + coord_flip() +
         scale_y_discrete(labels = label_func) +
-        ggtitle(title) + xlab(NULL) + ylab(NULL)
+        ggtitle(title) + ylab(NULL) # + xlab(NULL)
 }
 
 
