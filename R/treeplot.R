@@ -222,17 +222,17 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
             mapping = aes_(node =~ node, label =~ labels, color =~ cluster),
             textcolor = "black",
             extend = extend,
-            show.legend = F,
+            show.legend = FALSE,
             fontsize = fontsize, offset = offset) + 
             scale_color_manual(values = df$color, 
-                               guide = FALSE)
+                               guide = 'none')
     if (hilight) {
         p <- p + ggtree::geom_hilight(
             data = df,
             mapping = aes_(node =~ node, fill =~ cluster),
-            show.legend = F) + 
+            show.legend = FALSE) + 
             scale_fill_manual(values = df$color, 
-                               guide = FALSE)
+                               guide = 'none')
 
     }
     
@@ -262,11 +262,12 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (!is.null(group_color)) {
         color2 <- c(rep("black", n_color), group_color)
-        p <- p + scale_color_manual(values = color2, guide = FALSE)
+        p <- p + scale_color_manual(values = color2, guide = 'none')
     }
     
     p <- p %<+% d +
-        geom_tiplab(offset = offset_tiplab, hjust = 0, show.legend = FALSE, align=TRUE)
+        geom_tiplab(offset = offset_tiplab, hjust = 0,
+                    show.legend = FALSE, align = TRUE, linesize = 0)
 
     p <- add_cladelab(p, nWords, label_format, offset, roots, 
         fontsize, group_color, cluster_color, pdata, extend, hilight) 
