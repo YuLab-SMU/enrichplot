@@ -29,6 +29,8 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @author Guangchuang Yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
                                 layout = "sugiyama", geom = "text", ...) {
+    segment.size <- getOption("ggrepel.segment.size")
+    if (is.null(segment.size)) segment.size <- 0.2
     # has_package("AnnotationDbi")
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
@@ -79,7 +81,7 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
                 guide=guide_colorbar(reverse=TRUE), na.value="white")
         ## scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white')
     } else {
-        p <- p + geom_node_text(aes_(label=~Term), repel=TRUE)
+        p <- p + geom_node_text(aes_(label=~Term), repel=TRUE, segment.size = segment.size)
     }
     return(p)
 }

@@ -193,6 +193,8 @@ merge_compareClusterResult <- function(yy) {
 build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie, 
                          layout, coords, cex_line, min_edge, pair_sim,
                          method, with_edge){
+    segment.size <- getOption("ggrepel.segment.size")
+    if (is.null(segment.size)) segment.size <- 0.2
     geneSets <- setNames(strsplit(as.character(mergedEnrichDf$geneID), "/",
                               fixed = TRUE), mergedEnrichDf$ID) 
                               
@@ -221,7 +223,7 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
                 cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
                 color=NA)+
             xlim(-3,3) + ylim(-3,3) + coord_equal()+
-            geom_node_text(aes_(label=~name), repel=TRUE) +
+            geom_node_text(aes_(label=~name), repel=TRUE, segment.size = segment.size) +
             theme_void()+labs(fill = "Cluster")
         return(p)
 
@@ -374,12 +376,16 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
 ##' @return a ggplot2 object.
 ##' @noRd
 add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
+    segment.size <- getOption("ggrepel.segment.size")
+    if (is.null(segment.size)) segment.size <- 0.2
     if (shadowtext) {
         p <- p + geom_node_text(aes_(label=~name), data = data,
-            size = label_size_node * cex_label_node, bg.color = "white", repel=TRUE)
+            size = label_size_node * cex_label_node, bg.color = "white", 
+            repel=TRUE, segment.size = segment.size)
     } else {
         p <- p + geom_node_text(aes_(label=~name), data = data,
-            size = label_size_node * cex_label_node, repel=TRUE)
+            size = label_size_node * cex_label_node, repel=TRUE,
+            segment.size = segment.size)
     }
     return(p)
 }
