@@ -193,8 +193,7 @@ merge_compareClusterResult <- function(yy) {
 build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie, 
                          layout, coords, cex_line, min_edge, pair_sim,
                          method, with_edge){
-    segment.size <- getOption("ggrepel.segment.size")
-    if (is.null(segment.size)) segment.size <- 0.2
+    segment.size <- get_ggrepel_segsize()
     geneSets <- setNames(strsplit(as.character(mergedEnrichDf$geneID), "/",
                               fixed = TRUE), mergedEnrichDf$ID) 
                               
@@ -338,6 +337,7 @@ get_label_location <- function(ggData, label_format) {
 add_group_label <- function(label_style, repel, shadowtext, p, label_location, 
                             label_group, cex_label_group, ...) {
     if (label_style != "shadowtext") return(p)
+    segment.size <- get_ggrepel_segsize()
     if (!repel) {
         if (shadowtext) {
             p <- p + geom_shadowtext(data = label_location,
@@ -356,12 +356,12 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
         p <- p + ggrepel::geom_text_repel(data = label_location,
             aes_(x =~ x, y =~ y, label =~ label), colour = "black",
             size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-            show.legend = FALSE, ...)
+            show.legend = FALSE, segment.size = segment.size, ...)
     } else {
         p <- p + ggrepel::geom_text_repel(data = label_location,
             aes_(x =~ x, y =~ y, label =~ label), colour = "black",
             size = label_group * cex_label_group, 
-            show.legend = FALSE, ...)
+            show.legend = FALSE, segment.size = segment.size, ...)
     }
     return(p)   
 }
@@ -376,8 +376,7 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
 ##' @return a ggplot2 object.
 ##' @noRd
 add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
-    segment.size <- getOption("ggrepel.segment.size")
-    if (is.null(segment.size)) segment.size <- 0.2
+    segment.size <- get_ggrepel_segsize()
     if (shadowtext) {
         p <- p + geom_node_text(aes_(label=~name), data = data,
             size = label_size_node * cex_label_node, bg.color = "white", 
