@@ -377,4 +377,9 @@ default_labeller <- function(n) {
     }
 }
 
-
+#' Get segment.size value for ggrepel
+#' @default default value of ggrepel.segment.size
+#' @noRd
+get_ggrepel_segsize <- function(default = 0.2) {
+    getOption("ggrepel.segment.size", default = default)
+}

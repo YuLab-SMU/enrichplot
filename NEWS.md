@@ -1,5 +1,6 @@
-# enrichplot 1.13.1.992
+# enrichplot 1.13.1.993
 
++ add `get_ggrepel_segsize` function to set `segment.size` value for `ggrepel`(2021-08-29, Sun)
 + update `ep_str_wrap` (2021-08-28, Sat)
 + `cnetplot` now works with a named list (2021-08-23, Mon; clusterProfiler#362)
 
