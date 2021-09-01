@@ -250,7 +250,9 @@ setGeneric("gseaplot",
 ##' @rdname heatplot
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
-##' @param foldChange fold Change
+##' @param foldChange fold Change\
+##' @param label_format a numeric value sets wrap length, alternatively a
+##' custom function to format axis labels.
 ##' @export
 ##' @return ggplot object
 ##' @examples
@@ -261,7 +263,7 @@ setGeneric("gseaplot",
 ##' heatplot(x)
 ##' @author guangchuang yu
 setGeneric("heatplot",
-           function(x, showCategory=30, foldChange=NULL)
+           function(x, showCategory=30, foldChange=NULL, label_format = 30)
                standardGeneric("heatplot")
            )
 

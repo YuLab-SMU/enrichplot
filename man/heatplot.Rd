@@ -7,7 +7,7 @@
 \alias{heatplot.enrichResult}
 \title{heatplot}
 \usage{
-heatplot(x, showCategory = 30, foldChange = NULL)
+heatplot(x, showCategory = 30, foldChange = NULL, label_format = 30)
 
 \S4method{heatplot}{enrichResult}(x, showCategory = 30, foldChange = NULL)
 
@@ -24,8 +24,6 @@ heatplot.enrichResult(
 \item{x}{enrichment result.}
 
 \item{showCategory}{number of enriched terms to display}
-
-\item{foldChange}{fold Change}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.
