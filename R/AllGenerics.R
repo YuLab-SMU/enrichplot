@@ -250,7 +250,7 @@ setGeneric("gseaplot",
 ##' @rdname heatplot
 ##' @param x enrichment result.
 ##' @param showCategory number of enriched terms to display
-##' @param foldChange fold Change\
+##' @param foldChange fold Change.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
 ##' @export
@@ -334,6 +334,7 @@ setGeneric("upsetplot", function(x, ...) standardGeneric("upsetplot"))
 ##'     library(org.Hs.eg.db)
 ##'     library(enrichplot)
 ##'     library(GOSemSim)
+##'     library(ggplot2)
 ##'     library(DOSE)
 ##'     data(geneList)
 ##'     gene <- names(geneList)[abs(geneList) > 2]
@@ -351,14 +352,25 @@ setGeneric("upsetplot", function(x, ...) standardGeneric("upsetplot"))
 ##'     # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
 ##'     treeplot(ego2, showCategory = 30, hilight = FALSE)
 ##'     # use `offset` parameter to adjust the distance of bar and tree.
-##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 8)
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 1.5)
 ##'     # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
-##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 0.3)
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 1.5)
 ##'     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
 ##'     keep
 ##'     treeplot(ego2, showCategory = keep)
 ##'     treeplot(ego2, showCategory = 20, 
 ##'         group_color = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442"))
+##'     # It can also graph compareClusterResult
+##'     data(gcSample)
+##'     xx <- compareCluster(gcSample, fun="enrichKEGG",
+##'                          organism="hsa", pvalueCutoff=0.05)
+##'     xx <- pairwise_termsim(xx)                     
+##'     treeplot(xx)                     
+##'     
+##'     # use `geneClusterPanel` to change the gene cluster panel.
+##'     treeplot(xx, geneClusterPanel = "dotplot")  
+##'     
+##'     treeplot(xx, geneClusterPanel = "pie")  
 ##'    }
 setGeneric("treeplot",
            function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)

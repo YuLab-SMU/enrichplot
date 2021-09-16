@@ -25,10 +25,10 @@ treeplot.enrichResult(
   nCluster = 5,
   cex_category = 1,
   label_format = 30,
-  xlim = NULL,
+  xlim = 1,
   fontsize = 4,
-  offset = NULL,
-  offset_tiplab = 0.35,
+  offset = 1,
+  offset_tiplab = 1,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
@@ -45,16 +45,17 @@ treeplot.compareClusterResult(
   cex_category = 1,
   split = NULL,
   label_format = 30,
-  xlim = NULL,
+  xlim = 1,
   fontsize = 4,
-  offset = NULL,
+  offset = 1,
   pie = "equal",
   legend_n = 3,
-  offset_tiplab = 0.5,
+  offset_tiplab = 1,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
   hilight = TRUE,
+  geneClusterPanel = "heatMap",
   ...
 )
 }
@@ -78,16 +79,17 @@ custom function to format axis labels.}
 \item{cex_category}{Number indicating the amount by which plotting category.
 nodes should be scaled relative to the default.}
 
-\item{xlim}{Limits for the x axes, e.g. c(0, 40). If the picture is not 
+\item{xlim}{Limits for the x axes, the default value is 1. If the picture is not 
 displayed completely, the user can increase this value.}
 
 \item{fontsize}{The size of text, default is 4.}
 
-\item{offset}{Distance bar and tree, offset of bar and text from the clade.}
+\item{offset}{Distance bar and tree, offset of bar and text from the clade.
+The default value is 1.}
 
 \item{offset_tiplab}{Tiplab offset, the bigger the number, 
 the farther the distance between the node and the branch. 
-The default value is 0.35.}
+The default value is 1.}
 
 \item{hclust_method}{Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
@@ -100,10 +102,12 @@ The default value is 0.35.}
 
 \item{split}{Separate result by 'category' variable.}
 
-\item{pie}{Proportion of clusters in the pie chart, one of
-'equal' (default) and 'Count'.}
+\item{pie}{Used only when geneClusterPanel = "pie", 
+proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.}
 
 \item{legend_n}{Number of circle in legend, the default value is 3.}
+
+\item{geneClusterPanel}{one of "heatMap"(default), "dotplot", "pie".}
 }
 \value{
 ggplot object
@@ -123,6 +127,7 @@ for interpretation.
     library(org.Hs.eg.db)
     library(enrichplot)
     library(GOSemSim)
+    library(ggplot2)
     library(DOSE)
     data(geneList)
     gene <- names(geneList)[abs(geneList) > 2]
@@ -140,13 +145,24 @@ for interpretation.
     # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
     treeplot(ego2, showCategory = 30, hilight = FALSE)
     # use `offset` parameter to adjust the distance of bar and tree.
-    treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 8)
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 1.5)
     # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
-    treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 0.3)
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 1.5)
     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
     keep
     treeplot(ego2, showCategory = keep)
     treeplot(ego2, showCategory = 20, 
         group_color = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442"))
+    # It can also graph compareClusterResult
+    data(gcSample)
+    xx <- compareCluster(gcSample, fun="enrichKEGG",
+                         organism="hsa", pvalueCutoff=0.05)
+    xx <- pairwise_termsim(xx)                     
+    treeplot(xx)                     
+    
+    # use `geneClusterPanel` to change the gene cluster panel.
+    treeplot(xx, geneClusterPanel = "dotplot")  
+    
+    treeplot(xx, geneClusterPanel = "pie")  
    }
 }
