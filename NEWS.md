@@ -1,6 +1,7 @@
 # enrichplot 1.13.1.995
 
 + update `treeplot`: add "dotplot" and "heatmap" panels for `treeplot`(2021-9-15, Wed)
++ update `dotplot`: enable `size` parameter applicable to other columns of compareClusterResult(2021-9-17, Fri)
 + enable `label_format` parameter for `heatplot` (2021-09-01, Wed)
 + add `get_ggrepel_segsize` function to set `segment.size` value for `ggrepel`(2021-08-29, Sun)
 + update `ep_str_wrap` (2021-08-28, Sat)

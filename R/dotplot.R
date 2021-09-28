@@ -169,10 +169,14 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     if(is.function(label_format)) {
         label_func <- label_format
     }
-
-    by2 <- switch(size, rowPercentage = "Percentage", 
-                        count         = "Count", 
-                        geneRatio     = "GeneRatio")    
+    if (size %in% c("rowPercentage", "count", "geneRatio")) {
+        by2 <- switch(size, rowPercentage = "Percentage", 
+                            count         = "Count", 
+                            geneRatio     = "GeneRatio")  
+    } else {
+        by2 <- size
+    }
+      
     p <- ggplot(df, aes_string(x = x, y = "Description", size = by2))      
     if (group) {
         p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) + 
