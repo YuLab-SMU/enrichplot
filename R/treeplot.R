@@ -29,19 +29,20 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' @param nCluster The number of clusters, the default value is 5.
 ##' @param cex_category Number indicating the amount by which plotting category.
 ##' nodes should be scaled relative to the default.
-##' @param xlim Limits for the x axes, the default value is 1. If the picture is not 
+## ' @param xlim Limits for the x axes, the default value is 1. If the picture is not 
 ##' displayed completely, the user can increase this value.
-##' @param offset Distance bar and tree, offset of bar and text from the clade.
-##' The default value is 1.
+##' @param cex_offset the scale of offset of bar and text from the clade. (default = 1)
 ##' @param fontsize The size of text, default is 4.
-##' @param offset_tiplab Tiplab offset, the bigger the number, 
-##' the farther the distance between the node and the branch. 
-##' The default value is 1.
+##' @param cex_offset_tiplab The scale of tiplab offset, the bigger the number, 
+##' the farther the distance between the node and the branch. (default = 1)
 ##' @param hclust_method Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 ##' @param group_color A vector of group colors, the length of the vector should be the same as nCluster.
 ##' @param extend Numeric, extend the length of bar, default is 0.3.
 ##' @param hilight Logical value, if TRUE(default), add ggtree::geom_hilight() layer.
+##' @param hexpand expand x limits by amount of xrange * hexpand.
+##' @param align control the align direction of the edge of high light rectangular.
+##' Options is 'none', 'left', 'right', 'both (default)'.
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -55,12 +56,13 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   color = "p.adjust",
                                   nWords = 4, nCluster = 5,
                                   cex_category = 1,
-                                  label_format = 30, xlim = 1,
-                                  fontsize = 4, offset = 1,
-                                  offset_tiplab = 1, 
+                                  label_format = 30, # xlim = 1,
+                                  fontsize = 4, cex_offset = 1,
+                                  cex_offset_tiplab = 1, 
                                   hclust_method = "ward.D", 
                                   group_color = NULL, 
-                                  extend = 0.3, hilight = TRUE, ...) {
+                                  extend = 0.3, hilight = TRUE, 
+                                  hexpand = .1, align = "both", ...) {
     group <- p.adjust <- count<- NULL
 
     if (class(x) == "gseaResult")
@@ -90,18 +92,19 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         count = x$Count[keep])
 
     ## Group the nodes.
-    p <- group_tree(hc = hc, clus = clus, d = d, offset_tiplab = offset_tiplab, 
-        nWords = nWords, label_format = label_format, offset = offset, 
+    p <- group_tree(hc = hc, clus = clus, d = d, cex_offset_tiplab = cex_offset_tiplab, 
+        nWords = nWords, label_format = label_format, cex_offset = cex_offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
-        hilight = hilight, cex_category = cex_category)
-    xlim <-  c(0, xlim * 3 * p$data$x[1])
-    p + coord_cartesian(xlim = xlim) +
-        ggnewscale::new_scale_colour() +
+        hilight = hilight, cex_category = cex_category, align = align)
+    # xlim <-  c(0, xlim * 3 * p$data$x[1])
+    # p + coord_cartesian(xlim = xlim) +
+      p + ggnewscale::new_scale_colour() +
         geom_tippoint(aes(color = color, size = count)) +
         scale_colour_continuous(low="red", high="blue", name = color, 
             guide = guide_colorbar(reverse = TRUE)) +
         scale_size_continuous(name = "number of genes",
-                              range = c(3, 8) * cex_category)
+                              range = c(3, 8) * cex_category) + 
+        ggtree::hexpand(ratio = hexpand)
 }
 
 
@@ -118,12 +121,13 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       color = "p.adjust",
                                       nWords = 4, nCluster = 5,
                                       cex_category = 1, split = NULL,
-                                      label_format = 30, xlim = 1,
-                                      fontsize = 4, offset = 1, pie = "equal",
-                                      legend_n = 3, offset_tiplab = 1, 
+                                      label_format = 30, # xlim = 1,
+                                      fontsize = 4, cex_offset = 1, pie = "equal",
+                                      legend_n = 3, cex_offset_tiplab = 1, 
                                       hclust_method = "ward.D", group_color = NULL, 
                                       extend = 0.3, hilight = TRUE, 
-                                      geneClusterPanel = "heatMap", ...) {
+                                      geneClusterPanel = "heatMap", 
+                                      hexpand = .1, align = "both", ...) {
     geneClusterPanel <- match.arg(geneClusterPanel, c("heatMap", "dotplot", "pie"))                                  
     has_pairsim(x)
     group <- Description <- Cluster <- Count <- NULL
@@ -143,20 +147,20 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     d <- data.frame(label = names(clus),
         count = merged_ggData[names(clus), "Count"])
   
-    p <- group_tree(hc = hc, clus = clus, d = d, offset_tiplab = offset_tiplab,
-        nWords = nWords, label_format = label_format, offset = offset, 
+    p <- group_tree(hc = hc, clus = clus, d = d, cex_offset_tiplab = cex_offset_tiplab,
+        nWords = nWords, label_format = label_format, cex_offset = cex_offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, ID_Cluster_mat = ID_Cluster_mat,
-        geneClusterPanel = geneClusterPanel)
+        geneClusterPanel = geneClusterPanel, align = align)
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
     p_data <- p_data[rownames(ID_Cluster_mat), ]
-    if (geneClusterPanel == "pie") {
-        xlim <- c(0, xlim * 3 * p_data$x[1])  
-    } else {
-        xlim <- c(0, xlim * 4.5 * p_data$x[1])
-    }
+    # if (geneClusterPanel == "pie") {
+    #     xlim <- c(0, xlim * 3 * p_data$x[1])  
+    # } else {
+    #     xlim <- c(0, xlim * 4.5 * p_data$x[1])
+    # }
     
     if (geneClusterPanel == "pie") {
         ID_Cluster_mat$radius <- sqrt(p_data$count / sum(p_data$count) * cex_category)
@@ -169,7 +173,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
             scatterpie::geom_scatterpie_legend(ID_Cluster_mat$radius,
                 x = 0.8, y = 0.1, n = legend_n,
                 labeller = function(x) round(sum(p_data$count) * x^2 / cex_category)) +
-            coord_equal(xlim = xlim) +
+            # coord_equal(xlim = xlim) +
             labs(fill = "Cluster")
     }
     
@@ -183,8 +187,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         }
         
         
-        p <- p + ggnewscale::new_scale_fill() +
-            coord_equal(xlim = xlim)
+        p <- p + ggnewscale::new_scale_fill() # +
+            # coord_equal(xlim = xlim)
         p <- ggtree::gheatmap(p, ID_Cluster_mat) + 
             scale_fill_continuous(low="red", high="blue", 
                                   guide = guide_colorbar(reverse=TRUE),
@@ -207,11 +211,11 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
             scale_colour_continuous(low="red", high="blue", 
                                   guide=guide_colorbar(reverse=TRUE),
                                   trans = "log10",
-                                  name = color) + 
-            coord_equal(xlim = xlim) 
+                                  name = color) # + 
+            # coord_equal(xlim = xlim) 
             
     }
-    return(p)
+    p + ggtree::hexpand(ratio = hexpand) + coord_equal()
 }
 
 
@@ -239,13 +243,14 @@ fill_termsim <- function(x, keep) {
 ##' @param nWords the number of words in the cluster tags
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
-##' @param offset distance bar and tree, offset of bar and text from the clade.
+##' @param offset offset of bar and text from the clade.
 ##'
 ##' @return a ggtree object
 ##' @noRd
 add_cladelab <- function(p, nWords, label_format, offset, roots, 
-                         fontsize, group_color, cluster_color, pdata, extend, hilight) {
-    align <- getOption("enriplot.treeplot.align", default = "both")
+                         fontsize, group_color, cluster_color, 
+                         pdata, extend, hilight, align) {
+    # align <- getOption("enriplot.treeplot.align", default = "both")
     cluster_label <- sapply(cluster_color, get_wordcloud, ggData = pdata,
                         nWords = nWords)
     label_func <- default_labeller(label_format)
@@ -297,10 +302,11 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
 ##'
 ##' @return a ggtree object
 ##' @noRd
-group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
-                       label_format, offset, fontsize, group_color, 
+group_tree <- function(hc, clus, d, cex_offset_tiplab, nWords, 
+                       label_format, cex_offset, fontsize, group_color, 
                        extend, hilight, cex_category, 
-                       ID_Cluster_mat = NULL, geneClusterPanel = NULL) {
+                       ID_Cluster_mat = NULL, geneClusterPanel = NULL,
+                       align) {
     group <- NULL
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
@@ -315,16 +321,16 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
 
     if (geneClusterPanel == "pie" || is.null(geneClusterPanel)) {
         ## 1.5 * max(radius_of_pie)
-        offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
+        offset_tiplab <- cex_offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
     }  else if (geneClusterPanel == "heatMap") {
         ## Close to the width of the tree
-        offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * p$data$x[1]
+        offset_tiplab <- cex_offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * p$data$x[1]
     } else if (geneClusterPanel == "dotplot") {
         ## Close to the width of the tree
-        offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * p$data$x[1]
+        offset_tiplab <- cex_offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * p$data$x[1]
     }
     # max_nchar <- max(nchar(p$data$label), na.rm = TRUE)
-    offset <- offset * (p$data$x[1]*1.2 + offset_tiplab)    
+    offset <- cex_offset * (p$data$x[1]*1.2 + cex_offset_tiplab)    
     pdata <- data.frame(name = p$data$label, color2 = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
     cluster_color <- unique(pdata$color2)
@@ -338,7 +344,9 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         geom_tiplab(offset = offset_tiplab, hjust = 0,
                     show.legend = FALSE, align = TRUE, linesize = 0)
     
-    p <- add_cladelab(p, nWords, label_format, offset, roots, 
-        fontsize, group_color, cluster_color, pdata, extend, hilight) 
+    p <- add_cladelab(p = p, nWords = nWords, label_format = label_format, 
+        offset = offset, roots = roots, fontsize = fontsize, 
+        group_color = group_color, cluster_color = cluster_color, 
+        pdata = pdata, extend = extend, hilight = hilight, align = align) 
     return(p)
 }

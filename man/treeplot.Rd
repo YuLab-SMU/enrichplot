@@ -25,14 +25,15 @@ treeplot.enrichResult(
   nCluster = 5,
   cex_category = 1,
   label_format = 30,
-  xlim = 1,
   fontsize = 4,
-  offset = 1,
-  offset_tiplab = 1,
+  cex_offset = 1,
+  cex_offset_tiplab = 1,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
   hilight = TRUE,
+  hexpand = 0.1,
+  align = "both",
   ...
 )
 
@@ -45,17 +46,18 @@ treeplot.compareClusterResult(
   cex_category = 1,
   split = NULL,
   label_format = 30,
-  xlim = 1,
   fontsize = 4,
-  offset = 1,
+  cex_offset = 1,
   pie = "equal",
   legend_n = 3,
-  offset_tiplab = 1,
+  cex_offset_tiplab = 1,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
   hilight = TRUE,
   geneClusterPanel = "heatMap",
+  hexpand = 0.1,
+  align = "both",
   ...
 )
 }
@@ -77,19 +79,15 @@ custom function to format axis labels.}
 \item{nCluster}{The number of clusters, the default value is 5.}
 
 \item{cex_category}{Number indicating the amount by which plotting category.
-nodes should be scaled relative to the default.}
-
-\item{xlim}{Limits for the x axes, the default value is 1. If the picture is not 
+nodes should be scaled relative to the default.
 displayed completely, the user can increase this value.}
 
 \item{fontsize}{The size of text, default is 4.}
 
-\item{offset}{Distance bar and tree, offset of bar and text from the clade.
-The default value is 1.}
+\item{cex_offset}{the scale of offset of bar and text from the clade. (default = 1)}
 
-\item{offset_tiplab}{Tiplab offset, the bigger the number, 
-the farther the distance between the node and the branch. 
-The default value is 1.}
+\item{cex_offset_tiplab}{The scale of tiplab offset, the bigger the number, 
+the farther the distance between the node and the branch. (default = 1)}
 
 \item{hclust_method}{Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
@@ -99,6 +97,11 @@ The default value is 1.}
 \item{extend}{Numeric, extend the length of bar, default is 0.3.}
 
 \item{hilight}{Logical value, if TRUE(default), add ggtree::geom_hilight() layer.}
+
+\item{hexpand}{expand x limits by amount of xrange * hexpand.}
+
+\item{align}{control the align direction of the edge of high light rectangular.
+Options is 'none', 'left', 'right', 'both (default)'.}
 
 \item{split}{Separate result by 'category' variable.}
 
