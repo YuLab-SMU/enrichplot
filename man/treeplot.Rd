@@ -26,8 +26,8 @@ treeplot.enrichResult(
   cex_category = 1,
   label_format = 30,
   fontsize = 4,
-  cex_offset = 1,
-  cex_offset_tiplab = 1,
+  offset = 1,
+  offset_tiplab = 1,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
@@ -47,10 +47,10 @@ treeplot.compareClusterResult(
   split = NULL,
   label_format = 30,
   fontsize = 4,
-  cex_offset = 1,
+  offset = 1,
   pie = "equal",
   legend_n = 3,
-  cex_offset_tiplab = 1,
+  offset_tiplab = 1,
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
@@ -84,10 +84,15 @@ displayed completely, the user can increase this value.}
 
 \item{fontsize}{The size of text, default is 4.}
 
-\item{cex_offset}{the scale of offset of bar and text from the clade. (default = 1)}
+\item{offset}{numeric, distance bar and tree, offset of bar and text from the clade, default is 1,
+meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
+(1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).}
 
-\item{cex_offset_tiplab}{The scale of tiplab offset, the bigger the number, 
-the farther the distance between the node and the branch. (default = 1)}
+\item{offset_tiplab}{tiplab offset, the bigger the number, 
+the farther the distance between the node and the branch. 
+The default is 1, when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
+when geneClusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
+when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.}
 
 \item{hclust_method}{Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}

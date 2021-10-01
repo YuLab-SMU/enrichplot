@@ -31,10 +31,15 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' nodes should be scaled relative to the default.
 ## ' @param xlim Limits for the x axes, the default value is 1. If the picture is not 
 ##' displayed completely, the user can increase this value.
-##' @param cex_offset the scale of offset of bar and text from the clade. (default = 1)
+##' @param offset_tiplab tiplab offset, the bigger the number, 
+##' the farther the distance between the node and the branch. 
+##' The default is 1, when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
+##' when geneClusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
+##' when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.
+##' @param offset numeric, distance bar and tree, offset of bar and text from the clade, default is 1,
+##' meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
+##' (1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).
 ##' @param fontsize The size of text, default is 4.
-##' @param cex_offset_tiplab The scale of tiplab offset, the bigger the number, 
-##' the farther the distance between the node and the branch. (default = 1)
 ##' @param hclust_method Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 ##' @param group_color A vector of group colors, the length of the vector should be the same as nCluster.
@@ -57,8 +62,8 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   nWords = 4, nCluster = 5,
                                   cex_category = 1,
                                   label_format = 30, # xlim = 1,
-                                  fontsize = 4, cex_offset = 1,
-                                  cex_offset_tiplab = 1, 
+                                  fontsize = 4, offset = 1,
+                                  offset_tiplab = 1, 
                                   hclust_method = "ward.D", 
                                   group_color = NULL, 
                                   extend = 0.3, hilight = TRUE, 
@@ -92,8 +97,8 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         count = x$Count[keep])
 
     ## Group the nodes.
-    p <- group_tree(hc = hc, clus = clus, d = d, cex_offset_tiplab = cex_offset_tiplab, 
-        nWords = nWords, label_format = label_format, cex_offset = cex_offset, 
+    p <- group_tree(hc = hc, clus = clus, d = d, offset_tiplab = offset_tiplab, 
+        nWords = nWords, label_format = label_format, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, align = align)
     # xlim <-  c(0, xlim * 3 * p$data$x[1])
@@ -122,8 +127,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       nWords = 4, nCluster = 5,
                                       cex_category = 1, split = NULL,
                                       label_format = 30, # xlim = 1,
-                                      fontsize = 4, cex_offset = 1, pie = "equal",
-                                      legend_n = 3, cex_offset_tiplab = 1, 
+                                      fontsize = 4, offset = 1, pie = "equal",
+                                      legend_n = 3, offset_tiplab = 1, 
                                       hclust_method = "ward.D", group_color = NULL, 
                                       extend = 0.3, hilight = TRUE, 
                                       geneClusterPanel = "heatMap", 
@@ -147,8 +152,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     d <- data.frame(label = names(clus),
         count = merged_ggData[names(clus), "Count"])
   
-    p <- group_tree(hc = hc, clus = clus, d = d, cex_offset_tiplab = cex_offset_tiplab,
-        nWords = nWords, label_format = label_format, cex_offset = cex_offset, 
+    p <- group_tree(hc = hc, clus = clus, d = d, offset_tiplab = offset_tiplab,
+        nWords = nWords, label_format = label_format, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, ID_Cluster_mat = ID_Cluster_mat,
         geneClusterPanel = geneClusterPanel, align = align)
@@ -302,8 +307,8 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
 ##'
 ##' @return a ggtree object
 ##' @noRd
-group_tree <- function(hc, clus, d, cex_offset_tiplab, nWords, 
-                       label_format, cex_offset, fontsize, group_color, 
+group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
+                       label_format, offset, fontsize, group_color, 
                        extend, hilight, cex_category, 
                        ID_Cluster_mat = NULL, geneClusterPanel = NULL,
                        align) {
@@ -321,16 +326,16 @@ group_tree <- function(hc, clus, d, cex_offset_tiplab, nWords,
 
     if (geneClusterPanel == "pie" || is.null(geneClusterPanel)) {
         ## 1.5 * max(radius_of_pie)
-        offset_tiplab <- cex_offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
+        offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
     }  else if (geneClusterPanel == "heatMap") {
         ## Close to the width of the tree
-        offset_tiplab <- cex_offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * p$data$x[1]
+        offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * p$data$x[1]
     } else if (geneClusterPanel == "dotplot") {
         ## Close to the width of the tree
-        offset_tiplab <- cex_offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * p$data$x[1]
+        offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * p$data$x[1]
     }
     # max_nchar <- max(nchar(p$data$label), na.rm = TRUE)
-    offset <- cex_offset * (p$data$x[1]*1.2 + cex_offset_tiplab)    
+    offset <- offset * (p$data$x[1] * 1.2 + offset_tiplab)    
     pdata <- data.frame(name = p$data$label, color2 = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
     cluster_color <- unique(pdata$color2)
