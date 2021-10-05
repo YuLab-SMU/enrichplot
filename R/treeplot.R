@@ -101,7 +101,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         nWords = nWords, label_format = label_format, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, align = align)
-    # xlim <-  c(0, xlim * 3 * p$data$x[1])
+    # xlim <-  c(0, xlim * 3 * max(p$data$x))
     # p + coord_cartesian(xlim = xlim) +
       p + ggnewscale::new_scale_colour() +
         geom_tippoint(aes(color = color, size = count)) +
@@ -329,13 +329,13 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
     }  else if (geneClusterPanel == "heatMap") {
         ## Close to the width of the tree
-        offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * p$data$x[1]
+        offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * max(p$data$x)
     } else if (geneClusterPanel == "dotplot") {
         ## Close to the width of the tree
-        offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * p$data$x[1]
+        offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * max(p$data$x)
     }
     # max_nchar <- max(nchar(p$data$label), na.rm = TRUE)
-    offset <- offset * (p$data$x[1] * 1.2 + offset_tiplab)    
+    offset <- offset * (max(p$data$x) * 1.2 + offset_tiplab)    
     pdata <- data.frame(name = p$data$label, color2 = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
     cluster_color <- unique(pdata$color2)
