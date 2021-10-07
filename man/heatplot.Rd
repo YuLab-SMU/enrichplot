@@ -25,6 +25,8 @@ heatplot.enrichResult(
 
 \item{showCategory}{number of enriched terms to display}
 
+\item{foldChange}{fold Change.}
+
 \item{label_format}{a numeric value sets wrap length, alternatively a
 custom function to format axis labels.
 by default wraps names longer that 30 characters}
