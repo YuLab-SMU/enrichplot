@@ -109,7 +109,9 @@ treeplot.enrichResult <- function(x, showCategory = 30,
             guide = guide_colorbar(reverse = TRUE)) +
         scale_size_continuous(name = "number of genes",
                               range = c(3, 8) * cex_category) + 
-        ggtree::hexpand(ratio = hexpand)
+        ggtree::hexpand(ratio = hexpand) + 
+        guides(size  = guide_legend(order = 1), 
+               color = guide_colorbar(order = 2))
 }
 
 
