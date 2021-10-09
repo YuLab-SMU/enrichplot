@@ -80,6 +80,8 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 ##' @importFrom ggplot2 ylab
 ##' @importFrom ggplot2 ggtitle
 ##' @importFrom ggplot2 scale_y_discrete
+##' @importFrom ggplot2 guides
+##' @importFrom ggplot2 guide_legend
 dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
@@ -133,8 +135,9 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
             guide=guide_colorbar(reverse=TRUE)) +
         scale_y_discrete(labels = label_func) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
-        scale_size(range=c(3, 8))
-
+        scale_size(range=c(3, 8)) +
+        guides(size  = guide_legend(order = 1), 
+               color = guide_colorbar(order = 2))
 }
 
 
@@ -197,6 +200,8 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                         guide=guide_colorbar(reverse=TRUE)) +
             ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
             scale_size_continuous(range=c(3, 8)) + 
-            scale_y_discrete(labels = label_func)
+            scale_y_discrete(labels = label_func) +
+            guides(size  = guide_legend(order = 1), 
+                   color = guide_colorbar(order = 2))
     ))
 }

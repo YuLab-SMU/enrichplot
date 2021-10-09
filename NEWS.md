@@ -1,5 +1,6 @@
-# enrichplot 1.13.1.995
+# enrichplot 1.13.1.996
 
++ adjust the order of legends for `dotplot`, `emapplot`, `cnetplot` and `treeplot`(2021-10-8, Fri)
 + update `treeplot`: add "dotplot" and "heatmap" panels for `treeplot`(2021-9-15, Wed)
 + update `dotplot`: enable `size` parameter applicable to other columns of compareClusterResult(2021-9-17, Fri)
 + enable `label_format` parameter for `heatplot` (2021-09-01, Wed)
