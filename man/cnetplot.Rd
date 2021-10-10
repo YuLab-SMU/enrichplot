@@ -103,7 +103,7 @@ plot linkages of genes and enriched concepts
     categorys <- c("pre-malignant neoplasm", "intestinal disease",
                    "breast ductal carcinoma", "non-small cell lung carcinoma")
     cnetplot(x2, showCategory = categorys)
-    # It can also graph compareClusterResult
+    # 'compareClusterResult' object is also supported.
     data(gcSample)
     library(clusterProfiler)
     library(DOSE)
