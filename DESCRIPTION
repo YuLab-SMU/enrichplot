@@ -25,7 +25,8 @@ Imports:
     shadowtext,
     GOSemSim,
     magrittr,
-    ggtree
+    ggtree,
+    yulab.utils (>= 0.0.4)
 Suggests:
     clusterProfiler,
     dplyr,

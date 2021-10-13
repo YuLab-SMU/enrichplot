@@ -1,5 +1,6 @@
 # enrichplot 1.13.2
 
++ mv `ep_str_wrap` to `yulab.utils::str_wrap` (2021-10-13, Wed) 
 + adjust the order of legends for `dotplot`, `emapplot`, `cnetplot` and `treeplot`(2021-10-8, Fri)
 + update `treeplot`: add "dotplot" and "heatmap" panels for `treeplot`(2021-9-15, Wed)
 + update `dotplot`: enable `size` parameter applicable to other columns of compareClusterResult(2021-9-17, Fri)
