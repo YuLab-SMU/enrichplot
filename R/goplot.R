@@ -86,6 +86,6 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
     return(p)
 }
 
-
+##' @importFrom utils getFromNamespace
 GOSemSim_initial <- getFromNamespace(".initial", "GOSemSim")
 getAncestors <- getFromNamespace("getAncestors", "GOSemSim")
