@@ -6,11 +6,11 @@ setMethod("dotplot", signature(object = "enrichResult"),
                    showCategory=10, size = NULL,
                    split = NULL, font.size=12, title = "",
                    orderBy="x", label_format = 30, ...) {
-              dotplot.enrichResult(object = object, x = x, color = color, 
-                                   showCategory = showCategory, 
-                                   size = size, split = split, 
-                                   font.size = font.size, 
-                                   title = title, orderBy = orderBy, 
+              dotplot.enrichResult(object = object, x = x, color = color,
+                                   showCategory = showCategory,
+                                   size = size, split = split,
+                                   font.size = font.size,
+                                   title = title, orderBy = orderBy,
                                    label_format = label_format, ...)
           })
 
@@ -20,11 +20,11 @@ setMethod("dotplot", signature(object = "gseaResult"),
           function(object, x = "GeneRatio", color = "p.adjust", showCategory=10,
                    size = NULL, split = NULL, font.size=12, title = "",
                    orderBy="x", label_format = 30, ...) {
-                dotplot.enrichResult(object = object, x = x, color = color, 
-                       showCategory = showCategory, 
-                       size = size, split = split, 
-                       font.size = font.size, 
-                       title = title, orderBy = orderBy, 
+                dotplot.enrichResult(object = object, x = x, color = color,
+                       showCategory = showCategory,
+                       size = size, split = split,
+                       font.size = font.size,
+                       title = title, orderBy = orderBy,
                        label_format = label_format, ...)
           })
 
@@ -57,10 +57,10 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 ##' @param x variable for x-axis, one of 'GeneRatio' and 'Count'
 ##' @param color variable that used to color enriched terms,
 ##'              e.g. 'pvalue', 'p.adjust' or 'qvalue'
-##' @param showCategory A number or a list of terms. If it is a number, 
-##' the first n terms will be displayed. If it is a list of terms, 
+##' @param showCategory A number or a list of terms. If it is a number,
+##' the first n terms will be displayed. If it is a list of terms,
 ##' the selected terms will be displayed.
-##' @param size variable that used to scale the sizes of categories, 
+##' @param size variable that used to scale the sizes of categories,
 ##' one of "geneRatio", "Percentage" and "count"
 ##' @param split separate result by 'category' variable
 ##' @param font.size font size
@@ -69,7 +69,7 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 ##' custom function to format axis labels.
 ##' by default wraps names longer that 30 characters
 ##' @param orderBy The order of the Y-axis
-##' @param decreasing logical. Should the orderBy order be increasing or decreasing? 
+##' @param decreasing logical. Should the orderBy order be increasing or decreasing?
 ##' @importFrom ggplot2 fortify
 ##' @importFrom ggplot2 ggplot
 ##' @importFrom ggplot2 aes_string
@@ -136,7 +136,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
         scale_y_discrete(labels = label_func) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
         scale_size(range=c(3, 8)) +
-        guides(size  = guide_legend(order = 1), 
+        guides(size  = guide_legend(order = 1),
                color = guide_colorbar(order = 2))
 }
 
@@ -149,9 +149,9 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 ##' @param includeAll logical
 ##' @param font.size font size
 ##' @param title figure title
-##' @param group a logical value, whether to connect the 
+##' @param group a logical value, whether to connect the
 ##' nodes of the same group with wires.
-##' @param shape a logical value, whether to use nodes of 
+##' @param shape a logical value, whether to use nodes of
 ##' different shapes to distinguish the group it belongs to
 ##' @param colorBy variable that used to color enriched terms,
 ##' e.g. 'pvalue', 'p.adjust' or 'qvalue'
@@ -173,35 +173,35 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         label_func <- label_format
     }
     if (size %in% c("rowPercentage", "count", "geneRatio")) {
-        by2 <- switch(size, rowPercentage = "Percentage", 
-                            count         = "Count", 
-                            geneRatio     = "GeneRatio")  
+        by2 <- switch(size, rowPercentage = "Percentage",
+                            count         = "Count",
+                            geneRatio     = "GeneRatio")
     } else {
         by2 <- size
     }
-      
-    p <- ggplot(df, aes_string(x = x, y = "Description", size = by2))      
+
+    p <- ggplot(df, aes_string(x = x, y = "Description", size = by2))
     if (group) {
-        p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) + 
-          ggnewscale::new_scale_colour()     
+        p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) +
+          ggnewscale::new_scale_colour()
     }
-    
+
     if (shape) {
         ggstar <- "ggstar"
         require(ggstar, character.only=TRUE)
         # p <- p + ggsymbol::geom_symbol(aes_string(symbol = "Cluster", fill = colorBy)) +
-        p <- p + ggstar::geom_star(aes_string(starshape="Cluster", fill=colorBy)) + 
+        p <- p + ggstar::geom_star(aes_string(starshape="Cluster", fill=colorBy)) +
             scale_fill_continuous(low="red", high="blue", guide=guide_colorbar(reverse=TRUE))
     }  else {
-        p <- p +  geom_point(aes_string(color = colorBy)) 
-    }  
-    suppressMessages(print(
+        p <- p +  geom_point(aes_string(color = colorBy))
+    }
+    suppressMessages(
         p + scale_color_continuous(low="red", high="blue",
                         guide=guide_colorbar(reverse=TRUE)) +
             ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
-            scale_size_continuous(range=c(3, 8)) + 
+            scale_size_continuous(range=c(3, 8)) +
             scale_y_discrete(labels = label_func) +
-            guides(size  = guide_legend(order = 1), 
+            guides(size  = guide_legend(order = 1),
                    color = guide_colorbar(order = 2))
-    ))
+    )
 }
