@@ -200,6 +200,7 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                         guide=guide_colorbar(reverse=TRUE)) +
             ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
             scale_size_continuous(range=c(3, 8)) + 
+            ggnewscale::new_scale("y") + 
             scale_y_discrete(labels = label_func) +
             guides(size  = guide_legend(order = 1), 
                    color = guide_colorbar(order = 2))
