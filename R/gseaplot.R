@@ -262,8 +262,10 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
         rownames(pd) <- pd$Description
 
         pd <- pd[,-1]
-        pd <- round(pd, 4)
-
+        # pd <- round(pd, 4)
+        for (i in seq_len(ncol(pd))) {
+            pd[, i] <- format(pd[, i], digits = 4)
+        }
         tp <- tableGrob2(pd, p.res)
 
         p.res <- p.res + theme(legend.position = "none") +

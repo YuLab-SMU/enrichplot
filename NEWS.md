@@ -1,3 +1,7 @@
+# enrichplot 1.15.1.991
+
++ support scientific notation for `gseaplot2`(2021-12-4, Sat)
+
 # enrichplot 1.13.2
 
 + mv `ep_str_wrap` to `yulab.utils::str_wrap` (2021-10-13, Wed) 
