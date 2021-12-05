@@ -311,69 +311,17 @@ get_label_diss <- function(dimension, label_location) {
 # }
 
 
-#' ep_str_wrap internal string wrapping function
-#' @param string the string to be wrapped
-#' @param width the maximum number of characters before wrapping to a new line
-#' @noRd
-ep_str_wrap <- function(string, width) {
-    # x <- gregexpr(' ', string)
-    # vapply(seq_along(x),
-    #        FUN = function(i) {
-    #            y <- x[[i]]
-    #            n <- nchar(string[i])
-    #            len <- (c(y,n) - c(0, y)) ## length + 1
-    #            idx <- len > width
-    #            j <- which(!idx)
-    #            if (length(j) && max(j) == length(len)) {
-    #                j <- j[-length(j)]
-    #            }
-    #            if (length(j)) {
-    #                idx[j] <- len[j] + len[j+1] > width
-    #            }
-    #            idx <- idx[-length(idx)] ## length - 1
-    #            start <- c(1, y[idx] + 1)
-    #            end <- c(y[idx] - 1, n)
-    #            words <- substring(string[i], start, end)
-    #            paste0(words, collapse="\n")
-    #        },
-    #        FUN.VALUE = character(1)
-    # )
-    result <- vapply(string,
-           FUN = function(st) {
-               words <- list()
-               i <- 1
-               while(nchar(st) > width) {
-                   if (length(grep(" ", st)) == 0) break
-                   y <- gregexpr(' ', st)[[1]]                  
-                   n <- nchar(st)
-                   y <- c(y,n)
-                   idx <- which(y < width)
-                   # When the length of first word > width
-                   if (length(idx) == 0) idx <- 1
-                   # Split the string into two pieces
-                   # The length of first piece is small than width
-                   words[[i]] <- substring(st, 1, y[idx[length(idx)]] - 1)
-                   st <- substring(st, y[idx[length(idx)]] + 1, n)  
-                   i <- i + 1
-               }
-               words[[i]] <- st
-               paste0(unlist(words), collapse="\n")
-           },
-           FUN.VALUE = character(1)
-    )
-    names(result) <- NULL
-    result
-}
 
 #' default_labeller
 #'
 #' default labeling function that uses the
-#' internal string wrapping function `ep_str_wrap`
+#' internal string wrapping function `yulab.utils::str_wrap`
 #' @noRd
+#' @importFrom yulab.utils str_wrap
 default_labeller <- function(n) {
     function(str){
         str <- gsub("_", " ", str)
-        ep_str_wrap(str, n)
+        yulab.utils::str_wrap(str, n)
     }
 }
 
@@ -386,4 +334,12 @@ quiet <- function(x) {
   sink(tempfile())
   on.exit(sink())
   invisible(force(x))
+}
+
+
+#' Get segment.size value for ggrepel
+#' @param default default value of ggrepel.segment.size
+#' @noRd
+get_ggrepel_segsize <- function(default = 0.2) {
+    getOption("ggrepel.segment.size", default = default)
 }

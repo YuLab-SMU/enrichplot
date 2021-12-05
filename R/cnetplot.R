@@ -165,6 +165,10 @@ cnetplot.enrichResult <- function(x,
         p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
     }
+    if (!is.null(foldChange)) {
+        p <- p + guides(size  = guide_legend(order = 1), 
+                        color = guide_colorbar(order = 2))
+    }
     return(p)
 }
 

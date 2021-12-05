@@ -156,7 +156,9 @@ emapplot.enrichResult <- function(x, showCategory = 30,
             label_location = label_location, label_group = label_group,
             cex_label_group = cex_label_group)
     }
-    return(p + coord_equal())
+    p + coord_equal() + 
+        guides(size  = guide_legend(order = 1), 
+               fill = guide_colorbar(order = 2))
 }
 
 

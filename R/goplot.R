@@ -29,6 +29,7 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @author Guangchuang Yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
                                 layout = "sugiyama", geom = "text", ...) {
+    segment.size <- get_ggrepel_segsize()
     # has_package("AnnotationDbi")
     n <- update_n(x, showCategory)
     geneSets <- geneInCategory(x) ## use core gene for gsea result
@@ -74,16 +75,17 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
     ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE))
 
     if (geom == "label") {
-        p <- p + geom_node_label(aes_(label=~Term, fill=~color), repel=TRUE) +
+        p <- p + geom_node_label(aes_(label=~Term, fill=~color), 
+                                 repel=TRUE, segment.size = segment.size) +
             scale_fill_continuous(low="red", high="blue", name = color,
                 guide=guide_colorbar(reverse=TRUE), na.value="white")
         ## scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white')
     } else {
-        p <- p + geom_node_text(aes_(label=~Term), repel=TRUE)
+        p <- p + geom_node_text(aes_(label=~Term), repel=TRUE, segment.size = segment.size)
     }
     return(p)
 }
 
-
+##' @importFrom utils getFromNamespace
 GOSemSim_initial <- getFromNamespace(".initial", "GOSemSim")
 getAncestors <- getFromNamespace("getAncestors", "GOSemSim")
