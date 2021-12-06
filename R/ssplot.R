@@ -45,21 +45,10 @@ ssplot.enrichResult <- function(x, showCategory = 30,
     if (is.character(drfun)) {
         drfun <- eval(parse(text=drfun))
     }
-    # drfunName <- as.character(eval(substitute(alist(drfun))))
-    wrongMessage <- paste("Wrong drfun parameter or unsupported",
-         "dimensionality reduction method;",
-         "set to default `drfun = 'stats::cmdscale'`")
 
-    # x <- quiet(dr(x = x, drfun = drfun, showCategory = showCategory))
-    distance_mat <- build_dist(x = x, showCategory = showCategory)
-    drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
-    # drResult <- tidydr::dr(distance_mat, drfun, ...)
+    drResult <- get_drResult(x = x, showCategory = showCategory, 
+        drfun = drfun, dr.params = dr.params)
     coords <- drResult$drdata[, c(1, 2)]
-    if (is.null(coords)) {
-        message(wrongMessage)
-        drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
-        coords <- drResult$drdata[, c(1, 2)]
-    }
     colnames(coords) <- c("x", "y")
     rownames(coords) <- attr(drResult$data, "Labels")
     p <- emapplot(x = x, showCategory = showCategory,
@@ -101,21 +90,9 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
         drfun <- eval(parse(text=drfun))
     }
 
-    # x <- quiet(dr(x = x, drfun = drfun,
-    #               showCategory = showCategory, 
-    #               split = split, pie = pie))
-    distance_mat <- build_dist(x = x, showCategory = showCategory, split = split, pie = pie)
-    # drResult <- tidydr::dr(distance_mat, drfun, ...)
-    drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
+    drResult <- get_drResult(x = x, showCategory = showCategory, 
+        split = split, pie = pie, drfun = drfun, dr.params = dr.params)
     coords <- drResult$drdata[, c(1, 2)]
-    wrongMessage <- paste("Wrong drfun parameter or unsupported",
-         "dimensionality reduction method;",
-         "set to default `drfun = 'stats::cmdscale'`")
-    if (is.null(coords)) {
-        message(wrongMessage)
-        drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
-        coords <- drResult$drdata[, c(1, 2)]
-    }
     colnames(coords) <- c("x", "y")
     rownames(coords) <- attr(drResult$data, "Labels")
     p <- emapplot(x, showCategory = showCategory,
@@ -200,3 +177,24 @@ adj_axis <- function(p, drResult) {
     return(p)
 }
 
+##' Get the result of dimension reduction
+##'
+##' @param x enrichment result.
+##' @param showCategory number of enriched terms to display.
+##' @param split separate result by 'category' variable.
+##' @param pie proportion of clusters in the pie chart.
+##' @param drfun The function used for dimension reduction.
+##' @param dr.params list, the parameters of tidydr::dr.
+##' @noRd
+get_drResult <- function(x, showCategory, split = NULL, pie = NULL, drfun, dr.params) {
+    distance_mat <- build_dist(x = x, showCategory = showCategory, split = split, pie = pie)
+    drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
+    wrongMessage <- paste("Wrong drfun parameter or unsupported",
+         "dimensionality reduction method;",
+         "set to default `drfun = 'stats::cmdscale'`")
+    if (is.null(drResult$drdata)) {
+        message(wrongMessage)
+        drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
+    }
+    drResult
+}
