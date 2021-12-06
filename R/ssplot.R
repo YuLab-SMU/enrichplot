@@ -29,12 +29,19 @@ setMethod("ssplot", signature(x = "compareClusterResult"),
 ##' @param drfun The function used for dimension reduction,
 ##' e.g. stats::cmdscale (the default), vegan::metaMDS, or ape::pcoa.
 ##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
+##' @param dr.params list, the parameters of tidydr::dr.
 ##' @param ... additional parameters
 ##'
 ##' additional parameters can refer the emapplot function: \link{emapplot}.
 ssplot.enrichResult <- function(x, showCategory = 30,
-                                nCluster = NULL, drfun = stats::cmdscale,
-                                with_edge = FALSE, ...) {
+                                nCluster = NULL, drfun = NULL,
+                                with_edge = FALSE,
+                                dr.params = list(),
+                                ...) {
+    if (is.null(drfun)) {
+        drfun = stats::cmdscale
+        dr.params = list(eig = TRUE)
+    }
     if (is.character(drfun)) {
         drfun <- eval(parse(text=drfun))
     }
@@ -43,9 +50,18 @@ ssplot.enrichResult <- function(x, showCategory = 30,
          "dimensionality reduction method;",
          "set to default `drfun = 'stats::cmdscale'`")
 
-    x <- quiet(dr(x = x, drfun = drfun, showCategory = showCategory))
-    coords <- x@dr$coords
+    # x <- quiet(dr(x = x, drfun = drfun, showCategory = showCategory))
+    distance_mat <- build_dist(x = x, showCategory = showCategory)
+    drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
+    # drResult <- tidydr::dr(distance_mat, drfun, ...)
+    coords <- drResult$drdata[, c(1, 2)]
+    if (is.null(coords)) {
+        message(wrongMessage)
+        drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
+        coords <- drResult$drdata[, c(1, 2)]
+    }
     colnames(coords) <- c("x", "y")
+    rownames(coords) <- attr(drResult$data, "Labels")
     p <- emapplot(x = x, showCategory = showCategory,
                   coords = coords,
                   nCluster = nCluster,
@@ -53,7 +69,7 @@ ssplot.enrichResult <- function(x, showCategory = 30,
                   ...)
 
     ## Set axis label according to drfun
-    p <- adj_axis(p = p, drs = x@dr)
+    p <- adj_axis(p = p, drResult = drResult)
     return(p + theme_classic())
 }
 
@@ -72,18 +88,36 @@ ssplot.enrichResult <- function(x, showCategory = 30,
 ssplot.compareClusterResult <- function(x, showCategory = 30,
                                         split = NULL, pie = "equal",
                                         nCluster = NULL,
-                                        drfun = stats::cmdscale,
+                                        drfun = NULL,
                                         with_edge = FALSE,
-                                        cex_pie2axis = 0.0125, ...) {
+                                        cex_pie2axis = 0.0125, 
+                                        dr.params = list(), ...) {
+    if (is.null(drfun)) {
+        drfun = stats::cmdscale
+        dr.params = list(eig = TRUE)
+    }
+
     if (is.character(drfun)) {
         drfun <- eval(parse(text=drfun))
     }
 
-    x <- quiet(dr(x = x, drfun = drfun,
-                  showCategory = showCategory, 
-                  split = split, pie = pie))
-    coords <- x@dr$coords
+    # x <- quiet(dr(x = x, drfun = drfun,
+    #               showCategory = showCategory, 
+    #               split = split, pie = pie))
+    distance_mat <- build_dist(x = x, showCategory = showCategory, split = split, pie = pie)
+    # drResult <- tidydr::dr(distance_mat, drfun, ...)
+    drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
+    coords <- drResult$drdata[, c(1, 2)]
+    wrongMessage <- paste("Wrong drfun parameter or unsupported",
+         "dimensionality reduction method;",
+         "set to default `drfun = 'stats::cmdscale'`")
+    if (is.null(coords)) {
+        message(wrongMessage)
+        drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
+        coords <- drResult$drdata[, c(1, 2)]
+    }
     colnames(coords) <- c("x", "y")
+    rownames(coords) <- attr(drResult$data, "Labels")
     p <- emapplot(x, showCategory = showCategory,
                   coords = coords,
                   split = split, pie = pie,
@@ -91,142 +125,36 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
                   with_edge = with_edge,
                   cex_pie2axis = cex_pie2axis, ...)
     ## Set axis label according to the method parameter
-    p <- adj_axis(p = p, drs = x@dr)
+    p <- adj_axis(p = p, drResult = drResult)
     return(p + theme_classic())
 }
 
 
-
-##' Dimension reduction
+##' Get a distance matrix
 ##'
-##' @param x Enrichment result
-##' @param drfun dimension reduction function 
-##' @param showCategory A number or a vector of terms. If it is a number, 
-##' the first n terms will be displayed. If it is a vector of terms, 
-##' the selected terms will be displayed.
-##' @param split separate result by 'category' variable
-##' @param pie proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
-dr <- function(x, drfun, showCategory, split = NULL, pie = NULL) {
+##' @param x enrichment result.
+##' @param showCategory number of enriched terms to display.
+##' @param split separate result by 'category' variable.
+##' @param pie proportion of clusters in the pie chart.
+##' @noRd
+build_dist <- function(x, showCategory, split = NULL, pie = NULL) {
     sim = get_pairwise_sim(x = x, showCategory = showCategory,
         split = split, pie = pie)
     ## If the similarity between the two terms is 1,
     ## an error will be reported in some method, so fine-tuning.
     sim[which(sim == 1)] <- 0.99999
-    for (i in seq_len(nrow(sim))) sim[i, i] <- 1
-    # drfun <- eval(parse(text=drfunName)) 
-    # drfunName <- gsub(".*::", "", drfunName)
-    drfun_env <- environment(fun = drfun) %>%
-        rlang::env_name() %>%
-        sub(".*:", "", .)
-    distance_matrix <- stats::as.dist(1- sim)
-    class(distance_matrix) <- c(drfun_env, class(distance_matrix)) 
-    drs <- as.drs(distance_matrix = distance_matrix, drfun = drfun)
-    x@dr <- drs
-    return(x)
+    for (i in seq_len(nrow(sim))) sim[i, i] <- 1 
+    stats::as.dist(1- sim)
 }
 
 
-#' Dimensionality reduction and extract the results
-#'
-#' @param distance_matrix Distance matrix
-#' @param drfun The function used for dimension reduction
-#' @noRd
-as.drs <- function(distance_matrix, drfun) UseMethod("as.drs")
-
-as.drs.default <- function(distance_matrix, drfun) {
-    wrongMessage <- paste("Wrong drfun parameter or unsupported",
-        "dimensionality reduction method;",
-        "set to default `drfun = 'stats::cmdscale'`")       
-    message(wrongMessage)
-    dim_reduction_data <- stats::cmdscale(distance_matrix, eig = TRUE)
-    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    pcoa <- as.numeric(dim_reduction_data$eig)
-    list(coords = coords, pcoa = pcoa)
-}
-
-
-
-#' @method as.drs stats
-as.drs.stats <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix, eig = TRUE)
-    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    pcoa <- as.numeric(dim_reduction_data$eig)
-    list(coords = coords, pcoa = pcoa)
-}
-
-#' @method as.drs MASS
-as.drs.MASS <- function(distance_matrix, drfun) {
-    y <- stats::cmdscale(distance_matrix)
-    ## If the matrix y has duplicate rows it will report an error, so perturb slightly  
-    dup <- which(duplicated(y) == TRUE)  
-    y[dup, 1] <- y[dup, 1] + 10^-7 * seq_len(length(dup))  
-    dim_reduction_data <- drfun(d = distance_matrix, y = y)
-    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    stress <- dim_reduction_data$stress
-    list(coords = coords, stress = format(stress, digits=4))
-}
-
-#' @method as.drs vegan
-as.drs.vegan <- function(distance_matrix, drfun) {
-    if("engine" %in% names(as.list(rlang::get_expr(drfun)))) {
-       dim_reduction_data <- drfun(distance_matrix, engine = "monoMDS")
-       coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-       stress <- dim_reduction_data$stress
-       return(list(coords = coords, stress = format(stress, digits=4)))
-    } else {
-       dim_reduction_data <- drfun(distance_matrix, eig = TRUE)
-       coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-       pcoa <- as.numeric(dim_reduction_data$eig)
-       return(list(coords = coords, pcoa = pcoa))
-    }
-}
-
-#' @method as.drs ape
-as.drs.ape <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix)
-    coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
-    pcoa <- as.numeric(dim_reduction_data$values$Eigenvalues)
-    list(coords = coords, pcoa = pcoa)
-}
-
-#' @method as.drs smacof
-as.drs.smacof<- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix)
-    coords <- as.data.frame(dim_reduction_data$conf[, 1:2])
-    stress <- dim_reduction_data$stress
-    list(coords = coords, stress = format(stress, digits=4))
-}
-
-
-#' @method as.drs ecodist
-as.drs.ecodist <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix)
-    coords <- as.data.frame(dim_reduction_data$vectors[, 1:2])
-    rownames(coords) <- attr(distance_matrix, "Labels")
-    pcoa <- as.numeric(dim_reduction_data$values)
-    list(coords = coords, pcoa = pcoa)
-}
-
-#' @method as.drs labdsv
-as.drs.labdsv <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix)
-    coords <- as.data.frame(dim_reduction_data$points[, 1:2])
-    pcoa <- as.numeric(dim_reduction_data$eig)
-    list(coords = coords, pcoa = pcoa)
-}
-
-
-
-#' @method as.drs ade4
-as.drs.ade4 <- function(distance_matrix, drfun) {
-    dim_reduction_data <- drfun(distance_matrix, scannf = FALSE)
-    coords <- as.data.frame(dim_reduction_data$tab[, 1:2])
-    pcoa <- as.numeric(dim_reduction_data$eig)
-    list(coords = coords, pcoa = pcoa)
-}
-
-
-
+##' Get a similarity matrix
+##'
+##' @param x enrichment result.
+##' @param showCategory number of enriched terms to display.
+##' @param split separate result by 'category' variable.
+##' @param pie proportion of clusters in the pie chart.
+##' @noRd
 get_pairwise_sim <- function(x, showCategory, split = NULL, pie = NULL) {
     if (class(x) == "compareClusterResult") {
         # y <- get_selected_category(showCategory, enrichResult, split)
@@ -255,17 +183,17 @@ get_pairwise_sim <- function(x, showCategory, split = NULL, pie = NULL) {
 ##' @param p ggplot2 object
 ##' @param drs dimension reduction result
 ##' @noRd
-adj_axis <- function(p, drs) {
+adj_axis <- function(p, drResult) {
     title = NULL
-    pcoas <- drs$pcoa
-    if (!is.null(pcoas)) {
-        xlab = paste("Dimension1 (", format(100 * pcoas[1] / sum(pcoas), digits=4), "%)", sep = "")
-        ylab = paste("Dimension2 (", format(100 * pcoas[2] / sum(pcoas), digits=4), "%)", sep = "")
+    eigenvalue <- drResult$eigenvalue
+    if (!is.null(eigenvalue)) {
+        xlab = paste("Dimension1 (", format(100 * eigenvalue[1] / sum(eigenvalue), digits=4), "%)", sep = "")
+        ylab = paste("Dimension2 (", format(100 * eigenvalue[2] / sum(eigenvalue), digits=4), "%)", sep = "")
     } else {
         xlab = "Dimension1"
         ylab = "Dimension2"
-        if (!is.null(drs$stress)) {
-            title = paste("stress = ", format(drs$stress, digits=4), sep = "")
+        if (!is.null(drResult$stress)) {
+            title = paste("stress = ", drResult$stress, sep = "")
         }
     }
     p <- p +  labs(x = xlab, y = ylab, title = title)

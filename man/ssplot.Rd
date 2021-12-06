@@ -21,8 +21,9 @@ ssplot.enrichResult(
   x,
   showCategory = 30,
   nCluster = NULL,
-  drfun = stats::cmdscale,
+  drfun = NULL,
   with_edge = FALSE,
+  dr.params = list(),
   ...
 )
 
@@ -32,9 +33,10 @@ ssplot.compareClusterResult(
   split = NULL,
   pie = "equal",
   nCluster = NULL,
-  drfun = stats::cmdscale,
+  drfun = NULL,
   with_edge = FALSE,
   cex_pie2axis = 0.0125,
+  dr.params = list(),
   ...
 )
 }
@@ -54,6 +56,8 @@ the default value is square root of the number of nodes.}
 e.g. stats::cmdscale (the default), vegan::metaMDS, or ape::pcoa.}
 
 \item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
+
+\item{dr.params}{list, the parameters of tidydr::dr.}
 
 \item{split}{separate result by 'category' variable}
 
