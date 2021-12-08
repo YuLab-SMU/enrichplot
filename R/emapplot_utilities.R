@@ -227,19 +227,7 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
         return(p)
 
     }
-    if (!is.null(layout)) {
-        p <- ggraph(g, layout=layout)
-    } else {
-        p <- ggraph(g, layout="nicely")
-        if (!is.null(coords)) {
-            ggData <- p$data
-            ggData$x <- coords$x
-            ggData$y <- coords$y
-            p$data <- ggData  
-        }
-    }
-    
-    
+    p <- adj_layout(g = g, layout = layout, coords = coords)    
     ## add edges
     if (with_edge & length(E(g)$width) > 0) {
         p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
@@ -247,6 +235,44 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
     }
     return(p)
 }
+
+
+##' Adjust the layout
+##'
+##' @param g ggraph object.
+##' @param layout Layout of the map.
+##' @param coords a data.frame with two columns: 'x' for X-axis coordinate and 'y' for Y-axis coordinate.
+##' @noRd
+adj_layout <- function(g, layout, coords) {
+    if (!is.null(layout)) {
+        p <- ggraph(g, layout=layout)
+    } else {
+        p <- ggraph(g, layout="nicely")
+        if (!is.null(coords)) {
+            # ggData <- p$data
+            # rownames(ggData) <- ggData$name
+            # ids <- intersect(ggData$name, rownames(coords))
+            # if (length(ids) > 0) {
+            #     coords <- coords[ids, ]
+            #     ggData[ids, "x"] <- coords$x
+            #     ggData[ids, "y"] <- coords$y
+            #     rownames(ggData) <- rownames(p$data)
+            #     p$data <- ggData 
+            ids <- match(p$data$name, rownames(coords))
+            ids <- ids[!is.na(ids)]
+            if (length(ids) > 0) {
+                p$data[ids, "x"] <- coords$x
+                p$data[ids, "y"] <- coords$y
+            } else {
+                wm <-  paste("Invalid coords parameter, the rownames of the coords", 
+                    "must be the term names found in the emapplot diagram")
+                warning(wm)
+            }         
+        }
+    }
+    return(p)
+}
+
 
 ## Keep selected category in enrichment result
 ##
@@ -270,6 +296,7 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
 #     y$Cluster <- sub("\n.*", "", y$Cluster)
 #     return(y)
 # }
+
 
 ##' Convert a list of gene IDs to igraph object.
 ##'
@@ -406,6 +433,9 @@ groupNode <- function(p, enrichDf, nWords, clusterFunction =  stats::kmeans, nCl
     ggData <- p$data
     wrongMessage <- paste("Wrong clusterFunction parameter or unsupported clustering method;",
          "set to default `clusterFunction = kmeans`")
+    if (is.character(clusterFunction)) {
+        clusterFunction <- eval(parse(text=clusterFunction))
+    }   
     if (!"color2" %in% colnames(ggData)) {
         dat <- data.frame(x = ggData$x, y = ggData$y)
         nCluster <- ifelse(is.null(nCluster), floor(sqrt(nrow(dat))), 

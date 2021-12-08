@@ -1,3 +1,7 @@
+# enrichplot 1.15.1.991
+
++ support scientific notation for `gseaplot2`(2021-12-4, Sat)
+
 # enrichplot 1.13.2
 
 + mv `ep_str_wrap` to `yulab.utils::str_wrap` (2021-10-13, Wed) 
@@ -17,8 +21,9 @@
 
 # enrichplot 1.11.3
 
++ add function `ssplot` for similarity space plot. (2021-4-22, Thu).
 + Reconstruct the `emapplot` function and replace `emapplot_cluster` by `emapplot(group_category = TRUE)` 
-+ fix bug in `emapplot_cluster.enrichResult` when the number of cluster is 2 (2021-2-24, Wed)
++ fix bug in `emapplot_cluster.enrichResult` when the number of cluster is 2 (2021-2-24, Wed).
 + fix bug in `treeplot`: The legend is not the right size (2021-2-6, Sat).
 + fix `dotplot` for `label_format` parameter doesn't work(2021-2-3, Wed).
 + fix bug in `gseaplot2`(2021-1-28, Thu)

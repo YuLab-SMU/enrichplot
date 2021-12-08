@@ -121,18 +121,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                geom_node_text(aes_(label=~name))
         return(p)
     }
-    ## get ggraph object
-    if (!is.null(layout)) {
-        p <- ggraph(g, layout=layout)
-    } else {
-        p <- ggraph(g, layout="nicely")
-        if (!is.null(coords)) {
-            ggData <- p$data
-            ggData$x <- coords$x
-            ggData$y <- coords$y
-            p$data <- ggData  
-        }
-    }
+    p <- adj_layout(g = g, layout = layout, coords = coords)
     
     ## add edge
     if (with_edge & length(E(g)$width) > 0) {
@@ -152,8 +141,6 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     if (group_category) {
          p <- add_ellipse(p = p, group_legend = group_legend, 
             label_style = label_style, ...)
-        # p <- add_ellipse(p = p, group_legend = group_legend, 
-        #     label_style = label_style)
     }
 
     ## add dot
