@@ -1,5 +1,6 @@
-# enrichplot 1.15.1.991
+# enrichplot 1.15.1.992
 
++ support visualization of compareCluster(GSEA algorithm) result(2021-12-11, Sat)
 + support scientific notation for `gseaplot2`(2021-12-4, Sat)
 
 # enrichplot 1.13.2

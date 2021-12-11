@@ -213,6 +213,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     y <- fortify(x, showCategory = showCategory,
                  includeAll = TRUE, split = split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
+
+    if ("core_enrichment" %in% colnames(y)) { ## for GSEA result
+        y$geneID <- y$core_enrichment
+    }
     ## Data structure transformation, combining the same ID (Description) genes
     mergedEnrichDf <- merge_compareClusterResult(y)
      
