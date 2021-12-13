@@ -215,6 +215,10 @@ cnetplot.compareClusterResult <- function(x,
     y <- fortify(x, showCategory = showCategory,
                  includeAll = TRUE, split = split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
+    
+    if ("core_enrichment" %in% colnames(y)) { ## for GSEA result
+        y$geneID <- y$core_enrichment
+    }
     ## Data structure transformation, combining the same ID (Description) genes
     y_union <- merge_compareClusterResult(y)
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
