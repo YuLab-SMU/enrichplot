@@ -49,6 +49,9 @@ pairwise_termsim.compareClusterResult <- function(x, method = "JC", semData = NU
     y <- fortify(x, showCategory=showCategory, includeAll=TRUE, split=NULL)
     y$Cluster <- sub("\n.*", "", y$Cluster)
     ## y_union <- get_y_union(y = y, showCategory = showCategory)
+    if ("core_enrichment" %in% colnames(y)) {
+        y$geneID <- y$core_enrichment
+    }
     y_union <- merge_compareClusterResult(y)
     geneSets <- setNames(strsplit(as.character(y_union$geneID), "/",
                                   fixed = TRUE), 

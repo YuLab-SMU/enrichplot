@@ -19,7 +19,12 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
                                          includeAll=TRUE) {
     clProf.df <- as.data.frame(model)
     .split <- split
-
+    if ("core_enrichment" %in% colnames(clProf.df)) {
+        clProf.df$Count <- str_count(clProf.df$core_enrichment, "/")
+        clProf.df$.sign <- "activated"
+        clProf.df$.sign[clProf.df$NES < 0] <- "suppressed"
+        clProf.df$GeneRatio <- clProf.df$Count / clProf.df$setSize
+    }
     ## get top 5 (default) categories of each gene cluster.
     if (is.null(showCategory)) {
         result <- clProf.df
@@ -69,11 +74,11 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
     GOlevel <- result[,c("ID", "Description")] ## GO ID and Term
     GOlevel <- unique(GOlevel)
 
+
+
     result <- result[result$Count != 0, ]
     result$Description <- factor(result$Description,
                                  levels=rev(GOlevel[,2]))
-
-
     if (by=="rowPercentage") {
         Description <- Count <- NULL # to satisfy codetools
         result <- ddply(result,
@@ -102,13 +107,17 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
     } else if (by == "count") {
         ## nothing
     } else if (by == "geneRatio") {
-        gsize <- as.numeric(sub("/\\d+$", "", as.character(result$GeneRatio)))
-        gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
-        result$GeneRatio <- gsize/gcsize
-        cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
-                         sep="")
-        lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
-        result$Cluster <- factor(cluster, levels = lv)
+        ## for result of ORA
+        if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) { 
+            gsize <- as.numeric(sub("/\\d+$", "", as.character(result$GeneRatio)))
+            gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
+            result$GeneRatio <- gsize/gcsize     
+            cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
+                             sep="")    
+            lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
+            result$Cluster <- factor(cluster, levels = lv)      
+        }    
+               
     } else {
         ## nothing
     }
