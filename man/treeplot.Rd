@@ -24,7 +24,9 @@ treeplot.enrichResult(
   nWords = 4,
   nCluster = 5,
   cex_category = 1,
-  label_format = 30,
+  label_format = NULL,
+  label_format_grouplab = 30,
+  label_format_tiplab = NULL,
   fontsize = 4,
   offset = 1,
   offset_tiplab = 1,
@@ -45,7 +47,9 @@ treeplot.compareClusterResult(
   nCluster = 5,
   cex_category = 1,
   split = NULL,
-  label_format = 30,
+  label_format = NULL,
+  label_format_grouplab = 30,
+  label_format_tiplab = NULL,
   fontsize = 4,
   offset = 1,
   pie = "equal",
@@ -79,7 +83,13 @@ custom function to format axis labels.}
 \item{nCluster}{The number of clusters, the default value is 5.}
 
 \item{cex_category}{Number indicating the amount by which plotting category.
-nodes should be scaled relative to the default.
+nodes should be scaled relative to the default.}
+
+\item{label_format_grouplab}{label_format for group labels, a numeric value sets wrap length, 
+alternatively a custom function to format axis labels.}
+
+\item{label_format_tiplab}{label_format for tiplabs, a numeric value sets wrap length, 
+alternatively a custom function to format axis labels.
 displayed completely, the user can increase this value.}
 
 \item{fontsize}{The size of text, default is 4.}

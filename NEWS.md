@@ -1,5 +1,6 @@
-# enrichplot 1.15.1.993
+# enrichplot 1.15.1.994
 
++ add `label_format_tiplab` and `label_format_cladelab` parameters for `treeplot`(2021-12-24, Fri)
 + support treeplot of compareCluster(GSEA algorithm) result(2021-12-13, Mon)
 + support visualization of compareCluster(GSEA algorithm) result(2021-12-11, Sat)
 + support scientific notation for `gseaplot2`(2021-12-4, Sat)
