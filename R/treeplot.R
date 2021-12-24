@@ -142,6 +142,9 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     y <- fortify(x, showCategory = showCategory,
              includeAll = TRUE, split = split)
     y$Cluster <- sub("\n.*", "", y$Cluster)
+    if ("core_enrichment" %in% colnames(y)) { ## for GSEA result
+        y$geneID <- y$core_enrichment
+    }
     ## Data structure transformation, combining the same ID (Description) genes
     merged_ggData <- merge_compareClusterResult(y)
     ID_Cluster_mat <- prepare_pie_category(y, pie=pie)
