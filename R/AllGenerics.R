@@ -373,7 +373,7 @@ setGeneric("upsetplot", function(x, ...) standardGeneric("upsetplot"))
 ##'     treeplot(xx, geneClusterPanel = "pie")  
 ##'    }
 setGeneric("treeplot",
-           function(x, showCategory = 30, color="p.adjust", label_format = 30, ...)
+           function(x, showCategory = 30, color="p.adjust", label_format = NULL, ...)
                standardGeneric("treeplot")
            )
            

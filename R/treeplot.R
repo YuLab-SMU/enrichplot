@@ -1,7 +1,7 @@
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "enrichResult"),
-    function(x, showCategory = 30, color = "p.adjust", label_format = 30, ...) {
+    function(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...) {
         treeplot.enrichResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
@@ -9,7 +9,7 @@ setMethod("treeplot", signature(x = "enrichResult"),
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "gseaResult"),
-    function(x, showCategory = 30, color = "p.adjust", label_format = 30, ...) {
+    function(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...) {
         treeplot.enrichResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
@@ -17,7 +17,7 @@ setMethod("treeplot", signature(x = "gseaResult"),
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "compareClusterResult"),
-    function(x, showCategory = 5, color = "p.adjust", label_format = 30, ...) {
+    function(x, showCategory = 5, color = "p.adjust", label_format = NULL, ...) {
         treeplot.compareClusterResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })

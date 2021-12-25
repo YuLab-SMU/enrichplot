@@ -9,13 +9,13 @@
 \alias{treeplot.compareClusterResult}
 \title{treeplot}
 \usage{
-treeplot(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+treeplot(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
 
-\S4method{treeplot}{enrichResult}(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+\S4method{treeplot}{enrichResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
 
-\S4method{treeplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", label_format = 30, ...)
+\S4method{treeplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
 
-\S4method{treeplot}{compareClusterResult}(x, showCategory = 5, color = "p.adjust", label_format = 30, ...)
+\S4method{treeplot}{compareClusterResult}(x, showCategory = 5, color = "p.adjust", label_format = NULL, ...)
 
 treeplot.enrichResult(
   x,
@@ -25,7 +25,7 @@ treeplot.enrichResult(
   nCluster = 5,
   cex_category = 1,
   label_format = NULL,
-  label_format_grouplab = 30,
+  label_format_cladelab = 30,
   label_format_tiplab = NULL,
   fontsize = 4,
   offset = 1,
@@ -48,7 +48,7 @@ treeplot.compareClusterResult(
   cex_category = 1,
   split = NULL,
   label_format = NULL,
-  label_format_grouplab = 30,
+  label_format_cladelab = 30,
   label_format_tiplab = NULL,
   fontsize = 4,
   offset = 1,
@@ -85,7 +85,7 @@ custom function to format axis labels.}
 \item{cex_category}{Number indicating the amount by which plotting category.
 nodes should be scaled relative to the default.}
 
-\item{label_format_grouplab}{label_format for group labels, a numeric value sets wrap length, 
+\item{label_format_cladelab}{label_format for group labels, a numeric value sets wrap length, 
 alternatively a custom function to format axis labels.}
 
 \item{label_format_tiplab}{label_format for tiplabs, a numeric value sets wrap length, 
