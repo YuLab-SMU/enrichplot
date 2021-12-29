@@ -1,7 +1,7 @@
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "enrichResult"),
-    function(x, showCategory = 30, color = "p.adjust", label_format = 30, ...) {
+    function(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...) {
         treeplot.enrichResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
@@ -9,7 +9,7 @@ setMethod("treeplot", signature(x = "enrichResult"),
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "gseaResult"),
-    function(x, showCategory = 30, color = "p.adjust", label_format = 30, ...) {
+    function(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...) {
         treeplot.enrichResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
@@ -17,7 +17,7 @@ setMethod("treeplot", signature(x = "gseaResult"),
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "compareClusterResult"),
-    function(x, showCategory = 5, color = "p.adjust", label_format = 30, ...) {
+    function(x, showCategory = 5, color = "p.adjust", label_format = NULL, ...) {
         treeplot.compareClusterResult(x, showCategory = showCategory,
             color = color, label_format = label_format, ...)
     })
@@ -29,6 +29,10 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' @param nCluster The number of clusters, the default value is 5.
 ##' @param cex_category Number indicating the amount by which plotting category.
 ##' nodes should be scaled relative to the default.
+##' @param label_format_cladelab label_format for group labels, a numeric value sets wrap length, 
+##' alternatively a custom function to format axis labels.
+##' @param label_format_tiplab label_format for tiplabs, a numeric value sets wrap length, 
+##' alternatively a custom function to format axis labels.
 ## ' @param xlim Limits for the x axes, the default value is 1. If the picture is not 
 ##' displayed completely, the user can increase this value.
 ##' @param offset_tiplab tiplab offset, the bigger the number, 
@@ -61,7 +65,9 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   color = "p.adjust",
                                   nWords = 4, nCluster = 5,
                                   cex_category = 1,
-                                  label_format = 30, # xlim = 1,
+                                  label_format = NULL, 
+                                  label_format_cladelab = 30,
+                                  label_format_tiplab = NULL, 
                                   fontsize = 4, offset = 1,
                                   offset_tiplab = 1, 
                                   hclust_method = "ward.D", 
@@ -69,7 +75,10 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   extend = 0.3, hilight = TRUE, 
                                   hexpand = .1, align = "both", ...) {
     group <- p.adjust <- count<- NULL
-
+    # to compatible with older versions
+    if (!is.null(label_format)) {
+        label_format_cladelab <- label_format
+    }
     if (class(x) == "gseaResult")
         x@result$Count <- x$core_enrichment %>%
             strsplit(split = "/")  %>%
@@ -95,10 +104,11 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         #node = seq_len(length(clus)),
         color = x[keep, as.character(color)],
         count = x$Count[keep])
-
+    
     ## Group the nodes.
     p <- group_tree(hc = hc, clus = clus, d = d, offset_tiplab = offset_tiplab, 
-        nWords = nWords, label_format = label_format, offset = offset, 
+        nWords = nWords, label_format_cladelab = label_format_cladelab, 
+        label_format_tiplab = label_format_tiplab, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, align = align)
     # xlim <-  c(0, xlim * 3 * max(p$data$x))
@@ -128,7 +138,9 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       color = "p.adjust",
                                       nWords = 4, nCluster = 5,
                                       cex_category = 1, split = NULL,
-                                      label_format = 30, # xlim = 1,
+                                      label_format = NULL, 
+                                      label_format_cladelab = 30,
+                                      label_format_tiplab = NULL, 
                                       fontsize = 4, offset = 1, pie = "equal",
                                       legend_n = 3, offset_tiplab = 1, 
                                       hclust_method = "ward.D", group_color = NULL, 
@@ -138,6 +150,10 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
     geneClusterPanel <- match.arg(geneClusterPanel, c("heatMap", "dotplot", "pie"))                                  
     has_pairsim(x)
     group <- Description <- Cluster <- Count <- NULL
+    # to compatible with older versions
+    if (!is.null(label_format)) {
+        label_format_cladelab <- label_format
+    }
     # y <- get_selected_category(showCategory, x, split)  
     y <- fortify(x, showCategory = showCategory,
              includeAll = TRUE, split = split)
@@ -158,7 +174,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         count = merged_ggData[names(clus), "Count"])
   
     p <- group_tree(hc = hc, clus = clus, d = d, offset_tiplab = offset_tiplab,
-        nWords = nWords, label_format = label_format, offset = offset, 
+        nWords = nWords, label_format_cladelab = label_format_cladelab, 
+        label_format_tiplab = label_format_tiplab, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, ID_Cluster_mat = ID_Cluster_mat,
         geneClusterPanel = geneClusterPanel, align = align)
@@ -257,18 +274,18 @@ fill_termsim <- function(x, keep) {
 ##'
 ##' @return a ggtree object
 ##' @noRd
-add_cladelab <- function(p, nWords, label_format, offset, roots, 
+add_cladelab <- function(p, nWords, label_format_cladelab, 
+                         offset, roots, 
                          fontsize, group_color, cluster_color, 
                          pdata, extend, hilight, align) {
     # align <- getOption("enriplot.treeplot.align", default = "both")
     cluster_label <- sapply(cluster_color, get_wordcloud, ggData = pdata,
                         nWords = nWords)
-    label_func <- default_labeller(label_format)
-    if (is.function(label_format)) {
-        label_func <- label_format
+    label_func_cladelab <- default_labeller(label_format_cladelab)
+    if (is.function(label_format_cladelab)) {
+        label_func_cladelab <- label_format_cladelab
     }
-    cluster_label <- label_func(cluster_label)
-    #names(cluster_label) <- cluster_color
+    cluster_label <- label_func_cladelab(cluster_label)
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (is.null(group_color)) {
         color2 <- scales::hue_pal()(length(roots) + n_color)
@@ -313,7 +330,8 @@ add_cladelab <- function(p, nWords, label_format, offset, roots,
 ##' @return a ggtree object
 ##' @noRd
 group_tree <- function(hc, clus, d, offset_tiplab, nWords, 
-                       label_format, offset, fontsize, group_color, 
+                       label_format_cladelab, label_format_tiplab,
+                       offset, fontsize, group_color, 
                        extend, hilight, cex_category, 
                        ID_Cluster_mat = NULL, geneClusterPanel = NULL,
                        align) {
@@ -350,11 +368,21 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         p <- p + scale_color_manual(values = color2, guide = 'none')
     }
     
+
     p <- p %<+% d +
         geom_tiplab(offset = offset_tiplab, hjust = 0,
                     show.legend = FALSE, align = TRUE, linesize = 0)
-    
-    p <- add_cladelab(p = p, nWords = nWords, label_format = label_format, 
+    if (!is.null(label_format_tiplab)) {
+        label_func_tiplab <- default_labeller(label_format_tiplab)
+        if (is.function(label_format_tiplab)) {
+            label_func_tiplab <- label_format_tiplab
+        }
+        isTip <- p$data$isTip
+        p$data$label[isTip] <-  label_func_tiplab(p$data$label[isTip])
+    }
+
+    p <- add_cladelab(p = p, nWords = nWords, 
+        label_format_cladelab = label_format_cladelab,
         offset = offset, roots = roots, fontsize = fontsize, 
         group_color = group_color, cluster_color = cluster_color, 
         pdata = pdata, extend = extend, hilight = hilight, align = align) 
