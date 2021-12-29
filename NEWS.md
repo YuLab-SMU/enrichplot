@@ -1,9 +1,17 @@
-# enrichplot 1.15.1.994
+# enrichplot 1.15.2
 
 + add `label_format_tiplab` and `label_format_cladelab` parameters for `treeplot`(2021-12-24, Fri)
 + support treeplot of compareCluster(GSEA algorithm) result(2021-12-13, Mon)
 + support visualization of compareCluster(GSEA algorithm) result(2021-12-11, Sat)
 + support scientific notation for `gseaplot2`(2021-12-4, Sat)
+
+# enrichplot 1.15.1
+
++ fixed R check by importing `utils`
+
+# enrichplot 1.14.0
+
++ Bioconductor 3.14 release
 
 # enrichplot 1.13.2
 
@@ -21,6 +29,10 @@
 + use `aplot::plot_list` instead of `cowplot::plot_grid` (2021-06-13, Sun
 + add `color_category` and `color_gene` parameters for `cnetplot`(2021-6-11, Fri)
 + Enables `showCategory` parameter to support character input in `dotplot.compareClusterResult`(2021-6-10, Thu)
+
+# enrichplot 1.12.0
+
++ Bioconductor 3.13 release
 
 # enrichplot 1.11.3
 
