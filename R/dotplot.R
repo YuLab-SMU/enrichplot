@@ -180,7 +180,9 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         by2 <- size
     }
       
-    p <- ggplot(df, aes_string(x = x, y = "Description", size = by2))      
+    p <- ggplot(df, aes_string(x = x, y = "Description", size = by2)) +
+        scale_y_discrete(labels = label_func)
+
     if (group) {
         p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) + 
           ggnewscale::new_scale_colour()     
@@ -195,13 +197,11 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     }  else {
         p <- p +  geom_point(aes_string(color = colorBy)) 
     }  
-    suppressMessages(print(
-        p + scale_color_continuous(low="red", high="blue",
-                        guide=guide_colorbar(reverse=TRUE)) +
-            ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
-            scale_size_continuous(range=c(3, 8)) + 
-            scale_y_discrete(labels = label_func) +
-            guides(size  = guide_legend(order = 1), 
-                   color = guide_colorbar(order = 2))
-    ))
+
+    p + scale_color_continuous(low="red", high="blue",
+                    guide=guide_colorbar(reverse=TRUE)) +
+        ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
+        scale_size_continuous(range=c(3, 8)) + 
+        guides(size  = guide_legend(order = 1), 
+                color = guide_colorbar(order = 2))
 }
