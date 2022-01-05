@@ -1,3 +1,7 @@
+# enrichplot 1.15.2.900
+
++ return `gg` object instead of print it in `dotplot.compareClusterResult()` (2022-01-05, Wed, @altairwei, #160)
+
 # enrichplot 1.15.2
 
 + add `label_format_tiplab` and `label_format_cladelab` parameters for `treeplot`(2021-12-24, Fri)
