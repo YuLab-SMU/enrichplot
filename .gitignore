@@ -3,3 +3,6 @@
 .RData
 *.DS_Store
 *html
+
+.vscode/
+Rplots*
