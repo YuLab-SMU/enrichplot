@@ -27,6 +27,7 @@ gseaplot.gseaResult(
   color = "black",
   color.line = "green",
   color.vline = "#FA5860",
+  return_plots = FALSE,
   ...
 )
 }
@@ -47,6 +48,9 @@ gseaplot.gseaResult(
 
 \item{color.vline}{color of vertical line which indicating the
 maximum/minimal running enrichment score}
+
+\item{return_plots}{If `TRUE`, this returns a list of plots that you 
+can plot yourself.}
 }
 \value{
 ggplot2 object

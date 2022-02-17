@@ -13,7 +13,8 @@ gseaplot2(
   rel_heights = c(1.5, 0.5, 1),
   subplots = 1:3,
   pvalue_table = FALSE,
-  ES_geom = "line"
+  ES_geom = "line",
+  return_plots = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ gseaplot2(
 
 \item{ES_geom}{geom for plotting running enrichment score,
 one of 'line' or 'dot'}
+
+\item{return_plots}{set this to `TRUE` if you would like to make the plots
+yourself. Default is `FALSE`.}
 }
 \value{
 plot

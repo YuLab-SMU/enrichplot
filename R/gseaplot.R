@@ -6,7 +6,9 @@ setMethod("gseaplot", signature(x = "gseaResult"),
               gseaplot.gseaResult(x, geneSetID = geneSetID,
                                     by = by, title = title,
                                     color = color, color.line = color.line,
-                                    color.vline = color.vline, ...)
+                                    color.vline = color.vline,
+                                   return_plots = FALSE,
+                                  ...)
           })
 
 ##' @rdname gseaplot
@@ -14,6 +16,8 @@ setMethod("gseaplot", signature(x = "gseaResult"),
 ##' @param color.line color of running enrichment score line
 ##' @param color.vline color of vertical line which indicating the
 ##' maximum/minimal running enrichment score
+##' @param return_plots If `TRUE`, this returns a list of plots that you 
+##' can plot yourself. 
 ##' @return ggplot2 object
 ##' @importFrom ggplot2 ggplot
 ##' @importFrom ggplot2 geom_linerange
@@ -35,7 +39,9 @@ setMethod("gseaplot", signature(x = "gseaResult"),
 ##' @author Guangchuang Yu
 gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "",
                                  color='black', color.line="green",
-                                 color.vline="#FA5860", ...){
+                                 color.vline="#FA5860", 
+                                 return_plots = FALSE, 
+                                 ...){
     by <- match.arg(by, c("runningScore", "preranked", "all"))
     gsdata <- gsInfo(x, geneSetID)
     p <- ggplot(gsdata, aes_(x = ~x)) +
@@ -68,7 +74,13 @@ gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "",
                                         axis.ticks.x = element_blank())
     p.pos <- p.pos + ggtitle(title) +
         theme(plot.title=element_text(hjust=0.5, size=rel(2)))
-    plot_list(gglist =  list(p.pos, p.res), ncol=1)
+    if(return_plots){
+      return(list(p.pos, p.res))
+    }
+    else{
+      plot_list(gglist =  list(p.pos, p.res), ncol=1) 
+    }
+    
 }
 
 
@@ -121,6 +133,8 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @param pvalue_table whether add pvalue table
 ##' @param ES_geom geom for plotting running enrichment score,
 ##' one of 'line' or 'dot'
+##' @param return_plots set this to `TRUE` if you would like to make the plots
+##' yourself. Default is `FALSE`. 
 ##' @return plot
 ##' @export
 ##' @importFrom ggplot2 theme_classic
@@ -140,7 +154,9 @@ gseaScores <- getFromNamespace("gseaScores", "DOSE")
 ##' @author Guangchuang Yu
 gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
                       rel_heights=c(1.5, .5, 1), subplots = 1:3,
-                      pvalue_table = FALSE, ES_geom="line") {
+                      pvalue_table = FALSE, ES_geom="line",
+                      return_plots = FALSE 
+                      ) {
     ES_geom <- match.arg(ES_geom, c("line", "dot"))
 
     geneList <- position <- NULL ## to satisfy codetool
@@ -291,8 +307,13 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
 
     if (length(rel_heights) > length(subplots))
         rel_heights <- rel_heights[subplots]
-
-    aplot::plot_list(gglist = plotlist, ncol=1, heights=rel_heights)
+    if(return_plots){
+      return(plot_list)
+    }
+    else{
+      aplot::plot_list(gglist = plotlist, ncol=1, heights=rel_heights) 
+    }
+    
 }
 
 
