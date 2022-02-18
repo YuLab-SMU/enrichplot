@@ -308,7 +308,7 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
     if (length(rel_heights) > length(subplots))
         rel_heights <- rel_heights[subplots]
     if(return_plots){
-      return(plot_list)
+      return(plotlist)
     }
     else{
       aplot::plot_list(gglist = plotlist, ncol=1, heights=rel_heights) 
