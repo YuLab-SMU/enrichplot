@@ -1,5 +1,6 @@
-# enrichplot 1.15.2.900
+# enrichplot 1.15.2.9001
 
++ fix a bug in `goplot`: `goplot.gseaResult` need `ontology` slot (2022-2-22, Tue)
 + return `gg` object instead of print it in `dotplot.compareClusterResult()` (2022-01-05, Wed, @altairwei, #160)
 
 # enrichplot 1.15.2
