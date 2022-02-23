@@ -41,7 +41,7 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
     if (!exists(".GOSemSimEnv")) GOSemSim_initial()
     .GOSemSimEnv <- get(".GOSemSimEnv", envir=.GlobalEnv)
     gotbl <- get("gotbl", envir=.GOSemSimEnv)
-    if (inherits(x， "gseaResult")) {
+    if (inherits(x, "gseaResult")) {
         GOANCESTOR <- getAncestors(x@setType)
     } else {
         GOANCESTOR <- getAncestors(x@ontology)
