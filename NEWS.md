@@ -1,4 +1,4 @@
-# enrichplot 1.15.2.9003
+# enrichplot 1.15.3
 
 + update `cnetplot.enrichResult` to be supported by `drag_network`(2022-3-6, Sun)
 + add function `drag_network` to drag the nodes of networks (2022-2-25, Fri)
