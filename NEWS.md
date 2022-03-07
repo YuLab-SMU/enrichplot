@@ -1,5 +1,6 @@
-# enrichplot 1.15.2.9002
+# enrichplot 1.15.2.9003
 
++ update `cnetplot.enrichResult` to enable it be dragged by `drag_network`(2022-3-6, Sun)
 + add function `drag_network` to drag the nodes of networks (2022-2-25, Fri)
 + fix a bug in `goplot`: `goplot.gseaResult` need `setType` slot instead of `ontology` slot (2022-2-22, Tue)
 + return `gg` object instead of print it in `dotplot.compareClusterResult()` (2022-01-05, Wed, @altairwei, #160)
