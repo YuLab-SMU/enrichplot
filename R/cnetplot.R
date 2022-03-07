@@ -109,61 +109,71 @@ cnetplot.enrichResult <- function(x,
     if (!is.null(foldChange)) {
         fc <- foldChange[V(g)$name[(n+1):length(V(g))]]
         V(g)$color <- NA
+        # V(g)$color[1:n] <- color_category
         V(g)$color[(n+1):length(V(g))] <- fc
         show_legend <- c(TRUE, FALSE)
         names(show_legend) <- c("color", "size")
         p <- ggraph(g, layout=layout, circular = circular)
+        p$data[-(1:n), "size"] <- 3 * cex_gene
+
         p <- p + edge_layer +
-            # geom_node_point(aes_(color=~as.numeric(as.character(color)),
-            geom_node_point(aes_(color=~I(color_category), size=~size),
-                data = p$data[1:n, ]) +
-            scale_size(range=c(3, 8) * cex_category) +
-            ## ggnewscale::new_scale("size") +
+            geom_node_point(aes_(size=~size), color=I(color_category),
+                        data = NULL, show.legend = show_legend,
+                        alpha = c(rep(1, n), rep(0, nrow(p$data)-n))) +
             ggnewscale::new_scale_color() +
-            geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~I(3 * cex_gene)),
-                            data = p$data[-(1:n), ], show.legend = show_legend) +
-            ## scale_size(range=c(3, 3) * cex_gene) +
+            geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size),
+                data = NULL, alpha = c(rep(0, n), rep(1, nrow(p$data)-n))) +
+            scale_size(range=c(3, 8) * cex_category) +  
             scale_colour_gradient2(name = "fold change", low = "blue",
                                    mid = "white", high = "red",
                                    guide = guide_colorbar(order = 2))
+
+
+        # p <- p + edge_layer +
+        #     geom_node_point(aes_(color=~I(color_category), size=~size),
+        #         data = p$data[1:n, ]) +
+        #     scale_size(range=c(3, 8) * cex_category) +
+        #     ggnewscale::new_scale_color() +
+        #     geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~I(3 * cex_gene)),
+        #                     data = p$data[-(1:n), ], show.legend = show_legend) +
+        #     scale_colour_gradient2(name = "fold change", low = "blue",
+        #                            mid = "white", high = "red",
+        #                            guide = guide_colorbar(order = 2))
     } else {
         V(g)$color <- color_gene
         V(g)$color[1:n] <- color_category
         p <- ggraph(g, layout=layout, circular=circular)
+        # p <- p + edge_layer +
+        #     geom_node_point(aes_(color=~I(color), size=~size), data = p$data[1:n, ]) +
+        #     scale_size(range=c(3, 8) * cex_category) +
+        #     geom_node_point(aes_(color=~I(color), size=~I(3 * cex_gene)),
+        #                     data = p$data[-(1:n), ], show.legend = FALSE) 
+        p$data[-(1:n), "size"] <- 3 * cex_gene
         p <- p + edge_layer +
-            geom_node_point(aes_(color=~I(color), size=~size), data = p$data[1:n, ]) +
-            scale_size(range=c(3, 8) * cex_category) +
-            ## ggnewscale::new_scale("size") +
-            geom_node_point(aes_(color=~I(color), size=~I(3 * cex_gene)),
-                            data = p$data[-(1:n), ], show.legend = FALSE) 
-            ## scale_size(range=c(3, 3) * cex_gene)
+            geom_node_point(aes_(color=~I(color), size=~size))+
+            scale_size(range=c(3, 8) * cex_category) 
+
     }
 
     p <- p + theme_void()
-    # if (node_label == "category") {       
-    #     p <- p + geom_node_text(aes_(label=~name), data = p$data[1:n,],
-    #         size = label_category * cex_label_category, bg.color = "white")
-    # } else if (node_label == "gene") {
-    #     p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-    #         repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white")
-    # } else if (node_label == "all") {
-    #     p <- p + geom_node_text(aes_(label=~name), data = p$data[-c(1:n),],
-    #             repel=TRUE, size = label_gene * cex_label_gene, bg.color = "white") + 
-    #         geom_node_text(aes_(label=~name), repel=TRUE,
-    #             size = label_category * cex_label_category, bg.color = "white", data = p$data[1:n,]) 
-    # }
 
     if (node_label == "category") {       
-        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
+        p$data[1:n, "name"] <- NA     
+        p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
     } else if (node_label == "gene") {
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
+        p$data[-c(1:n), "name"] <- NA
+        p <- add_node_label(p = p, data = NULL, label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
     } else if (node_label == "all") {
-        p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
-            cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
-        p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
-            cex_label_node = cex_label_category, shadowtext = shadowtext_category)
+        p <- add_node_label(p = p, data = NULL,
+            label_size_node = c(rep(label_size_category, n), rep(label_size_gene, nrow(p$data)-n)),
+            cex_label_node = c(rep(cex_label_category, n), rep(cex_label_gene,, nrow(p$data)-n)), 
+            shadowtext = shadowtext_gene)
+        # p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
+        #     cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
+        # p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
+        #     cex_label_node = cex_label_category, shadowtext = shadowtext_category)
     }
     if (!is.null(foldChange)) {
         p <- p + guides(size  = guide_legend(order = 1), 
