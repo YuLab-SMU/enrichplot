@@ -1,5 +1,6 @@
 # enrichplot 1.15.3
 
++ export `drag_network' (2022-03-07, Mon)
 + update `cnetplot.enrichResult` to be supported by `drag_network`(2022-3-6, Sun)
 + add function `drag_network` to drag the nodes of networks (2022-2-25, Fri)
 + fix a bug in `goplot`: `goplot.gseaResult` need `setType` slot instead of `ontology` slot (2022-2-22, Tue)
