@@ -111,7 +111,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         nWords = nWords, label_format_cladelab = label_format_cladelab, 
         label_format_tiplab = label_format_tiplab, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
-        hilight = hilight, cex_category = cex_category, align = align)
+        hilight = hilight, cex_category = cex_category, align = align, align_tiplab = FALSE)     
     # xlim <-  c(0, xlim * 3 * max(p$data$x))
     # p + coord_cartesian(xlim = xlim) +
     #   p + ggnewscale::new_scale_colour() +
@@ -177,7 +177,10 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         label_format_tiplab = label_format_tiplab, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, ID_Cluster_mat = ID_Cluster_mat,
-        geneClusterPanel = geneClusterPanel, align = align, add_tippoint = FALSE)
+        geneClusterPanel = geneClusterPanel, align = align, add_tippoint = FALSE,
+        align_tiplab = TRUE)
+
+     
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
@@ -333,7 +336,7 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
                        offset, fontsize, group_color, 
                        extend, hilight, cex_category, 
                        ID_Cluster_mat = NULL, geneClusterPanel = NULL,
-                       align, add_tippoint = TRUE) {
+                       align, add_tippoint = TRUE, align_tiplab = TRUE) {
     group <- color <- count <- NULL
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
@@ -396,8 +399,8 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
             scale_colour_continuous(low="red", high="blue", name = color, 
                 guide = guide_colorbar(reverse = TRUE))
     }
-    ## add tiplab
+    ## add tiplab 
     p <- p + geom_tiplab(offset = offset_tiplab, hjust = 0,
-                    show.legend = FALSE, align = FALSE, linesize = 0)     
+                show.legend = FALSE, align = align_tiplab, linesize = 0)     
     return(p)
 }
