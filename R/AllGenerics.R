@@ -352,9 +352,9 @@ setGeneric("upsetplot", function(x, ...) standardGeneric("upsetplot"))
 ##'     # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
 ##'     treeplot(ego2, showCategory = 30, hilight = FALSE)
 ##'     # use `offset` parameter to adjust the distance of bar and tree.
-##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 1.5)
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset = rel(1.5))
 ##'     # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
-##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 1.5)
+##'     treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = rel(1.5))
 ##'     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
 ##'     keep
 ##'     treeplot(ego2, showCategory = keep)

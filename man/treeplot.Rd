@@ -28,8 +28,8 @@ treeplot.enrichResult(
   label_format_cladelab = 30,
   label_format_tiplab = NULL,
   fontsize = 4,
-  offset = 1,
-  offset_tiplab = 1,
+  offset = rel(1),
+  offset_tiplab = rel(1),
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
@@ -51,10 +51,10 @@ treeplot.compareClusterResult(
   label_format_cladelab = 30,
   label_format_tiplab = NULL,
   fontsize = 4,
-  offset = 1,
+  offset = rel(1),
   pie = "equal",
   legend_n = 3,
-  offset_tiplab = 1,
+  offset_tiplab = rel(1),
   hclust_method = "ward.D",
   group_color = NULL,
   extend = 0.3,
@@ -94,13 +94,14 @@ displayed completely, the user can increase this value.}
 
 \item{fontsize}{The size of text, default is 4.}
 
-\item{offset}{numeric, distance bar and tree, offset of bar and text from the clade, default is 1,
+\item{offset}{rel object or numeric value, distance bar and tree,
+offset of bar and text from the clade, default is rel(1),
 meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
 (1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).}
 
-\item{offset_tiplab}{tiplab offset, the bigger the number, 
+\item{offset_tiplab}{tiplab offset, rel object or numeric value, the bigger the number, 
 the farther the distance between the node and the branch. 
-The default is 1, when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
+The default is rel(1), when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
 when geneClusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
 when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.}
 
@@ -163,9 +164,9 @@ for interpretation.
     # use `hilight = FALSE` to remove ggtree::geom_hilight() layer.
     treeplot(ego2, showCategory = 30, hilight = FALSE)
     # use `offset` parameter to adjust the distance of bar and tree.
-    treeplot(ego2, showCategory = 30, hilight = FALSE, offset = 1.5)
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset = rel(1.5))
     # use `offset_tiplab` parameter to adjust the distance of nodes and branches.
-    treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = 1.5)
+    treeplot(ego2, showCategory = 30, hilight = FALSE, offset_tiplab = rel(1.5))
     keep <- rownames(ego2@termsim)[c(1:10, 16:20)]
     keep
     treeplot(ego2, showCategory = keep)

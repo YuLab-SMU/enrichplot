@@ -35,12 +35,13 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' alternatively a custom function to format axis labels.
 ## ' @param xlim Limits for the x axes, the default value is 1. If the picture is not 
 ##' displayed completely, the user can increase this value.
-##' @param offset_tiplab tiplab offset, the bigger the number, 
+##' @param offset_tiplab tiplab offset, rel object or numeric value, the bigger the number, 
 ##' the farther the distance between the node and the branch. 
-##' The default is 1, when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
+##' The default is rel(1), when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
 ##' when geneClusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
 ##' when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.
-##' @param offset numeric, distance bar and tree, offset of bar and text from the clade, default is 1,
+##' @param offset rel object or numeric value, distance bar and tree,
+##' offset of bar and text from the clade, default is rel(1),
 ##' meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
 ##' (1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).
 ##' @param fontsize The size of text, default is 4.
@@ -68,8 +69,8 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   label_format = NULL, 
                                   label_format_cladelab = 30,
                                   label_format_tiplab = NULL, 
-                                  fontsize = 4, offset = 1,
-                                  offset_tiplab = 1, 
+                                  fontsize = 4, offset = rel(1),
+                                  offset_tiplab = rel(1), 
                                   hclust_method = "ward.D", 
                                   group_color = NULL, 
                                   extend = 0.3, hilight = TRUE, 
@@ -113,11 +114,9 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         hilight = hilight, cex_category = cex_category, align = align)
     # xlim <-  c(0, xlim * 3 * max(p$data$x))
     # p + coord_cartesian(xlim = xlim) +
-      p + ggnewscale::new_scale_colour() +
-        geom_tippoint(aes(color = color, size = count)) +
-        scale_colour_continuous(low="red", high="blue", name = color, 
-            guide = guide_colorbar(reverse = TRUE)) +
-        scale_size_continuous(name = "number of genes",
+    #   p + ggnewscale::new_scale_colour() +
+    #     geom_tippoint(aes(color = color, size = count)) +
+      p + scale_size_continuous(name = "number of genes",
                               range = c(3, 8) * cex_category) + 
         ggtree::hexpand(ratio = hexpand) + 
         guides(size  = guide_legend(order = 1), 
@@ -141,8 +140,8 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
                                       label_format = NULL, 
                                       label_format_cladelab = 30,
                                       label_format_tiplab = NULL, 
-                                      fontsize = 4, offset = 1, pie = "equal",
-                                      legend_n = 3, offset_tiplab = 1, 
+                                      fontsize = 4, offset = rel(1), pie = "equal",
+                                      legend_n = 3, offset_tiplab = rel(1), 
                                       hclust_method = "ward.D", group_color = NULL, 
                                       extend = 0.3, hilight = TRUE, 
                                       geneClusterPanel = "heatMap", 
@@ -178,7 +177,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         label_format_tiplab = label_format_tiplab, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, ID_Cluster_mat = ID_Cluster_mat,
-        geneClusterPanel = geneClusterPanel, align = align)
+        geneClusterPanel = geneClusterPanel, align = align, add_tippoint = FALSE)
     p_data <- as.data.frame(p$data)
     p_data <- p_data[which(!is.na(p_data$label)), ]
     rownames(p_data) <- p_data$label
@@ -334,8 +333,8 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
                        offset, fontsize, group_color, 
                        extend, hilight, cex_category, 
                        ID_Cluster_mat = NULL, geneClusterPanel = NULL,
-                       align) {
-    group <- NULL
+                       align, add_tippoint = TRUE) {
+    group <- color <- count <- NULL
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
     grp <- apply(table(dat), 2, function(x) names(x[x == 1]))  
@@ -346,19 +345,26 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
     # cluster data
     p <- ggtree::groupOTU(p, grp, "group") + aes_(color =~ group)
 
-
-    if (geneClusterPanel == "pie" || is.null(geneClusterPanel)) {
+    if (inherits(offset_tiplab, "rel")) {
+        offset_tiplab <- unclass(offset_tiplab)
+        if (geneClusterPanel == "pie" || is.null(geneClusterPanel)) {
         ## 1.5 * max(radius_of_pie)
         offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
-    }  else if (geneClusterPanel == "heatMap") {
-        ## Close to the width of the tree
-        offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * max(p$data$x)
-    } else if (geneClusterPanel == "dotplot") {
-        ## Close to the width of the tree
-        offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * max(p$data$x)
+        }  else if (geneClusterPanel == "heatMap") {
+            ## Close to the width of the tree
+            offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * max(p$data$x)
+        } else if (geneClusterPanel == "dotplot") {
+            ## Close to the width of the tree
+            offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * max(p$data$x)
+        }
+    }
+
+    if (inherits(offset, "rel")) {
+        offset <- unclass(offset)
+        offset <- offset * (max(p$data$x) * 1.2 + offset_tiplab) 
     }
     # max_nchar <- max(nchar(p$data$label), na.rm = TRUE)
-    offset <- offset * (max(p$data$x) * 1.2 + offset_tiplab)    
+       
     pdata <- data.frame(name = p$data$label, color2 = p$data$group)
     pdata <- pdata[!is.na(pdata$name), ]
     cluster_color <- unique(pdata$color2)
@@ -367,11 +373,9 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         color2 <- c(rep("black", n_color), group_color)
         p <- p + scale_color_manual(values = color2, guide = 'none')
     }
-    
+    p <- p %<+% d
 
-    p <- p %<+% d +
-        geom_tiplab(offset = offset_tiplab, hjust = 0,
-                    show.legend = FALSE, align = TRUE, linesize = 0)
+
     if (!is.null(label_format_tiplab)) {
         label_func_tiplab <- default_labeller(label_format_tiplab)
         if (is.function(label_format_tiplab)) {
@@ -385,6 +389,15 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         label_format_cladelab = label_format_cladelab,
         offset = offset, roots = roots, fontsize = fontsize, 
         group_color = group_color, cluster_color = cluster_color, 
-        pdata = pdata, extend = extend, hilight = hilight, align = align) 
+        pdata = pdata, extend = extend, hilight = hilight, align = align)
+    if (add_tippoint) {
+        p <- p + ggnewscale::new_scale_colour() +
+            geom_tippoint(aes(color = color, size = count)) + 
+            scale_colour_continuous(low="red", high="blue", name = color, 
+                guide = guide_colorbar(reverse = TRUE))
+    }
+    ## add tiplab
+    p <- p + geom_tiplab(offset = offset_tiplab, hjust = 0,
+                    show.legend = FALSE, align = FALSE, linesize = 0)     
     return(p)
 }
