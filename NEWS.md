@@ -1,4 +1,4 @@
-# enrichplot 1.15.3.991
+# enrichplot 1.15.4
 
 + update `treeplot`: support passing rel object to `offset` and `offset_tiplab` (2022-04-24, Sun)
 
