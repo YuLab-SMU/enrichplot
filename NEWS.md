@@ -1,3 +1,7 @@
+# enrichplot 1.15.4
+
++ update `treeplot`: support passing rel object to `offset` and `offset_tiplab` (2022-04-24, Sun)
+
 # enrichplot 1.15.3
 
 + export `drag_network' (2022-03-07, Mon)
