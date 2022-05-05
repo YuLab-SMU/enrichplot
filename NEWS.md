@@ -1,6 +1,7 @@
-# enrichplot 1.17.0.991
+# enrichplot 1.17.0.992
 
-+ fix `ridgeplot` when x@readable = TRUE (2022-04-30, Sat)
++ `gseaplot()` and `gseaplot2()` return `gglist` object instead of plotting the figure (2022-05-05, Thu)
++ fix `ridgeplot` when `x@readable = TRUE` (2022-04-30, Sat)
 
 # enrichplot 1.15.4
 
