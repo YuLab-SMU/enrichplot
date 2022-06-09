@@ -1,3 +1,8 @@
+# enrichplot 1.17.0.992
+
++ `gseaplot()` and `gseaplot2()` return `gglist` object instead of plotting the figure (2022-05-05, Thu)
++ fix `ridgeplot` when `x@readable = TRUE` (2022-04-30, Sat)
+
 # enrichplot 1.15.4
 
 + update `treeplot`: support passing rel object to `offset` and `offset_tiplab` (2022-04-24, Sun)

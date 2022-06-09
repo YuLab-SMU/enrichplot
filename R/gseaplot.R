@@ -68,7 +68,9 @@ gseaplot.gseaResult <- function (x, geneSetID, by = "all", title = "",
                                         axis.ticks.x = element_blank())
     p.pos <- p.pos + ggtitle(title) +
         theme(plot.title=element_text(hjust=0.5, size=rel(2)))
-    plot_list(gglist =  list(p.pos, p.res), ncol=1)
+    #plot_list(gglist =  list(p.pos, p.res), ncol=1)
+    
+    aplot::gglist(gglist = list(p.pos, p.res), ncol=1)
 }
 
 
@@ -292,7 +294,8 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
     if (length(rel_heights) > length(subplots))
         rel_heights <- rel_heights[subplots]
 
-    aplot::plot_list(gglist = plotlist, ncol=1, heights=rel_heights)
+    # aplot::plot_list(gglist = plotlist, ncol=1, heights=rel_heights)
+    aplot::gglist(gglist = plotlist, ncol=1, heights=rel_heights) 
 }
 
 

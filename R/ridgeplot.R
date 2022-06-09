@@ -45,6 +45,11 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
         gs2id <- x@geneSets[x$ID[seq_len(n)]]
     }
 
+    if (x@readable) {
+        id <- match(names(x@geneList), names(x@gene2Symbol))
+        names(x@geneList) <- x@gene2Symbol[id]
+    } 
+
     gs2val <- lapply(gs2id, function(id) {
         res <- x@geneList[id]
         res <- res[!is.na(res)]
