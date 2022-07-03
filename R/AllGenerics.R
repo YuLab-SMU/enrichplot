@@ -381,9 +381,7 @@ setGeneric("treeplot",
 ##'
 ##' @title ssplot
 ##' @rdname ssplot
-##' @param x enrichment result.
-##' @param showCategory number of enriched terms to display
-##' @param ... additional parameters
+##' @inheritParams emapplot
 ##' @return ggplot object
 ##' @export
 ##' @examples

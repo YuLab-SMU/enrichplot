@@ -1,5 +1,7 @@
-# enrichplot 1.17.0.992
+# enrichplot 1.17.0.993
 
++ change default values of `group_category` and `node_label` in `ssplot()` (2022-07-04, Mon)
++ update document of `ssplot()` (2022-07-04, Mon)
 + `gseaplot()` and `gseaplot2()` return `gglist` object instead of plotting the figure (2022-05-05, Thu)
 + fix `ridgeplot` when `x@readable = TRUE` (2022-04-30, Sat)
 

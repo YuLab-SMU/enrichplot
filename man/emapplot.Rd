@@ -121,9 +121,9 @@ nodes should be scaled relative to the default.}
 \item{node_label}{Select which labels to be displayed,
 one of 'category', 'group', 'all' and 'none'.}
 
-\item{with_edge}{Logical, if TRUE (the default), draw the edges of the network diagram.}
+\item{with_edge}{Logical, if TRUE, draw the edges of the network diagram.}
 
-\item{group_category}{a logical, if TRUE(the default), group the category.}
+\item{group_category}{a logical, if TRUE, group the category.}
 
 \item{group_legend}{Logical, if TRUE, the grouping legend will be displayed.
 The default is FALSE.}
