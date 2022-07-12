@@ -55,8 +55,6 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param min_edge The minimum similarity threshold for whether 
 ##' two nodes are connected, should between 0 and 1, default value is 0.2.
 ##' @param cex_label_category Scale of category node label size.
-##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
-##' 'p.adjust' or 'qvalue'.
 ##' @param cex_category Number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default.
 ##' @param shadowtext a logical value, whether to use shadow font.
@@ -64,8 +62,8 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @param repel whether to correct the position of the label. Defaults to FALSE.
 ##' @param node_label Select which labels to be displayed,
 ##' one of 'category', 'group', 'all' and 'none'.
-##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
-##' @param group_category a logical, if TRUE(the default), group the category.
+##' @param with_edge Logical, if TRUE, draw the edges of the network diagram.
+##' @param group_category a logical, if TRUE, group the category.
 ##' @param group_legend Logical, if TRUE, the grouping legend will be displayed.
 ##' The default is FALSE.
 ##' @param cex_label_group Numeric, scale of group labels size, the default value is 1.
