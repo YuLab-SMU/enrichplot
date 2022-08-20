@@ -95,11 +95,11 @@ dotplot.compareClusterResult(
 \item{color}{variable that used to color enriched terms,
 e.g. 'pvalue', 'p.adjust' or 'qvalue'}
 
-\item{showCategory}{A number or a list of terms. If it is a number, 
-the first n terms will be displayed. If it is a list of terms, 
+\item{showCategory}{A number or a list of terms. If it is a number,
+the first n terms will be displayed. If it is a list of terms,
 the selected terms will be displayed.}
 
-\item{size}{variable that used to scale the sizes of categories, 
+\item{size}{variable that used to scale the sizes of categories,
 one of "geneRatio", "Percentage" and "count"}
 
 \item{split}{ONTOLOGY or NULL}
@@ -123,10 +123,10 @@ by default wraps names longer that 30 characters}
 \item{colorBy}{variable that used to color enriched terms,
 e.g. 'pvalue', 'p.adjust' or 'qvalue'}
 
-\item{group}{a logical value, whether to connect the 
+\item{group}{a logical value, whether to connect the
 nodes of the same group with wires.}
 
-\item{shape}{a logical value, whether to use nodes of 
+\item{shape}{a logical value, whether to use nodes of
 different shapes to distinguish the group it belongs to}
 }
 \value{

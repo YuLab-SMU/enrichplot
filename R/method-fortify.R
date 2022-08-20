@@ -108,16 +108,20 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
         ## nothing
     } else if (by == "geneRatio") {
         ## for result of ORA
-        if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) { 
+        if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) {
             gsize <- as.numeric(sub("/\\d+$", "", as.character(result$GeneRatio)))
             gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
-            result$GeneRatio <- gsize/gcsize     
-            cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
-                             sep="")    
-            lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
-            result$Cluster <- factor(cluster, levels = lv)      
-        }    
-               
+            result$GeneRatio <- gsize/gcsize
+            if (("ONTOLOGY" %in% colnames(result)) && (length(unique(result$ONTOLOGY)) > 1)){
+                # do nothing
+            } else {
+                cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
+                                 sep="")
+                lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
+                result$Cluster <- factor(cluster, levels = lv)
+            }
+        }
+
     } else {
         ## nothing
     }
