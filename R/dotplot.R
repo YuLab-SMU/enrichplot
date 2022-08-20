@@ -184,14 +184,14 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     p <- ggplot(df, aes_string(x = x, y = "Description", size = by2)) +
         scale_y_discrete(labels = label_func)
 
-    # show multiply GO enrichment result in separate panels
-    if ("ONTOLOGY" %in% colnames(df) && length(unique(df$ONTOLOGY)) > 1){
-        p = p + facet_grid(
-            ONTOLOGY ~ .,
-            scales = "free",
-            space = "free"
-        )
-    }
+    ## show multiply GO enrichment result in separate panels
+    #if ("ONTOLOGY" %in% colnames(df) && length(unique(df$ONTOLOGY)) > 1){
+    #    p = p + facet_grid(
+    #        ONTOLOGY ~ .,
+    #        scales = "free",
+    #        space = "free"
+    #    )
+    #}
 
     if (group) {
         p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) +
