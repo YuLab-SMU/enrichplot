@@ -80,10 +80,13 @@ treeplot.enrichResult <- function(x, showCategory = 30,
     if (!is.null(label_format)) {
         label_format_cladelab <- label_format
     }
-    if (class(x) == "gseaResult")
+    # if (class(x) == "gseaResult")
+    if (inherits(x, "gseaResult")) {
         x@result$Count <- x$core_enrichment %>%
             strsplit(split = "/")  %>%
             vapply(length, FUN.VALUE = 1)   
+    } 
+
     n <- update_n(x, showCategory)
     if (is.numeric(n)) {
         keep <- seq_len(n)

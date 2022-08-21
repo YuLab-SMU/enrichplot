@@ -7,16 +7,18 @@
 \alias{heatplot.enrichResult}
 \title{heatplot}
 \usage{
-heatplot(x, showCategory = 30, foldChange = NULL, label_format = 30)
+heatplot(x, showCategory = 30, ...)
 
-\S4method{heatplot}{enrichResult}(x, showCategory = 30, foldChange = NULL)
+\S4method{heatplot}{enrichResult}(x, showCategory = 30, ...)
 
-\S4method{heatplot}{gseaResult}(x, showCategory = 30, foldChange = NULL)
+\S4method{heatplot}{gseaResult}(x, showCategory = 30, ...)
 
 heatplot.enrichResult(
   x,
   showCategory = 30,
+  symbol = "rect",
   foldChange = NULL,
+  pvalue = NULL,
   label_format = 30
 )
 }
@@ -25,11 +27,17 @@ heatplot.enrichResult(
 
 \item{showCategory}{number of enriched terms to display}
 
+\item{...}{Additional parameters}
+
+\item{symbol}{symbol of the nodes, one of "rect"(the default) and "dot"
+by default wraps names longer that 30 characters}
+
 \item{foldChange}{fold Change.}
 
+\item{pvalue}{pvalue of genes}
+
 \item{label_format}{a numeric value sets wrap length, alternatively a
-custom function to format axis labels.
-by default wraps names longer that 30 characters}
+custom function to format axis labels.}
 }
 \value{
 ggplot object
