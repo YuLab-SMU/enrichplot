@@ -253,6 +253,7 @@ setGeneric("gseaplot",
 ##' @param foldChange fold Change.
 ##' @param label_format a numeric value sets wrap length, alternatively a
 ##' custom function to format axis labels.
+##' @param ... Additional parameters
 ##' @export
 ##' @return ggplot object
 ##' @examples
@@ -263,7 +264,7 @@ setGeneric("gseaplot",
 ##' heatplot(x)
 ##' @author guangchuang yu
 setGeneric("heatplot",
-           function(x, showCategory=30, foldChange=NULL, label_format = 30)
+           function(x, showCategory = 30, ...)
                standardGeneric("heatplot")
            )
 

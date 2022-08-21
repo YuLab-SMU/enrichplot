@@ -82,6 +82,7 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 ##' @importFrom ggplot2 scale_y_discrete
 ##' @importFrom ggplot2 guides
 ##' @importFrom ggplot2 guide_legend
+##' @importFrom methods is
 dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
