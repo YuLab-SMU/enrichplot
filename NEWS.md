@@ -1,5 +1,6 @@
-# enrichplot 1.17.0.994
+# enrichplot 1.17.0.995
 
++ fix a bug in https://github.com/YuLab-SMU/clusterProfiler/issues/488 (2022-08-25, Thu)
 + add parameters `symbol` and `pvalue` for `heatplot.enrichResult()` (2022-08-20, Sat)
 + change default values of `group_category` and `node_label` in `ssplot()` (2022-07-04, Mon)
 + update document of `ssplot()` (2022-07-04, Mon)

@@ -114,7 +114,11 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     g <- get_igraph(x=x, nCategory=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
     ## If there is only one point, then add a dot and label, then return directly.
-    if(n == 1) {
+    nCategory <- n
+    if (inherits(n, "character")) {
+        nCategory <- length(n)
+    }
+    if(nCategory == 1) {
         p <- ggraph(g,"tree") + geom_node_point(color="red", size=5) +
                geom_node_text(aes_(label=~name))
         return(p)
