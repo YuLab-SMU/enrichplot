@@ -1,5 +1,6 @@
-# enrichplot 1.17.0.993
+# enrichplot 1.17.0.994
 
++ add parameters `symbol` and `pvalue` for `heatplot.enrichResult()` (2022-08-20, Sat)
 + change default values of `group_category` and `node_label` in `ssplot()` (2022-07-04, Mon)
 + update document of `ssplot()` (2022-07-04, Mon)
 + `gseaplot()` and `gseaplot2()` return `gglist` object instead of plotting the figure (2022-05-05, Thu)
