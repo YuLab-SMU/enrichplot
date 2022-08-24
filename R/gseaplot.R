@@ -99,6 +99,11 @@ gsInfo <- function(object, geneSetID) {
     df$ymin[pos] <- -h
     df$ymax[pos] <- h
     df$geneList <- geneList
+    if (length(object@gene2Symbol) == 0) {
+        df$gene <- names(geneList)
+    } else {
+        df$gene <- object@gene2Symbol[names(geneList)]
+    }
 
     df$Description <- object@result[geneSetID, "Description"]
     return(df)
@@ -322,5 +327,30 @@ gsearank <- function(x, geneSetID, title="") {
         ylab("Running Enrichment Score") +
         theme_minimal()
     return(p)
+}
+
+
+##' label genes in running score plot
+##'
+##'
+##' @title geom_gsea_gene
+##' @param genes selected genes to be labeled
+##' @param mapping aesthetic mapping, default is NULL
+##' @param geom geometric layer to plot the gene labels, default is geom_text
+##' @param ... additional parameters passed to the 'geom'
+##' @return ggplot object
+##' @importFrom rlang .data
+##' @export
+##' @author Guangchuang Yu
+geom_gsea_gene <- function(genes, mapping=NULL, geom = ggplot2::geom_text, ...) {
+    default_mapping <- aes_(x=~x, y=~runningScore, label=~gene)
+    if (is.null(mapping)) {
+        mapping <- default_mapping
+    } else {
+        mapping <- modifyList(mapping, default_mapping)
+    }
+    data <- ggtree::td_filter(.data$gene %in% genes)
+
+    geom(mapping = mapping, data = data, ...)
 }
 
