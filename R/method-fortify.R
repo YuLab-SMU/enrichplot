@@ -108,7 +108,8 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
         ## nothing
     } else if (by == "geneRatio") {
         ## for result of ORA
-        if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) {
+        # if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) {
+        if (inherits(result$GeneRatio, "character") && grep("/", result$GeneRatio[1])) {
             gsize <- as.numeric(sub("/\\d+$", "", as.character(result$GeneRatio)))
             gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
             result$GeneRatio <- gsize/gcsize

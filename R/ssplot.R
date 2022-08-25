@@ -160,7 +160,8 @@ build_dist <- function(x, showCategory, split = NULL, pie = NULL) {
 ##' @param pie proportion of clusters in the pie chart.
 ##' @noRd
 get_pairwise_sim <- function(x, showCategory, split = NULL, pie = NULL) {
-    if (class(x) == "compareClusterResult") {
+    # if (class(x) == "compareClusterResult") {
+    if (inherits(x, "compareClusterResult")) {
         # y <- get_selected_category(showCategory, enrichResult, split)
         y <- fortify(model = x, showCategory = showCategory,
                      includeAll = TRUE, split = split)
