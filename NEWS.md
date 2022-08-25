@@ -1,11 +1,17 @@
 # enrichplot 1.17.0.995
 
 + fix a bug in https://github.com/YuLab-SMU/clusterProfiler/issues/488 (2022-08-25, Thu)
++ support multiple gene sets in `geom_gsea_gene` layer (2022-08-25, Thu)
++ `geom_gsea_gene` layer (2022-08-24, Wed)
 + add parameters `symbol` and `pvalue` for `heatplot.enrichResult()` (2022-08-20, Sat)
 + change default values of `group_category` and `node_label` in `ssplot()` (2022-07-04, Mon)
 + update document of `ssplot()` (2022-07-04, Mon)
 + `gseaplot()` and `gseaplot2()` return `gglist` object instead of plotting the figure (2022-05-05, Thu)
 + fix `ridgeplot` when `x@readable = TRUE` (2022-04-30, Sat)
+
+# enrichplot 1.16.0
+
++ Bioconductor 3.15 release
 
 # enrichplot 1.15.4
 

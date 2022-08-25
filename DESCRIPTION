@@ -20,6 +20,7 @@ Imports:
     purrr,
     RColorBrewer,
     reshape2,
+    rlang,
     stats,
     utils,
     scatterpie,
@@ -51,7 +52,6 @@ Suggests:
     treeio,
     scales,
     tidytree,
-    rlang,
     ggtreeExtra,
     tidydr
 Remotes: 
