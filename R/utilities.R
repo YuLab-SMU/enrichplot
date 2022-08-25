@@ -141,6 +141,8 @@ update_n <- function(x, showCategory) {
     if (!is.numeric(showCategory)) {
         if (inherits(x, 'list')) {
             showCategory <- showCategory[showCategory %in% names(x)]
+        } else {
+            showCategory <- intersect(showCategory, x$Description)
         }
         return(showCategory)
     }

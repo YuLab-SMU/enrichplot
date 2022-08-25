@@ -180,7 +180,7 @@ calculation can be found in its documentation: \link{pairwise_termsim}.
     # use `showCategory` to  select the displayed terms. It can be a number of a vector of terms.
     emapplot(x2, showCategory = 10)
     categorys <- c("pre-malignant neoplasm", "intestinal disease",
-                   "breast ductal carcinoma", "non-small cell lung carcinoma")
+                   "breast ductal carcinoma")
     emapplot(x2, showCategory = categorys)
 
     # It can also graph compareClusterResult
