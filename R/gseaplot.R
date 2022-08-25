@@ -338,18 +338,23 @@ gsearank <- function(x, geneSetID, title="") {
 ##' @param mapping aesthetic mapping, default is NULL
 ##' @param geom geometric layer to plot the gene labels, default is geom_text
 ##' @param ... additional parameters passed to the 'geom'
+##' @param geneSet choose which gene set(s) to be label if the plot contains multiple gene sets
 ##' @return ggplot object
 ##' @importFrom rlang .data
 ##' @export
 ##' @author Guangchuang Yu
-geom_gsea_gene <- function(genes, mapping=NULL, geom = ggplot2::geom_text, ...) {
+geom_gsea_gene <- function(genes, mapping=NULL, geom = ggplot2::geom_text, ..., geneSet = NULL) {
     default_mapping <- aes_(x=~x, y=~runningScore, label=~gene)
     if (is.null(mapping)) {
         mapping <- default_mapping
     } else {
         mapping <- modifyList(mapping, default_mapping)
     }
-    data <- ggtree::td_filter(.data$gene %in% genes)
+    if (is.null(geneSet)) {
+        data <- ggtree::td_filter(.data$gene %in% genes)
+    } else {
+        data <- ggtree::td_filter(.data$gene %in% genes & .data$Description %in% geneSet)
+    }
 
     geom(mapping = mapping, data = data, ...)
 }

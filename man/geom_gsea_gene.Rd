@@ -4,7 +4,13 @@
 \alias{geom_gsea_gene}
 \title{geom_gsea_gene}
 \usage{
-geom_gsea_gene(genes, mapping = NULL, geom = ggplot2::geom_text, ...)
+geom_gsea_gene(
+  genes,
+  mapping = NULL,
+  geom = ggplot2::geom_text,
+  ...,
+  geneSet = NULL
+)
 }
 \arguments{
 \item{genes}{selected genes to be labeled}
@@ -14,6 +20,8 @@ geom_gsea_gene(genes, mapping = NULL, geom = ggplot2::geom_text, ...)
 \item{geom}{geometric layer to plot the gene labels, default is geom_text}
 
 \item{...}{additional parameters passed to the 'geom'}
+
+\item{geneSet}{choose which gene set(s) to be label if the plot contains multiple gene sets}
 }
 \value{
 ggplot object
