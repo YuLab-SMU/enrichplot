@@ -1,4 +1,4 @@
-# enrichplot 1.17.0.995
+# enrichplot 1.17.1
 
 + fix a bug in https://github.com/YuLab-SMU/clusterProfiler/issues/488 (2022-08-25, Thu)
 + support multiple gene sets in `geom_gsea_gene` layer (2022-08-25, Thu)
