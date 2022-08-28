@@ -1,3 +1,7 @@
+# enrichplot 1.17.1.991
+
++ fix a bug in `fc_readable()` (2022-08-28, Sun)
+
 # enrichplot 1.17.1
 
 + fix a bug in https://github.com/YuLab-SMU/clusterProfiler/issues/488 (2022-08-25, Thu)
