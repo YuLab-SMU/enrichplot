@@ -311,15 +311,33 @@ gseaplot2 <- function(x, geneSetID, title = "", color="green", base_size = 11,
 ##' @param x gseaResult object
 ##' @param geneSetID gene set ID
 ##' @param title plot title
+##' @param output one of 'plot' or 'table' (for exporting data)
 ##' @return ggplot object
 ##' @importFrom ggplot2 geom_segment
 ##' @importFrom ggplot2 theme_minimal
 ##' @export
 ##' @author Guangchuang Yu
-gsearank <- function(x, geneSetID, title="") {
+gsearank <- function(x, geneSetID, title="", output = "plot") {
+    output <- match.arg(output, c("plot", "table"))
+
     position <- NULL
     gsdata <- gsInfo(x, geneSetID)
     gsdata <- subset(gsdata, position == 1)
+
+    if (output == "table") {
+        res <- gsdata[, c("gene", "x", "runningScore")]
+        if (x[geneSetID, "NES"] > 0) {
+            res$core <- "NO"
+            res$core[1:which.max(gsdata$runningScore)] <- "YES"
+        } else {
+            res$core <- "NO"
+            res$core[which.min(gsdata$runningScore):nrow(res)] <- "YES"
+        }
+        names(res) <- c("gene", "rank in geneList", "running ES", "core enrichment")
+        rownames(res) <- NULL
+        return(res)
+    }
+
     p <- ggplot(gsdata, aes_(x = ~x, y = ~runningScore)) +
         geom_segment(aes_(xend=~x, yend=0)) +
         ggtitle(title) +
@@ -348,7 +366,7 @@ geom_gsea_gene <- function(genes, mapping=NULL, geom = ggplot2::geom_text, ..., 
     if (is.null(mapping)) {
         mapping <- default_mapping
     } else {
-        mapping <- modifyList(mapping, default_mapping)
+        mapping <- modifyList(default_mapping, mapping)
     }
     if (is.null(geneSet)) {
         data <- ggtree::td_filter(.data$gene %in% genes)
