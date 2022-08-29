@@ -1,3 +1,7 @@
+# enrichplot 1.17.1.001
+
++ allows passing `color="NES"` to `dotplot()` for `gseaResult` object (2022-08-29, Mon, #14)
+
 # enrichplot 1.17.1
 
 + fix a bug in https://github.com/YuLab-SMU/clusterProfiler/issues/488 (2022-08-25, Thu)
