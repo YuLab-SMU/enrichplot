@@ -1,6 +1,7 @@
 
-# enrichplot 1.17.1.002
+# enrichplot 1.17.1.003
 
++ change round digits of cnetplot scatterpie legend to 1 (2022_8_29, Mon).
 + fix a bug in `fc_readable()` (2022-08-29, Mon, #189)
 + allows passing `color="NES"` to `dotplot()` for `gseaResult` object (2022-08-29, Mon, #14)
 
