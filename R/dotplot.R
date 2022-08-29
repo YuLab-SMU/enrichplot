@@ -20,12 +20,25 @@ setMethod("dotplot", signature(object = "gseaResult"),
           function(object, x = "GeneRatio", color = "p.adjust", showCategory=10,
                    size = NULL, split = NULL, font.size=12, title = "",
                    orderBy="x", label_format = 30, ...) {
-                dotplot.enrichResult(object = object, x = x, color = color,
-                       showCategory = showCategory,
-                       size = size, split = split,
-                       font.size = font.size,
-                       title = title, orderBy = orderBy,
-                       label_format = label_format, ...)
+                if (color == "NES") {
+                    NES <- TRUE
+                    color <- "p.adjust"
+                } else {
+                    NES <- FALSE
+                }
+                p <- dotplot.enrichResult(object = object, x = x, color = color,
+                        showCategory = showCategory,
+                        size = size, split = split,
+                        font.size = font.size,
+                        title = title, orderBy = orderBy,
+                        label_format = label_format, ...)
+                
+                if (NES) {
+                    p <- suppressMessages(p + aes_(color=~NES) + 
+                        scale_color_continuous(low="blue", high="red", name = "NES")
+                    )
+                }
+                return(p)
           })
 
 ##' @rdname dotplot
