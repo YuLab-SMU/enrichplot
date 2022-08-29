@@ -113,7 +113,7 @@ fc_readable <- function(x, foldChange = NULL) {
     if (is.null(foldChange))
         return(NULL)
 
-    if(x@readable) {
+    if (x@readable && x@keytype != "SYMBOL") {
         gid <- names(foldChange)
         if (is(x, 'gseaResult')) {
             ii <- gid %in% names(x@geneList)

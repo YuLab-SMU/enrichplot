@@ -39,8 +39,8 @@ heatplot.enrichResult <- function(x, showCategory = 30, symbol = "rect", foldCha
 
     n <- update_n(x, showCategory)
     geneSets <- extract_geneSets(x, n)
-
     foldChange <- fc_readable(x, foldChange)
+    pvalue <- fc_readable(x, pvalue)
     d <- list2df(geneSets)
     if (!is.null(foldChange)) {
         d$foldChange <- foldChange[as.character(d[,2])]
