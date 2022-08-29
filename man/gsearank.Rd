@@ -4,7 +4,7 @@
 \alias{gsearank}
 \title{gsearank}
 \usage{
-gsearank(x, geneSetID, title = "")
+gsearank(x, geneSetID, title = "", output = "plot")
 }
 \arguments{
 \item{x}{gseaResult object}
@@ -12,6 +12,8 @@ gsearank(x, geneSetID, title = "")
 \item{geneSetID}{gene set ID}
 
 \item{title}{plot title}
+
+\item{output}{one of 'plot' or 'table' (for exporting data)}
 }
 \value{
 ggplot object
