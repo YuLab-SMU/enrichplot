@@ -421,7 +421,7 @@ cnetplot.compareClusterResult <- function(x,
                 coord_equal()+
                 geom_scatterpie_legend(ID_Cluster_mat2$radius[(n+1):nrow(ID_Cluster_mat2)],
                     x=x_loc, y=y_loc, n = legend_n,
-                    labeller=function(x) round(x*2/(min(sizee))/sqrt(cex_gene),3)) +
+                    labeller=function(x) round(x*2/(min(sizee))/sqrt(cex_gene),1)) +
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "log2FC")  +
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc + 3, label = "gene number")
 
