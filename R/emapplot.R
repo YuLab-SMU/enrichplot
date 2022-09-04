@@ -74,6 +74,9 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' cluster::clara, cluster::fanny or cluster::pam.
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
+##' @param hilight_category category nodes to be highlight.
+##' @param alpha_hilight alpha of highlighted nodes.
+##' @param alpha_nohilight alpha of unhighlighted nodes.
 ##' @param ... additional parameters
 ##' 
 ##' additional parameters can refer the following parameters.
@@ -104,7 +107,10 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                                   cex_label_group = 1, nWords = 4, 
                                   label_format = 30,
                                   clusterFunction = stats::kmeans,
-                                  nCluster = NULL,  ...) {
+                                  nCluster = NULL,
+                                  hilight_category = NULL,
+                                  alpha_hilight = 1,
+                                  alpha_nohilight = 0.3,  ...) {
     has_pairsim(x)
     label_size_category <- 5
     label_group <- 3
@@ -113,6 +119,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     ## get graph.data.frame() object
     g <- get_igraph(x=x, nCategory=n, color=color, cex_line=cex_line,
                     min_edge=min_edge)
+    hilight_category <- intersect(hilight_category, attr(V(g), "names"))
     ## If there is only one point, then add a dot and label, then return directly.
     nCategory <- n
     if (inherits(n, "character")) {
@@ -123,12 +130,30 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                geom_node_text(aes_(label=~name))
         return(p)
     }
+    # if (!is.null(hilight_category) && length(hilight_category) > 0) {
+    #     edges <- attr(E(g), "vnames")
+    #     E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
+    #     hilight_edge <- grep(paste(hilight_category, collapse = "|"), edges)
+    #     E(g)$alpha[hilight_edge] <- min(0.8, alpha_hilight)
+    #     # E(g)$alpha[hilight_edge] <- alpha_hilight
+    # } else {
+    #     E(g)$alpha <- rep(min(0.8, alpha_hilight), length(E(g)))
+    # }
+    g <- edge_add_alpha(g, hilight_category)
     p <- adj_layout(g = g, layout = layout, coords = coords)
-    
+    p$data$alpha <- rep(1, nrow(p$data))
+    if (!is.null(hilight_category) && length(hilight_category) > 0) {
+        if (length(hilight_category) > 0) {
+            p$data$alpha <- rep(alpha_nohilight, nrow(p$data))
+            ii <- match(hilight_category, p$data$name)
+            p$data$alpha[ii] <- alpha_hilight
+        }
+    }
     ## add edge
+   
     if (with_edge & length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
-                                colour='darkgrey')
+        p <- p + geom_edge_link(aes_(width=~I(width), alpha=~I(alpha)),
+                                colour='darkgrey', show.legend = FALSE)
     }
 
     # ggData <- p$data
@@ -160,7 +185,8 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     }
     p + coord_equal() + 
         guides(size  = guide_legend(order = 1), 
-               fill = guide_colorbar(order = 2))
+               fill = guide_colorbar(order = 2),
+               alpha = "none")
 }
 
 
@@ -206,6 +232,9 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           clusterFunction = stats::kmeans,
                                           nCluster = NULL, 
                                           cex_pie2axis = 1, 
+                                          hilight_category = NULL,
+                                          alpha_hilight = 1,
+                                          alpha_nohilight = 0.3,
                                           ...) {
                                        
     has_pairsim(x)
@@ -219,6 +248,7 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     if ("core_enrichment" %in% colnames(y)) { ## for GSEA result
         y$geneID <- y$core_enrichment
     }
+    hilight_category <- intersect(hilight_category, y$Description)
     ## Data structure transformation, combining the same ID (Description) genes
     mergedEnrichDf <- merge_compareClusterResult(y)
      
@@ -226,7 +256,10 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
     p <- build_ggraph(x = x, enrichDf = y, mergedEnrichDf = mergedEnrichDf, cex_category = cex_category, 
         pie = pie, layout = layout, coords = coords, cex_line=cex_line,
                         min_edge=min_edge, pair_sim = x@termsim,
-                        method = x@method, with_edge = with_edge)
+                        method = x@method, with_edge = with_edge,
+                        hilight_category = hilight_category,
+                        alpha_hilight = alpha_hilight,
+                        alpha_nohilight = alpha_nohilight)
     if (is.null(dim(y)) | nrow(y) == 1 | is.null(dim(mergedEnrichDf)) | nrow(mergedEnrichDf) == 1)
         return(p)
 
@@ -264,6 +297,6 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
             label_location = label_location, label_group = label_group,
             cex_label_group = cex_label_group)
     }    
-    return(p)
+    return(p + guides(alpha = "none"))
 }
 

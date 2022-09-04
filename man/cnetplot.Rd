@@ -34,6 +34,9 @@ cnetplot.enrichResult(
   color_category = "#E5C494",
   color_gene = "#B3B3B3",
   shadowtext = "all",
+  hilight_category = NULL,
+  alpha_hilight = 1,
+  alpha_nohilight = 0.3,
   ...
 )
 }
@@ -77,6 +80,12 @@ default value is 1.}
 
 \item{shadowtext}{select which node labels to use shadow font,
 one of 'category', 'gene', 'all' and 'none', default is 'all'.}
+
+\item{hilight_category}{category nodes to be highlight.}
+
+\item{alpha_hilight}{alpha of highlighted nodes.}
+
+\item{alpha_nohilight}{alpha of unhighlighted nodes.}
 }
 \value{
 ggplot object

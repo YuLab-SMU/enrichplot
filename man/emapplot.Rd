@@ -39,6 +39,9 @@ emapplot.enrichResult(
   label_format = 30,
   clusterFunction = stats::kmeans,
   nCluster = NULL,
+  hilight_category = NULL,
+  alpha_hilight = 1,
+  alpha_nohilight = 0.3,
   ...
 )
 
@@ -67,6 +70,9 @@ emapplot.compareClusterResult(
   clusterFunction = stats::kmeans,
   nCluster = NULL,
   cex_pie2axis = 1,
+  hilight_category = NULL,
+  alpha_hilight = 1,
+  alpha_nohilight = 0.3,
   ...
 )
 }
@@ -140,6 +146,12 @@ cluster::clara, cluster::fanny or cluster::pam.}
 
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
+
+\item{hilight_category}{category nodes to be highlight.}
+
+\item{alpha_hilight}{alpha of highlighted nodes.}
+
+\item{alpha_nohilight}{alpha of unhighlighted nodes.}
 
 \item{split}{separate result by 'category' variable}
 
