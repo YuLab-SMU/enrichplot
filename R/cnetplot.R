@@ -143,14 +143,8 @@ cnetplot.enrichResult <- function(x,
         p <- ggraph(g, layout=layout, circular = circular)
         p$data[-(1:n), "size"] <- 3 * cex_gene
  
-        alpha_node <- rep(1, nrow(p$data))
-        if (!is.null(hilight_category)) {
-            alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-            hilight_node <- c(hilight_category, hilight_gene)
-            alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-        }
-        p$data$alpha <- alpha_node
-
+        p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
+       
         alpha_category <- c(rep(1, n), rep(0, nrow(p$data)-n))
         alpha_gene <- c(rep(0, n), rep(1, nrow(p$data)-n))
 
@@ -178,13 +172,14 @@ cnetplot.enrichResult <- function(x,
         V(g)$color[1:n] <- color_category
         p <- ggraph(g, layout=layout, circular=circular)
         p$data[-(1:n), "size"] <- 3 * cex_gene
-        alpha_node <- rep(1, nrow(p$data))
-        if (!is.null(hilight_category)) {
-            alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-            hilight_node <- c(hilight_category, hilight_gene)
-            alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-        }
-        p$data$alpha <- alpha_node
+        # alpha_node <- rep(1, nrow(p$data))
+        # if (!is.null(hilight_category)) {
+        #     alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
+        #     hilight_node <- c(hilight_category, hilight_gene)
+        #     alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
+        # }
+        # p$data$alpha <- alpha_node
+        p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
         p <- p + edge_layer +
             geom_node_point(aes_(color=~I(color), size=~size, alpha=~I(alpha)))+
             scale_size(range=c(3, 8) * cex_category) 
@@ -300,13 +295,14 @@ cnetplot.compareClusterResult <- function(x,
             labs(title= title) +
             theme(legend.position="none")    
  
-        alpha_node <- rep(1, nrow(p$data))
-        if (!is.null(hilight_category) && length(hilight_category) > 0) {
-            alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-            hilight_node <- c(hilight_category, hilight_gene)
-            alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-        }
-        p$data$alpha <- alpha_node
+        # alpha_node <- rep(1, nrow(p$data))
+        # if (!is.null(hilight_category) && length(hilight_category) > 0) {
+        #     alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
+        #     hilight_node <- c(hilight_category, hilight_gene)
+        #     alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
+        # }
+        # p$data$alpha <- alpha_node
+        p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
         p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
         p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
@@ -390,23 +386,9 @@ cnetplot.compareClusterResult <- function(x,
                     # data=ID_Cluster_mat2,
                     # cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],
                     # color=NA) +
-            ############# check 
-            # alpha_category <- c(rep(1, n), rep(0, nrow(p$data)-n))
-            # alpha_gene <- c(rep(0, n), rep(1, nrow(p$data)-n))
-            alpha_node <- rep(1, nrow(p$data))
-            if (!is.null(hilight_category)) {
-                # alpha_category <- c(rep(alpha_nohilight, n), rep(0, nrow(p$data)-n))
-                # alpha_gene <- c(rep(0, n), rep(alpha_nohilight, nrow(p$data)-n))
-                # alpha_gene[match(hilight_gene, p$data$name)] <- alpha_hilight
-                # alpha_gene[match(hilight_category, p$data$name)] <- alpha_hilight
-                        
-                alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-                hilight_node <- c(hilight_category, hilight_gene)
-                alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight        
-            }
-            p$data$alpha <- alpha_node
-            ID_Cluster_mat2$alpha <-  alpha_node
-            #############        
+
+            p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
+            ID_Cluster_mat2$alpha <-  p$data$alpha       
             p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius,alpha=~I(alpha)),
                     data=ID_Cluster_mat2[1:n, ],
                     cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-4)], 
@@ -425,10 +407,6 @@ cnetplot.compareClusterResult <- function(x,
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "log2FC")  +
                 ggplot2::annotate("text", x = x_loc + 3, y = y_loc + 3, label = "gene number")
 
-            # p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-            #         size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-            #     geom_node_text(aes_(label=~name), data = p$data[1:n,],
-            #         size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
             p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
                 cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
             p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
@@ -440,15 +418,9 @@ cnetplot.compareClusterResult <- function(x,
         # p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat2,
                 # cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-3)],
                 # color=NA) +
-           # coord_equal()
-        alpha_node <- rep(1, nrow(p$data))
-        if (!is.null(hilight_category)) {
-            alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-            hilight_node <- c(hilight_category, hilight_gene)
-            alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-        }
-        p$data$alpha <- alpha_node      
-        ID_Cluster_mat2$alpha <-  alpha_node  
+           # coord_equal()   
+        p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight) 
+        ID_Cluster_mat2$alpha <-  p$data$alpha  
         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius,alpha=~I(alpha)),
                 data=ID_Cluster_mat2[1:n, ],
                 cols=colnames(ID_Cluster_mat2)[1:(ncol(ID_Cluster_mat2)-4)], color=NA) +
@@ -461,10 +433,6 @@ cnetplot.compareClusterResult <- function(x,
                     x=x_loc, y=y_loc, n = legend_n, labeller=function(x) round(x^2 * sum_yunion / cex_category)) +
             ggplot2::annotate("text", x = x_loc + 3, y = y_loc, label = "gene number")
         ## add node label
-        # p <- p + geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-        #         size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-        #     geom_node_text(aes_(label=~name), data = p$data[1:n,],
-        #         size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
         p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
         p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
@@ -475,28 +443,8 @@ cnetplot.compareClusterResult <- function(x,
     title <- colnames(ID_Cluster_mat2)[1]
     V(g)$size <- ID_Cluster_mat2$radius
     V(g)$color <- "#B3B3B3"
-    V(g)$color[1:n] <- "#E5C494"
-    alpha_node <- rep(1, nrow(p$data))
-    if (!is.null(hilight_category) && length(hilight_category) > 0) {
-        alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-        hilight_node <- c(hilight_category, hilight_gene)
-        alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-    }
-    p$data$alpha <- alpha_node   
-    # ggraph(g, layout=layout, circular=circular) + 
-    #     edge_layer +
-    #     geom_node_point(aes_(color=~I(color), size=~size),
-    #         data = p$data[1:n, ]) +
-    #     scale_size(range = range_category_size * cex_category) +
-    #     ggnewscale::new_scale("size") +
-    #     geom_node_point(aes_(color=~I(color), size=~size),
-    #         data = p$data[-(1:n), ], show.legend = FALSE) +
-    #     scale_size(range = range_gene_size * cex_gene) +
-    #     labs(title= title)
-        # geom_node_text(aes_(label=~name), data = p$data[-(1:n),],
-        #     size = label_gene * cex_label_gene, bg.color = "white", repel=TRUE) + 
-        # geom_node_text(aes_(label=~name), data = p$data[1:n,],
-        #     size = label_category * cex_label_category, bg.color = "white", repel=TRUE) + 
+    V(g)$color[1:n] <- "#E5C494"  
+    p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
     p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
         cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
     p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,

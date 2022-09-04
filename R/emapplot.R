@@ -139,7 +139,7 @@ emapplot.enrichResult <- function(x, showCategory = 30,
     # } else {
     #     E(g)$alpha <- rep(min(0.8, alpha_hilight), length(E(g)))
     # }
-    g <- edge_add_alpha(g, hilight_category)
+    g <- edge_add_alpha(g, hilight_category, alpha_nohilight, alpha_hilight)
     p <- adj_layout(g = g, layout = layout, coords = coords)
     p$data$alpha <- rep(1, nrow(p$data))
     if (!is.null(hilight_category) && length(hilight_category) > 0) {

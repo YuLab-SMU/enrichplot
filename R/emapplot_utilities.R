@@ -175,8 +175,10 @@ merge_compareClusterResult <- function(yy) {
 ##'
 ##' @param g ggraph object.
 ##' @param hilight_category category nodes to be highlight.
+##' @param alpha_hilight alpha of highlighted nodes.
+##' @param alpha_nohilight alpha of unhighlighted nodes.
 ##' @noRd
-edge_add_alpha <- function(g, hilight_category) {
+edge_add_alpha <- function(g, hilight_category, alpha_nohilight, alpha_hilight) {
     if (!is.null(hilight_category) && length(hilight_category) > 0) {
         edges <- attr(E(g), "vnames")
         E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
@@ -189,6 +191,24 @@ edge_add_alpha <- function(g, hilight_category) {
     return(g)
 }
 
+##' add alpha attribute to ggraph nodes
+##'
+##' @param p ggraph object.
+##' @param hilight_category category nodes to be highlight.
+##' @param hilight_gene gene nodes to be highlight.
+##' @param alpha_hilight alpha of highlighted nodes.
+##' @param alpha_nohilight alpha of unhighlighted nodes.
+##' @noRd
+node_add_alpha <- function(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight) {
+    alpha_node <- rep(1, nrow(p$data))
+    if (!is.null(hilight_category)) {
+        alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
+        hilight_node <- c(hilight_category, hilight_gene)
+        alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
+    }
+    p$data$alpha <- alpha_node
+    return(p)
+}
 ##' Get the an ggraph object
 ##'
 ##' @importFrom ggplot2 ylim
@@ -223,7 +243,7 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
     g <- build_emap_graph(enrichDf=mergedEnrichDf,geneSets=geneSets,color="p.adjust",
         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
         method = x@method)
-    g <- edge_add_alpha(g, hilight_category)
+    g <- edge_add_alpha(g, hilight_category, alpha_nohilight, alpha_hilight)
     # if (!is.null(hilight_category) && length(hilight_category) > 0) {     
     #     edges <- attr(E(g), "vnames")
     #     E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
