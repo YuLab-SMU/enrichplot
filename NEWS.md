@@ -1,7 +1,8 @@
 
-# enrichplot 1.17.1.004
+# enrichplot 1.17.2
 
-+ `dotplot` method for `enrichResultList` object (2022-09-06, Tue)
++ `autofacet` to automatically split `barplot` and `dotplot` into several facets (2022-09-06, Tue)
++ `dotplot` method for `enrichResultList` object 
 + `gsearank()` can export result as a table when `output = "table"` (2022-08-29, Mon, #184)
 + fix a bug in `fc_readable()` (2022-08-29, Mon, #189)
 + allows passing `color="NES"` to `dotplot()` for `gseaResult` object (2022-08-29, Mon, #14)
