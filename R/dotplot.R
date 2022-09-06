@@ -126,6 +126,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
     if (inherits(object, "enrichResultList")) {
         ldf <- lapply(object, fortify, showCategory=showCategory, split=split)
         df <- dplyr::bind_rows(ldf, .id="category")
+        df$category <- factor(df$category, levels=names(object))
     } else {
         df <- fortify(object, showCategory = showCategory, split=split)
         ## already parsed in fortify
