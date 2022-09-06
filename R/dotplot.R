@@ -66,6 +66,7 @@ setMethod("dotplot", signature(object="compareClusterResult"),
                                            ...)
 })
 
+
 ##' @rdname dotplot
 ##' @param x variable for x-axis, one of 'GeneRatio' and 'Count'
 ##' @param color variable that used to color enriched terms,
@@ -121,10 +122,16 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
         if (is.null(size))
             size  <- "Count"
     }
-
-    df <- fortify(object, showCategory = showCategory, split=split)
-    ## already parsed in fortify
-    ## df$GeneRatio <- parse_ratio(df$GeneRatio)
+    
+    if (inherits(object, "enrichResultList")) {
+        ldf <- lapply(object, fortify, showCategory=showCategory, split=split)
+        df <- dplyr::bind_rows(ldf, .id="category")
+        df$category <- factor(df$category, levels=names(object))
+    } else {
+        df <- fortify(object, showCategory = showCategory, split=split)
+        ## already parsed in fortify
+        ## df$GeneRatio <- parse_ratio(df$GeneRatio)
+    }
 
     if (orderBy !=  'x' && !orderBy %in% colnames(df)) {
         message('wrong orderBy parameter; set to default `orderBy = "x"`')
@@ -141,6 +148,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
     }
 
     idx <- order(df[[orderBy]], decreasing = decreasing)
+
     df$Description <- factor(df$Description,
                           levels=rev(unique(df$Description[idx])))
     ggplot(df, aes_string(x=x, y="Description", size=size, color=colorBy)) +
@@ -153,6 +161,24 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
         guides(size  = guide_legend(order = 1),
                color = guide_colorbar(order = 2))
 }
+
+
+##' @rdname dotplot
+##' @exportMethod dotplot
+##' @aliases dotplot,enrichResultList,ANY-method
+##' @author guangchuang yu
+setMethod("dotplot", signature(object = "enrichResultList"),
+          function(object, x = "GeneRatio", color = "p.adjust",
+                   showCategory=10, size = NULL,
+                   split = NULL, font.size=12, title = "",
+                   orderBy="x", label_format = 30, ...) {
+              dotplot.enrichResult(object = object, x = x, color = color,
+                                   showCategory = showCategory,
+                                   size = size, split = split,
+                                   font.size = font.size,
+                                   title = title, orderBy = orderBy,
+                                   label_format = label_format, ...)
+          })
 
 
 

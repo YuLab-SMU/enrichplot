@@ -7,6 +7,8 @@
 \alias{dotplot,compareClusterResult-method}
 \alias{dotplot,compareClusterResult,ANY-method}
 \alias{dotplot.enrichResult}
+\alias{dotplot,enrichResultList-method}
+\alias{dotplot,enrichResultList,ANY-method}
 \alias{dotplot.compareClusterResult}
 \title{dotplot}
 \usage{
@@ -67,6 +69,20 @@ dotplot.enrichResult(
   orderBy = "x",
   label_format = 30,
   decreasing = TRUE
+)
+
+\S4method{dotplot}{enrichResultList}(
+  object,
+  x = "GeneRatio",
+  color = "p.adjust",
+  showCategory = 10,
+  size = NULL,
+  split = NULL,
+  font.size = 12,
+  title = "",
+  orderBy = "x",
+  label_format = 30,
+  ...
 )
 
 dotplot.compareClusterResult(
