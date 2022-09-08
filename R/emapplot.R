@@ -74,9 +74,14 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' cluster::clara, cluster::fanny or cluster::pam.
 ##' @param nCluster Numeric, the number of clusters, 
 ##' the default value is square root of the number of nodes.
-##' @param hilight_category category nodes to be highlight.
-##' @param alpha_hilight alpha of highlighted nodes.
-##' @param alpha_nohilight alpha of unhighlighted nodes.
+##' @param hilight.params list, the parameters to control the attributes of highlighted nodes and edges.
+##' see the hilight.params in the following.
+##' hilight.params control the attributes of highlight, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{category} category nodes to be highlight.
+##'         \item \code{alpha_hilight} alpha of highlighted nodes.
+##'         \item \code{alpha_no_hilight} alpha of unhighlighted nodes.
+##'     }
 ##' @param ... additional parameters
 ##' 
 ##' additional parameters can refer the following parameters.
@@ -108,12 +113,25 @@ emapplot.enrichResult <- function(x, showCategory = 30,
                                   label_format = 30,
                                   clusterFunction = stats::kmeans,
                                   nCluster = NULL,
-                                  hilight_category = NULL,
-                                  alpha_hilight = 1,
-                                  alpha_nohilight = 0.3,  ...) {
+                                  hilight.params=list(
+                                      category = NULL,
+                                      alpha_hilight = 1,
+                                      alpha_no_hilight = 0.3
+                                  ),  
+                                  ...) {
     has_pairsim(x)
     label_size_category <- 5
     label_group <- 3
+    default.hilight.params <- list(
+        category = NULL,
+        alpha_hilight = 1,
+        alpha_no_hilight = 0.3
+    )
+    hilight.params <- reset_params(defaultp=default.hilight.params, 
+                                   inputp=enquo(hilight.params))
+    hilight_category <- hilight.params[["category"]]
+    alpha_hilight <- hilight.params[["alpha_hilight"]]
+    alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
     ## get graph.data.frame() object
@@ -232,14 +250,26 @@ emapplot.compareClusterResult <- function(x, showCategory = 30,
                                           clusterFunction = stats::kmeans,
                                           nCluster = NULL, 
                                           cex_pie2axis = 1, 
-                                          hilight_category = NULL,
-                                          alpha_hilight = 1,
-                                          alpha_nohilight = 0.3,
+                                          hilight.params=list(
+                                              category = NULL,
+                                              alpha_hilight = 1,
+                                              alpha_no_hilight = 0.3
+                                          ),  
                                           ...) {
                                        
     has_pairsim(x)
     label_size_category <- 3
     label_group <- 3
+    default.hilight.params <- list(
+        category = NULL,
+        alpha_hilight = 1,
+        alpha_no_hilight = 0.3
+    )
+    hilight.params <- reset_params(defaultp=default.hilight.params, 
+                                   inputp=enquo(hilight.params))
+    hilight_category <- hilight.params[["category"]]
+    alpha_hilight <- hilight.params[["alpha_hilight"]]
+    alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
     # y <- get_selected_category(showCategory, x, split)
     y <- fortify(x, showCategory = showCategory,
                  includeAll = TRUE, split = split)

@@ -346,6 +346,38 @@ get_ggrepel_segsize <- function(default = 0.2) {
     getOption("ggrepel.segment.size", default = default)
 }
 
+# copy from YuLab-SMU/ggtreeExtra
+#' @importFrom rlang get_expr
+reset_params <- function(defaultp, inputp){
+    if (is.null(get_expr(inputp))){
+        return(NULL)
+    }
+    inputp <- parse_list_input(input=inputp)
+    intdi <- intersect(names(inputp), names(defaultp))
+    setd <- setdiff(names(defaultp), names(inputp))
+    seti <- setdiff(names(inputp), names(defaultp))
+    intdi <- inputp[match(intdi, names(inputp))]
+    setd <- defaultp[match(setd, names(defaultp))]
+    seti <- inputp[match(seti, names(inputp))]
+    newp <- c(intdi, setd, seti)
+    return(newp)
+}
 
-
+# copy from YuLab-SMU/ggtreeExtra
+#' @importFrom rlang get_env
+parse_list_input <- function(input){
+    expr <- get_expr(input)
+    env <- get_env(input)
+    inputp <- as.list(expr)
+    inputp <- inputp[nchar(names(inputp)) > 0]
+    #inputp[[1]] <- NULL
+    #inputp <- inputp[unname(unlist(lapply(inputp, function(x)nchar(x)>0 && x!="...")))]
+    for (i in seq_len(length(inputp))){
+        if (is.symbol(inputp[[i]])){
+            values <- as.vector(inputp[[i]], mode="character")
+            inputp[[i]] <- get(values, envir = env)
+        }
+    }
+    return (inputp)
+}
 

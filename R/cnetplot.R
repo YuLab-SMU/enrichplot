@@ -51,11 +51,17 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' @param color_gene Color of gene node.
 ##' @param shadowtext select which node labels to use shadow font,
 ##' one of 'category', 'gene', 'all' and 'none', default is 'all'.
-##' @param hilight_category category nodes to be highlight.
-##' @param alpha_hilight alpha of highlighted nodes.
-##' @param alpha_nohilight alpha of unhighlighted nodes.
+##' @param hilight.params list, the parameters to control the attributes of highlighted nodes and edges.
+##' see the hilight.params in the following.
+##' hilight.params control the attributes of highlight, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{category} category nodes to be highlight.
+##'         \item \code{alpha_hilight} alpha of highlighted nodes.
+##'         \item \code{alpha_no_hilight} alpha of unhighlighted nodes.
+##'     }
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
+##' @importFrom rlang enquo
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,
                      showCategory = 5,
@@ -71,14 +77,27 @@ cnetplot.enrichResult <- function(x,
                      color_category = "#E5C494",
                      color_gene = "#B3B3B3",
                      shadowtext = "all",
-                     hilight_category = NULL,
-                     alpha_hilight = 1,
-                     alpha_nohilight = 0.3,
+                     hilight.params=list(
+                         category = NULL,
+                         alpha_hilight = 1,
+                         alpha_no_hilight = 0.3
+                     ), 
                      ...) {
 
     label_size_category <- 5
     label_size_gene <- 5
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
+
+    default.hilight.params <- list(
+        category = NULL,
+        alpha_hilight = 1,
+        alpha_no_hilight = 0.3
+    )
+    hilight.params <- reset_params(defaultp=default.hilight.params, 
+                                   inputp=enquo(hilight.params))
+    hilight_category <- hilight.params[["category"]]
+    alpha_hilight <- hilight.params[["alpha_hilight"]]
+    alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
     if (circular) {
         layout <- "linear"
         geom_edge <- geom_edge_arc
@@ -233,15 +252,28 @@ cnetplot.compareClusterResult <- function(x,
                      cex_label_category = 1,
                      cex_label_gene = 1,
                      shadowtext = "all",
-                     hilight_category = NULL,
-                     alpha_hilight = 1,
-                     alpha_nohilight = 0.3,
+                     hilight.params=list(
+                         category = NULL,
+                         alpha_hilight = 1,
+                         alpha_no_hilight = 0.3
+                     ),  
                      ...) {
 
     label_size_category <- 2.5
     label_size_gene <- 2.5
     range_category_size <- c(3, 8)
     range_gene_size <- c(3, 3)
+    default.hilight.params <- list(
+        category = NULL,
+        alpha_hilight = 1,
+        alpha_no_hilight = 0.3
+    )
+    hilight.params <- reset_params(defaultp=default.hilight.params, 
+                                   inputp=enquo(hilight.params))
+    hilight_category <- hilight.params[["category"]]
+    alpha_hilight <- hilight.params[["alpha_hilight"]]
+    alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
+
     if (is.logical(shadowtext)) {
         shadowtext <- ifelse(shadowtext, "all", "none")
     }

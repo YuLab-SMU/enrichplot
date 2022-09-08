@@ -39,9 +39,7 @@ emapplot.enrichResult(
   label_format = 30,
   clusterFunction = stats::kmeans,
   nCluster = NULL,
-  hilight_category = NULL,
-  alpha_hilight = 1,
-  alpha_nohilight = 0.3,
+  hilight.params = list(category = NULL, alpha_hilight = 1, alpha_no_hilight = 0.3),
   ...
 )
 
@@ -70,9 +68,7 @@ emapplot.compareClusterResult(
   clusterFunction = stats::kmeans,
   nCluster = NULL,
   cex_pie2axis = 1,
-  hilight_category = NULL,
-  alpha_hilight = 1,
-  alpha_nohilight = 0.3,
+  hilight.params = list(category = NULL, alpha_hilight = 1, alpha_no_hilight = 0.3),
   ...
 )
 }
@@ -147,11 +143,14 @@ cluster::clara, cluster::fanny or cluster::pam.}
 \item{nCluster}{Numeric, the number of clusters, 
 the default value is square root of the number of nodes.}
 
-\item{hilight_category}{category nodes to be highlight.}
-
-\item{alpha_hilight}{alpha of highlighted nodes.}
-
-\item{alpha_nohilight}{alpha of unhighlighted nodes.}
+\item{hilight.params}{list, the parameters to control the attributes of highlighted nodes and edges.
+see the hilight.params in the following.
+hilight.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{category} category nodes to be highlight.
+        \item \code{alpha_hilight} alpha of highlighted nodes.
+        \item \code{alpha_no_hilight} alpha of unhighlighted nodes.
+    }}
 
 \item{split}{separate result by 'category' variable}
 

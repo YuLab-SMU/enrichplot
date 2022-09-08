@@ -34,9 +34,7 @@ cnetplot.enrichResult(
   color_category = "#E5C494",
   color_gene = "#B3B3B3",
   shadowtext = "all",
-  hilight_category = NULL,
-  alpha_hilight = 1,
-  alpha_nohilight = 0.3,
+  hilight.params = list(category = NULL, alpha_hilight = 1, alpha_no_hilight = 0.3),
   ...
 )
 }
@@ -81,11 +79,14 @@ default value is 1.}
 \item{shadowtext}{select which node labels to use shadow font,
 one of 'category', 'gene', 'all' and 'none', default is 'all'.}
 
-\item{hilight_category}{category nodes to be highlight.}
-
-\item{alpha_hilight}{alpha of highlighted nodes.}
-
-\item{alpha_nohilight}{alpha of unhighlighted nodes.}
+\item{hilight.params}{list, the parameters to control the attributes of highlighted nodes and edges.
+see the hilight.params in the following.
+hilight.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{category} category nodes to be highlight.
+        \item \code{alpha_hilight} alpha of highlighted nodes.
+        \item \code{alpha_no_hilight} alpha of unhighlighted nodes.
+    }}
 }
 \value{
 ggplot object
