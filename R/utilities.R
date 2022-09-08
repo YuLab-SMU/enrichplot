@@ -1,3 +1,20 @@
+##' automatically split barplot or dotplot into several facets
+##' 
+##'
+##' @param by one of 'row' or 'column'
+##' @param scales wether 'fixed' or 'free'
+##' @param levels set facet levels
+##' @return a ggplot object
+##' @export
+autofacet <- function(by = 'row', scales = "free", levels = NULL) {
+    structure(list(by = by,
+                scales = scales,
+                levels = levels), 
+            class = "autofacet")
+}
+
+
+
 # has_package <- function(pkg){
     # if (!requireNamespace(pkg, quietly  = TRUE)) {
         # stop(paste0(pkg, " needed for this function to work. Please install it."),

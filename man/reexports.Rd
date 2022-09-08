@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{ggtitle}
+\alias{facet_grid}
 \alias{plot_list}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -14,6 +15,6 @@ below to see their documentation.
 \describe{
   \item{aplot}{\code{\link[aplot]{plot_list}}}
 
-  \item{ggplot2}{\code{\link[ggplot2:labs]{ggtitle}}}
+  \item{ggplot2}{\code{\link[ggplot2]{facet_grid}}, \code{\link[ggplot2:labs]{ggtitle}}}
 }}
 
