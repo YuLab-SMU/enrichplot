@@ -9,7 +9,7 @@
 \alias{emapplot.compareClusterResult}
 \title{emapplot}
 \usage{
-emapplot(x, showCategory = 30, ...)
+emapplot(x, ...)
 
 \S4method{emapplot}{enrichResult}(x, showCategory = 30, ...)
 
@@ -20,64 +20,72 @@ emapplot(x, showCategory = 30, ...)
 emapplot.enrichResult(
   x,
   showCategory = 30,
-  layout = NULL,
-  coords = NULL,
+  layout,
+  coords,
   color = "p.adjust",
-  min_edge = 0.2,
-  cex_label_category = 1,
-  cex_category = 1,
-  cex_line = 1,
+  min_edge,
+  cex_label_category,
+  cex_category,
+  cex_line,
   shadowtext = TRUE,
-  label_style = "shadowtext",
-  repel = FALSE,
+  label_style,
+  repel,
   node_label = "category",
-  with_edge = TRUE,
-  group_category = FALSE,
-  group_legend = FALSE,
-  cex_label_group = 1,
-  nWords = 4,
-  label_format = 30,
-  clusterFunction = stats::kmeans,
-  nCluster = NULL,
+  with_edge,
+  group_category,
+  group_legend,
+  cex_label_group,
+  nWords,
+  label_format,
+  clusterFunction,
+  nCluster,
+  layout.params = list(layout = NULL, coords = NULL),
+  edge.params = list(show = TRUE, min = 0.2),
+  cex.params = list(category_node = 1, category_label = 1, line = 1),
   hilight.params = list(category = NULL, alpha_hilight = 1, alpha_no_hilight = 0.3),
+  cluster.params = list(cluster = FALSE, method = stats::kmeans, n = NULL, legend =
+    FALSE, label_style = "shadowtext", label_words_n = 4, label_format = 30),
   ...
 )
 
 emapplot.compareClusterResult(
   x,
   showCategory = 30,
-  layout = NULL,
-  coords = NULL,
+  layout,
+  coords,
   split = NULL,
-  pie = "equal",
-  legend_n = 5,
-  cex_category = 1,
-  cex_line = 1,
-  min_edge = 0.2,
-  cex_label_category = 1,
-  shadowtext = TRUE,
-  with_edge = TRUE,
-  group_category = FALSE,
-  label_format = 30,
-  group_legend = FALSE,
+  pie,
+  legend_n,
+  cex_category,
+  cex_line,
+  min_edge,
+  cex_label_category,
+  shadowtext,
+  with_edge,
+  group_category,
+  label_format,
+  group_legend,
   node_label = "category",
-  label_style = "shadowtext",
+  label_style,
   repel = FALSE,
-  cex_label_group = 1,
-  nWords = 4,
-  clusterFunction = stats::kmeans,
-  nCluster = NULL,
-  cex_pie2axis = 1,
+  cex_label_group,
+  nWords,
+  clusterFunction,
+  nCluster,
+  cex_pie2axis,
+  pie.params = list(pie = "equal", legend_n = 5),
+  layout.params = list(layout = NULL, coords = NULL),
+  edge.params = list(show = TRUE, min = 0.2),
+  cluster.params = list(cluster = FALSE, method = stats::kmeans, n = NULL, legend =
+    FALSE, label_style = "shadowtext", label_words_n = 4, label_format = 30),
+  cex.params = list(category_node = 1, category_label = 1, line = 1, pie2axis = 1,
+    label_group = 1),
   hilight.params = list(category = NULL, alpha_hilight = 1, alpha_no_hilight = 0.3),
   ...
 )
 }
 \arguments{
 \item{x}{Enrichment result.}
-
-\item{showCategory}{A number or a vector of terms. If it is a number, 
-the first n terms will be displayed. If it is a vector of terms, 
-the selected terms will be displayed.}
 
 \item{...}{additional parameters
 
@@ -96,52 +104,103 @@ additional parameters can refer the following parameters.
         radius equal to level, representing the euclidean distance from the center. 
     }}
 
-\item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
-'randomly', 'fr', 'kk', 'drl' or 'lgl'.}
+\item{showCategory}{A number or a vector of terms. If it is a number, 
+the first n terms will be displayed. If it is a vector of terms, 
+the selected terms will be displayed.}
 
-\item{coords}{a data.frame with two columns: 'x' for X-axis coordinate and 'y' for Y-axis coordinate.}
+\item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+'randomly', 'fr', 'kk', 'drl' or 'lgl'. Will be removed in the next version.
+Will be removed in the next version.}
+
+\item{coords}{a data.frame with two columns: 'x' for X-axis coordinate and 'y' for Y-axis coordinate.
+Will be removed in the next version.}
 
 \item{color}{Variable that used to color enriched terms, e.g. 'pvalue',
 'p.adjust' or 'qvalue'.}
 
 \item{min_edge}{The minimum similarity threshold for whether 
-two nodes are connected, should between 0 and 1, default value is 0.2.}
+two nodes are connected, should between 0 and 1, default value is 0.2.
+Will be removed in the next version.}
 
-\item{cex_label_category}{Scale of category node label size.}
+\item{cex_label_category}{Scale of category node label size.
+Will be removed in the next version.}
 
 \item{cex_category}{Number indicating the amount by which plotting category
-nodes should be scaled relative to the default.}
+nodes should be scaled relative to the default.
+Will be removed in the next version.}
 
-\item{cex_line}{Scale of line width}
+\item{cex_line}{Scale of line width.
+Will be removed in the next version.}
 
 \item{shadowtext}{a logical value, whether to use shadow font.}
 
-\item{label_style}{style of group label, one of "shadowtext" and "ggforce".}
+\item{label_style}{style of group label, one of "shadowtext" and "ggforce".
+Will be removed in the next version.}
 
 \item{repel}{whether to correct the position of the label. Defaults to FALSE.}
 
 \item{node_label}{Select which labels to be displayed,
 one of 'category', 'group', 'all' and 'none'.}
 
-\item{with_edge}{Logical, if TRUE, draw the edges of the network diagram.}
+\item{with_edge}{Logical, if TRUE, draw the edges of the network diagram.
+Will be removed in the next version.}
 
-\item{group_category}{a logical, if TRUE, group the category.}
+\item{group_category}{a logical, if TRUE, group the category.
+Will be removed in the next version.}
 
 \item{group_legend}{Logical, if TRUE, the grouping legend will be displayed.
-The default is FALSE.}
+The default is FALSE.
+Will be removed in the next version.}
 
-\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.}
+\item{cex_label_group}{Numeric, scale of group labels size, the default value is 1.
+Will be removed in the next version.}
 
-\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.}
+\item{nWords}{Numeric, the number of words in the cluster tags, the default value is 4.
+Will be removed in the next version.}
 
 \item{label_format}{a numeric value sets wrap length, alternatively a
-custom function to format axis labels.}
+custom function to format axis labels.
+Will be removed in the next version.}
 
 \item{clusterFunction}{function of Clustering method, such as stats::kmeans(the default),
-cluster::clara, cluster::fanny or cluster::pam.}
+cluster::clara, cluster::fanny or cluster::pam.
+Will be removed in the next version.}
 
 \item{nCluster}{Numeric, the number of clusters, 
-the default value is square root of the number of nodes.}
+the default value is square root of the number of nodes.
+Will be removed in the next version.}
+
+\item{layout.params}{list, the parameters to control the layout.
+see the layout.params in the following.
+layout.params control the attributes of layout, it can be referred to the following parameters:
+    \itemize{
+        \item \code{layout} Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
+        'randomly', 'fr', 'kk', 'drl' or 'lgl'..
+        \item \code{coords} a data.frame with two columns: 'x' for X-axis coordinate and 
+        'y' for Y-axis coordinate.
+    }}
+
+\item{edge.params}{list, the parameters to control the edge.
+see the edge.params in the following.
+edge.params control the attributes of edge, it can be referred to the following parameters:
+    \itemize{
+        \item \code{show} Logical, if TRUE (the default), draw the edges of the network diagram.
+        \item \code{min} The minimum similarity threshold for whether 
+        two nodes are connected, should between 0 and 1, default value is 0.2.
+    }}
+
+\item{cex.params}{list, the parameters to control the edge.
+see the cex.params in the following.
+cex.params control the attributes of edge, it can be referred to the following parameters:
+    \itemize{
+        \item \code{category_node} Number indicating the amount by which plotting category
+        nodes should be scaled relative to the default.
+        \item \code{category_label} Scale of category node label size. 
+        \item \code{line} Scale of line width.
+        \item \code{pie2axis} It is used to adjust the relative size of the pie chart on the coordinate axis, 
+        the default value is 1.
+        \item \code{label_group} Numeric, scale of group labels size, the default value is 1.
+    }}
 
 \item{hilight.params}{list, the parameters to control the attributes of highlighted nodes and edges.
 see the hilight.params in the following.
@@ -152,14 +211,42 @@ hilight.params control the attributes of highlight, it can be referred to the fo
         \item \code{alpha_no_hilight} alpha of unhighlighted nodes.
     }}
 
+\item{cluster.params}{list, the parameters to control the attributes of highlighted nodes and edges.
+see the cluster.params in the following.
+cluster.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{cluster} a logical, if TRUE, group the category.
+        \item \code{method} function of Clustering method, such as stats::kmeans(the default),
+        cluster::clara, cluster::fanny or cluster::pam.
+        \item \code{n} Numeric, the number of clusters, 
+        the default value is square root of the number of nodes.
+        \item \code{legend} Logical, if TRUE, the grouping legend will be displayed.
+        The default is FALSE.
+        \item \code{label_style} style of group label, one of "shadowtext" and "ggforce".
+        \item \code{label_words_n} Numeric, the number of words in the cluster tags, the default value is 4.
+        \item \code{label_format} a numeric value sets wrap length, alternatively a
+        custom function to format axis labels.
+    }}
+
 \item{split}{separate result by 'category' variable}
 
-\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'}
+\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
+Will be removed in the next version.}
 
-\item{legend_n}{number of circle in legend}
+\item{legend_n}{number of circle in legend
+Will be removed in the next version.}
 
 \item{cex_pie2axis}{It is used to adjust the relative size of the pie chart on the coordinate axis, 
-the default value is 1.}
+the default value is 1.
+Will be removed in the next version.}
+
+\item{pie.params}{list, the parameters to control the attributes of pie nodes.
+see the pie.params in the following.
+pie.params control the attributes of pie nodes, it can be referred to the following parameters:
+    \itemize{
+        \item \code{pie} proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+        \item \code{legend_n} number of circle in legend.
+    }}
 }
 \value{
 ggplot object
@@ -195,7 +282,6 @@ calculation can be found in its documentation: \link{pairwise_termsim}.
     emapplot(x2, showCategory = categorys)
 
     # It can also graph compareClusterResult
-    data(gcSample)
     library(clusterProfiler)
     library(DOSE)
     library(org.Hs.eg.db)

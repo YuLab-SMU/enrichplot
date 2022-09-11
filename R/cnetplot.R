@@ -1,56 +1,82 @@
 ##' @rdname cnetplot
 ##' @exportMethod cnetplot
 setMethod("cnetplot", signature(x = "enrichResult"),
-          function(x, showCategory = 5,
-                   foldChange = NULL, layout = "kk", ...) {
-              cnetplot.enrichResult(x, showCategory = showCategory,
-                                    foldChange = foldChange, layout = layout, ...)
+          function(x,  ...) {
+              cnetplot.enrichResult(x,  ...)
           })
 
 ##' @rdname cnetplot
 ##' @exportMethod cnetplot
 setMethod("cnetplot", signature(x = "list"),
-          function(x, showCategory = 5,
-                   foldChange = NULL, layout = "kk", ...) {
-              cnetplot.enrichResult(x, showCategory = showCategory,
-                                    foldChange = foldChange, layout = layout, ...)
+          function(x, ...) {
+              cnetplot.enrichResult(x, ...)
           })
 
 ##' @rdname cnetplot
 ##' @exportMethod cnetplot
 setMethod("cnetplot", signature(x = "gseaResult"),
-          function(x, showCategory = 5,
-                   foldChange = NULL, layout = "kk", ...) {
-              cnetplot.enrichResult(x, showCategory = showCategory,
-                                    foldChange = foldChange, layout = layout, ...)
+          function(x, ...) {
+              cnetplot.enrichResult(x, ...)
           })
 
 ##' @rdname cnetplot
 ##' @exportMethod cnetplot
 setMethod("cnetplot", signature(x = "compareClusterResult"),
-          function(x, showCategory = 5,
-                   foldChange = NULL, layout = "kk", ...) {
-              cnetplot.compareClusterResult(x, showCategory = showCategory,
-                                    foldChange = foldChange, layout = layout, ...)
+          function(x, ...) {
+              cnetplot.compareClusterResult(x, ...)
           })
 
 
 ##' @rdname cnetplot
 ##' @param colorEdge Logical, whether coloring edge by enriched terms, the default value is FALSE. 
+##' Will be removed in the next version.
 ##' @param circular Logical, whether using circular layout, the default value is FALSE.
+##' Will be removed in the next version.
 ##' @param node_label Select which labels to be displayed.
 ##' one of 'category', 'gene', 'all'(the default) and 'none'.
 ##' @param cex_category Number indicating the amount by which plotting category
 ##' nodes should be scaled relative to the default, the default value is 1.
+##' Will be removed in the next version.
 ##' @param cex_gene Number indicating the amount by which plotting gene nodes
 ##' should be scaled relative to the default, the default value is 1.
+##' Will be removed in the next version.
 ##' @param cex_label_category Scale of category node label size, the 
 ##' default value is 1.
+##' Will be removed in the next version.
 ##' @param cex_label_gene Scale of gene node label size, the default value is 1.
+##' Will be removed in the next version.
 ##' @param color_category Color of category node.
+##' Will be removed in the next version.
 ##' @param color_gene Color of gene node.
+##' Will be removed in the next version.
 ##' @param shadowtext select which node labels to use shadow font,
 ##' one of 'category', 'gene', 'all' and 'none', default is 'all'.
+
+##' @param color.params list, the parameters to control the attributes of highlighted nodes and edges.
+##' see the color.params in the following.
+##' color.params control the attributes of highlight, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{foldChange} Fold Change of nodes for enrichResult, or size of nodes for compareClusterResult, 
+##'         the default value is NULL. 
+##'         \item \code{edge} Logical, whether coloring edge by enriched terms, the default value is FALSE. 
+##'         \item \code{category} Color of category node.
+##'         \item \code{gene} Color of gene node.
+##'     }
+##' @param cex.params list, the parameters to control the size of nodes and lables.
+##' see the cex.params in the following.
+##' cex.params control the attributes of highlight, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{foldChange} only used in compareClusterResult object, fold Change of nodes, the default value is NULL. 
+##'         If the user provides the Fold Change value of the nodes, 
+##'         it can be used to set the size of the gene node.
+##'         \item \code{category_node} Number indicating the amount by which plotting category
+##'         nodes should be scaled relative to the default, the default value is 1.
+##'         \item \code{gene_node} Number indicating the amount by which plotting gene nodes
+##'         should be scaled relative to the default, the default value is 1.
+##'         \item \code{category_label} Scale of category node label size, the 
+##'         default value is 1.
+##'         \item \code{gene_label} Scale of gene node label size, the default value is 1.
+##'     }
 ##' @param hilight.params list, the parameters to control the attributes of highlighted nodes and edges.
 ##' see the hilight.params in the following.
 ##' hilight.params control the attributes of highlight, it can be referred to the following parameters:
@@ -65,7 +91,7 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,
                      showCategory = 5,
-                     foldChange   = NULL,
+                     foldChange = NULL,
                      layout = "kk",
                      colorEdge = FALSE,
                      circular = FALSE,
@@ -77,17 +103,137 @@ cnetplot.enrichResult <- function(x,
                      color_category = "#E5C494",
                      color_gene = "#B3B3B3",
                      shadowtext = "all",
-                     hilight.params=list(
-                         category = NULL,
-                         alpha_hilight = 1,
-                         alpha_no_hilight = 0.3
-                     ), 
+					 color.params=list(
+                         foldChange = NULL,
+                         edge = FALSE,           
+                         category = "#E5C494",   
+                         gene = "#B3B3B3"        
+                    ),
+					 cex.params=list(
+                         category_node = 1,      
+                         gene_node = 1,          
+                         category_label = 1,     
+                         gene_label = 1         
+                    ),
+                     hilight.params=list(        
+                         category = NULL,      
+                         alpha_hilight = 1,      
+                         alpha_no_hilight = 0.3  
+                     ),
                      ...) {
 
     label_size_category <- 5
     label_size_gene <- 5
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
+    
 
+    # change parameter name
+    ##############################################################
+    params_df <- as.data.frame(rbind(
+        c("foldChange", "color.params", "foldChange"),
+        c("colorEdge", "color.params", "edge"),
+        c("color_category", "color.params", "category"),
+        c("color_gene", "color.params", "gene"),
+
+        c("cex_category", "cex.params", "category_node"),
+        c("cex_gene", "cex.params", "gene_node"),
+        c("cex_label_category", "cex.params", "category_label"),
+        c("cex_label_gene", "cex.params", "gene_label"))
+    )
+    colnames(params_df) <- c("original", "listname", "present")
+    rownames(params_df) <- params_df$original
+
+ 
+    # color.params
+    default.color.params <- list(
+        foldChange = NULL,
+        edge = FALSE,           
+        category = "#E5C494",   
+        gene = "#B3B3B3"        
+    )
+    color.params <- reset_params(defaultp=default.color.params, 
+                                   inputp=enquo(color.params))
+    # get all parameters value
+    # args <- as.list(match.call())
+    # removed_params <- intersect(params_df$original, names(args))
+
+    # if (length(removed_params) > 0) {
+    #     for (param in removed_params) {
+    #         warn <- get_param_change_message(param, params_df)
+    #         warning(warn)
+    #         paramsList <- 
+    #     }
+    # }
+                           
+    if (!missing(foldChange)) {
+        warn <- get_param_change_message("foldChange", params_df)
+        warning(warn)
+        color.params[[params_df["foldChange", "present"]]] <- foldChange
+    }  
+
+    if (!missing(colorEdge)) {
+        warn <- get_param_change_message("colorEdge", params_df)
+        warning(warn)
+        color.params[[params_df["colorEdge", "present"]]] <- colorEdge
+    }  
+
+    if (!missing(color_category)) {
+        warn <- get_param_change_message("color_category", params_df)
+        warning(warn)
+        color.params[[params_df["color_category", "present"]]] <- color_category
+    }  
+
+    if (!missing(color_gene)) {
+        warn <- get_param_change_message("color_gene", params_df)
+        warning(warn)
+        color.params[[params_df["color_gene", "present"]]] <- color_gene
+    }  
+    foldChange <- color.params[["foldChange"]]                               
+    colorEdge <- color.params[["edge"]]
+    color_category <- color.params[["category"]]
+    color_gene <- color.params[["gene"]]
+
+
+    # cex.params
+    default.cex.params <- list(
+        category_node = 1,       
+        gene_node = 1,                
+        category_label = 1,      
+        gene_label = 1        
+    )
+    cex.params <- reset_params(defaultp=default.cex.params, 
+                                   inputp=enquo(cex.params))
+
+    if (!missing(cex_category)) {
+        warn <- get_param_change_message("cex_category", params_df)
+        warning(warn)
+        color.params[[params_df["cex_category", "present"]]] <- cex_category
+    }  
+
+    if (!missing(cex_gene)) {
+        warn <- get_param_change_message("cex_gene", params_df)
+        warning(warn)
+        color.params[[params_df["cex_gene", "present"]]] <- cex_gene
+    }  
+
+    if (!missing(cex_label_category)) {
+        warn <- get_param_change_message("cex_label_category", params_df)
+        warning(warn)
+        color.params[[params_df["cex_label_category", "present"]]] <- cex_label_category
+    } 
+
+    if (!missing(cex_label_gene)) {
+        warn <- get_param_change_message("cex_label_gene", params_df)
+        warning(warn)
+        color.params[[params_df["cex_label_gene", "present"]]] <- cex_label_gene
+    }  
+    cex_category <- cex.params[["category_node"]]
+    cex_gene <- cex.params[["gene_node"]]
+    cex_label_category <- cex.params[["category_label"]]
+    cex_label_gene <- cex.params[["gene_label"]]
+    ########################################################################################
+
+    # hilight.params
     default.hilight.params <- list(
         category = NULL,
         alpha_hilight = 1,
@@ -98,6 +244,7 @@ cnetplot.enrichResult <- function(x,
     hilight_category <- hilight.params[["category"]]
     alpha_hilight <- hilight.params[["alpha_hilight"]]
     alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
+
     if (circular) {
         layout <- "linear"
         geom_edge <- geom_edge_arc
@@ -231,15 +378,26 @@ cnetplot.enrichResult <- function(x,
 
 ##' @param split Separate result by 'category' variable.
 ##' @param pie Proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+##' Will be removed in the next version.
 ##' @param legend_n Number of circle in legend, the default value is 5.
+##' Will be removed in the next version.
 ##' @param x_loc,y_loc The location of scatterpie legend.
+##' Will be removed in the next version.
+##' @param pie.params list, the parameters to control the attributes of pie nodes.
+##' see the pie.params in the following.
+##' pie.params control the attributes of pie nodes, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{pie} proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+##'         \item \code{legend_n} number of circle in legend.
+##'         \item \code{legend_loc_x, legend_loc_y} The location of scatterpie legend.
+##'     }
 ##' @importFrom ggraph geom_edge_arc
 ##' @noRd
 cnetplot.compareClusterResult <- function(x,
                      showCategory = 5,
                      foldChange   = NULL,
                      layout = "kk",
-                     colorEdge = FALSE,
+                     # colorEdge = FALSE,
                      circular = FALSE,
                      node_label = "all",
                      split=NULL,
@@ -252,6 +410,19 @@ cnetplot.compareClusterResult <- function(x,
                      cex_label_category = 1,
                      cex_label_gene = 1,
                      shadowtext = "all",
+                     pie.params = list(
+                         pie = "equal",            
+                         legend_n = 5,             
+					     legend_loc_x = NULL,      
+                         legend_loc_y = NULL       
+					 ),
+					 cex.params=list(
+                         foldChange = NULL,
+                         category_node = 1,        
+                         gene_node = 1,            
+                         category_label = 1,       
+                         gene_label = 1           
+                    ),
                      hilight.params=list(
                          category = NULL,
                          alpha_hilight = 1,
@@ -263,6 +434,114 @@ cnetplot.compareClusterResult <- function(x,
     label_size_gene <- 2.5
     range_category_size <- c(3, 8)
     range_gene_size <- c(3, 3)
+
+    # change parameter name
+    ##############################################################
+    params_df <- as.data.frame(rbind(
+        c("pie", "pie.params", "pie"),
+        c("legend_n", "pie.params", "legend_n"),
+        c("x_loc", "pie.params", "legend_loc_x"),
+        c("y_loc", "pie.params", "legend_loc_y"),
+
+        c("foldChange", "cex.params", "foldChange"),
+        c("cex_category", "cex.params", "category_node"),
+        c("cex_gene", "cex.params", "gene_node"),
+        c("cex_label_category", "cex.params", "category_label"),
+        c("cex_label_gene", "cex.params", "gene_label"))
+    )
+    colnames(params_df) <- c("original", "listname", "present")
+    rownames(params_df) <- params_df$original
+
+ 
+    # pie.params
+    default.pie.params <- list(
+        pie = "equal",          
+        legend_n = 5,             
+		legend_loc_x = NULL,      
+        legend_loc_y = NULL           
+    )
+    pie.params <- reset_params(defaultp=default.pie.params, 
+                               inputp=enquo(pie.params))
+
+                           
+    if (!missing(pie)) {
+        warn <- get_param_change_message("pie", params_df)
+        warning(warn)
+        pie.params[[params_df["pie", "present"]]] <- pie
+    }  
+
+    if (!missing(legend_n)) {
+        warn <- get_param_change_message("legend_n", params_df)
+        warning(warn)
+        pie.params[[params_df["legend_n", "present"]]] <- legend_n
+    }  
+
+    if (!missing(x_loc)) {
+        warn <- get_param_change_message("x_loc", params_df)
+        warning(warn)
+        pie.params[[params_df["x_loc", "present"]]] <- x_loc
+    }  
+
+    if (!missing(y_loc)) {
+        warn <- get_param_change_message("y_loc", params_df)
+        warning(warn)
+        pie.params[[params_df["y_loc", "present"]]] <- y_loc
+    }  
+    pie <- pie.params[["pie"]]
+    legend_n <- pie.params[["legend_n"]]
+    x_loc <- pie.params[["legend_loc_x"]]
+    y_loc <- pie.params[["legend_loc_y"]]
+
+
+    # cex.params
+    default.cex.params <- list(
+        foldChange = NULL,     
+        category_node = 1,      
+        gene_node = 1,          
+        category_label = 1,     
+        gene_label = 1               
+    )
+    cex.params <- reset_params(defaultp=default.cex.params, 
+                               inputp=enquo(cex.params))
+
+                           
+    if (!missing(foldChange)) {
+        warn <- get_param_change_message("foldChange", params_df)
+        warning(warn)
+        cex.params[[params_df["foldChange", "present"]]] <- foldChange
+    }  
+
+    if (!missing(cex_category)) {
+        warn <- get_param_change_message("cex_category", params_df)
+        warning(warn)
+        cex.params[[params_df["cex_category", "present"]]] <- cex_category
+    }  
+
+    if (!missing(cex_gene)) {
+        warn <- get_param_change_message("cex_gene", params_df)
+        warning(warn)
+        cex.params[[params_df["cex_gene", "present"]]] <- cex_gene
+    }  
+
+    if (!missing(cex_label_category)) {
+        warn <- get_param_change_message("cex_label_category", params_df)
+        warning(warn)
+        cex.params[[params_df["cex_label_category", "present"]]] <- cex_label_category
+    }  
+
+    if (!missing(cex_label_gene)) {
+        warn <- get_param_change_message("cex_label_gene", params_df)
+        warning(warn)
+        cex.params[[params_df["cex_label_gene", "present"]]] <- cex_label_gene
+    }      
+
+    foldChange <- cex.params[["foldChange"]]
+    cex_category <- cex.params[["category_node"]]
+    cex_gene <- cex.params[["gene_node"]]
+    cex_label_category <- cex.params[["category_label"]]
+    cex_label_gene <- cex.params[["gene_label"]]
+
+
     default.hilight.params <- list(
         category = NULL,
         alpha_hilight = 1,

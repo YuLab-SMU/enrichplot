@@ -365,6 +365,7 @@ get_ggrepel_segsize <- function(default = 0.2) {
 
 # copy from YuLab-SMU/ggtreeExtra
 #' @importFrom rlang get_expr
+#' @noRd
 reset_params <- function(defaultp, inputp){
     if (is.null(get_expr(inputp))){
         return(NULL)
@@ -382,6 +383,7 @@ reset_params <- function(defaultp, inputp){
 
 # copy from YuLab-SMU/ggtreeExtra
 #' @importFrom rlang get_env
+#' @noRd
 parse_list_input <- function(input){
     expr <- get_expr(input)
     env <- get_env(input)
@@ -398,3 +400,14 @@ parse_list_input <- function(input){
     return (inputp)
 }
 
+#' Get warning message of changing parameter name
+#' @param parameter old parameter name
+#' @param params_df data frame with three columns: "original", "listname", and "present"
+#' @noRd
+get_param_change_message <- function(parameter, params_df) {
+    paste0("Use '", params_df[parameter, "listname"], 
+           "= list(", params_df[parameter, "present"], 
+           " = your_value)' instead of '", params_df[parameter, "original"],
+         "'.\n The ", params_df[parameter, "original"],
+          " parameter will be removed in the next version.")
+} 

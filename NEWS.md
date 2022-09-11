@@ -1,3 +1,7 @@
+# enrichplot 1.17.2.991
+
++ rename parameters of `emapplot()`, `centplot()` and  `treeplot()` (2022-09-11, Sun)
+
 # enrichplot 1.17.2
 
 + `autofacet` to automatically split `barplot` and `dotplot` into several facets (2022-09-06, Tue)
