@@ -126,21 +126,21 @@ treeplot.enrichResult <- function(x,
                                   hexpand,                 # removed
                                   align,               # removed
                                   hilight.params = list(
-								      hilight = TRUE,
-									  align = "both"
-								  ),
+                                      hilight = TRUE,
+                                      align = "both"
+                                  ),
                                   offset.params = list(
-								      offset = rel(1),
+                                      offset = rel(1),
                                       offset_tiplab = rel(1),
-									  extend = 0.3,
-									  hexpand = .1
-								  ),
-							      cluster.params = list(
+                                      extend = 0.3,
+                                      hexpand = .1
+                                  ),
+                                  cluster.params = list(
                                       method = "ward.D",
-								      n = 5,
+                                      n = 5,
                                       color = NULL,
-								      label_words_n = 4
-								  ),
+                                      label_words_n = 4
+                                  ),
                                   ...) {
 
 
@@ -167,8 +167,8 @@ treeplot.enrichResult <- function(x,
  
     # hilight.params
     default.hilight.params <- list(
-		hilight = TRUE,						
-		align = "both" 
+        hilight = TRUE,                        
+        align = "both" 
     )
     hilight.params <- reset_params(defaultp=default.hilight.params, 
                                    inputp=enquo(hilight.params))
@@ -190,10 +190,10 @@ treeplot.enrichResult <- function(x,
 
    # offset.params
     default.offset.params <- list(
-		offset = rel(1),       
+        offset = rel(1),       
         offset_tiplab = rel(1),
-		extend = 0.3,          
-		hexpand = .1           
+        extend = 0.3,          
+        hexpand = .1           
     )
     offset.params <- reset_params(defaultp=default.offset.params, 
                                    inputp=enquo(offset.params))
@@ -230,9 +230,9 @@ treeplot.enrichResult <- function(x,
     # cluster.params
     default.cluster.params <- list(
         method = "ward.D",   
-		n = 5,               
+        n = 5,               
         color = NULL,        
-		label_words_n = 4,   
+        label_words_n = 4,   
         label_format = 30    
     )
     cluster.params <- reset_params(defaultp=default.cluster.params, 
@@ -372,26 +372,26 @@ treeplot.compareClusterResult <-  function(x,
                                       align,                  # removed
                                       cluster.params = list(              
                                           method = "ward.D",     
-								          n = 5,                 
-                                          color = NULL,          							  
-								          label_words_n = 4,     
+                                          n = 5,                 
+                                          color = NULL,                                        
+                                          label_words_n = 4,     
                                           label_format = 30    
-								      ),
+                                      ),
                                       hilight.params = list(
-								          hilight = TRUE,             				
-									      align = "both"              
-								      ),									  
-									  clusterPanel.params = list(
-							              clusterPanel = "heatMap",    
+                                          hilight = TRUE,                             
+                                          align = "both"              
+                                      ),                                      
+                                      clusterPanel.params = list(
+                                          clusterPanel = "heatMap",    
                                           pie = "equal",                
                                           legend_n = 3                  
                                       ),
                                       offset.params = list(
-								          bar_tree = rel(1),           
+                                          bar_tree = rel(1),           
                                           tiplab = rel(1),             
-									      extend = 0.3,                
-									      hexpand = .1                  
-								      ),...) {
+                                          extend = 0.3,                
+                                          hexpand = .1                  
+                                      ),...) {
 
     # change parameter name
     ##############################################################
@@ -421,9 +421,9 @@ treeplot.compareClusterResult <-  function(x,
     # cluster.params
     default.cluster.params <- list(
         method = "ward.D",    
-		n = 5,                
-        color = NULL,         					  
-		label_words_n = 4,    
+        n = 5,                
+        color = NULL,                               
+        label_words_n = 4,    
         label_format = 30     
     )
     cluster.params <- reset_params(defaultp=default.cluster.params, 
@@ -467,8 +467,8 @@ treeplot.compareClusterResult <-  function(x,
 
     # hilight.params
     default.hilight.params <- list(
-		hilight = TRUE,           			
-		align = "both"            
+        hilight = TRUE,                       
+        align = "both"            
     )
     hilight.params <- reset_params(defaultp=default.hilight.params, 
                                    inputp=enquo(hilight.params))
@@ -490,7 +490,7 @@ treeplot.compareClusterResult <-  function(x,
 
     # clusterPanel.params
     default.clusterPanel.params <- list(
-		clusterPanel = "heatMap", 
+        clusterPanel = "heatMap", 
         pie = "equal",            
         legend_n = 3              
     )
@@ -521,8 +521,8 @@ treeplot.compareClusterResult <-  function(x,
 
     # hilight.params
     default.hilight.params <- list(
-		hilight = TRUE,           			
-		align = "both"            
+        hilight = TRUE,                       
+        align = "both"            
     )
     hilight.params <- reset_params(defaultp=default.hilight.params, 
                                    inputp=enquo(hilight.params))
@@ -544,10 +544,10 @@ treeplot.compareClusterResult <-  function(x,
 
     # offset.params
     default.offset.params <- list(
-		bar_tree = rel(1),  
+        bar_tree = rel(1),  
         tiplab = rel(1),    
-		extend = 0.3,       
-		hexpand = .1        
+        extend = 0.3,       
+        hexpand = .1        
     )
     offset.params <- reset_params(defaultp=default.offset.params, 
                                    inputp=enquo(offset.params))

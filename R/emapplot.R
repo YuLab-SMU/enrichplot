@@ -181,34 +181,34 @@ emapplot.enrichResult <- function(x,
                                   label_format,              # removed
                                   clusterFunction,           # removed
                                   nCluster,                  # removed
-								  layout.params = list(
-								      layout = NULL, 			
-								      coords = NULL             
-								  ),
+                                  layout.params = list(
+                                      layout = NULL, 
+                                      coords = NULL             
+                                  ),
 
-								  edge.params = list(
+                                  edge.params = list(
                                       show = TRUE,              
-								      min = 0.2                 		  
-								  ),
+                                      min = 0.2                           
+                                  ),
                                   cex.params = list(
                                       category_node = 1,        
                                       category_label = 1,       
-									  line = 1                  
+                                      line = 1                  
                                   ),
                                   hilight.params = list(
                                       category = NULL,          
                                       alpha_hilight = 1,        
                                       alpha_no_hilight = 0.3    
                                   ),  
-								  cluster.params = list(
+                                  cluster.params = list(
                                       cluster = FALSE,          
                                       method = stats::kmeans,   
-									  n = NULL,                 			  
+                                      n = NULL,                               
                                       legend = FALSE,           
                                       label_style = "shadowtext",
-									  label_words_n = 4,        
+                                      label_words_n = 4,        
                                       label_format = 30         
-								  ),
+                                  ),
                                   ...) {
     has_pairsim(x)
     label_size_category <- 5
@@ -241,8 +241,8 @@ emapplot.enrichResult <- function(x,
  
     # layout.params
     default.layout.params <- list(
-		layout = NULL, 					  
-		coords = NULL            
+        layout = NULL,                       
+        coords = NULL            
     )
     layout.params <- reset_params(defaultp=default.layout.params, 
                                    inputp=enquo(layout.params))
@@ -266,7 +266,7 @@ emapplot.enrichResult <- function(x,
     # edge.params
     default.edge.params <- list(
         show = TRUE,                  
-		min = 0.2                             
+        min = 0.2                             
     )
     edge.params <- reset_params(defaultp=default.edge.params, 
                                    inputp=enquo(edge.params))
@@ -290,7 +290,7 @@ emapplot.enrichResult <- function(x,
     default.cex.params <- list(
         category_node = 1,          
         category_label = 1,         
-		line = 1                                       
+        line = 1                                       
     )
     cex.params <- reset_params(defaultp=default.cex.params, 
                                    inputp=enquo(cex.params))
@@ -320,10 +320,10 @@ emapplot.enrichResult <- function(x,
     default.cluster.params <- list(
         cluster = FALSE,            
         method = stats::kmeans,     
-		n = NULL,                   		  
+        n = NULL,                             
         legend = FALSE,             
         label_style = "shadowtext", 
-		label_words_n = 4,          
+        label_words_n = 4,          
         label_format = 30                          
     )
     cluster.params <- reset_params(defaultp=default.cluster.params, 
@@ -528,30 +528,30 @@ emapplot.compareClusterResult <- function(x,
                                           pie.params = list(
                                               pie = "equal",             
                                               legend_n = 5               
-                                          ),	
-										  layout.params = list(
-								              layout = NULL, 			
-								              coords = NULL              
-								          ),
-										  edge.params = list(
-								              show = TRUE,               
-									          min = 0.2                  
-								          ),
-										  cluster.params = list(
+                                          ),    
+                                          layout.params = list(
+                                              layout = NULL,             
+                                              coords = NULL              
+                                          ),
+                                          edge.params = list(
+                                              show = TRUE,               
+                                              min = 0.2                  
+                                          ),
+                                          cluster.params = list(
                                               cluster = FALSE,           
                                               method = stats::kmeans,    
-									          n = NULL,                  
+                                              n = NULL,                  
                                               legend = FALSE,            
-									          label_style = "shadowtext",
-									          label_words_n = 4,         
+                                              label_style = "shadowtext",
+                                              label_words_n = 4,         
                                               label_format = 30          
-								          ),
-										  cex.params = list(
+                                          ),
+                                          cex.params = list(
                                               category_node = 1,        
                                               category_label = 1,       
-									          line = 1,                 
-											  pie2axis = 1,             
-											  label_group = 1         
+                                              line = 1,                 
+                                              pie2axis = 1,             
+                                              label_group = 1         
                                           ),
                                           hilight.params=list(
                                               category = NULL,          
@@ -621,8 +621,8 @@ emapplot.compareClusterResult <- function(x,
 
     # layout.params
     default.layout.params <- list(
-		layout = NULL, 					  
-		coords = NULL                  
+        layout = NULL,                       
+        coords = NULL                  
     )
     layout.params <- reset_params(defaultp=default.layout.params, 
                                inputp=enquo(layout.params))
@@ -645,8 +645,8 @@ emapplot.compareClusterResult <- function(x,
 
     # edge.params
     default.edge.params <- list(
-		show = TRUE,                 
-		min = 0.2                       
+        show = TRUE,                 
+        min = 0.2                       
     )
     edge.params <- reset_params(defaultp=default.edge.params, 
                                inputp=enquo(edge.params))
@@ -671,10 +671,10 @@ emapplot.compareClusterResult <- function(x,
     default.cluster.params <- list(
         cluster = FALSE,          
         method = stats::kmeans,   
-		n = NULL,                  
+        n = NULL,                  
         legend = FALSE,           
-		label_style = "shadowtext",
-		label_words_n = 4,        
+        label_style = "shadowtext",
+        label_words_n = 4,        
         label_format = 30                     
     )
     cluster.params <- reset_params(defaultp=default.cluster.params, 
@@ -734,9 +734,9 @@ emapplot.compareClusterResult <- function(x,
     default.cex.params <- list(
         category_node = 1,                 
         category_label = 1,           
-		line = 1,                     
-		pie2axis = 1,                 
-		label_group = 1                        
+        line = 1,                     
+        pie2axis = 1,                 
+        label_group = 1                        
     )
     cex.params <- reset_params(defaultp=default.cex.params, 
                                inputp=enquo(cex.params))

@@ -103,13 +103,13 @@ cnetplot.enrichResult <- function(x,
                      color_category = "#E5C494",
                      color_gene = "#B3B3B3",
                      shadowtext = "all",
-					 color.params=list(
+                     color.params=list(
                          foldChange = NULL,
                          edge = FALSE,           
                          category = "#E5C494",   
                          gene = "#B3B3B3"        
                     ),
-					 cex.params=list(
+                     cex.params=list(
                          category_node = 1,      
                          gene_node = 1,          
                          category_label = 1,     
@@ -413,10 +413,10 @@ cnetplot.compareClusterResult <- function(x,
                      pie.params = list(
                          pie = "equal",            
                          legend_n = 5,             
-					     legend_loc_x = NULL,      
+                         legend_loc_x = NULL,      
                          legend_loc_y = NULL       
-					 ),
-					 cex.params=list(
+                     ),
+                     cex.params=list(
                          foldChange = NULL,
                          category_node = 1,        
                          gene_node = 1,            
@@ -457,7 +457,7 @@ cnetplot.compareClusterResult <- function(x,
     default.pie.params <- list(
         pie = "equal",          
         legend_n = 5,             
-		legend_loc_x = NULL,      
+        legend_loc_x = NULL,      
         legend_loc_y = NULL           
     )
     pie.params <- reset_params(defaultp=default.pie.params, 
