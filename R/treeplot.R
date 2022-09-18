@@ -110,28 +110,28 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 treeplot.enrichResult <- function(x, 
                                   showCategory = 30,
                                   color = "p.adjust",
-                                  nWords,                   # removed
-                                  nCluster,                 # removed
+                                  nWords = 4,                   # removed
+                                  nCluster = 5,                 # removed
                                   cex_category = 1,
                                   label_format = NULL, 
-                                  label_format_cladelab,   # removed
+                                  label_format_cladelab = 30,   # removed
                                   label_format_tiplab = NULL, 
                                   fontsize = 4, 
-                                  offset,              # removed
-                                  offset_tiplab,       # removed
-                                  hclust_method,     # removed
-                                  group_color,           # removed
-                                  extend,                 # removed
-                                  hilight,               # removed
-                                  hexpand,                 # removed
-                                  align,               # removed
+                                  offset = rel(1),              # removed
+                                  offset_tiplab = rel(1),       # removed
+                                  hclust_method = "ward.D",     # removed
+                                  group_color = NULL,           # removed
+                                  extend = 0.3,                 # removed
+                                  hilight = TRUE,               # removed
+                                  hexpand = .1,                 # removed
+                                  align = "both",               # removed
                                   hilight.params = list(
                                       hilight = TRUE,
                                       align = "both"
                                   ),
                                   offset.params = list(
-                                      offset = rel(1),
-                                      offset_tiplab = rel(1),
+                                      bar_tree = rel(1),
+                                      tiplab = rel(1),
                                       extend = 0.3,
                                       hexpand = .1
                                   ),
@@ -139,7 +139,8 @@ treeplot.enrichResult <- function(x,
                                       method = "ward.D",
                                       n = 5,
                                       color = NULL,
-                                      label_words_n = 4
+                                      label_words_n = 4,
+                                      label_format = 30
                                   ),
                                   ...) {
 
@@ -164,70 +165,16 @@ treeplot.enrichResult <- function(x,
     colnames(params_df) <- c("original", "listname", "present")
     rownames(params_df) <- params_df$original
 
- 
-    # hilight.params
     default.hilight.params <- list(
         hilight = TRUE,                        
         align = "both" 
     )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
-
-                           
-    if (!missing(hilight)) {
-        warn <- get_param_change_message("hilight", params_df)
-        warning(warn)
-        hilight.params[[params_df["hilight", "present"]]] <- hilight
-    }  
-
-    if (!missing(align)) {
-        warn <- get_param_change_message("align", params_df)
-        warning(warn)
-        hilight.params[[params_df["align", "present"]]] <- align
-    }  
-    hilight <- hilight.params[["hilight"]]
-    align <- hilight.params[["align"]]
-
-   # offset.params
     default.offset.params <- list(
-        offset = rel(1),       
-        offset_tiplab = rel(1),
+        bar_tree = rel(1),       
+        tiplab = rel(1),
         extend = 0.3,          
         hexpand = .1           
     )
-    offset.params <- reset_params(defaultp=default.offset.params, 
-                                   inputp=enquo(offset.params))
-
-                           
-    if (!missing(offset)) {
-        warn <- get_param_change_message("offset", params_df)
-        warning(warn)
-        offset.params[[params_df["offset", "present"]]] <- offset
-    }  
-
-    if (!missing(offset_tiplab)) {
-        warn <- get_param_change_message("offset_tiplab", params_df)
-        warning(warn)
-        offset.params[[params_df["offset_tiplab", "present"]]] <- offset_tiplab
-    }  
-
-    if (!missing(extend)) {
-        warn <- get_param_change_message("extend", params_df)
-        warning(warn)
-        offset.params[[params_df["extend", "present"]]] <- extend
-    }  
-
-    if (!missing(hexpand)) {
-        warn <- get_param_change_message("hexpand", params_df)
-        warning(warn)
-        offset.params[[params_df["hexpand", "present"]]] <- hexpand
-    }  
-    offset <- offset.params[["bar_tree"]]
-    offset_tiplab <- offset.params[["tiplab"]]
-    extend <- offset.params[["extend"]]
-    hexpand <- offset.params[["hexpand"]]
-
-    # cluster.params
     default.cluster.params <- list(
         method = "ward.D",   
         n = 5,               
@@ -235,45 +182,61 @@ treeplot.enrichResult <- function(x,
         label_words_n = 4,   
         label_format = 30    
     )
-    cluster.params <- reset_params(defaultp=default.cluster.params, 
-                                   inputp=enquo(cluster.params))
+    # use modifyList to change the values of parameter 
+    hilight.params <- modifyList(default.hilight.params, hilight.params)
+    offset.params <- modifyList(default.offset.params, offset.params)
+    cluster.params <- modifyList(default.cluster.params, cluster.params)
+    params_list <- list(x = x,
+        showCategory = showCategory,
+        color = color,
+        nWords = nWords,                   
+        nCluster = nCluster,                 
+        cex_category = cex_category,
+        label_format = label_format, 
+        label_format_cladelab = label_format_cladelab,   
+        label_format_tiplab = label_format_tiplab, 
+        fontsize = fontsize, 
+        offset = offset,              
+        offset_tiplab = offset_tiplab,       
+        hclust_method = hclust_method,     
+        group_color = group_color,           
+        extend = extend,                 
+        hilight = hilight,               
+        hexpand = hexpand,                 
+        align = align,               
+        hilight.params = hilight.params,
+        offset.params = offset.params,
+        cluster.params = cluster.params
+    )
 
-                           
-    if (!missing(hclust_method)) {
-        warn <- get_param_change_message("hclust_method", params_df)
-        warning(warn)
-        cluster.params[[params_df["hclust_method", "present"]]] <- hclust_method
-    }  
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
 
-    if (!missing(nCluster)) {
-        warn <- get_param_change_message("nCluster", params_df)
-        warning(warn)
-        cluster.params[[params_df["nCluster", "present"]]] <- nCluster
-    }  
+    hilight.params <- params_list[["hilight.params"]]
+    offset.params <- params_list[["offset.params"]]
+    cluster.params <- params_list[["cluster.params"]]
 
-    if (!missing(group_color)) {
-        warn <- get_param_change_message("group_color", params_df)
-        warning(warn)
-        cluster.params[[params_df["group_color", "present"]]] <- group_color
-    }  
 
-    if (!missing(nWords)) {
-        warn <- get_param_change_message("nWords", params_df)
-        warning(warn)
-        cluster.params[[params_df["nWords", "present"]]] <- nWords
-    }  
-
-    if (!missing(label_format_cladelab)) {
-        warn <- get_param_change_message("label_format_cladelab", params_df)
-        warning(warn)
-        cluster.params[[params_df["label_format_cladelab", "present"]]] <- label_format_cladelab
-    }  
+    hilight <- hilight.params[["hilight"]]
+    align <- hilight.params[["align"]]
+    offset <- offset.params[["bar_tree"]]
+    offset_tiplab <- offset.params[["tiplab"]]
+    extend <- offset.params[["extend"]]
+    hexpand <- offset.params[["hexpand"]]
     hclust_method <- cluster.params[["method"]]
     nCluster <- cluster.params[["n"]]
     group_color <- cluster.params[["color"]]
     nWords <- cluster.params[["label_words_n"]]
-    label_format_cladelab <- cluster.params[["label_format"]]
-    ##############################################################
+    label_format_cladelab <- cluster.params[["label_format"]]    
+
 
     group <- p.adjust <- count<- NULL
     # to compatible with older versions
@@ -351,25 +314,25 @@ treeplot.enrichResult <- function(x,
 treeplot.compareClusterResult <-  function(x, 
                                       showCategory = 5,
                                       color = "p.adjust",
-                                      nWords,                     # removed
-                                      nCluster,                   # removed
+                                      nWords = 4,                     # removed
+                                      nCluster = 5,                   # removed
                                       cex_category = 1, 
                                       split = NULL,
                                       label_format = NULL, 
-                                      label_format_cladelab,     # removed
+                                      label_format_cladelab = 30,     # removed
                                       label_format_tiplab = NULL, 
                                       fontsize = 4, 
-                                      offset,                 # removed
-                                      pie,                   # removed
-                                      legend_n,                    # removed
-                                      offset_tiplab,          # removed
-                                      hclust_method,        # removed
-                                      group_color,              # removed
-                                      extend,                    # removed
-                                      hilight,                  # removed
-                                      geneClusterPanel,    # removed
-                                      hexpand,                    # removed
-                                      align,                  # removed
+                                      offset = rel(1),                 # removed
+                                      pie = "equal",                   # removed
+                                      legend_n = 3,                    # removed
+                                      offset_tiplab = rel(1),          # removed
+                                      hclust_method = "ward.D",        # removed
+                                      group_color = NULL,              # removed
+                                      extend = 0.3,                    # removed
+                                      hilight = TRUE,                  # removed
+                                      geneClusterPanel = "heatMap",    # removed
+                                      hexpand = .1,                    # removed
+                                      align = "both",                  # removed
                                       cluster.params = list(              
                                           method = "ward.D",     
                                           n = 5,                 
@@ -417,8 +380,6 @@ treeplot.compareClusterResult <-  function(x,
     colnames(params_df) <- c("original", "listname", "present")
     rownames(params_df) <- params_df$original
 
- 
-    # cluster.params
     default.cluster.params <- list(
         method = "ward.D",    
         n = 5,                
@@ -426,161 +387,90 @@ treeplot.compareClusterResult <-  function(x,
         label_words_n = 4,    
         label_format = 30     
     )
-    cluster.params <- reset_params(defaultp=default.cluster.params, 
-                                   inputp=enquo(cluster.params))
 
-                           
-    if (!missing(hclust_method)) {
-        warn <- get_param_change_message("hclust_method", params_df)
-        warning(warn)
-        cluster.params[[params_df["hclust_method", "present"]]] <- hclust_method
-    }  
-
-    if (!missing(nCluster)) {
-        warn <- get_param_change_message("nCluster", params_df)
-        warning(warn)
-        cluster.params[[params_df["nCluster", "present"]]] <- nCluster
-    }  
-
-    if (!missing(group_color)) {
-        warn <- get_param_change_message("group_color", params_df)
-        warning(warn)
-        cluster.params[[params_df["group_color", "present"]]] <- group_color
-    } 
-
-    if (!missing(nWords)) {
-        warn <- get_param_change_message("nWords", params_df)
-        warning(warn)
-        cluster.params[[params_df["nWords", "present"]]] <- nWords
-    } 
-
-    if (!missing(label_format_cladelab)) {
-        warn <- get_param_change_message("label_format_cladelab", params_df)
-        warning(warn)
-        cluster.params[[params_df["label_format_cladelab", "present"]]] <- label_format_cladelab
-    } 
-    hclust_method <- cluster.params[["method"]]
-    nCluster <- cluster.params[["n"]]
-    group_color <- cluster.params[["color"]]
-    nWords <- cluster.params[["label_words_n"]]
-    label_format_cladelab <- cluster.params[["label_format"]]
-
-    # hilight.params
     default.hilight.params <- list(
         hilight = TRUE,                       
         align = "both"            
     )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
-
-                           
-    if (!missing(hilight)) {
-        warn <- get_param_change_message("hilight", params_df)
-        warning(warn)
-        hilight.params[[params_df["hilight", "present"]]] <- hilight
-    }  
-
-    if (!missing(align)) {
-        warn <- get_param_change_message("align", params_df)
-        warning(warn)
-        hilight.params[[params_df["align", "present"]]] <- align
-    }   
-    hilight <- hilight.params[["hilight"]]
-    align <- hilight.params[["align"]]
-
-    # clusterPanel.params
+    
     default.clusterPanel.params <- list(
         clusterPanel = "heatMap", 
         pie = "equal",            
         legend_n = 3              
     )
-    clusterPanel.params <- reset_params(defaultp=default.clusterPanel.params, 
-                                   inputp=enquo(clusterPanel.params))
 
-                           
-    if (!missing(geneClusterPanel)) {
-        warn <- get_param_change_message("geneClusterPanel", params_df)
-        warning(warn)
-        clusterPanel.params[[params_df["geneClusterPanel", "present"]]] <- geneClusterPanel
-    }  
-
-    if (!missing(pie)) {
-        warn <- get_param_change_message("pie", params_df)
-        warning(warn)
-        clusterPanel.params[[params_df["pie", "present"]]] <- pie
-    }   
-
-    if (!missing(legend_n)) {
-        warn <- get_param_change_message("legend_n", params_df)
-        warning(warn)
-        clusterPanel.params[[params_df["legend_n", "present"]]] <- legend_n
-    }      
-    geneClusterPanel <- clusterPanel.params[["clusterPanel"]]
-    pie <- clusterPanel.params[["pie"]]
-    legend_n <- clusterPanel.params[["legend_n"]]
-
-    # hilight.params
-    default.hilight.params <- list(
-        hilight = TRUE,                       
-        align = "both"            
-    )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
-
-                           
-    if (!missing(hilight)) {
-        warn <- get_param_change_message("hilight", params_df)
-        warning(warn)
-        hilight.params[[params_df["hilight", "present"]]] <- hilight
-    }  
-
-    if (!missing(align)) {
-        warn <- get_param_change_message("align", params_df)
-        warning(warn)
-        hilight.params[[params_df["align", "present"]]] <- align
-    }   
-    hilight <- hilight.params[["hilight"]]
-    align <- hilight.params[["align"]]
-
-    # offset.params
     default.offset.params <- list(
         bar_tree = rel(1),  
         tiplab = rel(1),    
         extend = 0.3,       
         hexpand = .1        
     )
-    offset.params <- reset_params(defaultp=default.offset.params, 
-                                   inputp=enquo(offset.params))
+    # use modifyList to change the values of parameter 
+    cluster.params <- modifyList(default.cluster.params, cluster.params)   
+    hilight.params <- modifyList(default.hilight.params, hilight.params) 
+    clusterPanel.params <- modifyList(default.clusterPanel.params, clusterPanel.params) 
+    offset.params <- modifyList(default.offset.params, offset.params)  
+    params_list <- list(x = x,
+        showCategory = showCategory,
+        color = color,
+        nWords = nWords,                     
+        nCluster = nCluster,                   
+        cex_category = cex_category, 
+        split = split,
+        label_format = label_format, 
+        label_format_cladelab = label_format_cladelab,     
+        label_format_tiplab = label_format_tiplab, 
+        fontsize = fontsize, 
+        offset = offset,                
+        pie = pie,                  
+        legend_n = legend_n,                   
+        offset_tiplab = offset_tiplab,         
+        hclust_method = hclust_method,       
+        group_color = group_color,             
+        extend = extend,                   
+        hilight = hilight,                 
+        geneClusterPanel = geneClusterPanel,   
+        hexpand = hexpand,                   
+        align = align,                 
+        cluster.params = cluster.params,
+        hilight.params = hilight.params,                                      
+        clusterPanel.params = clusterPanel.params,
+        offset.params = offset.params
+    )     
 
-                           
-    if (!missing(offset)) {
-        warn <- get_param_change_message("offset", params_df)
-        warning(warn)
-        offset.params[[params_df["offset", "present"]]] <- offset
-    }  
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
 
-    if (!missing(offset_tiplab)) {
-        warn <- get_param_change_message("offset_tiplab", params_df)
-        warning(warn)
-        offset.params[[params_df["offset_tiplab", "present"]]] <- offset_tiplab
-    }   
 
-    if (!missing(extend)) {
-        warn <- get_param_change_message("extend", params_df)
-        warning(warn)
-        offset.params[[params_df["extend", "present"]]] <- extend
-    }   
+    cluster.params <- params_list[["cluster.params"]]  
+    hilight.params <- params_list[["hilight.params"]]
+    clusterPanel.params <- params_list[["clusterPanel.params"]]
+    offset.params <- params_list[["offset.params"]]
 
-    if (!missing(hexpand)) {
-        warn <- get_param_change_message("hexpand", params_df)
-        warning(warn)
-        offset.params[[params_df["hexpand", "present"]]] <- hexpand
-    }    
+    hclust_method <- cluster.params[["method"]]
+    nCluster <- cluster.params[["n"]]
+    group_color <- cluster.params[["color"]]
+    nWords <- cluster.params[["label_words_n"]]
+    label_format_cladelab <- cluster.params[["label_format"]]
+    hilight <- hilight.params[["hilight"]]
+    align <- hilight.params[["align"]]
+    geneClusterPanel <- clusterPanel.params[["clusterPanel"]]
+    pie <- clusterPanel.params[["pie"]]
+    legend_n <- clusterPanel.params[["legend_n"]]
+    hilight <- hilight.params[["hilight"]]
+    align <- hilight.params[["align"]]
     offset <- offset.params[["bar_tree"]]
     offset_tiplab <- offset.params[["tiplab"]]
     extend <- offset.params[["extend"]]
     hexpand <- offset.params[["hexpand"]]
-
 
     # geneClusterPanel <- match.arg(geneClusterPanel, c("heatMap", "dotplot", "pie"))                                  
     has_pairsim(x)

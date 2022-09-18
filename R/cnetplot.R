@@ -126,9 +126,6 @@ cnetplot.enrichResult <- function(x,
     label_size_gene <- 5
     node_label <- match.arg(node_label, c("category", "gene", "all", "none"))
     
-
-    # change parameter name
-    ##############################################################
     params_df <- as.data.frame(rbind(
         c("foldChange", "color.params", "foldChange"),
         c("colorEdge", "color.params", "edge"),
@@ -143,104 +140,77 @@ cnetplot.enrichResult <- function(x,
     colnames(params_df) <- c("original", "listname", "present")
     rownames(params_df) <- params_df$original
 
- 
-    # color.params
+
+    
     default.color.params <- list(
         foldChange = NULL,
         edge = FALSE,           
         category = "#E5C494",   
         gene = "#B3B3B3"        
     )
-    color.params <- reset_params(defaultp=default.color.params, 
-                                   inputp=enquo(color.params))
-    # get all parameters value
-    # args <- as.list(match.call())
-    # removed_params <- intersect(params_df$original, names(args))
-
-    # if (length(removed_params) > 0) {
-    #     for (param in removed_params) {
-    #         warn <- get_param_change_message(param, params_df)
-    #         warning(warn)
-    #         paramsList <- 
-    #     }
-    # }
-                           
-    if (!missing(foldChange)) {
-        warn <- get_param_change_message("foldChange", params_df)
-        warning(warn)
-        color.params[[params_df["foldChange", "present"]]] <- foldChange
-    }  
-
-    if (!missing(colorEdge)) {
-        warn <- get_param_change_message("colorEdge", params_df)
-        warning(warn)
-        color.params[[params_df["colorEdge", "present"]]] <- colorEdge
-    }  
-
-    if (!missing(color_category)) {
-        warn <- get_param_change_message("color_category", params_df)
-        warning(warn)
-        color.params[[params_df["color_category", "present"]]] <- color_category
-    }  
-
-    if (!missing(color_gene)) {
-        warn <- get_param_change_message("color_gene", params_df)
-        warning(warn)
-        color.params[[params_df["color_gene", "present"]]] <- color_gene
-    }  
-    foldChange <- color.params[["foldChange"]]                               
-    colorEdge <- color.params[["edge"]]
-    color_category <- color.params[["category"]]
-    color_gene <- color.params[["gene"]]
-
-
-    # cex.params
     default.cex.params <- list(
         category_node = 1,       
         gene_node = 1,                
         category_label = 1,      
         gene_label = 1        
     )
-    cex.params <- reset_params(defaultp=default.cex.params, 
-                                   inputp=enquo(cex.params))
-
-    if (!missing(cex_category)) {
-        warn <- get_param_change_message("cex_category", params_df)
-        warning(warn)
-        color.params[[params_df["cex_category", "present"]]] <- cex_category
-    }  
-
-    if (!missing(cex_gene)) {
-        warn <- get_param_change_message("cex_gene", params_df)
-        warning(warn)
-        color.params[[params_df["cex_gene", "present"]]] <- cex_gene
-    }  
-
-    if (!missing(cex_label_category)) {
-        warn <- get_param_change_message("cex_label_category", params_df)
-        warning(warn)
-        color.params[[params_df["cex_label_category", "present"]]] <- cex_label_category
-    } 
-
-    if (!missing(cex_label_gene)) {
-        warn <- get_param_change_message("cex_label_gene", params_df)
-        warning(warn)
-        color.params[[params_df["cex_label_gene", "present"]]] <- cex_label_gene
-    }  
-    cex_category <- cex.params[["category_node"]]
-    cex_gene <- cex.params[["gene_node"]]
-    cex_label_category <- cex.params[["category_label"]]
-    cex_label_gene <- cex.params[["gene_label"]]
-    ########################################################################################
-
-    # hilight.params
     default.hilight.params <- list(
         category = NULL,
         alpha_hilight = 1,
         alpha_no_hilight = 0.3
     )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
+
+    # use modifyList to change the values of parameter 
+    color.params <- modifyList(default.color.params, color.params)
+    cex.params <- modifyList(default.cex.params, cex.params)
+    hilight.params <- modifyList(default.hilight.params, hilight.params)
+    params_list <- list(x = x,
+            showCategory = showCategory,
+            foldChange = foldChange,
+            layout = layout,
+            colorEdge = colorEdge,
+            circular = circular,
+            node_label = node_label,
+            cex_category = cex_category,
+            cex_gene = cex_gene,
+            cex_label_category = cex_label_category,
+            cex_label_gene = cex_label_gene,
+            color_category = color_category,
+            color_gene = color_gene,
+            shadowtext = shadowtext,
+            color.params = color.params, 
+            cex.params = cex.params,
+            hilight.params = hilight.params
+    )
+
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
+
+    
+    color.params <- params_list[["color.params"]]
+    cex.params <- params_list[["cex.params"]]
+    hilight.params <- params_list[["hilight.params"]]
+ 
+    foldChange <- color.params[["foldChange"]]                               
+    colorEdge <- color.params[["edge"]]
+    color_category <- color.params[["category"]]
+    color_gene <- color.params[["gene"]]
+
+
+    cex_category <- cex.params[["category_node"]]
+    cex_gene <- cex.params[["gene_node"]]
+    cex_label_category <- cex.params[["category_label"]]
+    cex_label_gene <- cex.params[["gene_label"]]
+
+
     hilight_category <- hilight.params[["category"]]
     alpha_hilight <- hilight.params[["alpha_hilight"]]
     alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
@@ -338,13 +308,6 @@ cnetplot.enrichResult <- function(x,
         V(g)$color[1:n] <- color_category
         p <- ggraph(g, layout=layout, circular=circular)
         p$data[-(1:n), "size"] <- 3 * cex_gene
-        # alpha_node <- rep(1, nrow(p$data))
-        # if (!is.null(hilight_category)) {
-        #     alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-        #     hilight_node <- c(hilight_category, hilight_gene)
-        #     alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-        # }
-        # p$data$alpha <- alpha_node
         p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
         p <- p + edge_layer +
             geom_node_point(aes_(color=~I(color), size=~size, alpha=~I(alpha)))+
@@ -365,7 +328,7 @@ cnetplot.enrichResult <- function(x,
     } else if (node_label == "all") {
         p <- add_node_label(p = p, data = NULL,
             label_size_node = c(rep(label_size_category, n), rep(label_size_gene, nrow(p$data)-n)),
-            cex_label_node = c(rep(cex_label_category, n), rep(cex_label_gene,, nrow(p$data)-n)), 
+            cex_label_node = c(rep(cex_label_category, n), rep(cex_label_gene, nrow(p$data)-n)), 
             shadowtext = shadowtext_gene)
     }
     if (!is.null(foldChange)) {
@@ -397,7 +360,6 @@ cnetplot.compareClusterResult <- function(x,
                      showCategory = 5,
                      foldChange   = NULL,
                      layout = "kk",
-                     # colorEdge = FALSE,
                      circular = FALSE,
                      node_label = "all",
                      split=NULL,
@@ -452,48 +414,12 @@ cnetplot.compareClusterResult <- function(x,
     colnames(params_df) <- c("original", "listname", "present")
     rownames(params_df) <- params_df$original
 
- 
-    # pie.params
     default.pie.params <- list(
         pie = "equal",          
         legend_n = 5,             
         legend_loc_x = NULL,      
         legend_loc_y = NULL           
     )
-    pie.params <- reset_params(defaultp=default.pie.params, 
-                               inputp=enquo(pie.params))
-
-                           
-    if (!missing(pie)) {
-        warn <- get_param_change_message("pie", params_df)
-        warning(warn)
-        pie.params[[params_df["pie", "present"]]] <- pie
-    }  
-
-    if (!missing(legend_n)) {
-        warn <- get_param_change_message("legend_n", params_df)
-        warning(warn)
-        pie.params[[params_df["legend_n", "present"]]] <- legend_n
-    }  
-
-    if (!missing(x_loc)) {
-        warn <- get_param_change_message("x_loc", params_df)
-        warning(warn)
-        pie.params[[params_df["x_loc", "present"]]] <- x_loc
-    }  
-
-    if (!missing(y_loc)) {
-        warn <- get_param_change_message("y_loc", params_df)
-        warning(warn)
-        pie.params[[params_df["y_loc", "present"]]] <- y_loc
-    }  
-    pie <- pie.params[["pie"]]
-    legend_n <- pie.params[["legend_n"]]
-    x_loc <- pie.params[["legend_loc_x"]]
-    y_loc <- pie.params[["legend_loc_y"]]
-
-
-    # cex.params
     default.cex.params <- list(
         foldChange = NULL,     
         category_node = 1,      
@@ -501,39 +427,58 @@ cnetplot.compareClusterResult <- function(x,
         category_label = 1,     
         gene_label = 1               
     )
-    cex.params <- reset_params(defaultp=default.cex.params, 
-                               inputp=enquo(cex.params))
+    default.hilight.params <- list(
+        category = NULL,
+        alpha_hilight = 1,
+        alpha_no_hilight = 0.3
+    )
 
-                           
-    if (!missing(foldChange)) {
-        warn <- get_param_change_message("foldChange", params_df)
-        warning(warn)
-        cex.params[[params_df["foldChange", "present"]]] <- foldChange
-    }  
+    # use modifyList to change the values of parameter 
+    pie.params <- modifyList(default.pie.params, pie.params)
+    cex.params <- modifyList(default.cex.params, cex.params)
+    hilight.params <- modifyList(default.hilight.params, hilight.params)
 
-    if (!missing(cex_category)) {
-        warn <- get_param_change_message("cex_category", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_category", "present"]]] <- cex_category
-    }  
+    params_list <- list(x = x,
+        showCategory = showCategory,
+        foldChange = foldChange,
+        layout = layout,
+        circular = circular,
+        node_label = node_label ,
+        split = split,
+        pie = pie,
+        cex_category = cex_category,
+        cex_gene = cex_gene,
+        legend_n = legend_n,
+        x_loc = x_loc,
+        y_loc = y_loc,
+        cex_label_category = cex_label_category,
+        cex_label_gene = cex_label_gene,
+        shadowtext = shadowtext,
+        pie.params = pie.params,
+        cex.params = cex.params,
+        hilight.params = hilight.params  
+    )
 
-    if (!missing(cex_gene)) {
-        warn <- get_param_change_message("cex_gene", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_gene", "present"]]] <- cex_gene
-    }  
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
 
-    if (!missing(cex_label_category)) {
-        warn <- get_param_change_message("cex_label_category", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_label_category", "present"]]] <- cex_label_category
-    }  
+    pie.params <- params_list[["pie.params"]]
+    cex.params <- params_list[["cex.params"]]
+    hilight.params <- params_list[["hilight.params"]]
 
-    if (!missing(cex_label_gene)) {
-        warn <- get_param_change_message("cex_label_gene", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_label_gene", "present"]]] <- cex_label_gene
-    }      
+    pie <- pie.params[["pie"]]
+    legend_n <- pie.params[["legend_n"]]
+    x_loc <- pie.params[["legend_loc_x"]]
+    y_loc <- pie.params[["legend_loc_y"]]
+
 
     foldChange <- cex.params[["foldChange"]]
     cex_category <- cex.params[["category_node"]]
@@ -542,13 +487,13 @@ cnetplot.compareClusterResult <- function(x,
     cex_label_gene <- cex.params[["gene_label"]]
 
 
-    default.hilight.params <- list(
-        category = NULL,
-        alpha_hilight = 1,
-        alpha_no_hilight = 0.3
-    )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
+    # default.hilight.params <- list(
+    #     category = NULL,
+    #     alpha_hilight = 1,
+    #     alpha_no_hilight = 0.3
+    # )
+    # hilight.params <- reset_params(defaultp=default.hilight.params, 
+    #                                inputp=enquo(hilight.params))
     hilight_category <- hilight.params[["category"]]
     alpha_hilight <- hilight.params[["alpha_hilight"]]
     alpha_nohilight <- hilight.params[["alpha_no_hilight"]]

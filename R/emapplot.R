@@ -162,25 +162,25 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @author Guangchuang Yu
 emapplot.enrichResult <- function(x, 
                                   showCategory = 30, 
-                                  layout,                    # removed
-                                  coords,                    # removed
+                                  layout = NULL,                    # removed
+                                  coords = NULL,                    # removed
                                   color = "p.adjust",     
-                                  min_edge,                  # removed
-                                  cex_label_category,        # removed
-                                  cex_category,              # removed
-                                  cex_line,                  # removed
+                                  min_edge = 0.2,                  # removed
+                                  cex_label_category  = 1,        # removed
+                                  cex_category = 1,              # removed
+                                  cex_line = 1,                  # removed
                                   shadowtext = TRUE,      
-                                  label_style,               # removed
-                                  repel,                     # removed       
+                                  label_style = "shadowtext",               # removed
+                                  repel = FALSE,                     # removed       
                                   node_label  = "category",     
-                                  with_edge,                 # removed
-                                  group_category,            # removed
-                                  group_legend,              # removed                      
-                                  cex_label_group,           # removed
-                                  nWords,                    # removed
-                                  label_format,              # removed
-                                  clusterFunction,           # removed
-                                  nCluster,                  # removed
+                                  with_edge = TRUE,                 # removed
+                                  group_category = FALSE,            # removed
+                                  group_legend = FALSE,              # removed                      
+                                  cex_label_group = 1,           # removed
+                                  nWords = 4,                    # removed
+                                  label_format = 30,              # removed
+                                  clusterFunction = stats::kmeans,           # removed
+                                  nCluster = NULL,                  # removed
                                   layout.params = list(
                                       layout = NULL, 
                                       coords = NULL             
@@ -239,84 +239,22 @@ emapplot.enrichResult <- function(x,
     rownames(params_df) <- params_df$original
 
  
-    # layout.params
     default.layout.params <- list(
         layout = NULL,                       
         coords = NULL            
     )
-    layout.params <- reset_params(defaultp=default.layout.params, 
-                                   inputp=enquo(layout.params))
 
-                           
-    if (!missing(layout)) {
-        warn <- get_param_change_message("layout", params_df)
-        warning(warn)
-        layout.params[[params_df["layout", "present"]]] <- layout
-    }  
-
-    if (!missing(coords)) {
-        warn <- get_param_change_message("coords", params_df)
-        warning(warn)
-        layout.params[[params_df["coords", "present"]]] <- coords
-    }  
-    layout <- layout.params[["layout"]]
-    coords <- layout.params[["coords"]]
-
-
-    # edge.params
     default.edge.params <- list(
         show = TRUE,                  
         min = 0.2                             
     )
-    edge.params <- reset_params(defaultp=default.edge.params, 
-                                   inputp=enquo(edge.params))
 
-    if (!missing(with_edge)) {
-        warn <- get_param_change_message("with_edge", params_df)
-        warning(warn)
-        edge.params[[params_df["with_edge", "present"]]] <- with_edge
-    }  
-
-    if (!missing(min_edge)) {
-        warn <- get_param_change_message("min_edge", params_df)
-        warning(warn)
-        edge.params[[params_df["min_edge", "present"]]] <- min_edge
-    }  
-
-    with_edge <- edge.params[["show"]]
-    min_edge <- edge.params[["min"]]
-
-    # cex.params
     default.cex.params <- list(
         category_node = 1,          
         category_label = 1,         
         line = 1                                       
     )
-    cex.params <- reset_params(defaultp=default.cex.params, 
-                                   inputp=enquo(cex.params))
 
-    if (!missing(cex_category)) {
-        warn <- get_param_change_message("cex_category", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_category", "present"]]] <- cex_category
-    }  
-
-    if (!missing(cex_label_category)) {
-        warn <- get_param_change_message("cex_label_category", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_label_category", "present"]]] <- cex_label_category
-    }
-
-    if (!missing(cex_line)) {
-        warn <- get_param_change_message("cex_line", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_line", "present"]]] <- cex_line
-    }   
-    cex_category <- cex.params[["category_node"]]
-    cex_label_category <- cex.params[["category_label"]]
-    cex_line <- cex.params[["line"]]
-
-    # cluster.params
     default.cluster.params <- list(
         cluster = FALSE,            
         method = stats::kmeans,     
@@ -326,51 +264,68 @@ emapplot.enrichResult <- function(x,
         label_words_n = 4,          
         label_format = 30                          
     )
-    cluster.params <- reset_params(defaultp=default.cluster.params, 
-                                   inputp=enquo(cluster.params))
 
-    if (!missing(group_category)) {
-        warn <- get_param_change_message("group_category", params_df)
-        warning(warn)
-        cluster.params[[params_df["group_category", "present"]]] <- group_category
-    } 
+    default.hilight.params <- list(
+        category = NULL,
+        alpha_hilight = 1,
+        alpha_no_hilight = 0.3
+    )
+    layout.params <- modifyList(default.layout.params, layout.params)
+    edge.params <- modifyList(default.edge.params, edge.params)
+    cex.params <- modifyList(default.cex.params, cex.params)
+    cluster.params <- modifyList(default.cluster.params, cluster.params)
+    hilight.params <- modifyList(default.hilight.params, hilight.params)
+    params_list <- list(x = x,
+        showCategory = showCategory, 
+        layout = layout,                    
+        coords = coords,                    
+        color = color,     
+        min_edge = min_edge,                  
+        cex_label_category = cex_label_category,        
+        cex_category = cex_category,              
+        cex_line = cex_line,                  
+        shadowtext = shadowtext,      
+        label_style = label_style,               
+        repel = repel,                            
+        node_label  = node_label,     
+        with_edge = with_edge,                 
+        group_category = group_category,            
+        group_legend = group_legend,                                    
+        cex_label_group = cex_label_group,           
+        nWords = nWords,                    
+        label_format = label_format,              
+        clusterFunction = clusterFunction,           
+        nCluster = nCluster,                  
+        layout.params = layout.params,                    
+        edge.params = edge.params,
+        cex.params = cex.params,
+        hilight.params = hilight.params,  
+        cluster.params = cluster.params
+    )
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
 
-    if (!missing(clusterFunction)) {
-        warn <- get_param_change_message("clusterFunction", params_df)
-        warning(warn)
-        cluster.params[[params_df["clusterFunction", "present"]]] <- clusterFunction
-    }  
+    layout.params <- params_list[["layout.params"]]
+    edge.params <- params_list[["edge.params"]]
+    cex.params <- params_list[["cex.params"]]
+    cluster.params <- params_list[["cluster.params"]]
+    hilight.params <- params_list[["hilight.params"]]
 
-    if (!missing(nCluster)) {
-        warn <- get_param_change_message("nCluster", params_df)
-        warning(warn)
-        cluster.params[[params_df["nCluster", "present"]]] <- nCluster
-    }  
-
-    if (!missing(group_legend)) {
-        warn <- get_param_change_message("group_legend", params_df)
-        warning(warn)
-        cluster.params[[params_df["group_legend", "present"]]] <- group_legend
-    }  
-
-    if (!missing(label_style)) {
-        warn <- get_param_change_message("label_style", params_df)
-        warning(warn)
-        cluster.params[[params_df["label_style", "present"]]] <- label_style
-    }  
-
-    if (!missing(nWords)) {
-        warn <- get_param_change_message("nWords", params_df)
-        warning(warn)
-        cluster.params[[params_df["nWords", "present"]]] <- nWords
-    }  
-
-    if (!missing(label_format)) {
-        warn <- get_param_change_message("label_format", params_df)
-        warning(warn)
-        cluster.params[[params_df["label_format", "present"]]] <- label_format
-    }    
-
+    layout <- layout.params[["layout"]]
+    coords <- layout.params[["coords"]]
+    with_edge <- edge.params[["show"]]
+    min_edge <- edge.params[["min"]]
+    cex_category <- cex.params[["category_node"]]
+    cex_label_category <- cex.params[["category_label"]]
+    cex_line <- cex.params[["line"]]
     group_category <- cluster.params[["cluster"]]
     clusterFunction <- cluster.params[["method"]]
     nCluster <- cluster.params[["n"]]
@@ -378,19 +333,10 @@ emapplot.enrichResult <- function(x,
     label_style <- cluster.params[["label_style"]]
     nWords <- cluster.params[["label_words_n"]]
     label_format <- cluster.params[["label_format"]]
-
-    ##########################################################
-
-    default.hilight.params <- list(
-        category = NULL,
-        alpha_hilight = 1,
-        alpha_no_hilight = 0.3
-    )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
     hilight_category <- hilight.params[["category"]]
     alpha_hilight <- hilight.params[["alpha_hilight"]]
     alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
+
     n <- update_n(x, showCategory)
     y <- as.data.frame(x)
     ## get graph.data.frame() object
@@ -502,28 +448,28 @@ emapplot.enrichResult <- function(x,
 ##' @importFrom stats setNames
 emapplot.compareClusterResult <- function(x, 
                                           showCategory = 30,
-                                          layout,                   # removed
-                                          coords,                   # removed
+                                          layout = NULL,                   # removed
+                                          coords = NULL,                   # removed
                                           split = NULL,      
-                                          pie,                   # removed
-                                          legend_n,                    # removed
-                                          cex_category,                # removed
-                                          cex_line,                    # removed
-                                          min_edge,                    # removed
-                                          cex_label_category,         # removed
-                                          shadowtext,      
-                                          with_edge,                # removed
-                                          group_category,          # removed
-                                          label_format,               # removed
-                                          group_legend,            # removed
+                                          pie = "equal",                   # removed
+                                          legend_n = 5,                    # removed
+                                          cex_category = 1,                # removed
+                                          cex_line = 1,                    # removed
+                                          min_edge = 0.2,                    # removed
+                                          cex_label_category = 1,         # removed
+                                          shadowtext = TRUE,      
+                                          with_edge = TRUE,                # removed
+                                          group_category = FALSE,          # removed
+                                          label_format = 30,               # removed
+                                          group_legend = FALSE,            # removed
                                           node_label  = "category",      
-                                          label_style,      # removed
+                                          label_style = "shadowtext",      # removed
                                           repel = FALSE,      
-                                          cex_label_group,             # removed
-                                          nWords,                      # removed
-                                          clusterFunction, # removed
-                                          nCluster,                 # removed
-                                          cex_pie2axis,                # removed
+                                          cex_label_group = 1,             # removed
+                                          nWords = 4,                      # removed
+                                          clusterFunction = stats::kmeans, # removed
+                                          nCluster = NULL,                 # removed
+                                          cex_pie2axis = 1,                # removed
 
                                           pie.params = list(
                                               pie = "equal",             
@@ -573,9 +519,9 @@ emapplot.compareClusterResult <- function(x,
         c("layout", "layout.params", "layout"),
         c("coords", "layout.params", "coords"),
 
-        c("min_edge", "edge.params", "show"),
-        c("with_edge", "edge.params", "min"),
-
+        c("with_edge", "edge.params", "show"),
+        c("min_edge", "edge.params", "min"),
+        
         c("group_category", "cluster.params", "cluster"),
         c("clusterFunction", "cluster.params", "method"),
         c("nCluster", "cluster.params", "n"),
@@ -593,81 +539,18 @@ emapplot.compareClusterResult <- function(x,
     colnames(params_df) <- c("original", "listname", "present")
     rownames(params_df) <- params_df$original
 
- 
-    # pie.params
     default.pie.params <- list(
         pie = "equal",          
         legend_n = 5                
     )
-    pie.params <- reset_params(defaultp=default.pie.params, 
-                               inputp=enquo(pie.params))
-
-                           
-    if (!missing(pie)) {
-        warn <- get_param_change_message("pie", params_df)
-        warning(warn)
-        pie.params[[params_df["pie", "present"]]] <- pie
-    }  
-
-    if (!missing(legend_n)) {
-        warn <- get_param_change_message("legend_n", params_df)
-        warning(warn)
-        pie.params[[params_df["legend_n", "present"]]] <- legend_n
-    }  
-
-    pie <- pie.params[["pie"]]
-    legend_n <- pie.params[["legend_n"]]
-
-
-    # layout.params
     default.layout.params <- list(
         layout = NULL,                       
         coords = NULL                  
     )
-    layout.params <- reset_params(defaultp=default.layout.params, 
-                               inputp=enquo(layout.params))
-
-                           
-    if (!missing(layout)) {
-        warn <- get_param_change_message("layout", params_df)
-        warning(warn)
-        layout.params[[params_df["layout", "present"]]] <- layout
-    }  
-
-    if (!missing(coords)) {
-        warn <- get_param_change_message("coords", params_df)
-        warning(warn)
-        layout.params[[params_df["coords", "present"]]] <- coords
-    }  
-
-    layout <- layout.params[["layout"]]
-    coords <- layout.params[["coords"]]
-
-    # edge.params
     default.edge.params <- list(
         show = TRUE,                 
         min = 0.2                       
     )
-    edge.params <- reset_params(defaultp=default.edge.params, 
-                               inputp=enquo(edge.params))
-
-                           
-    if (!missing(with_edge)) {
-        warn <- get_param_change_message("with_edge", params_df)
-        warning(warn)
-        edge.params[[params_df["with_edge", "present"]]] <- with_edge
-    }  
-
-    if (!missing(min_edge)) {
-        warn <- get_param_change_message("min_edge", params_df)
-        warning(warn)
-        edge.params[[params_df["min_edge", "present"]]] <- min_edge
-    }  
-
-    with_edge <- edge.params[["show"]]
-    min_edge <- edge.params[["min"]]
-
-    # cluster.params
     default.cluster.params <- list(
         cluster = FALSE,          
         method = stats::kmeans,   
@@ -677,60 +560,6 @@ emapplot.compareClusterResult <- function(x,
         label_words_n = 4,        
         label_format = 30                     
     )
-    cluster.params <- reset_params(defaultp=default.cluster.params, 
-                               inputp=enquo(cluster.params))
-
-                           
-    if (!missing(group_category)) {
-        warn <- get_param_change_message("group_category", params_df)
-        warning(warn)
-        cluster.params[[params_df["group_category", "present"]]] <- group_category
-    }  
-
-    if (!missing(clusterFunction)) {
-        warn <- get_param_change_message("clusterFunction", params_df)
-        warning(warn)
-        cluster.params[[params_df["clusterFunction", "present"]]] <- clusterFunction
-    }  
-
-    if (!missing(nCluster)) {
-        warn <- get_param_change_message("nCluster", params_df)
-        warning(warn)
-        cluster.params[[params_df["nCluster", "present"]]] <- nCluster
-    }  
-
-    if (!missing(label_style)) {
-        warn <- get_param_change_message("label_style", params_df)
-        warning(warn)
-        cluster.params[[params_df["label_style", "present"]]] <- label_style
-    }  
-
-    if (!missing(group_legend)) {
-        warn <- get_param_change_message("group_legend", params_df)
-        warning(warn)
-        cluster.params[[params_df["group_legend", "present"]]] <- group_legend
-    }  
-
-    if (!missing(nWords)) {
-        warn <- get_param_change_message("nWords", params_df)
-        warning(warn)
-        cluster.params[[params_df["nWords", "present"]]] <- nWords
-    }  
-
-    if (!missing(label_format)) {
-        warn <- get_param_change_message("label_format", params_df)
-        warning(warn)
-        cluster.params[[params_df["label_format", "present"]]] <- label_format
-    }  
-    group_category <- cluster.params[["cluster"]]
-    clusterFunction <- cluster.params[["method"]]
-    nCluster <- cluster.params[["n"]]
-    label_style <- cluster.params[["legend"]]
-    group_legend <- cluster.params[["label_style"]]
-    nWords <- cluster.params[["label_words_n"]]
-    label_format <- cluster.params[["label_format"]]
-
-    # cex.params
     default.cex.params <- list(
         category_node = 1,                 
         category_label = 1,           
@@ -738,59 +567,91 @@ emapplot.compareClusterResult <- function(x,
         pie2axis = 1,                 
         label_group = 1                        
     )
-    cex.params <- reset_params(defaultp=default.cex.params, 
-                               inputp=enquo(cex.params))
-
-                           
-    if (!missing(cex_category)) {
-        warn <- get_param_change_message("cex_category", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_category", "present"]]] <- cex_category
-    }  
-
-    if (!missing(cex_label_category)) {
-        warn <- get_param_change_message("cex_label_category", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_label_category", "present"]]] <- cex_label_category
-    }  
-
-    if (!missing(cex_line)) {
-        warn <- get_param_change_message("cex_line", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_line", "present"]]] <- cex_line
-    }  
-
-    if (!missing(cex_pie2axis)) {
-        warn <- get_param_change_message("cex_pie2axis", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_pie2axis", "present"]]] <- cex_pie2axis
-    }  
-
-    if (!missing(cex_label_group)) {
-        warn <- get_param_change_message("cex_label_group", params_df)
-        warning(warn)
-        cex.params[[params_df["cex_label_group", "present"]]] <- cex_label_group
-    }  
-
-
-    cex_category <- cex.params[["category_node"]]
-    cex_label_category <- cex.params[["category_label"]]
-    cex_line <- cex.params[["line"]]
-    cex_pie2axis <- cex.params[["pie2axis"]]
-    cex_label_group <- cex.params[["label_group"]]
-
-
-
     default.hilight.params <- list(
         category = NULL,
         alpha_hilight = 1,
         alpha_no_hilight = 0.3
     )
-    hilight.params <- reset_params(defaultp=default.hilight.params, 
-                                   inputp=enquo(hilight.params))
+    # use modifyList to change the values of parameter 
+    pie.params <- modifyList(default.pie.params, pie.params)
+    layout.params <- modifyList(default.layout.params, layout.params)
+    edge.params <- modifyList(default.edge.params, edge.params)
+    cluster.params <- modifyList(default.cluster.params, cluster.params)
+    cex.params <- modifyList(default.cex.params, cex.params)
+    hilight.params <- modifyList(default.hilight.params, hilight.params)
+    params_list <- list(x = x,
+        showCategory = showCategory,
+        layout = layout,                   
+        coords = coords,                   
+        split = split,      
+        pie = pie,                   
+        legend_n = legend_n,                    
+        cex_category = cex_category,                
+        cex_line = cex_line,                    
+        min_edge = min_edge,                    
+        cex_label_category = cex_label_category,         
+        shadowtext = shadowtext,      
+        with_edge = with_edge,                
+        group_category = group_category,          
+        label_format = label_format,               
+        group_legend = group_legend,            
+        node_label  = node_label,      
+        label_style = label_style,      
+        repel = repel,      
+        cex_label_group = cex_label_group,             
+        nWords = nWords,                      
+        clusterFunction = clusterFunction, 
+        nCluster = nCluster,                 
+        cex_pie2axis = cex_pie2axis,                
+        pie.params = pie.params,    
+        layout.params = layout.params,
+        edge.params = edge.params,
+        cluster.params = cluster.params,
+        cex.params = cex.params,
+        hilight.params = hilight.params
+    )
+
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
+
+    pie.params <- params_list[["pie.params"]]
+    layout.params <- params_list[["layout.params"]]
+    edge.params <- params_list[["edge.params"]]
+    cluster.params <- params_list[["cluster.params"]]
+    cex.params <- params_list[["cex.params"]]
+    hilight.params <- params_list[["hilight.params"]]
+
+    
+    pie <- pie.params[["pie"]]
+    legend_n <- pie.params[["legend_n"]]
+    layout <- layout.params[["layout"]]
+    coords <- layout.params[["coords"]]
+    with_edge <- edge.params[["show"]]
+    min_edge <- edge.params[["min"]]
+    group_category <- cluster.params[["cluster"]]
+    clusterFunction <- cluster.params[["method"]]
+    nCluster <- cluster.params[["n"]]
+    label_style <- cluster.params[["legend"]]
+    group_legend <- cluster.params[["label_style"]]
+    nWords <- cluster.params[["label_words_n"]]
+    label_format <- cluster.params[["label_format"]]
+    cex_category <- cex.params[["category_node"]]
+    cex_label_category <- cex.params[["category_label"]]
+    cex_line <- cex.params[["line"]]
+    cex_pie2axis <- cex.params[["pie2axis"]]
+    cex_label_group <- cex.params[["label_group"]]
     hilight_category <- hilight.params[["category"]]
     alpha_hilight <- hilight.params[["alpha_hilight"]]
-    alpha_nohilight <- hilight.params[["alpha_no_hilight"]]
+    alpha_nohilight <- hilight.params[["alpha_no_hilight"]]        
+ 
     # y <- get_selected_category(showCategory, x, split)
     y <- fortify(x, showCategory = showCategory,
                  includeAll = TRUE, split = split)
