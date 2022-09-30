@@ -75,7 +75,7 @@ treeplot.enrichResult <- function(x, showCategory = 30,
                                   group_color = NULL, 
                                   extend = 0.3, hilight = TRUE, 
                                   hexpand = .1, align = "both", ...) {
-    group <- p.adjust <- count<- NULL
+    group <- p.adjust <- count <- NULL
     # to compatible with older versions
     if (!is.null(label_format)) {
         label_format_cladelab <- label_format
@@ -114,7 +114,8 @@ treeplot.enrichResult <- function(x, showCategory = 30,
         nWords = nWords, label_format_cladelab = label_format_cladelab, 
         label_format_tiplab = label_format_tiplab, offset = offset, 
         fontsize = fontsize, group_color = group_color, extend = extend, 
-        hilight = hilight, cex_category = cex_category, align = align, align_tiplab = FALSE)     
+        hilight = hilight, cex_category = cex_category, align = align, align_tiplab = FALSE,
+        color = color)     
     # xlim <-  c(0, xlim * 3 * max(p$data$x))
     # p + coord_cartesian(xlim = xlim) +
     #   p + ggnewscale::new_scale_colour() +
@@ -181,7 +182,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
         fontsize = fontsize, group_color = group_color, extend = extend, 
         hilight = hilight, cex_category = cex_category, ID_Cluster_mat = ID_Cluster_mat,
         geneClusterPanel = geneClusterPanel, align = align, add_tippoint = FALSE,
-        align_tiplab = TRUE)
+        align_tiplab = TRUE, color = color)
 
      
     p_data <- as.data.frame(p$data)
@@ -339,8 +340,8 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
                        offset, fontsize, group_color, 
                        extend, hilight, cex_category, 
                        ID_Cluster_mat = NULL, geneClusterPanel = NULL,
-                       align, add_tippoint = TRUE, align_tiplab = TRUE) {
-    group <- color <- count <- NULL
+                       align, add_tippoint = TRUE, align_tiplab = TRUE, color) {
+    group <- count <- NULL
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
     grp <- apply(table(dat), 2, function(x) names(x[x == 1]))  
