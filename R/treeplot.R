@@ -239,7 +239,7 @@ treeplot.compareClusterResult <-  function(x, showCategory = 5,
             ggtreeExtra::geom_fruit(data = dotdata, geom = geom_point,
                        mapping = aes_string(x = "Cluster", y = "Description", 
                                      size = "Count", color = color),
-                       pwidth = 0.5,
+                       pwidth = 0.5, offset = -0.2,
                        axis.params = list(axis = "x", text.size = 3, line.alpha = 0)) +
             scale_colour_continuous(low="red", high="blue", 
                                   guide=guide_colorbar(reverse=TRUE),
@@ -345,30 +345,30 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
     # cluster data
     dat <- data.frame(name = names(clus), cls=paste0("cluster_", as.numeric(clus)))
     grp <- apply(table(dat), 2, function(x) names(x[x == 1]))  
-    p <- ggtree(hc, branch.length = "none", show.legend=FALSE)
+    p <- ggtree(hc, hang=-1, branch.length = "none", show.legend=FALSE)
     # extract the most recent common ancestor
     noids <- lapply(grp, function(x) unlist(lapply(x, function(i) ggtree::nodeid(p, i))))
     roots <- unlist(lapply(noids, function(x) ggtree::MRCA(p, x)))
     # cluster data
     p <- ggtree::groupOTU(p, grp, "group") + aes_(color =~ group)
-
+    rangeX <- max(p$data$x, na.rm=TRUE) - min(p$data$x, na.rm=TRUE)
     if (inherits(offset_tiplab, "rel")) {
         offset_tiplab <- unclass(offset_tiplab)
         if (geneClusterPanel == "pie" || is.null(geneClusterPanel)) {
         ## 1.5 * max(radius_of_pie)
-        offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
+            offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
         }  else if (geneClusterPanel == "heatMap") {
             ## Close to the width of the tree
-            offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * max(p$data$x)
+            offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * rangeX
         } else if (geneClusterPanel == "dotplot") {
             ## Close to the width of the tree
-            offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * max(p$data$x)
+            offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * rangeX
         }
     }
 
     if (inherits(offset, "rel")) {
         offset <- unclass(offset)
-        offset <- offset * (max(p$data$x) * 1.2 + offset_tiplab) 
+        offset <- offset * rangeX * 1.2 + offset_tiplab 
     }
     # max_nchar <- max(nchar(p$data$label), na.rm = TRUE)
        

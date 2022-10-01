@@ -1,6 +1,7 @@
 
 # enrichplot 1.17.2.991
 
++ align the dots in `treeplot()` (2022-10-1, Sat)
 + fix a bug in color legend of `treeplot()` (2022-10-1, Sat)
 + `autofacet` to automatically split `barplot` and `dotplot` into several facets (2022-09-06, Tue)
 + `dotplot` method for `enrichResultList` object 
