@@ -10,6 +10,7 @@ Depends: R (>= 3.5.0)
 Imports:
     aplot (>= 0.1.4),
     DOSE (>= 3.16.0),
+    ggnewscale,
     ggplot2,
     ggraph,
     graphics,
@@ -46,7 +47,6 @@ Suggests:
     ggridges,
     grDevices,
     gridExtra,
-    ggnewscale,
     ggrepel (>= 0.9.0),
     ggstar,
     treeio,
