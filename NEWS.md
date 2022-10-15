@@ -1,8 +1,11 @@
 
-# enrichplot 1.17.2.991
+# enrichplot 1.17.3
 
 + align the dots in `treeplot()` (2022-10-1, Sat)
 + fix a bug in color legend of `treeplot()` (2022-10-1, Sat)
+
+# enrichplot 1.17.2
+
 + `autofacet` to automatically split `barplot` and `dotplot` into several facets (2022-09-06, Tue)
 + `dotplot` method for `enrichResultList` object 
 + `gsearank()` can export result as a table when `output = "table"` (2022-08-29, Mon, #184)

@@ -53,6 +53,8 @@ setMethod("cnetplot", signature(x = "compareClusterResult"),
 ##' one of 'category', 'gene', 'all' and 'none', default is 'all'.
 ##' @importFrom ggraph geom_edge_arc
 ##' @importFrom ggplot2 scale_colour_gradient2
+##' @importFrom ggnewscale new_scale_color
+##' @importFrom ggnewscale new_scale
 ##' @author Guangchuang Yu
 cnetplot.enrichResult <- function(x,
                      showCategory = 5,
