@@ -1,3 +1,6 @@
+# enrichplot 1.17.2.991
+
++ rename parameters of `emapplot()`, `centplot()` and  `treeplot()` (2022-09-11, Sun)
 
 # enrichplot 1.17.3
 
@@ -8,6 +11,8 @@
 
 + `autofacet` to automatically split `barplot` and `dotplot` into several facets (2022-09-06, Tue)
 + `dotplot` method for `enrichResultList` object 
++ add parameters `hilight_category`, `alpha_hilight`, `alpha_nohilight` for `cnetplot()` and `emapplot` (2022-09-4, Sun)
++ change round digits of cnetplot scatterpie legend to 1 (2022_8_29, Mon).
 + `gsearank()` can export result as a table when `output = "table"` (2022-08-29, Mon, #184)
 + fix a bug in `fc_readable()` (2022-08-29, Mon, #189)
 + allows passing `color="NES"` to `dotplot()` for `gseaResult` object (2022-08-29, Mon, #14)

@@ -1,58 +1,103 @@
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "enrichResult"),
-    function(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...) {
-        treeplot.enrichResult(x, showCategory = showCategory,
-            color = color, label_format = label_format, ...)
+    function(x, ...) {
+        treeplot.enrichResult(x, ...)
     })
 
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "gseaResult"),
-    function(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...) {
-        treeplot.enrichResult(x, showCategory = showCategory,
-            color = color, label_format = label_format, ...)
+    function(x, ...) {
+        treeplot.enrichResult(x, ...)
     })
 
 ##' @rdname treeplot
 ##' @exportMethod treeplot
 setMethod("treeplot", signature(x = "compareClusterResult"),
-    function(x, showCategory = 5, color = "p.adjust", label_format = NULL, ...) {
-        treeplot.compareClusterResult(x, showCategory = showCategory,
-            color = color, label_format = label_format, ...)
+    function(x, ...) {
+        treeplot.compareClusterResult(x, ...)
     })
 
 
 
 ##' @rdname treeplot
 ##' @param nWords The number of words in the cluster tags.
+##' Will be removed in the next version.
 ##' @param nCluster The number of clusters, the default value is 5.
+##' Will be removed in the next version.
 ##' @param cex_category Number indicating the amount by which plotting category.
 ##' nodes should be scaled relative to the default.
+##' Will be removed in the next version.
 ##' @param label_format_cladelab label_format for group labels, a numeric value sets wrap length, 
 ##' alternatively a custom function to format axis labels.
+##' Will be removed in the next version.
 ##' @param label_format_tiplab label_format for tiplabs, a numeric value sets wrap length, 
 ##' alternatively a custom function to format axis labels.
-## ' @param xlim Limits for the x axes, the default value is 1. If the picture is not 
-##' displayed completely, the user can increase this value.
+##' Will be removed in the next version.
 ##' @param offset_tiplab tiplab offset, rel object or numeric value, the bigger the number, 
 ##' the farther the distance between the node and the branch. 
 ##' The default is rel(1), when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
 ##' when geneClusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
 ##' when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.
+##' Will be removed in the next version.
 ##' @param offset rel object or numeric value, distance bar and tree,
 ##' offset of bar and text from the clade, default is rel(1),
 ##' meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
 ##' (1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).
+##' Will be removed in the next version.
 ##' @param fontsize The size of text, default is 4.
 ##' @param hclust_method Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
 ##' "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
+##' Will be removed in the next version.
 ##' @param group_color A vector of group colors, the length of the vector should be the same as nCluster.
+##' Will be removed in the next version.
 ##' @param extend Numeric, extend the length of bar, default is 0.3.
+##' Will be removed in the next version.
 ##' @param hilight Logical value, if TRUE(default), add ggtree::geom_hilight() layer.
+##' Will be removed in the next version.
 ##' @param hexpand expand x limits by amount of xrange * hexpand.
+##' Will be removed in the next version.
 ##' @param align control the align direction of the edge of high light rectangular.
 ##' Options is 'none', 'left', 'right', 'both (default)'.
+##' Will be removed in the next version.
+##' @param hilight.params list, the parameters to control the attributes of highlight layer.
+##' see the hilight.params in the following.
+##' hilight.params control the attributes of highlight layer, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{hilight} Logical value, if TRUE(default), add ggtree::geom_hilight() layer.
+##'         \item \code{align} control the align direction of the edge of high light rectangular.
+##'         Options is 'none', 'left', 'right', 'both (default)'.
+##'     }
+##' @param offset.params list, the parameters to control the offset.
+##' see the offset.params in the following.
+##' offset.params control the attributes of offset, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{bar_tree} rel object or numeric value, distance bar and tree,
+##'         offset of bar and text from the clade, default is rel(1),
+##'         meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
+##'         (1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).
+##'         \item \code{tiplab} tiplab offset, rel object or numeric value, the bigger the number, 
+##'         the farther the distance between the node and the branch. 
+##'         The default is rel(1), when clusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
+##'         when clusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
+##'         when clusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.
+##'         \item \code{extend} Numeric, extend the length of bar, default is 0.3.
+##'         \item \code{hexpand} expand x limits by amount of xrange * hexpand.
+##'     }
+##' @param cluster.params list, the parameters to control the attributes of highlighted nodes and edges.
+##' see the cluster.params in the following.
+##' cluster.params control the attributes of highlight, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{method} function of Clustering method, such as stats::kmeans(the default),
+##'         cluster::clara, cluster::fanny or cluster::pam.
+##'         \item \code{n} Numeric, the number of clusters, 
+##'         the default value is square root of the number of nodes.
+##'         \item \code{color} A vector of group colors, the length of the vector should be the same as nCluster.
+##'         \item \code{label_words_n} Numeric, the number of words in the cluster tags, the default value is 4.
+##'         \item \code{label_format} A numeric value sets wrap length, alternatively a
+##'         custom function to format axis labels.
+##'     }
 ##' @importFrom ggtree `%<+%`
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
@@ -62,20 +107,138 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##' @importFrom ggplot2 coord_cartesian
 ##' @importFrom ggplot2 scale_colour_continuous
 ##'
-treeplot.enrichResult <- function(x, showCategory = 30,
+treeplot.enrichResult <- function(x, 
+                                  showCategory = 30,
                                   color = "p.adjust",
-                                  nWords = 4, nCluster = 5,
+                                  nWords = 4,                   # removed
+                                  nCluster = 5,                 # removed
                                   cex_category = 1,
                                   label_format = NULL, 
-                                  label_format_cladelab = 30,
+                                  label_format_cladelab = 30,   # removed
                                   label_format_tiplab = NULL, 
-                                  fontsize = 4, offset = rel(1),
-                                  offset_tiplab = rel(1), 
-                                  hclust_method = "ward.D", 
-                                  group_color = NULL, 
-                                  extend = 0.3, hilight = TRUE, 
-                                  hexpand = .1, align = "both", ...) {
-    group <- p.adjust <- count <- NULL
+                                  fontsize = 4, 
+                                  offset = rel(1),              # removed
+                                  offset_tiplab = rel(1),       # removed
+                                  hclust_method = "ward.D",     # removed
+                                  group_color = NULL,           # removed
+                                  extend = 0.3,                 # removed
+                                  hilight = TRUE,               # removed
+                                  hexpand = .1,                 # removed
+                                  align = "both",               # removed
+                                  hilight.params = list(
+                                      hilight = TRUE,
+                                      align = "both"
+                                  ),
+                                  offset.params = list(
+                                      bar_tree = rel(1),
+                                      tiplab = rel(1),
+                                      extend = 0.3,
+                                      hexpand = .1
+                                  ),
+                                  cluster.params = list(
+                                      method = "ward.D",
+                                      n = 5,
+                                      color = NULL,
+                                      label_words_n = 4,
+                                      label_format = 30
+                                  ),
+                                  ...) {
+
+
+    # change parameter name
+    ##############################################################
+    params_df <- as.data.frame(rbind(
+        c("hilight", "hilight.params", "hilight"),
+        c("align", "hilight.params", "align"),
+
+        c("offset", "offset.params", "bar_tree"),
+        c("offset_tiplab", "offset.params", "tiplab"),
+        c("extend", "offset.params", "extend"),
+        c("hexpand", "offset.params", "hexpand"),
+
+        c("hclust_method", "cluster.params", "method"),
+        c("nCluster", "cluster.params", "n"),
+        c("group_color", "cluster.params", "color"),
+        c("nWords", "cluster.params", "label_words_n"),
+        c("label_format_cladelab", "cluster.params", "label_format"))
+    )
+    colnames(params_df) <- c("original", "listname", "present")
+    rownames(params_df) <- params_df$original
+
+    default.hilight.params <- list(
+        hilight = TRUE,                        
+        align = "both" 
+    )
+    default.offset.params <- list(
+        bar_tree = rel(1),       
+        tiplab = rel(1),
+        extend = 0.3,          
+        hexpand = .1           
+    )
+    default.cluster.params <- list(
+        method = "ward.D",   
+        n = 5,               
+        color = NULL,        
+        label_words_n = 4,   
+        label_format = 30    
+    )
+    # use modifyList to change the values of parameter 
+    hilight.params <- modifyList(default.hilight.params, hilight.params)
+    offset.params <- modifyList(default.offset.params, offset.params)
+    cluster.params <- modifyList(default.cluster.params, cluster.params)
+    params_list <- list(x = x,
+        showCategory = showCategory,
+        color = color,
+        nWords = nWords,                   
+        nCluster = nCluster,                 
+        cex_category = cex_category,
+        label_format = label_format, 
+        label_format_cladelab = label_format_cladelab,   
+        label_format_tiplab = label_format_tiplab, 
+        fontsize = fontsize, 
+        offset = offset,              
+        offset_tiplab = offset_tiplab,       
+        hclust_method = hclust_method,     
+        group_color = group_color,           
+        extend = extend,                 
+        hilight = hilight,               
+        hexpand = hexpand,                 
+        align = align,               
+        hilight.params = hilight.params,
+        offset.params = offset.params,
+        cluster.params = cluster.params
+    )
+
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
+
+    hilight.params <- params_list[["hilight.params"]]
+    offset.params <- params_list[["offset.params"]]
+    cluster.params <- params_list[["cluster.params"]]
+
+
+    hilight <- hilight.params[["hilight"]]
+    align <- hilight.params[["align"]]
+    offset <- offset.params[["bar_tree"]]
+    offset_tiplab <- offset.params[["tiplab"]]
+    extend <- offset.params[["extend"]]
+    hexpand <- offset.params[["hexpand"]]
+    hclust_method <- cluster.params[["method"]]
+    nCluster <- cluster.params[["n"]]
+    group_color <- cluster.params[["color"]]
+    nWords <- cluster.params[["label_words_n"]]
+    label_format_cladelab <- cluster.params[["label_format"]]    
+
+
+    group <- p.adjust <- count<- NULL
     # to compatible with older versions
     if (!is.null(label_format)) {
         label_format_cladelab <- label_format
@@ -131,26 +294,186 @@ treeplot.enrichResult <- function(x, showCategory = 30,
 ##' @rdname treeplot
 ##' @param split Separate result by 'category' variable.
 ##' @param legend_n Number of circle in legend, the default value is 3.
+##' Will be removed in the next version.
 ##' @param geneClusterPanel one of "heatMap"(default), "dotplot", "pie".
+##' Will be removed in the next version.
 ##' @param pie Used only when geneClusterPanel = "pie", 
 ##' proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+##' Will be removed in the next version.
+##' @param clusterPanel.params list, the parameters to control the attributes of cluster panel.
+##' see the clusterPanel.params in the following.
+##' clusterPanel.params control the attributes of cluster panel, it can be referred to the following parameters:
+##'     \itemize{
+##'         \item \code{clusterPanel} one of "heatMap"(default), "dotplot", "pie".
+##'         \item \code{pie} pUsed only when ClusterPanel = "pie", 
+##'         proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+##'         \item \code{legend_n} number of circle in legend.
+##'     }
 ##' @importFrom ggtree nodepie
 ##' @importFrom ggtree geom_inset
 ##' @importFrom ggplot2 scale_fill_manual
-treeplot.compareClusterResult <-  function(x, showCategory = 5,
+treeplot.compareClusterResult <-  function(x, 
+                                      showCategory = 5,
                                       color = "p.adjust",
-                                      nWords = 4, nCluster = 5,
-                                      cex_category = 1, split = NULL,
+                                      nWords = 4,                     # removed
+                                      nCluster = 5,                   # removed
+                                      cex_category = 1, 
+                                      split = NULL,
                                       label_format = NULL, 
-                                      label_format_cladelab = 30,
+                                      label_format_cladelab = 30,     # removed
                                       label_format_tiplab = NULL, 
-                                      fontsize = 4, offset = rel(1), pie = "equal",
-                                      legend_n = 3, offset_tiplab = rel(1), 
-                                      hclust_method = "ward.D", group_color = NULL, 
-                                      extend = 0.3, hilight = TRUE, 
-                                      geneClusterPanel = "heatMap", 
-                                      hexpand = .1, align = "both", ...) {
-    geneClusterPanel <- match.arg(geneClusterPanel, c("heatMap", "dotplot", "pie"))                                  
+                                      fontsize = 4, 
+                                      offset = rel(1),                 # removed
+                                      pie = "equal",                   # removed
+                                      legend_n = 3,                    # removed
+                                      offset_tiplab = rel(1),          # removed
+                                      hclust_method = "ward.D",        # removed
+                                      group_color = NULL,              # removed
+                                      extend = 0.3,                    # removed
+                                      hilight = TRUE,                  # removed
+                                      geneClusterPanel = "heatMap",    # removed
+                                      hexpand = .1,                    # removed
+                                      align = "both",                  # removed
+                                      cluster.params = list(              
+                                          method = "ward.D",     
+                                          n = 5,                 
+                                          color = NULL,                                        
+                                          label_words_n = 4,     
+                                          label_format = 30    
+                                      ),
+                                      hilight.params = list(
+                                          hilight = TRUE,                             
+                                          align = "both"              
+                                      ),                                      
+                                      clusterPanel.params = list(
+                                          clusterPanel = "heatMap",    
+                                          pie = "equal",                
+                                          legend_n = 3                  
+                                      ),
+                                      offset.params = list(
+                                          bar_tree = rel(1),           
+                                          tiplab = rel(1),             
+                                          extend = 0.3,                
+                                          hexpand = .1                  
+                                      ),...) {
+
+    # change parameter name
+    ##############################################################
+    params_df <- as.data.frame(rbind(
+        c("hclust_method", "cluster.params", "method"),
+        c("nCluster", "cluster.params", "n"),
+        c("group_color", "cluster.params", "color"),
+        c("nWords", "cluster.params", "label_words_n"),
+        c("label_format_cladelab", "cluster.params", "label_format"),
+
+        c("hilight", "hilight.params", "hilight"),
+        c("align", "hilight.params", "align"),
+
+        c("geneClusterPanel", "clusterPanel.params", "clusterPanel"),
+        c("pie", "clusterPanel.params", "pie"),
+        c("legend_n", "clusterPanel.params", "legend_n"),
+
+        c("offset", "offset.params", "bar_tree"),
+        c("offset_tiplab", "offset.params", "tiplab"),
+        c("extend", "offset.params", "extend"),
+        c("hexpand", "offset.params", "hexpand"))
+    )
+    colnames(params_df) <- c("original", "listname", "present")
+    rownames(params_df) <- params_df$original
+
+    default.cluster.params <- list(
+        method = "ward.D",    
+        n = 5,                
+        color = NULL,                               
+        label_words_n = 4,    
+        label_format = 30     
+    )
+
+    default.hilight.params <- list(
+        hilight = TRUE,                       
+        align = "both"            
+    )
+    
+    default.clusterPanel.params <- list(
+        clusterPanel = "heatMap", 
+        pie = "equal",            
+        legend_n = 3              
+    )
+
+    default.offset.params <- list(
+        bar_tree = rel(1),  
+        tiplab = rel(1),    
+        extend = 0.3,       
+        hexpand = .1        
+    )
+    # use modifyList to change the values of parameter 
+    cluster.params <- modifyList(default.cluster.params, cluster.params)   
+    hilight.params <- modifyList(default.hilight.params, hilight.params) 
+    clusterPanel.params <- modifyList(default.clusterPanel.params, clusterPanel.params) 
+    offset.params <- modifyList(default.offset.params, offset.params)  
+    params_list <- list(x = x,
+        showCategory = showCategory,
+        color = color,
+        nWords = nWords,                     
+        nCluster = nCluster,                   
+        cex_category = cex_category, 
+        split = split,
+        label_format = label_format, 
+        label_format_cladelab = label_format_cladelab,     
+        label_format_tiplab = label_format_tiplab, 
+        fontsize = fontsize, 
+        offset = offset,                
+        pie = pie,                  
+        legend_n = legend_n,                   
+        offset_tiplab = offset_tiplab,         
+        hclust_method = hclust_method,       
+        group_color = group_color,             
+        extend = extend,                   
+        hilight = hilight,                 
+        geneClusterPanel = geneClusterPanel,   
+        hexpand = hexpand,                   
+        align = align,                 
+        cluster.params = cluster.params,
+        hilight.params = hilight.params,                                      
+        clusterPanel.params = clusterPanel.params,
+        offset.params = offset.params
+    )     
+
+    # get all parameters value
+    args <- as.list(match.call())
+    removed_params <- intersect(params_df$original, names(args))
+    if (length(removed_params) > 0) {
+        for (i in removed_params) {
+            params_list[[params_df[i, 2]]][[params_df[i, 3]]] <- get(i)
+            warn <- get_param_change_message(i, params_df)
+            warning(warn)
+        }
+    }
+
+
+    cluster.params <- params_list[["cluster.params"]]  
+    hilight.params <- params_list[["hilight.params"]]
+    clusterPanel.params <- params_list[["clusterPanel.params"]]
+    offset.params <- params_list[["offset.params"]]
+
+    hclust_method <- cluster.params[["method"]]
+    nCluster <- cluster.params[["n"]]
+    group_color <- cluster.params[["color"]]
+    nWords <- cluster.params[["label_words_n"]]
+    label_format_cladelab <- cluster.params[["label_format"]]
+    hilight <- hilight.params[["hilight"]]
+    align <- hilight.params[["align"]]
+    geneClusterPanel <- clusterPanel.params[["clusterPanel"]]
+    pie <- clusterPanel.params[["pie"]]
+    legend_n <- clusterPanel.params[["legend_n"]]
+    hilight <- hilight.params[["hilight"]]
+    align <- hilight.params[["align"]]
+    offset <- offset.params[["bar_tree"]]
+    offset_tiplab <- offset.params[["tiplab"]]
+    extend <- offset.params[["extend"]]
+    hexpand <- offset.params[["hexpand"]]
+
+    # geneClusterPanel <- match.arg(geneClusterPanel, c("heatMap", "dotplot", "pie"))                                  
     has_pairsim(x)
     group <- Description <- Cluster <- Count <- NULL
     # to compatible with older versions

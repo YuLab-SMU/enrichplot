@@ -12,6 +12,7 @@
 ##' @param foldChange Fold Change of nodes, the default value is NULL. 
 ##' If the user provides the Fold Change value of the nodes, 
 ##' it can be used to set the color of the gene node.
+##' Will be removed in the next version.
 ##' @param layout Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
 ##' 'randomly', 'fr', 'kk', 'drl' or 'lgl'.
 ##' @param ... Additional parameters
@@ -33,7 +34,6 @@
 ##'                    "breast ductal carcinoma", "non-small cell lung carcinoma")
 ##'     cnetplot(x2, showCategory = categorys)
 ##'     # 'compareClusterResult' object is also supported.
-##'     data(gcSample)
 ##'     library(clusterProfiler)
 ##'     library(DOSE)
 ##'     library(org.Hs.eg.db)
@@ -43,8 +43,7 @@
 ##'     cnetplot(xx2)
 ##' }
 setGeneric("cnetplot",
-           function(x, showCategory = 5,
-                    foldChange = NULL, layout = "kk", ...)
+           function(x,  ...)
                standardGeneric("cnetplot")
            )
 
@@ -128,7 +127,6 @@ setGeneric("dotplot",
 ##'     emapplot(x2, showCategory = categorys)
 ##' 
 ##'     # It can also graph compareClusterResult
-##'     data(gcSample)
 ##'     library(clusterProfiler)
 ##'     library(DOSE)
 ##'     library(org.Hs.eg.db)
@@ -138,7 +136,7 @@ setGeneric("dotplot",
 ##'     emapplot(xx2)
 ##' }
 setGeneric("emapplot",
-           function(x, showCategory = 30,  ...)
+           function(x,  ...)
                standardGeneric("emapplot")
            )
 
