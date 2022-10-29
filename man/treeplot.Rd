@@ -15,7 +15,7 @@ treeplot(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
 
 \S4method{treeplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
 
-\S4method{treeplot}{compareClusterResult}(x, showCategory = 5, color = "p.adjust", label_format = NULL, ...)
+\S4method{treeplot}{compareClusterResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
 
 treeplot.enrichResult(
   x,
@@ -36,6 +36,10 @@ treeplot.enrichResult(
   hilight = TRUE,
   hexpand = 0.1,
   align = "both",
+  hilight.params = list(hilight = TRUE, align = "both"),
+  offset.params = list(bar_tree = rel(1), tiplab = rel(1), extend = 0.3, hexpand = 0.1),
+  cluster.params = list(method = "ward.D", n = 5, color = NULL, label_words_n = 4,
+    label_format = 30),
   ...
 )
 
@@ -62,6 +66,11 @@ treeplot.compareClusterResult(
   geneClusterPanel = "heatMap",
   hexpand = 0.1,
   align = "both",
+  cluster.params = list(method = "ward.D", n = 5, color = NULL, label_words_n = 4,
+    label_format = 30),
+  hilight.params = list(hilight = TRUE, align = "both"),
+  clusterPanel.params = list(clusterPanel = "heatMap", pie = "equal", legend_n = 3),
+  offset.params = list(bar_tree = rel(1), tiplab = rel(1), extend = 0.3, hexpand = 0.1),
   ...
 )
 }
@@ -78,55 +87,120 @@ custom function to format axis labels.}
 
 \item{...}{additional parameters}
 
-\item{nWords}{The number of words in the cluster tags.}
+\item{nWords}{The number of words in the cluster tags.
+Will be removed in the next version.}
 
-\item{nCluster}{The number of clusters, the default value is 5.}
+\item{nCluster}{The number of clusters, the default value is 5.
+Will be removed in the next version.}
 
 \item{cex_category}{Number indicating the amount by which plotting category.
-nodes should be scaled relative to the default.}
+nodes should be scaled relative to the default.
+Will be removed in the next version.}
 
 \item{label_format_cladelab}{label_format for group labels, a numeric value sets wrap length, 
-alternatively a custom function to format axis labels.}
+alternatively a custom function to format axis labels.
+Will be removed in the next version.}
 
 \item{label_format_tiplab}{label_format for tiplabs, a numeric value sets wrap length, 
 alternatively a custom function to format axis labels.
-displayed completely, the user can increase this value.}
+Will be removed in the next version.}
 
 \item{fontsize}{The size of text, default is 4.}
 
 \item{offset}{rel object or numeric value, distance bar and tree,
 offset of bar and text from the clade, default is rel(1),
 meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
-(1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).}
+(1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).
+Will be removed in the next version.}
 
 \item{offset_tiplab}{tiplab offset, rel object or numeric value, the bigger the number, 
 the farther the distance between the node and the branch. 
 The default is rel(1), when geneClusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
 when geneClusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
-when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.}
+when geneClusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.
+Will be removed in the next version.}
 
 \item{hclust_method}{Method of hclust. This should be (an unambiguous abbreviation of) one of "ward.D", 
-"ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
+"ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
+Will be removed in the next version.}
 
-\item{group_color}{A vector of group colors, the length of the vector should be the same as nCluster.}
+\item{group_color}{A vector of group colors, the length of the vector should be the same as nCluster.
+Will be removed in the next version.}
 
-\item{extend}{Numeric, extend the length of bar, default is 0.3.}
+\item{extend}{Numeric, extend the length of bar, default is 0.3.
+Will be removed in the next version.}
 
-\item{hilight}{Logical value, if TRUE(default), add ggtree::geom_hilight() layer.}
+\item{hilight}{Logical value, if TRUE(default), add ggtree::geom_hilight() layer.
+Will be removed in the next version.}
 
-\item{hexpand}{expand x limits by amount of xrange * hexpand.}
+\item{hexpand}{expand x limits by amount of xrange * hexpand.
+Will be removed in the next version.}
 
 \item{align}{control the align direction of the edge of high light rectangular.
-Options is 'none', 'left', 'right', 'both (default)'.}
+Options is 'none', 'left', 'right', 'both (default)'.
+Will be removed in the next version.}
+
+\item{hilight.params}{list, the parameters to control the attributes of highlight layer.
+see the hilight.params in the following.
+hilight.params control the attributes of highlight layer, it can be referred to the following parameters:
+    \itemize{
+        \item \code{hilight} Logical value, if TRUE(default), add ggtree::geom_hilight() layer.
+        \item \code{align} control the align direction of the edge of high light rectangular.
+        Options is 'none', 'left', 'right', 'both (default)'.
+    }}
+
+\item{offset.params}{list, the parameters to control the offset.
+see the offset.params in the following.
+offset.params control the attributes of offset, it can be referred to the following parameters:
+    \itemize{
+        \item \code{bar_tree} rel object or numeric value, distance bar and tree,
+        offset of bar and text from the clade, default is rel(1),
+        meaning 1 * 1.2 * x_range_of_tree plus distance_between_tree_and_tiplab
+        (1 * (1.2 * x_range_of_tree + distance_between_tree_and_tiplab)).
+        \item \code{tiplab} tiplab offset, rel object or numeric value, the bigger the number, 
+        the farther the distance between the node and the branch. 
+        The default is rel(1), when clusterPanel = "pie", meaning 1 *  max_radius_of_the_pies; 
+        when clusterPanel = "heatMap", meaning 1 * 0.16 * column_number_of_heatMap * x_range_of_tree;
+        when clusterPanel = "dotplot", meaning 1 * 0.09 * column_number_of_dotplot * x_range_of_tree.
+        \item \code{extend} Numeric, extend the length of bar, default is 0.3.
+        \item \code{hexpand} expand x limits by amount of xrange * hexpand.
+    }}
+
+\item{cluster.params}{list, the parameters to control the attributes of highlighted nodes and edges.
+see the cluster.params in the following.
+cluster.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{method} function of Clustering method, such as stats::kmeans(the default),
+        cluster::clara, cluster::fanny or cluster::pam.
+        \item \code{n} Numeric, the number of clusters, 
+        the default value is square root of the number of nodes.
+        \item \code{color} A vector of group colors, the length of the vector should be the same as nCluster.
+        \item \code{label_words_n} Numeric, the number of words in the cluster tags, the default value is 4.
+        \item \code{label_format} A numeric value sets wrap length, alternatively a
+        custom function to format axis labels.
+    }}
 
 \item{split}{Separate result by 'category' variable.}
 
 \item{pie}{Used only when geneClusterPanel = "pie", 
-proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.}
+proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+Will be removed in the next version.}
 
-\item{legend_n}{Number of circle in legend, the default value is 3.}
+\item{legend_n}{Number of circle in legend, the default value is 3.
+Will be removed in the next version.}
 
-\item{geneClusterPanel}{one of "heatMap"(default), "dotplot", "pie".}
+\item{geneClusterPanel}{one of "heatMap"(default), "dotplot", "pie".
+Will be removed in the next version.}
+
+\item{clusterPanel.params}{list, the parameters to control the attributes of cluster panel.
+see the clusterPanel.params in the following.
+clusterPanel.params control the attributes of cluster panel, it can be referred to the following parameters:
+    \itemize{
+        \item \code{clusterPanel} one of "heatMap"(default), "dotplot", "pie".
+        \item \code{pie} pUsed only when ClusterPanel = "pie", 
+        proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
+        \item \code{legend_n} number of circle in legend.
+    }}
 }
 \value{
 ggplot object

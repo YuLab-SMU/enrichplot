@@ -9,15 +9,15 @@
 \alias{cnetplot.enrichResult}
 \title{cnetplot}
 \usage{
-cnetplot(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+cnetplot(x, ...)
 
-\S4method{cnetplot}{enrichResult}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+\S4method{cnetplot}{enrichResult}(x, ...)
 
-\S4method{cnetplot}{list}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+\S4method{cnetplot}{list}(x, ...)
 
-\S4method{cnetplot}{gseaResult}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+\S4method{cnetplot}{gseaResult}(x, ...)
 
-\S4method{cnetplot}{compareClusterResult}(x, showCategory = 5, foldChange = NULL, layout = "kk", ...)
+\S4method{cnetplot}{compareClusterResult}(x, ...)
 
 cnetplot.enrichResult(
   x,
@@ -34,11 +34,17 @@ cnetplot.enrichResult(
   color_category = "#E5C494",
   color_gene = "#B3B3B3",
   shadowtext = "all",
+  color.params = list(foldChange = NULL, edge = FALSE, category = "#E5C494", gene =
+    "#B3B3B3"),
+  cex.params = list(category_node = 1, gene_node = 1, category_label = 1, gene_label = 1),
+  hilight.params = list(category = NULL, alpha_hilight = 1, alpha_no_hilight = 0.3),
   ...
 )
 }
 \arguments{
 \item{x}{Enrichment result.}
+
+\item{...}{Additional parameters}
 
 \item{showCategory}{A number or a vector of terms. If it is a number, 
 the first n terms will be displayed. If it is a vector of terms, 
@@ -46,37 +52,80 @@ the selected terms will be displayed.}
 
 \item{foldChange}{Fold Change of nodes, the default value is NULL. 
 If the user provides the Fold Change value of the nodes, 
-it can be used to set the color of the gene node.}
+it can be used to set the color of the gene node.
+Will be removed in the next version.}
 
 \item{layout}{Layout of the map, e.g. 'star', 'circle', 'gem', 'dh', 'graphopt', 'grid', 'mds', 
 'randomly', 'fr', 'kk', 'drl' or 'lgl'.}
 
-\item{...}{Additional parameters}
+\item{colorEdge}{Logical, whether coloring edge by enriched terms, the default value is FALSE. 
+Will be removed in the next version.}
 
-\item{colorEdge}{Logical, whether coloring edge by enriched terms, the default value is FALSE.}
-
-\item{circular}{Logical, whether using circular layout, the default value is FALSE.}
+\item{circular}{Logical, whether using circular layout, the default value is FALSE.
+Will be removed in the next version.}
 
 \item{node_label}{Select which labels to be displayed.
 one of 'category', 'gene', 'all'(the default) and 'none'.}
 
 \item{cex_category}{Number indicating the amount by which plotting category
-nodes should be scaled relative to the default, the default value is 1.}
+nodes should be scaled relative to the default, the default value is 1.
+Will be removed in the next version.}
 
 \item{cex_gene}{Number indicating the amount by which plotting gene nodes
-should be scaled relative to the default, the default value is 1.}
+should be scaled relative to the default, the default value is 1.
+Will be removed in the next version.}
 
 \item{cex_label_category}{Scale of category node label size, the 
-default value is 1.}
+default value is 1.
+Will be removed in the next version.}
 
-\item{cex_label_gene}{Scale of gene node label size, the default value is 1.}
+\item{cex_label_gene}{Scale of gene node label size, the default value is 1.
+Will be removed in the next version.}
 
-\item{color_category}{Color of category node.}
+\item{color_category}{Color of category node.
+Will be removed in the next version.}
 
-\item{color_gene}{Color of gene node.}
+\item{color_gene}{Color of gene node.
+Will be removed in the next version.}
 
 \item{shadowtext}{select which node labels to use shadow font,
 one of 'category', 'gene', 'all' and 'none', default is 'all'.}
+
+\item{color.params}{list, the parameters to control the attributes of highlighted nodes and edges.
+see the color.params in the following.
+color.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{foldChange} Fold Change of nodes for enrichResult, or size of nodes for compareClusterResult, 
+        the default value is NULL. 
+        \item \code{edge} Logical, whether coloring edge by enriched terms, the default value is FALSE. 
+        \item \code{category} Color of category node.
+        \item \code{gene} Color of gene node.
+    }}
+
+\item{cex.params}{list, the parameters to control the size of nodes and lables.
+see the cex.params in the following.
+cex.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{foldChange} only used in compareClusterResult object, fold Change of nodes, the default value is NULL. 
+        If the user provides the Fold Change value of the nodes, 
+        it can be used to set the size of the gene node.
+        \item \code{category_node} Number indicating the amount by which plotting category
+        nodes should be scaled relative to the default, the default value is 1.
+        \item \code{gene_node} Number indicating the amount by which plotting gene nodes
+        should be scaled relative to the default, the default value is 1.
+        \item \code{category_label} Scale of category node label size, the 
+        default value is 1.
+        \item \code{gene_label} Scale of gene node label size, the default value is 1.
+    }}
+
+\item{hilight.params}{list, the parameters to control the attributes of highlighted nodes and edges.
+see the hilight.params in the following.
+hilight.params control the attributes of highlight, it can be referred to the following parameters:
+    \itemize{
+        \item \code{category} category nodes to be highlight.
+        \item \code{alpha_hilight} alpha of highlighted nodes.
+        \item \code{alpha_no_hilight} alpha of unhighlighted nodes.
+    }}
 }
 \value{
 ggplot object
@@ -104,7 +153,6 @@ plot linkages of genes and enriched concepts
                    "breast ductal carcinoma", "non-small cell lung carcinoma")
     cnetplot(x2, showCategory = categorys)
     # 'compareClusterResult' object is also supported.
-    data(gcSample)
     library(clusterProfiler)
     library(DOSE)
     library(org.Hs.eg.db)

@@ -171,6 +171,44 @@ merge_compareClusterResult <- function(yy) {
     yy_union
 }
 
+##' add alpha attribute to ggraph edges
+##'
+##' @param g ggraph object.
+##' @param hilight_category category nodes to be highlight.
+##' @param alpha_hilight alpha of highlighted nodes.
+##' @param alpha_nohilight alpha of unhighlighted nodes.
+##' @noRd
+edge_add_alpha <- function(g, hilight_category, alpha_nohilight, alpha_hilight) {
+    if (!is.null(hilight_category) && length(hilight_category) > 0) {
+        edges <- attr(E(g), "vnames")
+        E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
+        hilight_edge <- grep(paste(hilight_category, collapse = "|"), edges)
+        E(g)$alpha[hilight_edge] <- min(0.8, alpha_hilight)
+        # E(g)$alpha[hilight_edge] <- alpha_hilight
+        } else {
+            E(g)$alpha <- rep(min(0.8, alpha_hilight), length(E(g)))
+    }
+    return(g)
+}
+
+##' add alpha attribute to ggraph nodes
+##'
+##' @param p ggraph object.
+##' @param hilight_category category nodes to be highlight.
+##' @param hilight_gene gene nodes to be highlight.
+##' @param alpha_hilight alpha of highlighted nodes.
+##' @param alpha_nohilight alpha of unhighlighted nodes.
+##' @noRd
+node_add_alpha <- function(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight) {
+    alpha_node <- rep(1, nrow(p$data))
+    if (!is.null(hilight_category)) {
+        alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
+        hilight_node <- c(hilight_category, hilight_gene)
+        alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
+    }
+    p$data$alpha <- alpha_node
+    return(p)
+}
 ##' Get the an ggraph object
 ##'
 ##' @importFrom ggplot2 ylim
@@ -189,10 +227,15 @@ merge_compareClusterResult <- function(yy) {
 ##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
 ##' "JC" (Jaccard similarity coefficient) methods.
 ##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
+##' @param hilight_category category nodes to be highlight.
+##' @param alpha_hilight alpha of highlighted nodes.
+##' @param alpha_nohilight alpha of unhighlighted nodes.
 ##' @noRd
 build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie, 
                          layout, coords, cex_line, min_edge, pair_sim,
-                         method, with_edge){
+                         method, with_edge, hilight_category, alpha_hilight,
+                         alpha_nohilight){
+    
     segment.size <- get_ggrepel_segsize()
     geneSets <- setNames(strsplit(as.character(mergedEnrichDf$geneID), "/",
                               fixed = TRUE), mergedEnrichDf$ID) 
@@ -200,6 +243,16 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
     g <- build_emap_graph(enrichDf=mergedEnrichDf,geneSets=geneSets,color="p.adjust",
         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
         method = x@method)
+    g <- edge_add_alpha(g, hilight_category, alpha_nohilight, alpha_hilight)
+    # if (!is.null(hilight_category) && length(hilight_category) > 0) {     
+    #     edges <- attr(E(g), "vnames")
+    #     E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
+    #     hilight_edge <- grep(paste(hilight_category, collapse = "|"), edges)
+    #     E(g)$alpha[hilight_edge] <- min(0.8, alpha_hilight)
+    #     # E(g)$alpha[hilight_edge] <- alpha_hilight
+    # } else {
+    #     E(g)$alpha <- rep(min(0.8, alpha_hilight), length(E(g)))
+    # }
     ## when enrichDf just have one line
     if(is.null(dim(enrichDf)) | nrow(enrichDf) == 1) {
         title <- enrichDf$Cluster
@@ -227,11 +280,18 @@ build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie,
         return(p)
 
     }
+
     p <- adj_layout(g = g, layout = layout, coords = coords)    
+    p$data$alpha <- rep(1, nrow(p$data))
+    if (!is.null(hilight_category) && length(hilight_category) > 0) {
+        p$data$alpha <- rep(alpha_nohilight, nrow(p$data))
+        ii <- match(hilight_category, p$data$name)
+        p$data$alpha[ii] <- alpha_hilight      
+    }
     ## add edges
     if (with_edge & length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(alpha=.8, aes_(width=~I(width)),
-                                colour='darkgrey')
+        p <- p + geom_edge_link(aes_(width=~I(width), alpha=~I(alpha)),
+                                colour='darkgrey', show.legend = FALSE)
     }
     return(p)
 }
@@ -403,13 +463,20 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
 ##' @return a ggplot2 object.
 ##' @noRd
 add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
+    # If use 'aes_(alpha =~I(alpha))' will put an error for AsIs object.
+    # But I(alpha) is necessory, so use 'alpha = I(data$alpha)'.
     segment.size <- get_ggrepel_segsize()
+    if (is.null(data)) {
+        data <- p$data
+    }
     if (shadowtext) {
         p <- p + geom_node_text(aes_(label=~name), data = data,
+            alpha = I(data$alpha),
             size = label_size_node * cex_label_node, bg.color = "white", 
             repel=TRUE, segment.size = segment.size)
     } else {
         p <- p + geom_node_text(aes_(label=~name), data = data,
+            alpha = I(data$alpha),
             size = label_size_node * cex_label_node, repel=TRUE,
             segment.size = segment.size)
     }
@@ -521,8 +588,8 @@ add_ellipse <- function(p, group_legend, label_style,
 ##' @noRd
 add_category_nodes <- function(p, cex_category, color) {
     p + ggnewscale::new_scale_fill() +
-        geom_point(shape = 21, aes_(x =~ x, y =~ y, fill =~ color,
-                                    size =~ size)) +
+        geom_point(shape = 21, aes_(x=~x, y=~y, fill=~color,
+                                    size=~size, alpha=~I(alpha))) +
         scale_size_continuous(name = "number of genes",
                               range = c(3, 8) * cex_category) +
         scale_fill_continuous(low = "red", high = "blue", name = color,
@@ -577,9 +644,10 @@ add_pie_node <- function(p, ID_Cluster_mat, node_label,
                          label_size_category) {
     color <- NULL
     if(ncol(ID_Cluster_mat) > 4) {
+        ID_Cluster_mat$alpha <- p$data$alpha
         p <- p + ggnewscale::new_scale_fill() + 
-            geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
-            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],color=NA) +
+            geom_scatterpie(aes_(x=~x,y=~y,r=~radius,alpha=~I(alpha)), data=ID_Cluster_mat,
+            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
             coord_equal() 
 
         if (node_label == "all" || node_label == "category") {
@@ -606,3 +674,4 @@ add_pie_node <- function(p, ID_Cluster_mat, node_label,
     }  
     return(p)
 }
+

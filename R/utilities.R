@@ -363,6 +363,14 @@ get_ggrepel_segsize <- function(default = 0.2) {
     getOption("ggrepel.segment.size", default = default)
 }
 
-
-
-
+#' Get warning message of changing parameter name
+#' @param parameter old parameter name
+#' @param params_df data frame with three columns: "original", "listname", and "present"
+#' @noRd
+get_param_change_message <- function(parameter, params_df) {
+    paste0("Use '", params_df[parameter, "listname"], 
+           " = list(", params_df[parameter, "present"], 
+           " = your_value)' instead of '", params_df[parameter, "original"],
+         "'.\n The ", params_df[parameter, "original"],
+          " parameter will be removed in the next version.")
+} 
