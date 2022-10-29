@@ -1,4 +1,4 @@
-# enrichplot 1.17.2.991
+# enrichplot 1.17.4
 
 + rename parameters of `emapplot()`, `centplot()` and  `treeplot()` (2022-09-11, Sun)
 
