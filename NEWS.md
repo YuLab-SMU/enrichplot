@@ -1,3 +1,7 @@
+# enrichplot
+
++ Bioconductor RELEASE_3_16 (2022-11-02, Wed)
+
 # enrichplot 1.17.4
 
 + rename parameters of `emapplot()`, `centplot()` and  `treeplot()` (2022-09-11, Sun)
