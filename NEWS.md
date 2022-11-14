@@ -1,5 +1,5 @@
-# enrichplot
-
+# enrichplot 1.19.0.991
++ fix a issue in https://github.com/YuLab-SMU/enrichplot/issues/209 (2022-11-15, Tue)
 + Bioconductor RELEASE_3_16 (2022-11-02, Wed)
 
 # enrichplot 1.17.4
