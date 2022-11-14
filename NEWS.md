@@ -1,3 +1,7 @@
+# enrichplot
+
++ Bioconductor RELEASE_3_16 (2022-11-02, Wed)
+
 # enrichplot 1.17.4
 
 + enable `dotplot()` and `autofacet()` for `gseaResultList` object(2022-10-30, Sun) 
