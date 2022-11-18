@@ -4,6 +4,7 @@
 
 # enrichplot 1.17.4
 
++ enable `dotplot()` and `autofacet()` for `gseaResultList` object(2022-10-30, Sun) 
 + rename parameters of `emapplot()`, `centplot()` and  `treeplot()` (2022-09-11, Sun)
 
 # enrichplot 1.17.3

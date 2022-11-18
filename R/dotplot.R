@@ -66,6 +66,51 @@ setMethod("dotplot", signature(object="compareClusterResult"),
                                            ...)
 })
 
+##' @rdname dotplot
+##' @exportMethod dotplot
+##' @aliases dotplot,enrichResultList,ANY-method
+##' @author guangchuang yu
+setMethod("dotplot", signature(object = "enrichResultList"),
+          function(object, x = "GeneRatio", color = "p.adjust",
+                   showCategory=10, size = NULL,
+                   split = NULL, font.size=12, title = "",
+                   orderBy="x", label_format = 30, ...) {
+              dotplot.enrichResult(object = object, x = x, color = color,
+                                   showCategory = showCategory,
+                                   size = size, split = split,
+                                   font.size = font.size,
+                                   title = title, orderBy = orderBy,
+                                   label_format = label_format, ...)
+})
+
+##' @rdname dotplot
+##' @exportMethod dotplot
+##' @aliases dotplot,gseaResultList,ANY-method
+setMethod("dotplot", signature(object = "gseaResultList"),
+          function(object, x = "GeneRatio", color = "p.adjust",
+                   showCategory=10, size = NULL,
+                   split = NULL, font.size=12, title = "",
+                   orderBy="x", label_format = 30, ...) {
+              if (color == "NES") {
+                      NES <- TRUE
+                      color <- "p.adjust"
+              } else {
+                      NES <- FALSE
+              }
+              p <- dotplot.enrichResult(object = object, x = x, color = color,
+                      showCategory = showCategory,
+                      size = size, split = split,
+                      font.size = font.size,
+                      title = title, orderBy = orderBy,
+                      label_format = label_format, ...)
+              
+              if (NES) {
+                  p <- suppressMessages(p + aes_(color=~NES) + 
+                      scale_color_continuous(low="blue", high="red", name = "NES")
+                  )
+              }
+              return(p)
+})
 
 ##' @rdname dotplot
 ##' @param x variable for x-axis, one of 'GeneRatio' and 'Count'
@@ -123,7 +168,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
             size  <- "Count"
     }
     
-    if (inherits(object, "enrichResultList")) {
+    if (inherits(object, c("enrichResultList", "gseaResultList"))) {
         ldf <- lapply(object, fortify, showCategory=showCategory, split=split)
         df <- dplyr::bind_rows(ldf, .id="category")
         df$category <- factor(df$category, levels=names(object))
@@ -161,25 +206,6 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
         guides(size  = guide_legend(order = 1),
                color = guide_colorbar(order = 2))
 }
-
-
-##' @rdname dotplot
-##' @exportMethod dotplot
-##' @aliases dotplot,enrichResultList,ANY-method
-##' @author guangchuang yu
-setMethod("dotplot", signature(object = "enrichResultList"),
-          function(object, x = "GeneRatio", color = "p.adjust",
-                   showCategory=10, size = NULL,
-                   split = NULL, font.size=12, title = "",
-                   orderBy="x", label_format = 30, ...) {
-              dotplot.enrichResult(object = object, x = x, color = color,
-                                   showCategory = showCategory,
-                                   size = size, split = split,
-                                   font.size = font.size,
-                                   title = title, orderBy = orderBy,
-                                   label_format = label_format, ...)
-          })
-
 
 
 ##' @rdname dotplot
