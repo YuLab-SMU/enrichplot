@@ -1,10 +1,14 @@
-# enrichplot
+# enrichplot 1.19.001
+
++ bug fixed in `treeplot()`  (2022-11-18, Fri) 
++ enable `dotplot()` and `autofacet()` for `gseaResultList` object
+
+# enrichplot 1.18.0
 
 + Bioconductor RELEASE_3_16 (2022-11-02, Wed)
 
 # enrichplot 1.17.4
 
-+ enable `dotplot()` and `autofacet()` for `gseaResultList` object(2022-10-30, Sun) 
 + rename parameters of `emapplot()`, `centplot()` and  `treeplot()` (2022-09-11, Sun)
 
 # enrichplot 1.17.3
