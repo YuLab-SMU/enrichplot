@@ -9,13 +9,13 @@
 \alias{treeplot.compareClusterResult}
 \title{treeplot}
 \usage{
-treeplot(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
+treeplot(x, ...)
 
-\S4method{treeplot}{enrichResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
+\S4method{treeplot}{enrichResult}(x, ...)
 
-\S4method{treeplot}{gseaResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
+\S4method{treeplot}{gseaResult}(x, ...)
 
-\S4method{treeplot}{compareClusterResult}(x, showCategory = 30, color = "p.adjust", label_format = NULL, ...)
+\S4method{treeplot}{compareClusterResult}(x, ...)
 
 treeplot.enrichResult(
   x,
@@ -77,15 +77,12 @@ treeplot.compareClusterResult(
 \arguments{
 \item{x}{enrichment result.}
 
+\item{...}{additional parameters}
+
 \item{showCategory}{number of enriched terms to display}
 
 \item{color}{variable that used to color enriched terms, e.g. pvalue,
 p.adjust or qvalue}
-
-\item{label_format}{a numeric value sets wrap length, alternatively a
-custom function to format axis labels.}
-
-\item{...}{additional parameters}
 
 \item{nWords}{The number of words in the cluster tags.
 Will be removed in the next version.}
@@ -96,6 +93,9 @@ Will be removed in the next version.}
 \item{cex_category}{Number indicating the amount by which plotting category.
 nodes should be scaled relative to the default.
 Will be removed in the next version.}
+
+\item{label_format}{a numeric value sets wrap length, alternatively a
+custom function to format axis labels.}
 
 \item{label_format_cladelab}{label_format for group labels, a numeric value sets wrap length, 
 alternatively a custom function to format axis labels.
