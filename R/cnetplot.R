@@ -317,12 +317,12 @@ cnetplot.enrichResult <- function(x,
 
     p <- p + theme_void()
 
-    if (node_label == "category") {       
-        p$data[1:n, "name"] <- NA     
+    if (node_label == "category") { 
+        p$data[-c(1:n), "name"] <- NA          
         p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)
     } else if (node_label == "gene") {
-        p$data[-c(1:n), "name"] <- NA
+        p$data[1:n, "name"] <- NA 
         p <- add_node_label(p = p, data = NULL, label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
     } else if (node_label == "all") {

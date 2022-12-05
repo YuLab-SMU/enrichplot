@@ -1,5 +1,6 @@
-# enrichplot 1.19.001
+# enrichplot 1.19.1
 
++ fix `cnetplot()` for `node_label` parameter is flipped(2022-12-04, Sun, #216)
 + bug fixed in `treeplot()`  (2022-11-18, Fri) 
 + enable `dotplot()` and `autofacet()` for `gseaResultList` object
 
