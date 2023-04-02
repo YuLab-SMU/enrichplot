@@ -1,4 +1,4 @@
-# enrichplot 1.19.1.992
+# enrichplot 1.19.2
 
 + fix `emapplot()` for parameter mismatch (2023-02-20, Mon)
 + fix `ridgeplot` for error when x@readable == TRUE and length(x@gene2Symbol) = 0 (2022-12-5, Mon)
