@@ -525,8 +525,8 @@ emapplot.compareClusterResult <- function(x,
         c("group_category", "cluster.params", "cluster"),
         c("clusterFunction", "cluster.params", "method"),
         c("nCluster", "cluster.params", "n"),
-        c("label_style", "cluster.params", "legend"),
-        c("group_legend", "cluster.params", "label_style"),
+        c("label_style", "cluster.params", "label_style"),
+        c("group_legend", "cluster.params", "legend"),
         c("nWords", "cluster.params", "label_words_n"),
         c("label_format", "cluster.params", "label_format"),
 
@@ -639,8 +639,8 @@ emapplot.compareClusterResult <- function(x,
     group_category <- cluster.params[["cluster"]]
     clusterFunction <- cluster.params[["method"]]
     nCluster <- cluster.params[["n"]]
-    label_style <- cluster.params[["legend"]]
-    group_legend <- cluster.params[["label_style"]]
+    label_style <- cluster.params[["label_style"]]
+    group_legend <- cluster.params[["legend"]]
     nWords <- cluster.params[["label_words_n"]]
     label_format <- cluster.params[["label_format"]]
     cex_category <- cex.params[["category_node"]]
