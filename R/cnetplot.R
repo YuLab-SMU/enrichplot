@@ -551,13 +551,6 @@ cnetplot.compareClusterResult <- function(x,
             labs(title= title) +
             theme(legend.position="none")    
  
-        # alpha_node <- rep(1, nrow(p$data))
-        # if (!is.null(hilight_category) && length(hilight_category) > 0) {
-        #     alpha_node <- rep(alpha_nohilight, nrow(p$data)) 
-        #     hilight_node <- c(hilight_category, hilight_gene)
-        #     alpha_node[match(hilight_node, p$data$name)] <- alpha_hilight
-        # }
-        # p$data$alpha <- alpha_node
         p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
         p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
             cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
@@ -565,9 +558,36 @@ cnetplot.compareClusterResult <- function(x,
             cex_label_node = cex_label_category, shadowtext = shadowtext_category)   
         return(p)
     }
-
+ 
     if(is.null(dim(y_union)) | nrow(y_union) == 1) {
         p <- ggraph(g, "tree") + edge_layer
+    } else if (length(unique(y$Cluster)) == 1) {
+        color_category = "#E5C494"
+        color_gene = "#B3B3B3"
+        size <- sapply(geneSets, length)
+        V(g)$size <- min(size)/2
+        n <- length(geneSets)
+        V(g)$size[1:n] <- size
+        V(g)$color <- color_gene
+        V(g)$color[1:n] <- color_category
+
+        if (!is.null(hilight_category) && length(hilight_category) > 0) {
+            edges <- attr(E(g), "vnames")
+            E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
+            hilight_edge <- grep(paste(hilight_category, collapse = "|"), edges)
+            hilight_gene <- edges[hilight_edge]
+            hilight_gene <- gsub(".*\\|", "", hilight_gene)
+            E(g)$alpha[hilight_edge] <- min(0.8, alpha_hilight)
+        } else {
+            E(g)$alpha <- rep(0.8, length(E(g)))
+        }
+        p <- ggraph(g, layout=layout, circular=circular)
+        p$data[-(1:n), "size"] <- 3 * cex_gene
+        p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
+        p <- p + edge_layer +
+            geom_node_point(aes_(color=~I(color), size=~size, alpha=~I(alpha)))+
+            scale_size(range=c(3, 8) * cex_category) 
+        
     } else {
         if (!is.null(hilight_category) && length(hilight_category) > 0) {
             edges <- attr(E(g), "vnames")
@@ -697,13 +717,18 @@ cnetplot.compareClusterResult <- function(x,
         return(p)
     }
     title <- colnames(ID_Cluster_mat2)[1]
-    V(g)$size <- ID_Cluster_mat2$radius
-    V(g)$color <- "#B3B3B3"
-    V(g)$color[1:n] <- "#E5C494"  
+    # V(g)$size <- ID_Cluster_mat2$radius
+    # V(g)$color <- "#B3B3B3"
+    # V(g)$color[1:n] <- "#E5C494"  
+    
+
     p <- node_add_alpha(p, hilight_category, hilight_gene, alpha_nohilight, alpha_hilight)
     p <- add_node_label(p = p, data = p$data[-c(1:n),], label_size_node = label_size_gene,
         cex_label_node = cex_label_gene, shadowtext = shadowtext_gene)
     p <- add_node_label(p = p, data = p$data[1:n,], label_size_node = label_size_category,
-        cex_label_node = cex_label_category, shadowtext = shadowtext_category)
-    p + theme_void() + theme(legend.position="none")
+        cex_label_node = cex_label_category, shadowtext = shadowtext_category) + theme_void()
+    if (length(unique(y$Cluster)) > 1) {
+        p <- p + theme(legend.position="none")
+    }
+    p
 }

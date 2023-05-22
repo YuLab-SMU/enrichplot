@@ -11,7 +11,8 @@
   showCategory = 5,
   by = "geneRatio",
   split = NULL,
-  includeAll = TRUE
+  includeAll = TRUE,
+  ...
 )
 
 \method{fortify}{enrichResult}(
@@ -38,11 +39,11 @@
 
 \item{includeAll}{logical}
 
+\item{...}{additional parameter}
+
 \item{order}{logical}
 
 \item{drop}{logical}
-
-\item{...}{additional parameter}
 }
 \value{
 data.frame
