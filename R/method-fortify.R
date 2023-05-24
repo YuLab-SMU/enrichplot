@@ -16,7 +16,7 @@
 ##' @author Guangchuang Yu
 fortify.compareClusterResult <- function(model, data, showCategory=5,
                                          by="geneRatio", split=NULL,
-                                         includeAll=TRUE) {
+                                         includeAll=TRUE, ...) {
     clProf.df <- as.data.frame(model)
     .split <- split
     if ("core_enrichment" %in% colnames(clProf.df)) {
