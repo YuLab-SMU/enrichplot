@@ -1,4 +1,4 @@
-# enrichplot 1.20.0.991
+# enrichplot 1.20.1
 
 + fixed `cnetplot.compareClusterResult()` for only contains one cluster (2023-05-24, Wed, #243)
 
