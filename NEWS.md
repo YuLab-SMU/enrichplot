@@ -1,4 +1,11 @@
-# enrichplot\n\n+ Bioconductor RELEASE_3_17 (2023-05-03, Wed)\n
+# enrichplot 1.20.1
+
++ fixed `cnetplot.compareClusterResult()` for only contains one cluster (2023-05-24, Wed, #243)
+
+# enrichplot 1.20.0
+
++ Bioconductor RELEASE_3_17 (2023-05-03, Wed)
+
 # enrichplot 1.19.2
 
 + fix `emapplot()` for parameter mismatch (2023-02-20, Mon)
