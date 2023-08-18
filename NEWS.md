@@ -1,3 +1,6 @@
+# enrichplot 1.21.1.991
+remove the Suggestion of 'treeio' and 'tidytree'
+
 # enrichplot 1.20.1
 
 + fixed `cnetplot.compareClusterResult()` for only contains one cluster (2023-05-24, Wed, #243)
