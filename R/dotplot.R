@@ -283,6 +283,7 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     if (!is.null(facet)) {
         p <- p + facet_grid(.data[[facet]] ~ ., 
                 scales = "free", space = 'free',
+                switch = 'y',
                 labeller = ggplot2::label_wrap_gen(strip_width)) +
             theme(strip.text = element_text(size = 14))
     }
