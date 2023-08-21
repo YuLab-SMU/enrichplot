@@ -7,6 +7,8 @@
 \alias{upsetplot,enrichResult,ANY-method}
 \alias{upsetplot,gseaResult-method}
 \alias{upsetplot,gseaResult}
+\alias{upsetplot,compareClusterResult-method}
+\alias{upsetplot,compareClusterResult}
 \title{upsetplot method}
 \usage{
 upsetplot(x, ...)
@@ -14,6 +16,8 @@ upsetplot(x, ...)
 \S4method{upsetplot}{enrichResult}(x, n = 10, ...)
 
 \S4method{upsetplot}{gseaResult}(x, n = 10, ...)
+
+\S4method{upsetplot}{compareClusterResult}(x, n = 10, ...)
 }
 \arguments{
 \item{x}{object}

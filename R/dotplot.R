@@ -211,13 +211,14 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 ##' @rdname dotplot
 ##' @param object compareClusterResult object
 ##' @param by one of "geneRatio", "Percentage" and "count"
-##' @param split ONTOLOGY or NULL
+##' @param split ONTOLOGY or NULL, or set if intersect is TRUE
 ##' @param includeAll logical
 ##' @param font.size font size
 ##' @param title figure title
 ##' @param group a logical value, whether to connect the
 ##' nodes of the same group with wires.
 ##' @param shape a logical value, whether to use nodes of
+##' @param intersect add intersect information in set column 
 ##' different shapes to distinguish the group it belongs to
 ##' @param colorBy variable that used to color enriched terms,
 ##' e.g. 'pvalue', 'p.adjust' or 'qvalue'
@@ -226,9 +227,13 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                                          showCategory=5, by="geneRatio", size="geneRatio",
                                          split=NULL, includeAll=TRUE,
                                          font.size=12, title="", label_format = 30,
-                                         group = FALSE, shape = FALSE) {
+                                         group = FALSE, shape = FALSE, intersect=FALSE) {
     color <- NULL
     if (is.null(size)) size <- by ## by may deprecated in future release
+
+    if (intersect) {
+        object <- append_intersect(object)
+    }
 
     df <- fortify(object, showCategory=showCategory, by=size,
                   includeAll=includeAll, split=split)
@@ -274,10 +279,48 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         p <- p +  geom_point(aes_string(color = colorBy))
     }
 
-    p + scale_color_continuous(low="red", high="blue",
+    p <- p + scale_color_continuous(low="red", high="blue",
                     guide=guide_colorbar(reverse=TRUE)) +
         ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
         scale_size_continuous(range=c(3, 8)) +
         guides(size  = guide_legend(order = 1),
                 color = guide_colorbar(order = 2))
+
+    if (intersect) {
+        p <- p + facet_grid(.data$set ~ ., scales = "free", space = 'free') +
+            theme(strip.text = element_text(size = 14))
+    }
+    return(p)
 }
+
+
+append_intersect <- function(x) {
+    if (!inherits(x, 'compareClusterResult')) stop("x should be a compareClusterResult object")
+
+    d <- as.data.frame(x)
+    sets <- split(d$Description, d$Cluster)
+    yulab.utils::check_pkg('aplotExtra', 'for upsetplot of compareCluster Result')
+    tidy_main_subsets <- yulab.utils::get_fun_from_pkg('aplotExtra', 'tidy_main_subsets')
+
+    df <- tidy_main_subsets(sets, order.intersect.by = 'name', nintersects = 10, order.set.by = 'name')
+    nn <- names(sets)
+    df2 <- tidyr::unnest(df[, c('id', 'item')], cols="item")
+    so <- vapply(df2$id, function(x) {
+            paste(nn[as.numeric(strsplit(x, '/')[[1]])], collapse = " & ")
+        }, character(1)
+    )
+
+
+    set_info <- data.frame(
+        set = so, 
+        Description = df2$item
+    )
+    
+    d2 <- merge(d, set_info, by="Description")
+    d2$set <- factor(d2$set, levels=unique(so))
+    
+    x@compareClusterResult <- d2
+
+    return(x)
+}
+

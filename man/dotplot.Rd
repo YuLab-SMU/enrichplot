@@ -114,7 +114,8 @@ dotplot.compareClusterResult(
   title = "",
   label_format = 30,
   group = FALSE,
-  shape = FALSE
+  shape = FALSE,
+  intersect = FALSE
 )
 }
 \arguments{
@@ -134,7 +135,7 @@ the selected terms will be displayed.}
 \item{size}{variable that used to scale the sizes of categories,
 one of "geneRatio", "Percentage" and "count"}
 
-\item{split}{ONTOLOGY or NULL}
+\item{split}{ONTOLOGY or NULL, or set if intersect is TRUE}
 
 \item{font.size}{font size}
 
@@ -158,7 +159,9 @@ e.g. 'pvalue', 'p.adjust' or 'qvalue'}
 \item{group}{a logical value, whether to connect the
 nodes of the same group with wires.}
 
-\item{shape}{a logical value, whether to use nodes of
+\item{shape}{a logical value, whether to use nodes of}
+
+\item{intersect}{add intersect information in set column 
 different shapes to distinguish the group it belongs to}
 }
 \value{

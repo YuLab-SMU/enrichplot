@@ -87,3 +87,26 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
         xlab(NULL) + ylab(NULL) +
         ggupset::scale_x_upset(order_by = "degree")
 }
+
+## @rdname upsetplot-methods
+## @aliases upsetplot,compareClusterResult
+## @exportMethod upsetplot
+#setMethod("upsetplot", signature(x="compareClusterResult"),
+#          function(x, n=10, ...) {
+#              upsetplot.compareClusterResult(x, n, ...)
+#          })
+
+
+upsetplot.compareClusterResult <- function(x, n, ...) {
+    x <- append_intersect(x)
+
+    ## ggplot(x, aes(-10*log10(p.adjust), Description)) + geom_point() + facet_grid(set~., scales="free")
+
+    ggplot(x, aes(.data$Cluster, .data$Description), showCategory=n) + 
+        geom_point(aes(size=-10*log10(.data$p.adjust), color=.data$Cluster)) + 
+        facet_grid(set~., scales = "free", space = 'free') + guides(color = "none") +
+        theme_dose(font.size = 12) +
+        theme(strip.text = element_text(size = 14)) +
+        xlab(NULL) + ylab(NULL) 
+}
+

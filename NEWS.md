@@ -1,3 +1,7 @@
+# enrichplot 1.20.1.001
+
++ introduce 'intersect' parameter in `dotplot()` method for `compareClusterResult`. If `intersect = TRUE`, the dots will be separated by enriched pathway intersection among clusters (2023-08-21, Mon)
+
 # enrichplot 1.20.1
 
 + fixed `cnetplot.compareClusterResult()` for only contains one cluster (2023-05-24, Wed, #243)
