@@ -1,6 +1,6 @@
-# enrichplot 1.20.1.001
+# enrichplot 1.20.1.002
 
-+ introduce 'intersect' parameter in `dotplot()` method for `compareClusterResult`. If `intersect = TRUE`, the dots will be separated by enriched pathway intersection among clusters (2023-08-21, Mon)
++ introduce 'facet' parameter in `dotplot()` method for `compareClusterResult`. If `facet = "intersect"`, the dots will be separated by enriched pathway intersection among clusters. It can set to other variable that can be used for splitting the figure (e.g., "category" for KEGG results) (2023-08-21, Mon)
 
 # enrichplot 1.20.1
 

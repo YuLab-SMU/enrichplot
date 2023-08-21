@@ -338,10 +338,12 @@ get_label_diss <- function(dimension, label_location) {
 #' @noRd
 #' @importFrom yulab.utils str_wrap
 default_labeller <- function(n) {
-    function(str){
+    fun <- function(str){
         str <- gsub("_", " ", str)
         yulab.utils::str_wrap(str, n)
     }
+    
+    structure(fun, class = "labeller")
 }
 
 # from hadley wickham in "https://r.789695.n4.nabble.com/Suppressing-output-e-g-from-cat-td859876.html"

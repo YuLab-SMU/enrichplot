@@ -211,15 +211,16 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 ##' @rdname dotplot
 ##' @param object compareClusterResult object
 ##' @param by one of "geneRatio", "Percentage" and "count"
-##' @param split ONTOLOGY or NULL, or set if intersect is TRUE
+##' @param split apply `showCategory` to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing
 ##' @param includeAll logical
 ##' @param font.size font size
 ##' @param title figure title
 ##' @param group a logical value, whether to connect the
 ##' nodes of the same group with wires.
 ##' @param shape a logical value, whether to use nodes of
-##' @param intersect add intersect information in set column 
 ##' different shapes to distinguish the group it belongs to
+##' @param facet apply `facet_grid` to the plot by specified variable, e.g., "ONTOLOGY", "category" and "intersect".
+##' @param strip_width width of strip text, a.k.a facet label.
 ##' @param colorBy variable that used to color enriched terms,
 ##' e.g. 'pvalue', 'p.adjust' or 'qvalue'
 ##' @importFrom ggplot2 facet_grid
@@ -227,11 +228,11 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                                          showCategory=5, by="geneRatio", size="geneRatio",
                                          split=NULL, includeAll=TRUE,
                                          font.size=12, title="", label_format = 30,
-                                         group = FALSE, shape = FALSE, intersect=FALSE) {
+                                         group = FALSE, shape = FALSE, facet=NULL, strip_width=15) {
     color <- NULL
     if (is.null(size)) size <- by ## by may deprecated in future release
 
-    if (intersect) {
+    if (!is.null(facet) && facet == "intersect") {
         object <- append_intersect(object)
     }
 
@@ -244,6 +245,7 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     if(is.function(label_format)) {
         label_func <- label_format
     }
+
     if (size %in% c("rowPercentage", "count", "geneRatio")) {
         by2 <- switch(size, rowPercentage = "Percentage",
                             count         = "Count",
@@ -254,15 +256,6 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
 
     p <- ggplot(df, aes_string(x = x, y = "Description", size = by2)) +
         scale_y_discrete(labels = label_func)
-
-    ## show multiply GO enrichment result in separate panels
-    #if ("ONTOLOGY" %in% colnames(df) && length(unique(df$ONTOLOGY)) > 1){
-    #    p = p + facet_grid(
-    #        ONTOLOGY ~ .,
-    #        scales = "free",
-    #        space = "free"
-    #    )
-    #}
 
     if (group) {
         p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) +
@@ -286,8 +279,11 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         guides(size  = guide_legend(order = 1),
                 color = guide_colorbar(order = 2))
 
-    if (intersect) {
-        p <- p + facet_grid(.data$set ~ ., scales = "free", space = 'free') +
+
+    if (!is.null(facet)) {
+        p <- p + facet_grid(.data[[facet]] ~ ., 
+                scales = "free", space = 'free',
+                labeller = ggplot2::label_wrap_gen(strip_width)) +
             theme(strip.text = element_text(size = 14))
     }
     return(p)
@@ -312,12 +308,12 @@ append_intersect <- function(x) {
 
 
     set_info <- data.frame(
-        set = so, 
+        intersect = so, 
         Description = df2$item
     )
     
     d2 <- merge(d, set_info, by="Description")
-    d2$set <- factor(d2$set, levels=unique(so))
+    d2$intersect <- factor(d2$intersect, levels=unique(so))
     
     x@compareClusterResult <- d2
 

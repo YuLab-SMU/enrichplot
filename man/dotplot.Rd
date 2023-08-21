@@ -115,7 +115,8 @@ dotplot.compareClusterResult(
   label_format = 30,
   group = FALSE,
   shape = FALSE,
-  intersect = FALSE
+  facet = NULL,
+  strip_width = 15
 )
 }
 \arguments{
@@ -135,7 +136,7 @@ the selected terms will be displayed.}
 \item{size}{variable that used to scale the sizes of categories,
 one of "geneRatio", "Percentage" and "count"}
 
-\item{split}{ONTOLOGY or NULL, or set if intersect is TRUE}
+\item{split}{apply `showCategory` to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing}
 
 \item{font.size}{font size}
 
@@ -159,10 +160,12 @@ e.g. 'pvalue', 'p.adjust' or 'qvalue'}
 \item{group}{a logical value, whether to connect the
 nodes of the same group with wires.}
 
-\item{shape}{a logical value, whether to use nodes of}
-
-\item{intersect}{add intersect information in set column 
+\item{shape}{a logical value, whether to use nodes of
 different shapes to distinguish the group it belongs to}
+
+\item{facet}{apply `facet_grid` to the plot by specified variable, e.g., "ONTOLOGY", "category" and "intersect".}
+
+\item{strip_width}{width of strip text, a.k.a facet label.}
 }
 \value{
 plot

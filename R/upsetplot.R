@@ -104,7 +104,7 @@ upsetplot.compareClusterResult <- function(x, n, ...) {
 
     ggplot(x, aes(.data$Cluster, .data$Description), showCategory=n) + 
         geom_point(aes(size=-10*log10(.data$p.adjust), color=.data$Cluster)) + 
-        facet_grid(set~., scales = "free", space = 'free') + guides(color = "none") +
+        facet_grid(intersect ~ ., scales = "free", space = 'free') + guides(color = "none") +
         theme_dose(font.size = 12) +
         theme(strip.text = element_text(size = 14)) +
         xlab(NULL) + ylab(NULL) 
