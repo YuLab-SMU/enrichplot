@@ -295,26 +295,40 @@ append_intersect <- function(x) {
     if (!inherits(x, 'compareClusterResult')) stop("x should be a compareClusterResult object")
 
     d <- as.data.frame(x)
-    sets <- split(d$Description, d$Cluster)
-    yulab.utils::check_pkg('aplotExtra', 'for upsetplot of compareCluster Result')
-    tidy_main_subsets <- yulab.utils::get_fun_from_pkg('aplotExtra', 'tidy_main_subsets')
+    # sets <- split(d$Description, d$Cluster)
+    # yulab.utils::check_pkg('aplotExtra', 'for upsetplot of compareCluster Result')
+    # tidy_main_subsets <- yulab.utils::get_fun_from_pkg('aplotExtra', 'tidy_main_subsets')
 
-    df <- tidy_main_subsets(sets, order.intersect.by = 'name', nintersects = 10, order.set.by = 'name')
-    nn <- names(sets)
-    df2 <- tidyr::unnest(df[, c('id', 'item')], cols="item")
-    so <- vapply(df2$id, function(x) {
-            paste(nn[as.numeric(strsplit(x, '/')[[1]])], collapse = " & ")
-        }, character(1)
-    )
+    # df <- tidy_main_subsets(sets, order.intersect.by = 'name', nintersects = 10, order.set.by = 'name')
+    # nn <- names(sets)
+    # df2 <- tidyr::unnest(df[, c('id', 'item')], cols="item")
+    # so <- vapply(df2$id, function(x) {
+    #         paste(nn[as.numeric(strsplit(x, '/')[[1]])], collapse = " & ")
+    #     }, character(1)
+    # )
 
+
+    # set_info <- data.frame(
+    #     intersect = so, 
+    #     Description = df2$item
+    # )
+    
+
+    so <- vapply(split(d$Cluster, d$Description), 
+        FUN = paste, 
+        FUN.VALUE = character(1),
+        collapse = " & ")
 
     set_info <- data.frame(
         intersect = so, 
-        Description = df2$item
+        Description = names(so)
     )
-    
+
     d2 <- merge(d, set_info, by="Description")
-    d2$intersect <- factor(d2$intersect, levels=unique(so))
+    n <- levels(d2$Cluster)
+    cc <- yulab.utils::combinations(2)
+    lv <- vapply(cc, function(i) paste(n[i], collapse = " & "), character(1))
+    d2$intersect <- factor(d2$intersect, levels=lv)
     
     x@compareClusterResult <- d2
 
