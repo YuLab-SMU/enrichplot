@@ -326,7 +326,7 @@ append_intersect <- function(x) {
 
     d2 <- merge(d, set_info, by="Description")
     n <- levels(d2$Cluster)
-    cc <- yulab.utils::combinations(2)
+    cc <- yulab.utils::combinations(length(n))
     lv <- vapply(cc, function(i) paste(n[i], collapse = " & "), character(1))
     d2$intersect <- factor(d2$intersect, levels=lv)
     
