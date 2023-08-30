@@ -213,6 +213,7 @@ adj_axis <- function(p, drResult) {
 ##' @param pie proportion of clusters in the pie chart.
 ##' @param drfun The function used for dimension reduction.
 ##' @param dr.params list, the parameters of tidydr::dr.
+##' @importFrom rlang check_installed
 ##' @noRd
 get_drResult <- function(x, showCategory, split = NULL, pie = NULL, drfun, dr.params) {
     distance_mat <- build_dist(x = x, showCategory = showCategory, split = split, pie = pie)
@@ -222,6 +223,7 @@ get_drResult <- function(x, showCategory, split = NULL, pie = NULL, drfun, dr.pa
          "set to default `drfun = 'stats::cmdscale'`")
     if (is.null(drResult$drdata)) {
         message(wrongMessage)
+        check_installed('tidydr', 'for `get_drResult()`.')
         drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
     }
     drResult
