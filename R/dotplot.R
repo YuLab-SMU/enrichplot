@@ -222,6 +222,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 ##' @param colorBy variable that used to color enriched terms,
 ##' e.g. 'pvalue', 'p.adjust' or 'qvalue'
 ##' @importFrom ggplot2 facet_grid
+##' @importFrom rlang check_installed  
 dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust",
                                          showCategory=5, by="geneRatio", size="geneRatio",
                                          split=NULL, includeAll=TRUE,
@@ -263,6 +264,8 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) +
           ggnewscale::new_scale_colour()
     }
+
+    check_installed('ggstar', 'for `dotplot.compareClusterResult()`.')
 
     if (shape) {
         ggstar <- "ggstar"
