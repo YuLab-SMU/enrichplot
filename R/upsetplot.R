@@ -62,6 +62,7 @@ upsetplot.enrichResult <- function(x, n=10, ...) {
 
 ##' @importFrom ggplot2 geom_violin
 ##' @importFrom ggplot2 geom_jitter
+##' @importFrom rlang check_installed
 upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     n <- update_n(x, n)
     geneSets <- extract_geneSets(x, n)
@@ -70,6 +71,7 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     d <- list2df(geneSets)
 
     category <- split(d[,1], d[, 2])
+    check_installed('tibble', 'for `upsetplot.gseaResult()`.')
     y <- tibble::tibble(Description = category,
                       gene = names(category),
                       foldChange = x@geneList[names(category)])
@@ -79,7 +81,8 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     } else {
         ly_dist <- geom_violin()
     }
-
+    
+    check_installed('ggupset', 'for `upsetplot.gseaResult()`.')
     ggplot(y, aes_(x = ~Description, y = ~foldChange)) +
         ly_dist +
         geom_jitter(width = .2, alpha = .6) +

@@ -440,7 +440,7 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
         return(p)
     }
 
-    check_installed('ggrepel', 'for `add_group_label`.')
+    check_installed('ggrepel', 'for `add_group_label()`.')
 
     if (shadowtext) {
         p <- p + ggrepel::geom_text_repel(data = label_location,
@@ -547,7 +547,7 @@ add_ellipse <- function(p, group_legend, label_style,
     names(show_legend) <- c("fill", "color") 
     ellipse_style <- match.arg(ellipse_style, c("ggforce", "polygon"))
     
-    check_installed('ggforce', 'for `add_ellipse`.')
+    check_installed('ggforce', 'for `add_ellipse()`.')
     
     if (ellipse_style == "ggforce") {
         if (label_style == "shadowtext") {

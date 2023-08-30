@@ -620,7 +620,7 @@ add_cladelab <- function(p, nWords, label_format_cladelab,
     cluster_label <- label_func_cladelab(cluster_label)
     n_color <- length(levels(cluster_color)) - length(cluster_color)
     if (is.null(group_color)) {
-        check_installed('scales', 'for `add_cladelab`.')
+        check_installed('scales', 'for `add_cladelab()`.')
 	color2 <- scales::hue_pal()(length(roots) + n_color)
         if (n_color > 0) color2 <- color2[-seq_len(n_color)]
     } else {
