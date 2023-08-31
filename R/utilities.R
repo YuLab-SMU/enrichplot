@@ -35,10 +35,12 @@ as.data.frame.compareClusterResult <- function(x, ...) {
 ##' The function only works for compareClusterResult
 ##'
 ##' @importFrom DOSE geneID
+##' @importFrom rlang check_installed
 ##' @param y a data.frame converted from compareClusterResult
 ##' @return a data.frame
 ##' @noRd
 prepare_pie_gene <- function(y) {
+    check_installed('tibble', 'for `prepare_pie_gene()`.')
     gene_pie <- tibble::as_tibble(y[,c("Cluster", "Description", "geneID")])
     gene_pie$geneID <- strsplit(gene_pie$geneID, '/')
     gene_pie2 <- as.data.frame(tidyr::unnest(gene_pie, cols=geneID))
@@ -106,12 +108,14 @@ prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
 ##' @title color_palette
 ##' @param colors colors of length >=2
 ##' @return color vector
+##' @importFrom rlang check_installed
 ##' @export
 ##' @examples
 ##' color_palette(c("red", "yellow", "green"))
 ##' @author guangchuang yu
 color_palette <- function(colors) {
     # has_package("grDevices")
+    check_installed('grDevices', 'for `color_palette()`.')
     grDevices::colorRampPalette(colors)(n = 299)
 }
 

@@ -217,13 +217,13 @@ adj_axis <- function(p, drResult) {
 ##' @noRd
 get_drResult <- function(x, showCategory, split = NULL, pie = NULL, drfun, dr.params) {
     distance_mat <- build_dist(x = x, showCategory = showCategory, split = split, pie = pie)
+    check_installed('tidydr', 'for `get_drResult()`.')
     drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
     wrongMessage <- paste("Wrong drfun parameter or unsupported",
          "dimensionality reduction method;",
          "set to default `drfun = 'stats::cmdscale'`")
     if (is.null(drResult$drdata)) {
         message(wrongMessage)
-        check_installed('tidydr', 'for `get_drResult()`.')
         drResult <- tidydr::dr(distance_mat, stats::cmdscale, eig = TRUE)
     }
     drResult
