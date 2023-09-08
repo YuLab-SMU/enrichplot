@@ -559,8 +559,8 @@ treeplot.compareClusterResult <-  function(x,
         paths <- pData$label[order(pData$y, decreasing = TRUE)] %>% .[!is.na(.)]
         dotdata <- dotdata[dotdata$Description %in% paths, ]
         dotdata <- dplyr::select(dotdata, Description, dplyr::everything())
-        check_installed('ggtreeExtra', 'for `treeplot.compareClusterResult()`.')
-	p <- p + ggnewscale::new_scale_colour() + 
+        check_installed("ggtreeExtra", "for `treeplot()` with ` clusterPanel = 'dotplot'`.")
+	    p <- p + ggnewscale::new_scale_colour() + 
             ggtreeExtra::geom_fruit(data = dotdata, geom = geom_point,
                        mapping = aes_string(x = "Cluster", y = "Description", 
                                      size = "Count", color = color),

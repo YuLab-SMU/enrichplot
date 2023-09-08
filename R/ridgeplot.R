@@ -75,7 +75,7 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
         label_func <- label_format
     }
 
-    check_installed('ggridges', 'for `ridgeplot.gseaResult()`.')
+    check_installed('ggridges', 'for `ridgeplot()`.')
 
     ggplot(gs2val.df, aes_string(x="value", y="category", fill=fill)) +
         ggridges::geom_density_ridges() +

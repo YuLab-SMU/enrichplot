@@ -217,7 +217,7 @@ adj_axis <- function(p, drResult) {
 ##' @noRd
 get_drResult <- function(x, showCategory, split = NULL, pie = NULL, drfun, dr.params) {
     distance_mat <- build_dist(x = x, showCategory = showCategory, split = split, pie = pie)
-    check_installed('tidydr', 'for `get_drResult()`.')
+    check_installed('tidydr', 'for `get_drResult()`, which is an internal function.')
     drResult <- do.call(tidydr::dr, c(list(data = distance_mat, fun = drfun), dr.params))
     wrongMessage <- paste("Wrong drfun parameter or unsupported",
          "dimensionality reduction method;",

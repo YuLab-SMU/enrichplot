@@ -48,7 +48,7 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
         GOANCESTOR <- getAncestors(x@ontology)
     }
     
-    check_installed('AnnotationDbi', 'for `goplot.enrichResult()`.')
+    check_installed('AnnotationDbi', 'for `goplot()`.')
 
     anc <- AnnotationDbi::mget(id, GOANCESTOR)
     ca <- anc[[1]]

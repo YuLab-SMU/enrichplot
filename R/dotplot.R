@@ -263,9 +263,9 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
           ggnewscale::new_scale_colour()
     }
 
-    check_installed('ggstar', 'for `dotplot.compareClusterResult()`.')
 
     if (shape) {
+        check_installed('ggstar', 'for `dotplot()` with `shape = TRUE`.')
         ggstar <- "ggstar"
         require(ggstar, character.only=TRUE)
         # p <- p + ggsymbol::geom_symbol(aes_string(symbol = "Cluster", fill = colorBy)) +

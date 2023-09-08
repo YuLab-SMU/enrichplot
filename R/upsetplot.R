@@ -55,8 +55,8 @@ upsetplot.enrichResult <- function(x, n=10, ...) {
 
     ## upsetR::upset(as.data.frame(dat), nsets=n, ...)
     d <- list2df(glist)
-    check_installed('tibble', 'for `upsetplot.enrichResult()`.')
-    check_installed('ggupset', 'for `upsetplot.enrichResult()`.')
+    check_installed('tibble', 'for `upsetplot()`.')
+    check_installed('ggupset', 'for `upsetplot()`.')
     res <- tibble::tibble(Description = split(d[,1], d[,2]))
     ggplot(res, aes_(x = ~Description)) + geom_bar() +
         theme_dose(font.size = 12) +
@@ -75,7 +75,7 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     d <- list2df(geneSets)
 
     category <- split(d[,1], d[, 2])
-    check_installed('tibble', 'for `upsetplot.gseaResult()`.')
+    check_installed('tibble', 'for `upsetplot()`.')
     y <- tibble::tibble(Description = category,
                       gene = names(category),
                       foldChange = x@geneList[names(category)])
@@ -86,7 +86,7 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
         ly_dist <- geom_violin()
     }
     
-    check_installed('ggupset', 'for `upsetplot.gseaResult()`.')
+    check_installed('ggupset', 'for `upsetplot()`.')
     ggplot(y, aes_(x = ~Description, y = ~foldChange)) +
         ly_dist +
         geom_jitter(width = .2, alpha = .6) +

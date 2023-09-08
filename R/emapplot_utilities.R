@@ -440,8 +440,7 @@ add_group_label <- function(label_style, repel, shadowtext, p, label_location,
         return(p)
     }
 
-    check_installed('ggrepel', 'for `add_group_label()`.')
-
+    check_installed('ggrepel', 'for `add_group_label()` with `repel = TRUE`.')  
     if (shadowtext) {
         p <- p + ggrepel::geom_text_repel(data = label_location,
             aes_(x =~ x, y =~ y, label =~ label), colour = "black",

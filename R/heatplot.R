@@ -80,7 +80,7 @@ heatplot.enrichResult <- function(x, showCategory = 30, symbol = "rect", foldCha
     reverselog_trans <- function(base = exp(1)) {
         trans <- function(x) -log(x, base)
    
-        check_installed('scales', 'for `heatplotenrichResult()`.')
+        check_installed('scales', 'for `heatplot()`.')
     
         inv <- function(x) base^(-x)
         scales::trans_new(paste0("reverselog-", format(base)), trans, inv, 
