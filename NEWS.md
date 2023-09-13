@@ -1,6 +1,3 @@
-# enrichplot 1.21.1.991
-remove the Suggestion of 'treeio' and 'tidytree'
-
 # enrichplot 1.21.2.001
 
 + use `check_installed()` to check package dependency (2023-09-08, Fri, #254)
