@@ -211,7 +211,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 ##' @rdname dotplot
 ##' @param object compareClusterResult object
 ##' @param by one of "geneRatio", "Percentage" and "count"
-##' @param split ONTOLOGY or NULL
+##' @param split apply `showCategory` to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing
 ##' @param includeAll logical
 ##' @param font.size font size
 ##' @param title figure title
@@ -219,16 +219,23 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 ##' nodes of the same group with wires.
 ##' @param shape a logical value, whether to use nodes of
 ##' different shapes to distinguish the group it belongs to
+##' @param facet apply `facet_grid` to the plot by specified variable, e.g., "ONTOLOGY", "category" and "intersect".
+##' @param strip_width width of strip text, a.k.a facet label.
 ##' @param colorBy variable that used to color enriched terms,
 ##' e.g. 'pvalue', 'p.adjust' or 'qvalue'
 ##' @importFrom ggplot2 facet_grid
+##' @importFrom rlang check_installed  
 dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust",
                                          showCategory=5, by="geneRatio", size="geneRatio",
                                          split=NULL, includeAll=TRUE,
                                          font.size=12, title="", label_format = 30,
-                                         group = FALSE, shape = FALSE) {
+                                         group = FALSE, shape = FALSE, facet=NULL, strip_width=15) {
     color <- NULL
     if (is.null(size)) size <- by ## by may deprecated in future release
+
+    if (!is.null(facet) && facet == "intersect") {
+        object <- append_intersect(object)
+    }
 
     df <- fortify(object, showCategory=showCategory, by=size,
                   includeAll=includeAll, split=split)
@@ -239,6 +246,7 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     if(is.function(label_format)) {
         label_func <- label_format
     }
+
     if (size %in% c("rowPercentage", "count", "geneRatio")) {
         by2 <- switch(size, rowPercentage = "Percentage",
                             count         = "Count",
@@ -250,21 +258,14 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     p <- ggplot(df, aes_string(x = x, y = "Description", size = by2)) +
         scale_y_discrete(labels = label_func)
 
-    ## show multiply GO enrichment result in separate panels
-    #if ("ONTOLOGY" %in% colnames(df) && length(unique(df$ONTOLOGY)) > 1){
-    #    p = p + facet_grid(
-    #        ONTOLOGY ~ .,
-    #        scales = "free",
-    #        space = "free"
-    #    )
-    #}
-
     if (group) {
         p <- p + geom_line(aes_string(color = "Cluster", group = "Cluster"), size=.3) +
           ggnewscale::new_scale_colour()
     }
 
+
     if (shape) {
+        check_installed('ggstar', 'for `dotplot()` with `shape = TRUE`.')
         ggstar <- "ggstar"
         require(ggstar, character.only=TRUE)
         # p <- p + ggsymbol::geom_symbol(aes_string(symbol = "Cluster", fill = colorBy)) +
@@ -274,10 +275,66 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         p <- p +  geom_point(aes_string(color = colorBy))
     }
 
-    p + scale_color_continuous(low="red", high="blue",
+    p <- p + scale_color_continuous(low="red", high="blue",
                     guide=guide_colorbar(reverse=TRUE)) +
         ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
         scale_size_continuous(range=c(3, 8)) +
         guides(size  = guide_legend(order = 1),
                 color = guide_colorbar(order = 2))
+
+
+    if (!is.null(facet)) {
+        p <- p + facet_grid(.data[[facet]] ~ ., 
+                scales = "free", space = 'free',
+                switch = 'y',
+                labeller = ggplot2::label_wrap_gen(strip_width)) +
+            theme(strip.text = element_text(size = 14))
+    }
+    return(p)
 }
+
+
+append_intersect <- function(x) {
+    if (!inherits(x, 'compareClusterResult')) stop("x should be a compareClusterResult object")
+
+    d <- as.data.frame(x)
+    # sets <- split(d$Description, d$Cluster)
+    # yulab.utils::check_pkg('aplotExtra', 'for upsetplot of compareCluster Result')
+    # tidy_main_subsets <- yulab.utils::get_fun_from_pkg('aplotExtra', 'tidy_main_subsets')
+
+    # df <- tidy_main_subsets(sets, order.intersect.by = 'name', nintersects = 10, order.set.by = 'name')
+    # nn <- names(sets)
+    # df2 <- tidyr::unnest(df[, c('id', 'item')], cols="item")
+    # so <- vapply(df2$id, function(x) {
+    #         paste(nn[as.numeric(strsplit(x, '/')[[1]])], collapse = " & ")
+    #     }, character(1)
+    # )
+
+
+    # set_info <- data.frame(
+    #     intersect = so, 
+    #     Description = df2$item
+    # )
+    
+
+    so <- vapply(split(d$Cluster, d$Description), 
+        FUN = paste, 
+        FUN.VALUE = character(1),
+        collapse = " & ")
+
+    set_info <- data.frame(
+        intersect = so, 
+        Description = names(so)
+    )
+
+    d2 <- merge(d, set_info, by="Description")
+    n <- levels(d2$Cluster)
+    cc <- yulab.utils::combinations(length(n))
+    lv <- vapply(cc, function(i) paste(n[i], collapse = " & "), character(1))
+    d2$intersect <- factor(d2$intersect, levels=lv)
+    
+    x@compareClusterResult <- d2
+
+    return(x)
+}
+

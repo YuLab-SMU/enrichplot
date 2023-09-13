@@ -114,7 +114,9 @@ dotplot.compareClusterResult(
   title = "",
   label_format = 30,
   group = FALSE,
-  shape = FALSE
+  shape = FALSE,
+  facet = NULL,
+  strip_width = 15
 )
 }
 \arguments{
@@ -134,7 +136,7 @@ the selected terms will be displayed.}
 \item{size}{variable that used to scale the sizes of categories,
 one of "geneRatio", "Percentage" and "count"}
 
-\item{split}{ONTOLOGY or NULL}
+\item{split}{apply `showCategory` to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing}
 
 \item{font.size}{font size}
 
@@ -160,6 +162,10 @@ nodes of the same group with wires.}
 
 \item{shape}{a logical value, whether to use nodes of
 different shapes to distinguish the group it belongs to}
+
+\item{facet}{apply `facet_grid` to the plot by specified variable, e.g., "ONTOLOGY", "category" and "intersect".}
+
+\item{strip_width}{width of strip text, a.k.a facet label.}
 }
 \value{
 plot
