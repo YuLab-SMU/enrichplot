@@ -299,9 +299,9 @@ cnetplot.enrichResult <- function(x,
             geom_node_point(aes_(color=~as.numeric(as.character(color)), size=~size),
                 data = NULL, alpha = I(alpha_gene)) +
             scale_size(range=c(3, 8) * cex_category) +  
-            scale_colour_gradient2(name = "fold change", low = "#327eba",
-                                   mid = "white", high = "#e06663",
-                                   guide = guide_colorbar(order = 2))
+            scale_colour_gradient2(name = "fold change") + 
+            set_enrichplot_color(.fun = "scale_colour_gradient2")
+            
 
     } else {
         V(g)$color <- color_gene

@@ -17,31 +17,58 @@ autofacet <- function(by = 'row', scales = "free", levels = NULL) {
 ##' @importFrom ggplot2 scale_color_continuous
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 scale_color_gradientn
+##' @importFrom ggplot2 scale_fill_gradient2
+##' @importFrom ggplot2 scale_color_gradient2
+##' @importFrom ggplot2 scale_fill_gradient
+##' @importFrom ggplot2 scale_color_gradient
 set_enrichplot_color <- function(colors = getOption("enrichplot.colours", default = c("#e06663", "#327eba")), 
-                                type = "color") {
+                                # type = "color") {
+                                .fun = "scale_fill_continuous") {
 
-    type <- match.arg(type, c("color", "colour", "fill"))
-
+    # type <- match.arg(type, c("color", "colour", "fill"))
+    .fun <- gsub("colour", "color", .fun)
+    .fun <- match.arg(.fun, c("scale_fill_gradientn", "scale_color_gradientn", 
+                              "scale_fill_continuous", "scale_color_continuous",
+                              "scale_fill_gradient2", "scale_color_gradient2", 
+                              "scale_fill_gradient", "scale_color_gradient"))
+    
     n <- length(colors)
     stopifnot(n >= 2)
-    if (n == 2) {
-        params <- list(low = colors[1], high = colors[2])
-        if (type == 'fill') {
-            .fun <- scale_fill_continuous
-        } else {
-            .fun <- scale_color_continuous
-        }
-    } else {
-        params <- list(colors = colors) 
-        if (type == "fill") {
-            .fun <- scale_fill_gradientn
-        } else {
-            .fun <- scale_color_gradientn
-        }   
+    if (.fun %in% c("scale_fill_gradientn", "scale_color_gradientn")) {
+        params <- list(colors = colors)
     }
     
-    params$guide <- guide_colorbar(reverse=TRUE, order=1)
+    if (.fun %in% c("scale_fill_continuous", "scale_color_continuous", 
+                   "scale_fill_gradient", "scale_color_gradient")) {
+        params <- list(low = colors[1], high = colors[2])
+    }
 
+    if (.fun %in% c("scale_fill_gradient2", "scale_color_gradient2")) {
+        midColor <- "white"
+        if (n > 2) {
+            midColor = colors[3]
+        } 
+        params <- list(low = colors[1], high = colors[2], mid = midColor)
+    }
+  
+    # if (n == 2) {
+    #     params <- list(low = colors[1], high = colors[2])
+    #     if (type == 'fill') {
+    #         .fun <- scale_fill_continuous
+    #     } else {
+    #         .fun <- scale_color_continuous
+    #     }
+    # } else {
+    #     params <- list(colors = colors) 
+    #     if (type == "fill") {
+    #         .fun <- scale_fill_gradientn
+    #     } else {
+    #         .fun <- scale_color_gradientn
+    #     }   
+    # }
+    
+    params$guide <- guide_colorbar(reverse=TRUE, order=1)
+    .fun <- eval(parse(text=.fun))
     do.call(.fun, params)
 }
 
