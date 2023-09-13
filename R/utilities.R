@@ -13,15 +13,37 @@ autofacet <- function(by = 'row', scales = "free", levels = NULL) {
             class = "autofacet")
 }
 
+##' @importFrom ggplot2 scale_fill_continuous
+##' @importFrom ggplot2 scale_color_continuous
+##' @importFrom ggplot2 scale_fill_gradientn
+##' @importFrom ggplot2 scale_color_gradientn
+set_enrichplot_color <- function(colors = getOption("enrichplot.colours", default = c("#e06663", "#327eba")), 
+                                type = "color") {
 
+    type <- match.arg(type, c("color", "colour", "fill"))
 
-# has_package <- function(pkg){
-    # if (!requireNamespace(pkg, quietly  = TRUE)) {
-        # stop(paste0(pkg, " needed for this function to work. Please install it."),
-            # call. = FALSE)
-    # }
-# }
+    n <- length(colors)
+    stopifnot(n >= 2)
+    if (n == 2) {
+        params <- list(low = colors[1], high = colors[2])
+        if (type == 'fill') {
+            .fun <- scale_fill_continuous
+        } else {
+            .fun <- scale_color_continuous
+        }
+    } else {
+        params <- list(colors = colors) 
+        if (type == "fill") {
+            .fun <- scale_fill_gradientn
+        } else {
+            .fun <- scale_color_gradientn
+        }   
+    }
+    
+    params$guide <- guide_colorbar(reverse=TRUE, order=1)
 
+    do.call(.fun, params)
+}
 
 
 ##' @method as.data.frame compareClusterResult

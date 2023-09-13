@@ -1,5 +1,6 @@
-# enrichplot 1.21.2.001
+# enrichplot 1.21.2.002
 
++ `set_enrichplot_color()`, a helper function to set colors (2023-09-13, Wed)
 + use `check_installed()` to check package dependency (2023-09-08, Fri, #254)
 
 # enrichplot 1.21.2
