@@ -547,7 +547,7 @@ treeplot.compareClusterResult <-  function(x,
         p <- p + ggnewscale::new_scale_fill() # +
             # coord_equal(xlim = xlim)
         p <- ggtree::gheatmap(p, ID_Cluster_mat) + 
-            scale_fill_continuous(low="red", high="blue", 
+            scale_fill_continuous(low="#e06663", high="#327eba", 
                                   guide = guide_colorbar(reverse=TRUE),
                                   trans = "log10",
                                   name = color) 
@@ -566,7 +566,7 @@ treeplot.compareClusterResult <-  function(x,
                                      size = "Count", color = color),
                        pwidth = 0.5, offset = -0.2,
                        axis.params = list(axis = "x", text.size = 3, line.alpha = 0)) +
-            scale_colour_continuous(low="red", high="blue", 
+            scale_colour_continuous(low="#e06663", high="#327eba", 
                                   guide=guide_colorbar(reverse=TRUE),
                                   trans = "log10",
                                   name = color) # + 
@@ -727,7 +727,7 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
     if (add_tippoint) {
         p <- p + ggnewscale::new_scale_colour() +
             geom_tippoint(aes(color = color, size = count)) + 
-            scale_colour_continuous(low="red", high="blue", name = color, 
+            scale_colour_continuous(low="#e06663", high="#327eba", name = color, 
                 guide = guide_colorbar(reverse = TRUE))
     }
     ## add tiplab 

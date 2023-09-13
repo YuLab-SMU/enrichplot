@@ -58,7 +58,7 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust',
     if(colorBy %in% colnames(df)) {
         p <- ggplot(df, aes_string(x = x, y = "Description", fill = colorBy)) +
             theme_dose(font.size) +
-            scale_fill_continuous(low="red", high="blue", name = color,
+            scale_fill_continuous(low="#e06663", high="#327eba", name = color,
                                   guide=guide_colorbar(reverse=TRUE))
     } else {
         p <- ggplot(df, aes_string(x = x, y = "Description",

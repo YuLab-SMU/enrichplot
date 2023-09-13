@@ -35,7 +35,7 @@ setMethod("dotplot", signature(object = "gseaResult"),
                 
                 if (NES) {
                     p <- suppressMessages(p + aes_(color=~NES) + 
-                        scale_color_continuous(low="blue", high="red", name = "NES")
+                        scale_color_continuous(low="#327eba", high="#e06663", name = "NES")
                     )
                 }
                 return(p)
@@ -106,7 +106,7 @@ setMethod("dotplot", signature(object = "gseaResultList"),
               
               if (NES) {
                   p <- suppressMessages(p + aes_(color=~NES) + 
-                      scale_color_continuous(low="blue", high="red", name = "NES")
+                      scale_color_continuous(low="#327eba", high="#e06663", name = "NES")
                   )
               }
               return(p)
@@ -198,7 +198,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                           levels=rev(unique(df$Description[idx])))
     ggplot(df, aes_string(x=x, y="Description", size=size, color=colorBy)) +
         geom_point() +
-        scale_color_continuous(low="red", high="blue", name = color,
+        scale_color_continuous(low="#e06663", high="#327eba", name = color,
             guide=guide_colorbar(reverse=TRUE)) +
         scale_y_discrete(labels = label_func) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
@@ -270,12 +270,12 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         require(ggstar, character.only=TRUE)
         # p <- p + ggsymbol::geom_symbol(aes_string(symbol = "Cluster", fill = colorBy)) +
         p <- p + ggstar::geom_star(aes_string(starshape="Cluster", fill=colorBy)) +
-            scale_fill_continuous(low="red", high="blue", guide=guide_colorbar(reverse=TRUE))
+            scale_fill_continuous(low="#e06663", high="#327eba", guide=guide_colorbar(reverse=TRUE))
     }  else {
         p <- p +  geom_point(aes_string(color = colorBy))
     }
 
-    p <- p + scale_color_continuous(low="red", high="blue",
+    p <- p + scale_color_continuous(low="#e06663", high="#327eba",
                     guide=guide_colorbar(reverse=TRUE)) +
         ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
         scale_size_continuous(range=c(3, 8)) +
