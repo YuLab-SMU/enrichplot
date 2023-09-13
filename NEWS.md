@@ -1,7 +1,15 @@
 # enrichplot 1.21.1.991
 remove the Suggestion of 'treeio' and 'tidytree'
 
-# enrichplot 1.20.1
+# enrichplot 1.21.2.001
+
++ use `check_installed()` to check package dependency (2023-09-08, Fri, #254)
+
+# enrichplot 1.21.2
+
++ introduce 'facet' parameter in `dotplot()` method for `compareClusterResult`. If `facet = "intersect"`, the dots will be separated by enriched pathway intersection among clusters. It can set to other variable that can be used for splitting the figure (e.g., "category" for KEGG results) (2023-08-21, Mon)
+
+# enrichplot 1.21.1
 
 + fixed `cnetplot.compareClusterResult()` for only contains one cluster (2023-05-24, Wed, #243)
 

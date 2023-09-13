@@ -26,6 +26,7 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @import ggraph
 ##' @importFrom ggraph circle
 ##' @importFrom ggraph geom_node_label
+##' @importFrom rlang check_installed
 ##' @author Guangchuang Yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
                                 layout = "sugiyama", geom = "text", ...) {
@@ -47,6 +48,8 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
         GOANCESTOR <- getAncestors(x@ontology)
     }
     
+    check_installed('AnnotationDbi', 'for `goplot()`.')
+
     anc <- AnnotationDbi::mget(id, GOANCESTOR)
     ca <- anc[[1]]
     for (i in 2:length(anc)) {
