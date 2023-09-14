@@ -13,65 +13,76 @@ autofacet <- function(by = 'row', scales = "free", levels = NULL) {
             class = "autofacet")
 }
 
+get_enrichplot_color <- function(n = 2) {
+    colors <- getOption("enrichplot.colours")
+    if (!is.null(colors)) return(colors)
+
+    if (n != 2 || n != 3) stop("'n' should be 2 or 3")
+
+    colors = c("#e06663", "#327eba")
+    if (n == 2) return(colors)
+
+    if (n == 3) return(c(colors[1], "white", colors[2]))
+}
+
 ##' @importFrom ggplot2 scale_fill_continuous
 ##' @importFrom ggplot2 scale_color_continuous
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 scale_color_gradientn
-##' @importFrom ggplot2 scale_fill_gradient2
-##' @importFrom ggplot2 scale_color_gradient2
-##' @importFrom ggplot2 scale_fill_gradient
-##' @importFrom ggplot2 scale_color_gradient
-set_enrichplot_color <- function(colors = getOption("enrichplot.colours", default = c("#e06663", "#327eba")), 
-                                # type = "color") {
-                                .fun = "scale_fill_continuous") {
+set_enrichplot_color <- function(colors = get_enrichplot_color(2), 
+                                type = "color", name = NULL, .fun = NULL, ...) {
 
-    # type <- match.arg(type, c("color", "colour", "fill"))
-    .fun <- gsub("colour", "color", .fun)
-    .fun <- match.arg(.fun, c("scale_fill_gradientn", "scale_color_gradientn", 
-                              "scale_fill_continuous", "scale_color_continuous",
-                              "scale_fill_gradient2", "scale_color_gradient2", 
-                              "scale_fill_gradient", "scale_color_gradient"))
+
     
     n <- length(colors)
-    stopifnot(n >= 2)
-    if (.fun %in% c("scale_fill_gradientn", "scale_color_gradientn")) {
-        params <- list(colors = colors)
+    if (n < 2) {
+        stop("'colors' should be of length >= 2")
+    } else if (n == 2) {
+        params <- list(low = colors[1], high = colors[2])
+        fn_suffix <- "continuous"
+    } else if (n == 3) {
+        params <- list(low = colors[1], mid = colors[2], high = colors[3])
+        fn_suffix <- "gradient2"
+    } else {
+        params <- list(colors = colors) 
+        fn_suffix <- "gradientn"   
     }
     
-    if (.fun %in% c("scale_fill_continuous", "scale_color_continuous", 
-                   "scale_fill_gradient", "scale_color_gradient")) {
-        params <- list(low = colors[1], high = colors[2])
+    if (!is.null(.fun)) {
+        if (n == 3) { 
+            # should determine parameter for user selected functions: 'gradient2' or 'gradientn'
+            fn_type <- which_scale_fun(.fun)
+            if (fn_type == "gradientn") {
+                 params <- list(colors = colors) 
+            } else {
+                params <- list(low = colors[1], mid = colors[2], high = colors[3])
+            }
+        }
+    } else {
+        fn <- sprintf("scale_%s_%s", type, fn_suffix)
+        .fun <- getFromNamespace(fn, "ggplot2")
     }
 
-    if (.fun %in% c("scale_fill_gradient2", "scale_color_gradient2")) {
-        midColor <- "white"
-        if (n > 2) {
-            midColor = colors[3]
-        } 
-        params <- list(low = colors[1], high = colors[2], mid = midColor)
-    }
-  
-    # if (n == 2) {
-    #     params <- list(low = colors[1], high = colors[2])
-    #     if (type == 'fill') {
-    #         .fun <- scale_fill_continuous
-    #     } else {
-    #         .fun <- scale_color_continuous
-    #     }
-    # } else {
-    #     params <- list(colors = colors) 
-    #     if (type == "fill") {
-    #         .fun <- scale_fill_gradientn
-    #     } else {
-    #         .fun <- scale_color_gradientn
-    #     }   
-    # }
-    
     params$guide <- guide_colorbar(reverse=TRUE, order=1)
-    .fun <- eval(parse(text=.fun))
+    params$name <- name # no legend name setting by default as 'name = NULL'
+
+    params <- modifyList(params, list(...))
+
     do.call(.fun, params)
 }
 
+
+which_scale_fun <- function(.fun) {
+    params <- args(.fun) |> as.list() |> names()
+    if ("colours" %in% params) {
+        return("gradientn")
+    }
+    if ("mid" %in% params) {
+        return("gradient2")
+    }
+    # maybe need to determine whether is continuous or discrete
+    return("continuous")
+}
 
 ##' @method as.data.frame compareClusterResult
 ##' @export
