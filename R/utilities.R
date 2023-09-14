@@ -13,11 +13,23 @@ autofacet <- function(by = 'row', scales = "free", levels = NULL) {
             class = "autofacet")
 }
 
+get_enrichplot_color <- function(n = 2) {
+    colors <- getOption("enrichplot.colours")
+    if (!is.null(colors)) return(colors)
+
+    if (n != 2 || n != 3) stop("'n' should be 2 or 3")
+
+    colors = c("#e06663", "#327eba")
+    if (n == 2) return(colors)
+
+    if (n == 3) return(c(colors[1], "white", colors[2]))
+}
+
 ##' @importFrom ggplot2 scale_fill_continuous
 ##' @importFrom ggplot2 scale_color_continuous
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 scale_color_gradientn
-set_enrichplot_color <- function(colors = getOption("enrichplot.colours", default = c("#e06663", "#327eba")), 
+set_enrichplot_color <- function(colors = get_enrichplot_color(2), 
                                 type = "color", name = NULL, .fun = NULL, ...) {
 
     type <- match.arg(type, c("color", "colour", "fill"))
