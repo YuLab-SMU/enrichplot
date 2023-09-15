@@ -35,8 +35,8 @@ setMethod("dotplot", signature(object = "gseaResult"),
                 
                 if (NES) {
                     p <- suppressMessages(p + aes_(color=~NES) + 
-                        scale_fill_continuous(name = "NES") +
-                        set_enrichplot_color(.fun = "scale_fill_continuous")
+                        # scale_fill_continuous(name = "NES") +
+                        set_enrichplot_color(type = "fill", name = "NES")
                     )
                 }
                 return(p)
@@ -107,8 +107,8 @@ setMethod("dotplot", signature(object = "gseaResultList"),
               
               if (NES) {
                   p <- suppressMessages(p + aes_(color=~NES) + 
-                      scale_fill_continuous(name = "NES") + 
-                      set_enrichplot_color(.fun = "scale_fill_continuous")
+                      # scale_fill_continuous(name = "NES") + 
+                      set_enrichplot_color(type = "fill", name = "NES")
                   )
               }
               return(p)
@@ -200,8 +200,8 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                           levels=rev(unique(df$Description[idx])))
     ggplot(df, aes_string(x=x, y="Description", size=size, fill=colorBy)) +
         geom_point(shape = 21) +
-        scale_fill_continuous(name = color) +
-        set_enrichplot_color(.fun = "scale_fill_continuous") + 
+        # scale_fill_continuous(name = color) +
+        set_enrichplot_color(type = "fill", name = color) + 
         scale_y_discrete(labels = label_func) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
         scale_size(range=c(3, 8))
@@ -270,12 +270,12 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         require(ggstar, character.only=TRUE)
         # p <- p + ggsymbol::geom_symbol(aes_string(symbol = "Cluster", fill = colorBy)) +
         p <- p + ggstar::geom_star(aes_string(starshape="Cluster", fill=colorBy)) +
-            set_enrichplot_color(.fun = "scale_fill_continuous")
+            set_enrichplot_color(type = "fill")
     }  else {
         p <- p +  geom_point(shape = 21, aes_string(color = colorBy))
     }
 
-    p <- p + set_enrichplot_color(.fun = "scale_fill_continuous") +
+    p <- p + set_enrichplot_color(type = "fill") +
         ylab(NULL) + ggtitle(title) + DOSE::theme_dose(font.size) +
         scale_size_continuous(range=c(3, 8))
 

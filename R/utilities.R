@@ -17,7 +17,7 @@ get_enrichplot_color <- function(n = 2) {
     colors <- getOption("enrichplot.colours")
     if (!is.null(colors)) return(colors)
 
-    if (n != 2 || n != 3) stop("'n' should be 2 or 3")
+    if (n != 2 && n != 3) stop("'n' should be 2 or 3")
 
     colors = c("#e06663", "#327eba")
     if (n == 2) return(colors)
@@ -32,7 +32,7 @@ get_enrichplot_color <- function(n = 2) {
 set_enrichplot_color <- function(colors = get_enrichplot_color(2), 
                                 type = "color", name = NULL, .fun = NULL, ...) {
 
-
+    type <- match.arg(type, c("color", "colour", "fill"))
     
     n <- length(colors)
     if (n < 2) {

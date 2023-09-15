@@ -598,8 +598,8 @@ add_category_nodes <- function(p, cex_category, color) {
                                     size=~size, alpha=~I(alpha))) +
         scale_size_continuous(name = "number of genes",
                               range = c(3, 8) * cex_category) +
-        scale_fill_continuous(name = color) + 
-        set_enrichplot_color(.fun = "scale_fill_continuous") +
+        # scale_fill_continuous(name = color) + 
+        set_enrichplot_color(type = "fill", name = color) +
         theme(legend.title = element_text(size = 10),
                    legend.text  = element_text(size = 10)) +
         theme(panel.background = element_blank()) 
@@ -674,8 +674,8 @@ add_pie_node <- function(p, ID_Cluster_mat, node_label,
             p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
                 cex_label_node = cex_label_category, shadowtext = shadowtext)
         }
-        p <- p + scale_color_continuous(name = color) +
-            set_enrichplot_color(.fun = "scale_color_continuous") + 
+        p <- p + # scale_color_continuous(name = color) +
+            set_enrichplot_color(name = color) + 
             scale_size(range=c(3, 8) * cex_category)  +labs(title= title)  
     }  
     return(p)
