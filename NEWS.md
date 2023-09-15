@@ -1,6 +1,7 @@
-# enrichplot 1.21.2.002
+# enrichplot 1.21.2.003
 
-+ change default color: from c("red", "blue") to c("#e06663", "#327eba") (2023_9_13, Wed)
++ fix aes value of dotplot (2023-09-15, Fri)
++ change default color: from c("red", "blue") to c("#e06663", "#327eba") (2023-9-13, Wed)
 + `set_enrichplot_color()`, a helper function to set colors (2023-09-13, Wed)
 + use `check_installed()` to check package dependency (2023-09-08, Fri, #254)
 

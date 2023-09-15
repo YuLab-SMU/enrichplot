@@ -34,7 +34,7 @@ setMethod("dotplot", signature(object = "gseaResult"),
                         label_format = label_format, ...)
                 
                 if (NES) {
-                    p <- suppressMessages(p + aes_(color=~NES) + 
+                    p <- suppressMessages(p + aes_(fill=~NES) + 
                         # scale_fill_continuous(name = "NES") +
                         set_enrichplot_color(type = "fill", name = "NES")
                     )
@@ -106,7 +106,7 @@ setMethod("dotplot", signature(object = "gseaResultList"),
                       label_format = label_format, ...)
               
               if (NES) {
-                  p <- suppressMessages(p + aes_(color=~NES) + 
+                  p <- suppressMessages(p + aes_(fill=~NES) + 
                       # scale_fill_continuous(name = "NES") + 
                       set_enrichplot_color(type = "fill", name = "NES")
                   )
@@ -148,7 +148,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
                              label_format = 30, decreasing=TRUE) {
-
+    enrichplot_point_shape <- 21
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {
         x <- "GeneRatio"
@@ -199,7 +199,8 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
     df$Description <- factor(df$Description,
                           levels=rev(unique(df$Description[idx])))
     ggplot(df, aes_string(x=x, y="Description", size=size, fill=colorBy)) +
-        geom_point(shape = 21) +
+        geom_point() +
+        aes(shape = I(enrichplot_point_shape)) + 
         # scale_fill_continuous(name = color) +
         set_enrichplot_color(type = "fill", name = color) + 
         scale_y_discrete(labels = label_func) +
@@ -230,6 +231,7 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                                          split=NULL, includeAll=TRUE,
                                          font.size=12, title="", label_format = 30,
                                          group = FALSE, shape = FALSE, facet=NULL, strip_width=15) {
+    enrichplot_point_shape <- 21                                        
     color <- NULL
     if (is.null(size)) size <- by ## by may deprecated in future release
 
@@ -272,7 +274,8 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
         p <- p + ggstar::geom_star(aes_string(starshape="Cluster", fill=colorBy)) +
             set_enrichplot_color(type = "fill")
     }  else {
-        p <- p +  geom_point(shape = 21, aes_string(color = colorBy))
+        p <- p +  geom_point(aes_string(fill = colorBy)) + 
+            aes(shape = I(enrichplot_point_shape))
     }
 
     p <- p + set_enrichplot_color(type = "fill") +
