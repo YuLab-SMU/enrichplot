@@ -49,9 +49,7 @@ Suggests:
     gridExtra,
     ggrepel (>= 0.9.0),
     ggstar,
-    treeio,
     scales,
-    tidytree,
     ggtreeExtra,
     tidydr
 Remotes: 

@@ -100,9 +100,10 @@ heatplot.enrichResult <- function(x, showCategory = 30, symbol = "rect", foldCha
 
     if (!is.null(foldChange)) {
             p <- p + aes_(fill = ~foldChange) + 
-                # scale_fill_continuous(low="blue", high="red", name = "fold change")
-                scale_fill_gradient2(name = "fold change", low = "blue",
-                                   mid = "white", high = "red")
+                set_enrichplot_color(colors = get_enrichplot_color(3), type = "fill")
+                # scale_fill_gradient2(name = "fold change", low = "#327eba",
+                #                    mid = "white", high = "#e06663") +
+
     }
     
 

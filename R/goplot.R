@@ -77,16 +77,15 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
         ## geom_node_point(size = 5, aes_(fill=~color), shape=21) +
         geom_node_point(size = 5, aes_(color=~color)) +
         theme_void() +
-        scale_color_continuous(low="red", high="blue", name = color,
-                               guide=guide_colorbar(reverse=TRUE))
-    ## scale_color_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE))
+        # scale_color_continuous(name = color) + 
+        set_enrichplot_color(name = color)
+
 
     if (geom == "label") {
         p <- p + geom_node_label(aes_(label=~Term, fill=~color), 
                                  repel=TRUE, segment.size = segment.size) +
-            scale_fill_continuous(low="red", high="blue", name = color,
-                guide=guide_colorbar(reverse=TRUE), na.value="white")
-        ## scale_fill_gradientn(name = color, colors=sig_palette, guide=guide_colorbar(reverse=TRUE), na.value='white')
+            # scale_fill_continuous(name = color, na.value="white") + 
+            set_enrichplot_color(type = "fill", name = color, na.value="white")
     } else {
         p <- p + geom_node_text(aes_(label=~Term), repel=TRUE, segment.size = segment.size)
     }
