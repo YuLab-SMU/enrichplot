@@ -166,7 +166,7 @@ prepare_pie_data <- function(pie_data, pie = "equal",type = "category") {
             ID_Cluster_mat[pie_data[i,2],pie_data[i,1]] <- 1
         } else {
             ID_Cluster_mat[pie_data[i,3],pie_data[i,1]] <- 1
-    }
+        }
 
     }
     return(ID_Cluster_mat)
