@@ -25,10 +25,21 @@ get_enrichplot_color <- function(n = 2) {
     if (n == 3) return(c(colors[1], "white", colors[2]))
 }
 
+##' helper function to set color for enrichplot
+##' 
+##' 
+##' @title set_enrichplot_color
+##' @param colors user provided color vector
+##' @param type one of 'color', 'colour' or 'fill'
+##' @param name name of the color legend
+##' @param .fun force to use user provided color scale function
+##' @param ... additional parameter that passed to the color scale function
+##' @return a color scale
 ##' @importFrom ggplot2 scale_fill_continuous
 ##' @importFrom ggplot2 scale_color_continuous
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom ggplot2 scale_color_gradientn
+##' @export
 set_enrichplot_color <- function(colors = get_enrichplot_color(2), 
                                 type = "color", name = NULL, .fun = NULL, ...) {
 
