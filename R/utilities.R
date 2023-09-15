@@ -179,6 +179,7 @@ color_palette <- function(colors) {
     grDevices::colorRampPalette(colors)(n = 299)
 }
 
+enrichplot_point_shape <- ggfun:::enrichplot_point_shape
 
 sig_palette <- color_palette(c("red", "yellow", "blue"))
 

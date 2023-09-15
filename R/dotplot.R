@@ -148,7 +148,6 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
                              label_format = 30, decreasing=TRUE) {
-    enrichplot_point_shape <- 21
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     if (x == "geneRatio" || x == "GeneRatio") {
         x <- "GeneRatio"
@@ -198,7 +197,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 
     df$Description <- factor(df$Description,
                           levels=rev(unique(df$Description[idx])))
-    ggplot(df, aes_string(x=x, y="Description", size=size, fill=colorBy)) +
+    p <- ggplot(df, aes_string(x=x, y="Description", size=size, fill=colorBy)) +
         geom_point() +
         aes(shape = I(enrichplot_point_shape)) + 
         # scale_fill_continuous(name = color) +
@@ -206,6 +205,9 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
         scale_y_discrete(labels = label_func) +
         ylab(NULL) + ggtitle(title) + theme_dose(font.size) +
         scale_size(range=c(3, 8))
+    
+    class(p) <- c("enrichplotDot", class(p))
+    return(p)
 }
 
 
@@ -230,8 +232,7 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                                          showCategory=5, by="geneRatio", size="geneRatio",
                                          split=NULL, includeAll=TRUE,
                                          font.size=12, title="", label_format = 30,
-                                         group = FALSE, shape = FALSE, facet=NULL, strip_width=15) {
-    enrichplot_point_shape <- 21                                        
+                                         group = FALSE, shape = FALSE, facet=NULL, strip_width=15) {                                   
     color <- NULL
     if (is.null(size)) size <- by ## by may deprecated in future release
 
@@ -290,6 +291,9 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
                 labeller = ggplot2::label_wrap_gen(strip_width)) +
             theme(strip.text = element_text(size = 14))
     }
+
+    class(p) <- c("enrichplotDot", class(p))
+    
     return(p)
 }
 
