@@ -308,6 +308,7 @@ treeplot.enrichResult <- function(x,
 ##'         \item \code{pie} pUsed only when ClusterPanel = "pie", 
 ##'         proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
 ##'         \item \code{legend_n} number of circle in legend.
+##'         \item \code{colnames_angle} set the angle of colnames.
 ##'     }
 ##' @importFrom ggtree nodepie
 ##' @importFrom ggtree geom_inset
@@ -349,7 +350,8 @@ treeplot.compareClusterResult <-  function(x,
                                       clusterPanel.params = list(
                                           clusterPanel = "heatMap",    
                                           pie = "equal",                
-                                          legend_n = 3                  
+                                          legend_n = 3,
+                                          colnames_angle = 0                  
                                       ),
                                       offset.params = list(
                                           bar_tree = rel(1),           
@@ -398,7 +400,8 @@ treeplot.compareClusterResult <-  function(x,
     default.clusterPanel.params <- list(
         clusterPanel = "heatMap", 
         pie = "equal",            
-        legend_n = 3              
+        legend_n = 3,
+        colnames_angle = 0              
     )
 
     default.offset.params <- list(
@@ -467,6 +470,7 @@ treeplot.compareClusterResult <-  function(x,
     geneClusterPanel <- clusterPanel.params[["clusterPanel"]]
     pie <- clusterPanel.params[["pie"]]
     legend_n <- clusterPanel.params[["legend_n"]]
+    colnames_angle <- clusterPanel.params[["colnames_angle"]]
     hilight <- hilight.params[["hilight"]]
     align <- hilight.params[["align"]]
     offset <- offset.params[["bar_tree"]]
@@ -531,7 +535,7 @@ treeplot.compareClusterResult <-  function(x,
                 x = 0.8, y = 0.1, n = legend_n,
                 labeller = function(x) round(sum(p_data$count) * x^2 / cex_category)) +
             # coord_equal(xlim = xlim) +
-            labs(fill = "Cluster")
+            labs(fill = "Cluster") + coord_equal()
     }
     
     if (geneClusterPanel == "heatMap") {
@@ -546,7 +550,7 @@ treeplot.compareClusterResult <-  function(x,
         
         p <- p + ggnewscale::new_scale_fill() # +
             # coord_equal(xlim = xlim)
-        p <- ggtree::gheatmap(p, ID_Cluster_mat) + 
+        p <- ggtree::gheatmap(p, ID_Cluster_mat, colnames_angle = colnames_angle) + 
             # scale_fill_continuous(trans = "log10", name = color) +
             set_enrichplot_color(type = "fill", trans = "log10", name = color)
             
@@ -563,13 +567,15 @@ treeplot.compareClusterResult <-  function(x,
             ggtreeExtra::geom_fruit(data = dotdata, geom = geom_point,
                        mapping = aes_string(x = "Cluster", y = "Description", 
                                      size = "Count", color = color),
-                       pwidth = 0.5, offset = -0.2,
-                       axis.params = list(axis = "x", text.size = 3, line.alpha = 0)) +
+                       # pwidth = 0.5, offset = -0.2,
+                       pwidth = 0.06*ncol(ID_Cluster_mat),
+                       axis.params = list(axis = "x", text.size = 3, line.alpha = 0, text.angle = colnames_angle)) +
             # scale_colour_continuous(trans = "log10", name = color) + 
             set_enrichplot_color(trans = "log10", name = color)
             
     }
-    p + ggtree::hexpand(ratio = hexpand) + coord_equal()
+    p + ggtree::hexpand(ratio = hexpand)
+
 }
 
 
@@ -679,10 +685,10 @@ group_tree <- function(hc, clus, d, offset_tiplab, nWords,
         offset_tiplab <- unclass(offset_tiplab)
         if (geneClusterPanel == "pie" || is.null(geneClusterPanel)) {
         ## 1.5 * max(radius_of_pie)
-            offset_tiplab <- offset_tiplab * 1.5 * max(sqrt(d$count / sum(d$count) * cex_category))
+            offset_tiplab <- offset_tiplab * .5 * max(sqrt(d$count / sum(d$count) * cex_category))
         }  else if (geneClusterPanel == "heatMap") {
             ## Close to the width of the tree
-            offset_tiplab <- offset_tiplab * 0.16 * ncol(ID_Cluster_mat) * rangeX
+            offset_tiplab <- offset_tiplab * 0.2 * ncol(ID_Cluster_mat) * rangeX
         } else if (geneClusterPanel == "dotplot") {
             ## Close to the width of the tree
             offset_tiplab <- offset_tiplab * 0.09 * ncol(ID_Cluster_mat) * rangeX
