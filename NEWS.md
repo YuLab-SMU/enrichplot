@@ -1,6 +1,6 @@
 # enrichplot 1.23.0.991
 
-+ fix `treeplot()` to adapt to the current version of ggtree and ggtreeExtra. (2023-10-28, Sat)
++ fix `treeplot()` to compatible with the current version of ggtree and ggtreeExtra. (2023-10-28, Sat)
 + add clusterPanel.params[["colnames_angle"]] parameter to set the angle of colnames. (2023-10-28, Sat)
 
 # enrichplot 1.22.0
