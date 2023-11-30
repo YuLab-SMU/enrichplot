@@ -69,7 +69,8 @@ treeplot.compareClusterResult(
   cluster.params = list(method = "ward.D", n = 5, color = NULL, label_words_n = 4,
     label_format = 30),
   hilight.params = list(hilight = TRUE, align = "both"),
-  clusterPanel.params = list(clusterPanel = "heatMap", pie = "equal", legend_n = 3),
+  clusterPanel.params = list(clusterPanel = "heatMap", pie = "equal", legend_n = 3,
+    colnames_angle = 0),
   offset.params = list(bar_tree = rel(1), tiplab = rel(1), extend = 0.3, hexpand = 0.1),
   ...
 )
@@ -200,6 +201,7 @@ clusterPanel.params control the attributes of cluster panel, it can be referred 
         \item \code{pie} pUsed only when ClusterPanel = "pie", 
         proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'.
         \item \code{legend_n} number of circle in legend.
+        \item \code{colnames_angle} set the angle of colnames.
     }}
 }
 \value{
