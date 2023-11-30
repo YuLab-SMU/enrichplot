@@ -42,7 +42,8 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
     if (inherits(showCategory, 'numeric')) {
         selected <- seq_len(showCategory)
     } else if (inherits(showCategory, "character")) {
-        selected <- showCategory
+        ii <- match(showCategory, x@result$Description)
+        selected <- x@result[ii, "ID"]
     } else {
         warning("showCategory should be a number of pathways or a vector of selected pathways")
     }

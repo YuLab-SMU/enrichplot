@@ -274,7 +274,9 @@ setGeneric("heatplot",
 ##' @title ridgeplot
 ##' @rdname ridgeplot
 ##' @param x gseaResult object
-##' @param showCategory number of categories for plotting
+##' @param showCategory A number or a vector of terms. If it is a number, 
+##' the first n terms will be displayed. If it is a vector of terms, 
+##' the selected terms will be displayed.
 ##' @param fill one of "pvalue", "p.adjust", "qvalue"
 ##' @param core_enrichment whether only using core_enriched genes
 ##' @param label_format a numeric value sets wrap length, alternatively a

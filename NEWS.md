@@ -1,3 +1,7 @@
+# enrichplot 1.23.1.991
+
++ fix the issue in `ridgeplot(showCategory)` : support a vector of Description, not ID(2023-12-1, Fri, #193)
+
 # enrichplot 1.23.1
 
 + `ridgeplot()` supports passing a vector of selected pathways via the 'showCategory' parameter (2023-11-30, Thu, #193)
