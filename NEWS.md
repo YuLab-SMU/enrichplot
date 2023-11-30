@@ -1,5 +1,6 @@
-# enrichplot 1.23.0.991
+# enrichplot 1.23.1
 
++ `ridgeplot()` supports passing a vector of selected pathways via the 'showCategory' parameter (2023-11-30, Thu, #193)
 + fix `treeplot()` to compatible with the current version of ggtree and ggtreeExtra. (2023-10-28, Sat)
 + add clusterPanel.params[["colnames_angle"]] parameter to set the angle of colnames. (2023-10-28, Sat)
 
