@@ -11,17 +11,10 @@
 get_similarity_matrix <- function(y, geneSets, method, semData = NULL) {
     id <- y[, "ID"]
     geneSets <- geneSets[id]
-    n <- nrow(y)
     y_id <- unlist(strsplit(y$ID[1], ":"))[1]
     ## Choose the method to calculate the similarity
     if (method == "JC") {
-        w <- matrix(NA, nrow=n, ncol=n)
-        colnames(w) <- rownames(w) <- y$Description
-        for (i in seq_len(n-1)) {
-            for (j in (i+1):n) {
-                w[i,j] <- overlap_ratio(geneSets[id[i]], geneSets[id[j]])
-            }
-        }
+        w <- .cal_jc_similarity(geneSets, id = id, name = y$Description)
         return(w)
     }
 

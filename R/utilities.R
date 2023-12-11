@@ -202,6 +202,26 @@ overlap_ratio <- function(x, y) {
     length(intersect(x, y))/length(unique(c(x,y)))
 }
 
+.cal_jc_similarity <- function(gsetlist, id = NULL, name=NULL){
+    if (is.null(id)) {
+        id <- names(gsetlist)
+    }
+    n <- length(id)
+    w <- matrix(NA, nrow=n, ncol=n)
+    if (is.null(name)) {
+        name <- id 
+    }
+    colnames(w) <- rownames(w) <- name
+    for (i in seq_len(n-1)) {
+        for (j in (i+1):n) {
+            w[i,j] <- overlap_ratio(gsetlist[id[i]], gsetlist[id[j]])
+        }
+    }
+    w[lower.tri(w)] <- t(w)[lower.tri(t(w))]
+    diag(w) <- 1    
+    return(w)
+}
+
 fc_readable <- function(x, foldChange = NULL) {
     if (is.null(foldChange))
         return(NULL)
