@@ -77,7 +77,8 @@ barplot.enrichResult <- function(height, x="Count", color='p.adjust',
         ggtitle(title) + ylab(NULL) # + xlab(NULL)
 }
 
-
+##' @method barplot compareClusterResult
+##' @export
 barplot.compareClusterResult <- function(height, color="p.adjust",
                                          showCategory=5, by="geneRatio",
                                          includeAll=TRUE, font.size=12,

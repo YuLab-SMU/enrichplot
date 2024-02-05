@@ -98,7 +98,7 @@ setMethod("treeplot", signature(x = "compareClusterResult"),
 ##'         \item \code{label_format} A numeric value sets wrap length, alternatively a
 ##'         custom function to format axis labels.
 ##'     }
-##' @importFrom ggtree `%<+%`
+##' @importFrom ggtree %<+%
 ##' @importFrom ggtree ggtree
 ##' @importFrom ggtree geom_tiplab
 ##' @importFrom ggtree geom_tippoint

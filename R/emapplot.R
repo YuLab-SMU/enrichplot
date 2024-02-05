@@ -28,8 +28,8 @@ setMethod("emapplot", signature(x = "compareClusterResult"),
 ##' @importFrom igraph add_vertices
 ##' @importFrom igraph graph.data.frame
 ##' @importFrom igraph delete.edges
-##' @importFrom igraph V "V<-"
-##' @importFrom igraph E "E<-"
+##' @importFrom igraph V V<-
+##' @importFrom igraph E E<-
 ##' @importFrom reshape2 melt
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 scale_color_gradientn
@@ -416,7 +416,7 @@ emapplot.enrichResult <- function(x,
 
 
 ##' @rdname emapplot
-##' @importFrom igraph E "E<-"
+##' @importFrom igraph E E<-
 ##' @importFrom ggplot2 aes_
 ##' @importFrom ggplot2 guide_colorbar
 ##' @importFrom ggplot2 scale_size

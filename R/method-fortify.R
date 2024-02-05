@@ -149,18 +149,18 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
 ##' @export
 fortify.enrichResult <- function(model, data, showCategory=5, by = "Count",
                                  order=FALSE, drop=FALSE, split=NULL, ...) {
-    fortify.internal(model, data, showCategory, by, order, drop, split, ...)
+    fortify_internal(model, data, showCategory, by, order, drop, split, ...)
 }
 
 ##' @method fortify gseaResult
 ##' @export
 fortify.gseaResult <- function(model, data, showCategory=5, by = "Count",
                                order=FALSE, drop=FALSE, split=NULL, ...) {
-    fortify.internal(model, data, showCategory, by, order, drop, split, ...)
+    fortify_internal(model, data, showCategory, by, order, drop, split, ...)
 }
 
 
-fortify.internal <- function(model, data, showCategory=5, by = "Count",
+fortify_internal <- function(model, data, showCategory=5, by = "Count",
                              order=FALSE, drop=FALSE, split=NULL, ...) {
     res <- as.data.frame(model)
     res <- res[!is.na(res$Description), ]
