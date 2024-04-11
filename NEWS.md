@@ -1,6 +1,6 @@
 
 
-# enrichplot 1.23.1.992
+# enrichplot 1.23.2
 
 + separate the JC similarity method (2023-12-11, Mon, #265)
 + fix the issue in `ridgeplot(showCategory)` : support a vector of Description, not ID(2023-12-1, Fri, #193)
