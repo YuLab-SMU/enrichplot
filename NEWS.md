@@ -1,3 +1,7 @@
+# enrichplot 1.24.0
+
++ Bioconductor RELEASE_3_19 (2024-05-15, Wed)
+
 
 
 # enrichplot 1.23.2
