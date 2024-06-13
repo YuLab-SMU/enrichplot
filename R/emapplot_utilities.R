@@ -357,12 +357,12 @@ adj_layout <- function(g, layout, coords) {
 ##' @title Convert gene IDs to igraph object
 ##' @param inputList A list of gene IDs.
 ##' @return A igraph object.
-##' @importFrom igraph graph.data.frame
+##' @importFrom igraph graph_from_data_frame
 ##' @author Guangchuang Yu
 ##' @noRd
-list2graph <- function(inputList) {
+list2graph <- function(inputList, directed = FALSE) {
     x <- list2df(inputList)
-    g <- graph.data.frame(x, directed=FALSE)
+    g <- graph_from_data_frame(x, directed=directed)
     return(g)
 }
 
