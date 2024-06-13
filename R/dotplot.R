@@ -1,6 +1,6 @@
 ##' @rdname dotplot
 ##' @exportMethod dotplot
-##' @author guangchuang yu
+##' @author Guangchuang Yu
 setMethod("dotplot", signature(object = "enrichResult"),
           function(object, x = "GeneRatio", color = "p.adjust",
                    showCategory=10, size = NULL,
@@ -70,7 +70,7 @@ setMethod("dotplot", signature(object="compareClusterResult"),
 ##' @rdname dotplot
 ##' @exportMethod dotplot
 ##' @aliases dotplot,enrichResultList,ANY-method
-##' @author guangchuang yu
+##' @author Guangchuang Yu
 setMethod("dotplot", signature(object = "enrichResultList"),
           function(object, x = "GeneRatio", color = "p.adjust",
                    showCategory=10, size = NULL,
@@ -188,10 +188,7 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
         df <- dplyr::mutate(df, x = eval(parse(text=x)))
     }
 
-    label_func <- default_labeller(label_format)
-    if(is.function(label_format)) {
-        label_func <- label_format
-    }
+    label_func <- .label_format(label_format)
 
     idx <- order(df[[orderBy]], decreasing = decreasing)
 
@@ -208,6 +205,14 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
     
     class(p) <- c("enrichplotDot", class(p))
     return(p)
+}
+
+.label_format <- function(label_format = 30) {
+    label_func <- default_labeller(label_format)
+    if(is.function(label_format)) {
+        label_func <- label_format
+    } 
+    return(label_func)   
 }
 
 

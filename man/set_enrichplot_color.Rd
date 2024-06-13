@@ -9,6 +9,7 @@ set_enrichplot_color(
   type = "color",
   name = NULL,
   .fun = NULL,
+  reverse = TRUE,
   ...
 )
 }
@@ -20,6 +21,8 @@ set_enrichplot_color(
 \item{name}{name of the color legend}
 
 \item{.fun}{force to use user provided color scale function}
+
+\item{reverse}{whether reverse the color scheme, default is TRUE as it is more significant for lower pvalue}
 
 \item{...}{additional parameter that passed to the color scale function}
 }

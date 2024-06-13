@@ -201,5 +201,5 @@ dotplot for enrichment result
 }
 }
 \author{
-guangchuang yu
+Guangchuang Yu
 }

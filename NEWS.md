@@ -1,8 +1,10 @@
+# enrichplot 1.25.0.001
+
++ `volplot` to visualize ORA result using volcano plot (2024-06-13, Thu)
+
 # enrichplot 1.24.0
 
 + Bioconductor RELEASE_3_19 (2024-05-15, Wed)
-
-
 
 # enrichplot 1.23.2
 

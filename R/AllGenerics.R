@@ -260,13 +260,42 @@ setGeneric("gseaplot",
 ##' de <- names(geneList)[1:100]
 ##' x <- enrichDO(de)
 ##' heatplot(x)
-##' @author guangchuang yu
+##' @author Guangchuang Yu
 setGeneric("heatplot",
            function(x, showCategory = 30, ...)
                standardGeneric("heatplot")
            )
 
-
+##' volcano plot for enrichment result
+##'
+##'
+##' @title volplot
+##' @rdname volplot
+##' @param x enrichment result.
+##' @param color selected variable to color the dots
+##' @param xintercept value to set x intercept
+##' @param yintercept value to set y intercept
+##' @param showCategory number of most significant enriched terms or selected terms to 
+##'     display determined by the variable selected to color the dots
+##' @param label_format a numeric value sets wrap length, alternatively a
+##'     custom function to format axis labels.
+##' @param ... Additional parameters
+##' @export
+##' @return ggplot object
+##' @examples
+##' library(DOSE)
+##' data(geneList)
+##' de <- names(geneList)[1:100]
+##' x <- enrichDO(de)
+##' volplot(x)
+##' @author Guangchuang Yu
+setGeneric("volplot",
+           function(x, color = "zScore", 
+                xintercept = 1, yintercept = 2,  
+                showCategory = 5, label_format = 30, 
+                ...) 
+               standardGeneric("volplot")
+           )
 
 ##' ridgeline plot for GSEA result
 ##'

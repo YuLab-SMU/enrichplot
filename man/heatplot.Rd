@@ -53,7 +53,5 @@ x <- enrichDO(de)
 heatplot(x)
 }
 \author{
-guangchuang yu
-
 Guangchuang Yu
 }

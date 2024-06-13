@@ -33,6 +33,7 @@ get_enrichplot_color <- function(n = 2) {
 ##' @param type one of 'color', 'colour' or 'fill'
 ##' @param name name of the color legend
 ##' @param .fun force to use user provided color scale function
+##' @param reverse whether reverse the color scheme, default is TRUE as it is more significant for lower pvalue
 ##' @param ... additional parameter that passed to the color scale function
 ##' @return a color scale
 ##' @importFrom ggplot2 scale_fill_continuous
@@ -41,10 +42,10 @@ get_enrichplot_color <- function(n = 2) {
 ##' @importFrom ggplot2 scale_color_gradientn
 ##' @export
 set_enrichplot_color <- function(colors = get_enrichplot_color(2), 
-                                type = "color", name = NULL, .fun = NULL, ...) {
+                                type = "color", name = NULL, .fun = NULL, reverse=TRUE, ...) {
 
     type <- match.arg(type, c("color", "colour", "fill"))
-    
+    if (!reverse) colors = rev(colors)
     n <- length(colors)
     if (n < 2) {
         stop("'colors' should be of length >= 2")
@@ -74,7 +75,7 @@ set_enrichplot_color <- function(colors = get_enrichplot_color(2),
         .fun <- getFromNamespace(fn, "ggplot2")
     }
 
-    params$guide <- guide_colorbar(reverse=TRUE, order=1)
+    params$guide <- guide_colorbar(reverse=reverse, order=1)
     params$name <- name # no legend name setting by default as 'name = NULL'
 
     params <- modifyList(params, list(...))

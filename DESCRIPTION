@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 1.25.0
+Version: 1.25.0.001
 Authors@R: c(
     person(given = "Guangchuang", family = "Yu", email = "guangchuangyu@gmail.com",   role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
     person(given = "Erqiang",     family = "Hu", email = "13766876214@163.com",       role = "ctb", comment = c(ORCID = "0000-0002-1798-7513")),
@@ -9,7 +9,7 @@ Description: The 'enrichplot' package implements several visualization methods f
 Depends: R (>= 3.5.0)
 Imports:
     aplot (>= 0.2.1),
-    DOSE (>= 3.16.0),
+    DOSE (>= 3.31.2),
     ggfun (>= 0.1.3),
     ggnewscale,
     ggplot2,
