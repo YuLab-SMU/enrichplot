@@ -383,16 +383,15 @@ dotplot2 <- function(object, x="FoldEnrichment", vars = NULL, label = "auto", ..
         scale_x_continuous(labels = abs)
     
     p$layers <- rev(p$layers)
+    
+    if (is.null(label)) return (p)
 
     d <- dplyr::group_by(object, .data$Cluster) |> 
         dplyr::summarise(mid = max(abs(.data[[x]])) * sign(max(.data[[x]]))/2)
 
-    if (is.null(label)) return (p)
-
     if (label != "auto") {
         d$Cluster <- label[d$Cluster]
     }
-
 
     p + geom_text(aes(x=.data$mid, y=.4, label=.data$Cluster), 
                 data=d, inherit.aes = FALSE, size=5) + 
