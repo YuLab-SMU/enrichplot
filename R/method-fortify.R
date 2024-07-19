@@ -78,7 +78,7 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
 
     result <- result[result$Count != 0, ]
     result$Description <- factor(result$Description,
-                                 levels=rev(GOlevel[,2]))
+                                 levels=unique(rev(GOlevel[,2])))
     if (by=="rowPercentage") {
         Description <- Count <- NULL # to satisfy codetools
         result <- ddply(result,
@@ -102,7 +102,7 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
         result <- result[, colnames(result) != "Total"]
 
         result$Description <- factor(result$Description,
-                                     levels=rev(Termlevel))
+                                     levels=unique(rev(Termlevel)))
 
     } else if (by == "count") {
         ## nothing
