@@ -1,5 +1,6 @@
-# enrichplot 1.25.0.002
+# enrichplot 1.25.0.003
 
++ use `yulab.utils::yulab_msg()` for startup message (2024-07-26, Fri)
 + `dotplot2` to compare two selected clusters in 'compareClusterResult' object (2024-06-15, Sat)
 + `volplot` to visualize ORA result using volcano plot (2024-06-13, Thu)
 

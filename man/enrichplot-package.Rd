@@ -21,7 +21,6 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Erqiang Hu \email{13766876214@163.com} (\href{https://orcid.org/0000-0002-1798-7513}{ORCID}) [contributor]
   \item Chun-Hui Gao \email{gaospecial@gmail.com} (\href{https://orcid.org/0000-0002-1445-7939}{ORCID}) [contributor]
 }
 
