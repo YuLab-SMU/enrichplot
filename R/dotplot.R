@@ -248,8 +248,8 @@ dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust
     df <- fortify(object, showCategory=showCategory, by=size,
                   includeAll=includeAll, split=split)
 
-    if (by != "geneRatio")
-        df$GeneRatio <- parse_ratio(df$GeneRatio)
+    # if (by != "geneRatio")
+    #    df$GeneRatio <- parse_ratio(df$GeneRatio)
     label_func <- default_labeller(label_format)
     if(is.function(label_format)) {
         label_func <- label_format
