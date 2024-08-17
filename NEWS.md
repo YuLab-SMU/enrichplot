@@ -1,4 +1,4 @@
-# enrichplot 1.25.0.004
+# enrichplot 1.25.1
 
 + fixed GeneRatio in dotplot as character of fraction issue (2024-08-16, Fri, clusterProfiler#715)
 + use `yulab.utils::yulab_msg()` for startup message (2024-07-26, Fri)
