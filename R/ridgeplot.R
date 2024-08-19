@@ -26,10 +26,6 @@ ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
     if (!is(x, "gseaResult"))
         stop("currently only support gseaResult")
 
-    ## fill <- match.arg(fill, c("pvalue", "p.adjust", "qvalue"))
-    if (fill == "qvalue") {
-        fill <- "qvalues"
-    }
     if (!fill %in% colnames(x@result)) {
         stop("'fill' variable not available ...")
     }
