@@ -35,8 +35,8 @@
 ##' barplot(x)
 ##' # use `showCategory` to select the displayed terms. It can be a number of a vector of terms.
 ##' barplot(x, showCategory = 10)
-##' categorys <- c("pre-malignant neoplasm", "intestinal disease",
-##'                "breast ductal carcinoma", "non-small cell lung carcinoma")
+##' categorys <- c("urinary bladder cancer", "bronchiolitis obliterans",
+##'                "aortic aneurysm", "esophageal cancer")
 ##' barplot(x, showCategory = categorys)
 barplot.enrichResult <- function(height, x="Count", color='p.adjust',
                                  showCategory=8, font.size=12, title="",

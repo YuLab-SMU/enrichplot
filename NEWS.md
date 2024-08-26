@@ -1,7 +1,6 @@
-# enrichplot 1.25.1.001
+# enrichplot 1.25.2
 
 + fixed bug in `ridgeplot()` (2024-08-19, Mon, clusterProfiler#704)
-
 
 # enrichplot 1.25.1
 
