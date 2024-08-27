@@ -143,8 +143,8 @@ hplot <- function(x, geneSetID) {
     ggplot(gsdata, aes(.data$x, .data$runningScore)) + 
         ggHoriPlot::geom_horizon(origin='min', horizonscale=4) + 
         facet_grid(Description~.) +
-        #scale_fill_hcl(palette = 'Peach', reverse = T) +
-        ggHoriPlot::scale_fill_hcl(palette = 'BluGrn', reverse = T) +
+        #ggHoriPlot::scale_fill_hcl(palette = 'Peach', reverse = TRUE) +
+        ggHoriPlot::scale_fill_hcl(palette = 'BluGrn', reverse = TRUE) +
         theme_minimal() +
         ggfun::theme_noyaxis() +
         theme(
