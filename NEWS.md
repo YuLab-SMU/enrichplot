@@ -1,3 +1,7 @@
+# enrichplot 1.25.2.001
+
++ `hplot()`: Horizontal plot for GSEA result (2024-08-27, Tue)
+
 # enrichplot 1.25.2
 
 + fixed bug in `ridgeplot()` (2024-08-19, Mon, clusterProfiler#704)

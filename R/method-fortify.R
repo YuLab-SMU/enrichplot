@@ -114,6 +114,7 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
             if (("ONTOLOGY" %in% colnames(result)) && (length(unique(result$ONTOLOGY)) > 1)){
                 # do nothing
             } else {
+                gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
                 cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
                                  sep="")
                 lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
