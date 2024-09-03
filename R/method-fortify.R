@@ -110,11 +110,11 @@ fortify.compareClusterResult <- function(model, data, showCategory=5,
         ## for result of ORA
         # if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) {
         if (inherits(result$GeneRatio, "character") && grep("/", result$GeneRatio[1])) {
+            gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
             result$GeneRatio <- DOSE::parse_ratio(result$GeneRatio)
             if (("ONTOLOGY" %in% colnames(result)) && (length(unique(result$ONTOLOGY)) > 1)){
                 # do nothing
             } else {
-                gcsize <- as.numeric(sub("^\\d+/", "", as.character(result$GeneRatio)))
                 cluster <- paste(as.character(result$Cluster),"\n", "(", gcsize, ")",
                                  sep="")
                 lv <- unique(cluster)[order(as.numeric(unique(result$Cluster)))]
