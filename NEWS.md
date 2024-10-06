@@ -1,4 +1,4 @@
-# enrichplot 1.25.2.001
+# enrichplot 1.25.3
 
 + `hplot()`: Horizontal plot for GSEA result (2024-08-27, Tue)
 
