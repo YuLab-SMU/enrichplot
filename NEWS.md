@@ -1,4 +1,4 @@
-# enrichplot 1.25.3.001
+# enrichplot 1.25.4
 
 + fixed `goplot()` (2024-10-23, Wed, #297, #732, #718)
 
