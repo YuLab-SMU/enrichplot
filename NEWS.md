@@ -1,3 +1,7 @@
+# enrichplot 1.25.3.001
+
++ fixed `goplot()` (2024-10-23, Wed, #297, #732, #718)
+
 # enrichplot 1.25.3
 
 + `hplot()`: Horizontal plot for GSEA result (2024-08-27, Tue)

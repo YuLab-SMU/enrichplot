@@ -50,7 +50,7 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
     
     check_installed('AnnotationDbi', 'for `goplot()`.')
 
-    anc <- AnnotationDbi::mget(id, GOANCESTOR)
+    anc <- GOANCESTOR[id] # AnnotationDbi::mget(id, GOANCESTOR)
     ca <- anc[[1]]
     for (i in 2:length(anc)) {
         ca <- intersect(ca, anc[[i]])
