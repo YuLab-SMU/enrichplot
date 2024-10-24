@@ -1,5 +1,6 @@
-# enrichplot 1.25.4.001
+# enrichplot 1.25.4.002
 
++ re-export `ggtangle::cnetplot()` (2024-10-24, Thu)
 + remove `drag_network()` (2024-10-24, Thu)
 + new `cnetplot()` methods (2024-10-24, Thu)
 

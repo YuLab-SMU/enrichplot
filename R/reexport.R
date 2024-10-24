@@ -10,3 +10,6 @@ ggplot2::facet_grid
 ##' @export
 aplot::plot_list
 
+##' @importFrom ggtangle cnetplot
+##' @export
+ggtangle::cnetplot

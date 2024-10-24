@@ -1,3 +1,4 @@
+#' @importFrom ggtangle cnetplot
 #' @method cnetplot enrichResult
 #' @export
 #' @seealso
