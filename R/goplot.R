@@ -23,9 +23,6 @@ setMethod("goplot", signature(x = "gseaResult"),
 ##' @importFrom ggplot2 scale_fill_gradientn
 ##' @importFrom grid arrow
 ##' @importFrom grid unit
-##' @import ggraph
-##' @importFrom ggraph circle
-##' @importFrom ggraph geom_node_label
 ##' @importFrom rlang check_installed
 ##' @author Guangchuang Yu
 goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
@@ -48,9 +45,7 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
         GOANCESTOR <- getAncestors(x@ontology)
     }
     
-    check_installed('AnnotationDbi', 'for `goplot()`.')
-
-    anc <- GOANCESTOR[id] # AnnotationDbi::mget(id, GOANCESTOR)
+    anc <- GOANCESTOR[id] 
     ca <- anc[[1]]
     for (i in 2:length(anc)) {
         ca <- intersect(ca, anc[[i]])
@@ -66,29 +61,21 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
     node$color <- x[node$go_id, color]
     node$size <- sapply(geneSets[node$go_id], length)
 
-    g <- graph.data.frame(edge, directed=TRUE, vertices=node)
+    g <- graph_from_data_frame(edge, directed=TRUE, vertices=node)
     E(g)$relationship <- edge[,3]
 
-    p <- ggraph(g, layout=layout) +
-        ## geom_edge_link(aes_(color = ~relationship), arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm')) +
-        geom_edge_link(aes_(linetype = ~relationship),
-            arrow = arrow(length = unit(2, 'mm')), end_cap = circle(2, 'mm'),
-            colour="darkgrey") +
-        ## geom_node_point(size = 5, aes_(fill=~color), shape=21) +
-        geom_node_point(size = 5, aes_(color=~color)) +
-        theme_void() +
-        # scale_color_continuous(name = color) + 
-        set_enrichplot_color(name = color)
-
+    p <- ggplot(g, layout = layout) +
+        geom_edge(aes(linetype = .data$relationship),
+            arrow = arrow(length = unit(2, 'mm')),
+            colour="darkgrey") 
 
     if (geom == "label") {
-        p <- p + geom_node_label(aes_(label=~Term, fill=~color), 
-                                 repel=TRUE, segment.size = segment.size) +
-            # scale_fill_continuous(name = color, na.value="white") + 
+        p <- p + geom_label_repel(aes(label=.data$label), segment.size = segment.size) +
             set_enrichplot_color(type = "fill", name = color, na.value="white")
     } else {
-        p <- p + geom_node_text(aes_(label=~Term), repel=TRUE, segment.size = segment.size)
-    }
+        p <- p + geom_text_repel(aes(label=.data$label), segment.size = segment.size, bg.color="white", bg.r=.1) 
+    }        
+        
     return(p)
 }
 

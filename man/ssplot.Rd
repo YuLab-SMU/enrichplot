@@ -21,9 +21,8 @@ ssplot.enrichResult(
   x,
   showCategory = 30,
   drfun = NULL,
-  with_edge = FALSE,
   dr.params = list(),
-  group_category = TRUE,
+  group = TRUE,
   node_label = "group",
   ...
 )
@@ -31,13 +30,10 @@ ssplot.enrichResult(
 ssplot.compareClusterResult(
   x,
   showCategory = 30,
-  split = NULL,
   pie = "equal",
   drfun = NULL,
-  with_edge = FALSE,
-  cex_pie2axis = 0.0125,
   dr.params = list(),
-  group_category = TRUE,
+  group = TRUE,
   node_label = "group",
   ...
 )
@@ -82,24 +78,14 @@ the selected terms will be displayed.}
 \item{drfun}{The function used for dimension reduction,
 e.g. stats::cmdscale (the default), vegan::metaMDS, or ape::pcoa.}
 
-\item{with_edge}{Logical, if TRUE, draw the edges of the network diagram.
-Will be removed in the next version.}
-
 \item{dr.params}{list, the parameters of tidydr::dr. one of 'category', 'group', 'all' and 'none'.}
 
-\item{group_category}{a logical, if TRUE, group the category.
-Will be removed in the next version.}
+\item{group}{logical, if TRUE, group the category.}
 
 \item{node_label}{Select which labels to be displayed,
 one of 'category', 'group', 'all' and 'none'.}
 
-\item{split}{separate result by 'category' variable}
-
-\item{pie}{proportion of clusters in the pie chart, one of 'equal' (default) and 'Count'
-Will be removed in the next version.}
-
-\item{cex_pie2axis}{It is used to adjust the relative size of the pie chart on the coordinate axis,
-the default value is 0.0125.}
+\item{pie}{one of 'equal' or 'Count' to set the slice ratio of the pies}
 }
 \value{
 ggplot object

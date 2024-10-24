@@ -50,22 +50,28 @@ has_pairsim <- function(x) {
 }
 
 
-##' Get graph.data.frame() result
-##'
-##' @importFrom igraph graph.empty
-##' @importFrom igraph graph.data.frame
-##' @param enrichDf A data.frame of enrichment result.
-##' @param geneSets A list gene sets with the names of enrichment IDs
-##' @param color a string, the column name of y for nodes colours
-##' @param cex_line Numeric, scale of line width
-##' @param min_edge The minimum similarity threshold for whether 
-##' two nodes are connected, should between 0 and 1, default value is 0.2.
-##' @param pair_sim Semantic similarity matrix.
-##' @param method Method of calculating the similarity between nodes,
-##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-##' "JC" (Jaccard similarity coefficient) methods
-##' @return result of graph.data.frame()
-##' @noRd
+#' Get graph_from_data_frame() result
+#'
+#' @importFrom igraph graph.empty
+#' @importFrom igraph graph_from_data_frame
+#' @param enrichDf A data.frame of enrichment result.
+#' @param geneSets A list gene sets with the names of enrichment IDs
+#' @param color a string, the column name of y for nodes colours
+#' @param cex_line Numeric, scale of line width
+#' @param min_edge The minimum similarity threshold for whether 
+#' two nodes are connected, should between 0 and 1, default value is 0.2.
+#' @param pair_sim Semantic similarity matrix.
+#' @param method Method of calculating the similarity between nodes,
+#' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
+#' "JC" (Jaccard similarity coefficient) methods
+#' @return result of graph_from_data_frame()
+#' @importFrom igraph V
+#' @importFrom igraph 'V<-'
+#' @importFrom igraph E
+#' @importFrom igraph 'E<-'
+#' @importFrom igraph add_vertices
+#' @importFrom igraph delete.edges
+#' @noRd
 build_emap_graph <- function(enrichDf, geneSets, color, cex_line, min_edge,
                              pair_sim, method) {
 
@@ -84,7 +90,7 @@ build_emap_graph <- function(enrichDf, geneSets, color, cex_line, min_edge,
             as.character(enrichDf$Description)]
     }
 
-    wd <- melt(w)
+    wd <- reshape2::melt(w)
     wd <- wd[wd[,1] != wd[,2],]
     # remove NA
     wd <- wd[!is.na(wd[,3]),]
@@ -94,7 +100,7 @@ build_emap_graph <- function(enrichDf, geneSets, color, cex_line, min_edge,
         wd[, 2] <- enrichDf[wd[, 2], "Description"]
     }
 
-    g <- graph.data.frame(wd[, -3], directed=FALSE)
+    g <- graph_from_data_frame(wd[, -3], directed=FALSE)
     E(g)$width <- sqrt(wd[, 3] * 5) * cex_line
     # Use similarity as the weight(length) of an edge
     E(g)$weight <- wd[, 3]
@@ -202,187 +208,134 @@ node_add_alpha <- function(p, hilight_category, hilight_gene, alpha_nohilight, a
     p$data$alpha <- alpha_node
     return(p)
 }
-##' Get the an ggraph object
-##'
-##' @importFrom ggplot2 ylim
-##' @param x enrichment result.
-##' @param enrichDf A data.frame of enrichment result.
-##' @param mergedEnrichDf A data.frame of merged enrichment result.
-##' @param cex_category Numeric, scale of pie plot.
-##' @param pie Proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'.
-##' @param layout Layout of the map.
-##' @param color a string, the column name of y for nodes colours
-##' @param cex_line Numeric, scale of line width
-##' @param min_edge The minimum similarity threshold for whether 
-##' two nodes are connected, should between 0 and 1, default value is 0.2.
-##' @param pair_sim Semantic similarity matrix.
-##' @param method Method of calculating the similarity between nodes,
-##' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
-##' "JC" (Jaccard similarity coefficient) methods.
-##' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
-##' @param hilight_category category nodes to be highlight.
-##' @param alpha_hilight alpha of highlighted nodes.
-##' @param alpha_nohilight alpha of unhighlighted nodes.
-##' @noRd
-build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie, 
-                         layout, coords, cex_line, min_edge, pair_sim,
-                         method, with_edge, hilight_category, alpha_hilight,
-                         alpha_nohilight){
+
+
+# ' Get the an ggraph object
+# '
+# ' @importFrom ggplot2 ylim
+# ' @param x enrichment result.
+# ' @param enrichDf A data.frame of enrichment result.
+# ' @param mergedEnrichDf A data.frame of merged enrichment result.
+# ' @param cex_category Numeric, scale of pie plot.
+# ' @param pie Proportion of clusters in the pie chart, one of 'equal' (default) or 'Count'.
+# ' @param layout Layout of the map.
+# ' @param color a string, the column name of y for nodes colours
+# ' @param cex_line Numeric, scale of line width
+# ' @param min_edge The minimum similarity threshold for whether 
+# ' two nodes are connected, should between 0 and 1, default value is 0.2.
+# ' @param pair_sim Semantic similarity matrix.
+# ' @param method Method of calculating the similarity between nodes,
+# ' one of "Resnik", "Lin", "Rel", "Jiang" , "Wang"  and
+# ' "JC" (Jaccard similarity coefficient) methods.
+# ' @param with_edge Logical, if TRUE (the default), draw the edges of the network diagram.
+# ' @param hilight_category category nodes to be highlight.
+# ' @param alpha_hilight alpha of highlighted nodes.
+# ' @param alpha_nohilight alpha of unhighlighted nodes.
+# ' @noRd
+# build_ggraph <- function(x, enrichDf, mergedEnrichDf, cex_category, pie, 
+#                          layout, coords, cex_line, min_edge, pair_sim,
+#                          method, with_edge, hilight_category, alpha_hilight,
+#                          alpha_nohilight){
     
-    segment.size <- get_ggrepel_segsize()
-    geneSets <- setNames(strsplit(as.character(mergedEnrichDf$geneID), "/",
-                              fixed = TRUE), mergedEnrichDf$ID) 
+#     segment.size <- get_ggrepel_segsize()
+#     geneSets <- setNames(strsplit(as.character(mergedEnrichDf$geneID), "/",
+#                               fixed = TRUE), mergedEnrichDf$ID) 
                               
-    g <- build_emap_graph(enrichDf=mergedEnrichDf,geneSets=geneSets,color="p.adjust",
-        cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
-        method = x@method)
-    g <- edge_add_alpha(g, hilight_category, alpha_nohilight, alpha_hilight)
-    # if (!is.null(hilight_category) && length(hilight_category) > 0) {     
-    #     edges <- attr(E(g), "vnames")
-    #     E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
-    #     hilight_edge <- grep(paste(hilight_category, collapse = "|"), edges)
-    #     E(g)$alpha[hilight_edge] <- min(0.8, alpha_hilight)
-    #     # E(g)$alpha[hilight_edge] <- alpha_hilight
-    # } else {
-    #     E(g)$alpha <- rep(min(0.8, alpha_hilight), length(E(g)))
-    # }
-    ## when enrichDf just have one line
-    if(is.null(dim(enrichDf)) | nrow(enrichDf) == 1) {
-        title <- enrichDf$Cluster
-        p <- ggraph(g, "tree") + geom_node_point(color="red", size=5 * cex_category) +
-            geom_node_text(aes_(label=~name)) + theme_void() +
-            labs(title=title)
-        return(p)
-    }
-
-    if(is.null(dim(mergedEnrichDf)) | nrow(mergedEnrichDf) == 1) {
-        p <- ggraph(g, "tree")
-        ID_Cluster_mat <- prepare_pie_category(enrichDf = enrichDf, pie=pie)
-
-        ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*cex_category)
-        colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
-            "x", "y", "radius")
-
-
-        p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
-                cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
-                color=NA)+
-            xlim(-3,3) + ylim(-3,3) + coord_equal()+
-            geom_node_text(aes_(label=~name), repel=TRUE, segment.size = segment.size) +
-            theme_void()+labs(fill = "Cluster")
-        return(p)
-
-    }
-
-    p <- adj_layout(g = g, layout = layout, coords = coords)    
-    p$data$alpha <- rep(1, nrow(p$data))
-    if (!is.null(hilight_category) && length(hilight_category) > 0) {
-        p$data$alpha <- rep(alpha_nohilight, nrow(p$data))
-        ii <- match(hilight_category, p$data$name)
-        p$data$alpha[ii] <- alpha_hilight      
-    }
-    ## add edges
-    if (with_edge & length(E(g)$width) > 0) {
-        p <- p + geom_edge_link(aes_(width=~I(width), alpha=~I(alpha)),
-                                colour='darkgrey', show.legend = FALSE)
-    }
-    return(p)
-}
-
-
-##' Adjust the layout
-##'
-##' @param g ggraph object.
-##' @param layout Layout of the map.
-##' @param coords a data.frame with two columns: 'x' for X-axis coordinate and 'y' for Y-axis coordinate.
-##' @noRd
-adj_layout <- function(g, layout, coords) {
-    if (!is.null(layout)) {
-        p <- ggraph(g, layout=layout)
-    } else {
-        p <- ggraph(g, layout="nicely")
-        if (!is.null(coords)) {
-            # ggData <- p$data
-            # rownames(ggData) <- ggData$name
-            # ids <- intersect(ggData$name, rownames(coords))
-            # if (length(ids) > 0) {
-            #     coords <- coords[ids, ]
-            #     ggData[ids, "x"] <- coords$x
-            #     ggData[ids, "y"] <- coords$y
-            #     rownames(ggData) <- rownames(p$data)
-            #     p$data <- ggData 
-            ids <- match(p$data$name, rownames(coords))
-            ids <- ids[!is.na(ids)]
-            if (length(ids) > 0) {
-                p$data[ids, "x"] <- coords$x
-                p$data[ids, "y"] <- coords$y
-            } else {
-                wm <-  paste("Invalid coords parameter, the rownames of the coords", 
-                    "must be the term names found in the emapplot diagram")
-                warning(wm)
-            }         
-        }
-    }
-    return(p)
-}
-
-
-## Keep selected category in enrichment result
-##
-## @param showCategory A number or a vector of terms. If it is a number, 
-## the first n terms will be displayed. If it is a vector of terms, 
-## the selected terms will be displayed.
-## @param x Enrichment result
-## @param split Separate result by 'category' variable.
-## @noRd
-# get_selected_category <- function(showCategory, x, split) {
-#     if (is.numeric(showCategory)) {
-#         y <- fortify(x, showCategory = showCategory,
-#                                       includeAll = TRUE, split = split)
-
-#     } else {
-#         y <- as.data.frame(x)
-#         y <- y[y$Description %in% showCategory, ]
-#         y <- fortify(y, showCategory=NULL,
-#                                       includeAll = TRUE, split = split)
+#     g <- build_emap_graph(enrichDf=mergedEnrichDf,geneSets=geneSets,color="p.adjust",
+#         cex_line=cex_line, min_edge=min_edge, pair_sim = x@termsim, 
+#         method = x@method)
+#     g <- edge_add_alpha(g, hilight_category, alpha_nohilight, alpha_hilight)
+#     # if (!is.null(hilight_category) && length(hilight_category) > 0) {     
+#     #     edges <- attr(E(g), "vnames")
+#     #     E(g)$alpha <- rep(alpha_nohilight, length(E(g)))
+#     #     hilight_edge <- grep(paste(hilight_category, collapse = "|"), edges)
+#     #     E(g)$alpha[hilight_edge] <- min(0.8, alpha_hilight)
+#     #     # E(g)$alpha[hilight_edge] <- alpha_hilight
+#     # } else {
+#     #     E(g)$alpha <- rep(min(0.8, alpha_hilight), length(E(g)))
+#     # }
+#     ## when enrichDf just have one line
+#     if(is.null(dim(enrichDf)) | nrow(enrichDf) == 1) {
+#         title <- enrichDf$Cluster
+#         p <- ggraph(g, "tree") + geom_node_point(color="red", size=5 * cex_category) +
+#             geom_node_text(aes_(label=~name)) + theme_void() +
+#             labs(title=title)
+#         return(p)
 #     }
-#     y$Cluster <- sub("\n.*", "", y$Cluster)
-#     return(y)
+
+#     if(is.null(dim(mergedEnrichDf)) | nrow(mergedEnrichDf) == 1) {
+#         p <- ggraph(g, "tree")
+#         ID_Cluster_mat <- prepare_pie_category(enrichDf = enrichDf, pie=pie)
+
+#         ID_Cluster_mat <- cbind(ID_Cluster_mat,1,1,0.1*cex_category)
+#         colnames(ID_Cluster_mat) <- c(colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
+#             "x", "y", "radius")
+
+
+#         p <- p + geom_scatterpie(aes_(x=~x,y=~y,r=~radius), data=ID_Cluster_mat,
+#                 cols=names(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-3)],
+#                 color=NA)+
+#             xlim(-3,3) + ylim(-3,3) + coord_equal()+
+#             geom_node_text(aes_(label=~name), repel=TRUE, segment.size = segment.size) +
+#             theme_void()+labs(fill = "Cluster")
+#         return(p)
+
+#     }
+
+#     p <- adj_layout(g = g, layout = layout, coords = coords)    
+#     p$data$alpha <- rep(1, nrow(p$data))
+#     if (!is.null(hilight_category) && length(hilight_category) > 0) {
+#         p$data$alpha <- rep(alpha_nohilight, nrow(p$data))
+#         ii <- match(hilight_category, p$data$name)
+#         p$data$alpha[ii] <- alpha_hilight      
+#     }
+#     ## add edges
+#     if (with_edge & length(E(g)$width) > 0) {
+#         p <- p + geom_edge_link(aes_(width=~I(width), alpha=~I(alpha)),
+#                                 colour='darkgrey', show.legend = FALSE)
+#     }
+#     return(p)
 # }
 
 
-##' Convert a list of gene IDs to igraph object.
-##'
-##'
-##' @title Convert gene IDs to igraph object
-##' @param inputList A list of gene IDs.
-##' @return A igraph object.
-##' @importFrom igraph graph_from_data_frame
-##' @author Guangchuang Yu
-##' @noRd
-list2graph <- function(inputList, directed = FALSE) {
-    x <- list2df(inputList)
-    g <- graph_from_data_frame(x, directed=directed)
-    return(g)
-}
+# ' Adjust the layout
+# '
+# ' @param g ggraph object.
+# ' @param layout Layout of the map.
+# ' @param coords a data.frame with two columns: 'x' for X-axis coordinate and 'y' for Y-axis coordinate.
+# ' @noRd
+# adj_layout <- function(g, layout, coords) {
+#     if (!is.null(layout)) {
+#         p <- ggraph(g, layout=layout)
+#     } else {
+#         p <- ggraph(g, layout="nicely")
+#         if (!is.null(coords)) {
+#             # ggData <- p$data
+#             # rownames(ggData) <- ggData$name
+#             # ids <- intersect(ggData$name, rownames(coords))
+#             # if (length(ids) > 0) {
+#             #     coords <- coords[ids, ]
+#             #     ggData[ids, "x"] <- coords$x
+#             #     ggData[ids, "y"] <- coords$y
+#             #     rownames(ggData) <- rownames(p$data)
+#             #     p$data <- ggData 
+#             ids <- match(p$data$name, rownames(coords))
+#             ids <- ids[!is.na(ids)]
+#             if (length(ids) > 0) {
+#                 p$data[ids, "x"] <- coords$x
+#                 p$data[ids, "y"] <- coords$y
+#             } else {
+#                 wm <-  paste("Invalid coords parameter, the rownames of the coords", 
+#                     "must be the term names found in the emapplot diagram")
+#                 warning(wm)
+#             }         
+#         }
+#     }
+#     return(p)
+# }
 
-##' Convert a list of gene IDs to data.frame object.
-##'
-##'
-##' @title Convert gene IDs to data.frame object
-##' @param inputList A list of gene IDs
-##' @return a data.frame object.
-##' @noRd
-list2df <- function(inputList) {
-    # ldf <- lapply(1:length(inputList), function(i) {
-    ldf <- lapply(seq_len(length(inputList)), function(i) {
-        data.frame(categoryID=rep(names(inputList[i]),
-                                  length(inputList[[i]])),
-                   Gene=inputList[[i]])
-    })
 
-    do.call('rbind', ldf)
-}
+
 
 ##' Get the location of group label
 ##'
@@ -402,84 +355,81 @@ get_label_location <- function(ggData, label_format) {
         label = label_func(label_x$color2))
 }
 
-##' Add group label to a ggplot2 object
-##'
-##' @param label_style style of group label, one of "shadowtext" and "ggforce".
-##' @param repel a logical value, whether to correct the position of the label.
-##' @param shadowtext a logical value, whether to use shadow font. 
-##' @param p a ggplot2 object.
-##' @param label_location a data.frame with the location of group label.
-##' @param label_group a numeric value, default size of group label.
-##' @param cex_label_group scale of group labels size.
-##' @param ... additional parameters.
-##' @importFrom rlang check_installed
-##' @return a ggplot2 object.
-##' @noRd
-add_group_label <- function(label_style, repel, shadowtext, p, label_location, 
-                            label_group, cex_label_group, ...) {
-    if (label_style != "shadowtext") return(p)
-    segment.size <- get_ggrepel_segsize()
-    if (!repel) {
-        if (shadowtext) {
-            p <- p + geom_shadowtext(data = label_location,
-                aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-                size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
-        } else {
-            p <- p + geom_text(data = label_location,
-                aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-                size = label_group * cex_label_group)
-        }
+# ##' Add group label to a ggplot2 object
+# ##'
+# ##' @param label_style style of group label, one of "shadowtext" and "ggforce".
+# ##' @param repel a logical value, whether to correct the position of the label.
+# ##' @param shadowtext a logical value, whether to use shadow font. 
+# ##' @param p a ggplot2 object.
+# ##' @param label_location a data.frame with the location of group label.
+# ##' @param label_group a numeric value, default size of group label.
+# ##' @param cex_label_group scale of group labels size.
+# ##' @param ... additional parameters.
+# ##' @importFrom rlang check_installed
+# ##' @return a ggplot2 object.
+# ##' @noRd
+# add_group_label <- function(label_style, repel, shadowtext, p, label_location, 
+#                             label_group, cex_label_group, ...) {
+#     if (label_style != "shadowtext") return(p)
+#     segment.size <- get_ggrepel_segsize()
+#     if (!repel) {
+#         if (shadowtext) {
+#             p <- p + geom_shadowtext(data = label_location,
+#                 aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+#                 size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1)
+#         } else {
+#             p <- p + geom_text(data = label_location,
+#                 aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+#                 size = label_group * cex_label_group)
+#         }
         
-        return(p)
-    }
+#         return(p)
+#     }
 
-    check_installed('ggrepel', 'for `add_group_label()` with `repel = TRUE`.')  
-    if (shadowtext) {
-        p <- p + ggrepel::geom_text_repel(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
-            show.legend = FALSE, segment.size = segment.size, ...)
-    } else {
-        p <- p + ggrepel::geom_text_repel(data = label_location,
-            aes_(x =~ x, y =~ y, label =~ label), colour = "black",
-            size = label_group * cex_label_group, 
-            show.legend = FALSE, segment.size = segment.size, ...)
-    }
-    return(p)   
-}
+#     check_installed('ggrepel', 'for `add_group_label()` with `repel = TRUE`.')  
+#     if (shadowtext) {
+#         p <- p + ggrepel::geom_text_repel(data = label_location,
+#             aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+#             size = label_group * cex_label_group, bg.color = "white", bg.r = 0.1,
+#             show.legend = FALSE, segment.size = segment.size, ...)
+#     } else {
+#         p <- p + ggrepel::geom_text_repel(data = label_location,
+#             aes_(x =~ x, y =~ y, label =~ label), colour = "black",
+#             size = label_group * cex_label_group, 
+#             show.legend = FALSE, segment.size = segment.size, ...)
+#     }
+#     return(p)   
+# }
 
-##' Add node label to a ggplot2 object
-##'
-##' @param p a ggplot2 object.
-##' @param data it is uesd as the `data` parameter of function `ggraph::geom_node_text`, a data.frame or NULL.
-##' @param label_size_node a numeric value to indicate the font size of the node label.
-##' @param cex_label_node a numeric value to indicate the scale of node label size.
-##' @param shadowtext  a logical value, whether to use shadow font. 
-##' @return a ggplot2 object.
-##' @noRd
-add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
-    # If use 'aes_(alpha =~I(alpha))' will put an error for AsIs object.
-    # But I(alpha) is necessory, so use 'alpha = I(data$alpha)'.
-    segment.size <- get_ggrepel_segsize()
-    if (is.null(data)) {
-        data <- p$data
-    }
-    if (shadowtext) {
-        p <- p + geom_node_text(aes_(label=~name), data = data,
-            alpha = I(data$alpha),
-            size = label_size_node * cex_label_node, bg.color = "white", 
-            repel=TRUE, segment.size = segment.size)
-    } else {
-        p <- p + geom_node_text(aes_(label=~name), data = data,
-            alpha = I(data$alpha),
-            size = label_size_node * cex_label_node, repel=TRUE,
-            segment.size = segment.size)
-    }
-    return(p)
-}
-
-
-
+# ##' Add node label to a ggplot2 object
+# ##'
+# ##' @param p a ggplot2 object.
+# ##' @param data it is uesd as the `data` parameter of function `ggraph::geom_node_text`, a data.frame or NULL.
+# ##' @param label_size_node a numeric value to indicate the font size of the node label.
+# ##' @param cex_label_node a numeric value to indicate the scale of node label size.
+# ##' @param shadowtext  a logical value, whether to use shadow font. 
+# ##' @return a ggplot2 object.
+# ##' @noRd
+# add_node_label <- function(p, data, label_size_node, cex_label_node, shadowtext) {
+#     # If use 'aes_(alpha =~I(alpha))' will put an error for AsIs object.
+#     # But I(alpha) is necessory, so use 'alpha = I(data$alpha)'.
+#     segment.size <- get_ggrepel_segsize()
+#     if (is.null(data)) {
+#         data <- p$data
+#     }
+#     if (shadowtext) {
+#         p <- p + geom_node_text(aes_(label=~name), data = data,
+#             alpha = I(data$alpha),
+#             size = label_size_node * cex_label_node, bg.color = "white", 
+#             repel=TRUE, segment.size = segment.size)
+#     } else {
+#         p <- p + geom_node_text(aes_(label=~name), data = data,
+#             alpha = I(data$alpha),
+#             size = label_size_node * cex_label_node, repel=TRUE,
+#             segment.size = segment.size)
+#     }
+#     return(p)
+# }
 
 ##' Cluster similar nodes together by k-means
 ##' 
@@ -522,17 +472,18 @@ groupNode <- function(p, enrichDf, nWords, clusterFunction =  stats::kmeans, nCl
     return(ggData)
 }
 
-##' add ellipse to group the node
-##'
-##' @param p ggplot2 object
-##' @param group_legend Logical, if TRUE, the grouping legend will be displayed.
-##' The default is FALSE.
-##' @param label_style style of group label, one of "shadowtext" and "ggforce".
-##' @param ellipse_style style of ellipse, one of "ggforce" an "polygon".
-##' @param ellipse_pro numeric indicating confidence value for the ellipses
-##' @param alpha the transparency of ellipse fill.
-##' @importFrom rlang check_installed
-##' @noRd
+#' add ellipse to group the node
+#'
+#' @param p ggplot2 object
+#' @param group_legend Logical, if TRUE, the grouping legend will be displayed.
+#' The default is FALSE.
+#' @param label_style style of group label, one of "shadowtext" and "ggforce".
+#' @param ellipse_style style of ellipse, one of "ggforce" an "polygon".
+#' @param ellipse_pro numeric indicating confidence value for the ellipses
+#' @param alpha the transparency of ellipse fill.
+#' @importFrom rlang check_installed
+#' @importFrom ggplot2 scale_fill_discrete
+#' @noRd
 add_ellipse <- function(p, group_legend, label_style, 
     ellipse_style = "ggforce", ellipse_pro = 0.95, alpha = 0.3, ...) {
     show_legend <- c(group_legend, FALSE)
@@ -577,26 +528,26 @@ add_ellipse <- function(p, group_legend, label_style,
 # }
 
 
-##' add category nodes 
-##'
-##' @param p ggplot2 object
-##' @param cex_category Number indicating the amount by which plotting category
-##' nodes should be scaled relative to the default.
-##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
-##' 'p.adjust' or 'qvalue'.
-##' @noRd
-add_category_nodes <- function(p, cex_category, color) {
-    p + ggnewscale::new_scale_fill() +
-        geom_point(shape = 21, aes_(x=~x, y=~y, fill=~color,
-                                    size=~size, alpha=~I(alpha))) +
-        scale_size_continuous(name = "number of genes",
-                              range = c(3, 8) * cex_category) +
-        # scale_fill_continuous(name = color) + 
-        set_enrichplot_color(type = "fill", name = color) +
-        theme(legend.title = element_text(size = 10),
-                   legend.text  = element_text(size = 10)) +
-        theme(panel.background = element_blank()) 
-}
+# ##' add category nodes 
+# ##'
+# ##' @param p ggplot2 object
+# ##' @param cex_category Number indicating the amount by which plotting category
+# ##' nodes should be scaled relative to the default.
+# ##' @param color Variable that used to color enriched terms, e.g. 'pvalue',
+# ##' 'p.adjust' or 'qvalue'.
+# ##' @noRd
+# add_category_nodes <- function(p, cex_category, color) {
+#     p + ggnewscale::new_scale_fill() +
+#         geom_point(shape = 21, aes_(x=~x, y=~y, fill=~color,
+#                                     size=~size, alpha=~I(alpha))) +
+#         scale_size_continuous(name = "number of genes",
+#                               range = c(3, 8) * cex_category) +
+#         # scale_fill_continuous(name = color) + 
+#         set_enrichplot_color(type = "fill", name = color) +
+#         theme(legend.title = element_text(size = 10),
+#                    legend.text  = element_text(size = 10)) +
+#         theme(panel.background = element_blank()) 
+# }
 
 
 
@@ -622,55 +573,56 @@ get_pie_data <- function(enrichDf, pie, mergedEnrichDf, cex_pie2axis, p, cex_cat
     return(ID_Cluster_mat)
 }
 
-##' Add category node(pie plot) 
-##'
-##' @param p ggplot2 object.
-##' @param ID_Cluster_mat a matrix data for pie plot
-##' @param node_label Select which labels to be displayed,
-##' one of 'category', 'group', 'all' and 'none'.
-##' @param cex_category Number indicating the amount by which plotting category
-##' nodes should be scaled relative to the default.
-##' @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis.
-##' @param cex_label_category Scale of category node label size.
-##' @param shadowtext a logical value, whether to use shadow font.
-##' @param legend_n number of circle in legend
-##' @param label_size_category Base size of node label.
-##' @noRd
-add_pie_node <- function(p, ID_Cluster_mat, node_label, 
-                         cex_category, cex_pie2axis,
-                         cex_label_category,
-                         shadowtext, legend_n,
-                         label_size_category) {
-    color <- NULL
-    if(ncol(ID_Cluster_mat) > 4) {
-        ID_Cluster_mat$alpha <- p$data$alpha
-        p <- p + ggnewscale::new_scale_fill() + 
-            geom_scatterpie(aes_(x=~x,y=~y,r=~radius,alpha=~I(alpha)), data=ID_Cluster_mat,
-            cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
-            coord_equal() 
+# ##' Add category node(pie plot) 
+# ##'
+# ##' @param p ggplot2 object.
+# ##' @param ID_Cluster_mat a matrix data for pie plot
+# ##' @param node_label Select which labels to be displayed,
+# ##' one of 'category', 'group', 'all' and 'none'.
+# ##' @param cex_category Number indicating the amount by which plotting category
+# ##' nodes should be scaled relative to the default.
+# ##' @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis.
+# ##' @param cex_label_category Scale of category node label size.
+# ##' @param shadowtext a logical value, whether to use shadow font.
+# ##' @param legend_n number of circle in legend
+# ##' @param label_size_category Base size of node label.
+# ##' @noRd
+# add_pie_node <- function(p, ID_Cluster_mat, node_label, 
+#                          cex_category, cex_pie2axis,
+#                          cex_label_category,
+#                          shadowtext, legend_n,
+#                          label_size_category) {
+#     color <- NULL
+#     if(ncol(ID_Cluster_mat) > 4) {
+#         ID_Cluster_mat$alpha <- p$data$alpha
+#         p <- p + ggnewscale::new_scale_fill() + 
+#             geom_scatterpie(aes_(x=~x,y=~y,r=~radius,alpha=~I(alpha)), data=ID_Cluster_mat,
+#             cols=colnames(ID_Cluster_mat)[1:(ncol(ID_Cluster_mat)-4)],color=NA) +
+#             coord_equal() 
 
-        if (node_label == "all" || node_label == "category") {
-            p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
-                cex_label_node = cex_label_category, shadowtext = shadowtext)
-        }
+#         if (node_label == "all" || node_label == "category") {
+#             p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
+#                 cex_label_node = cex_label_category, shadowtext = shadowtext)
+#         }
         
-        p <- p + theme_void() +
-            geom_scatterpie_legend(ID_Cluster_mat$radius, 
-                x=min(ID_Cluster_mat$x), y=min(ID_Cluster_mat$y),
-                n = legend_n,
-                labeller=function(x) round(sum(p$data$size) * x^2 / cex_category/ cex_pie2axis)) +
-            labs(fill = "Cluster")
-    } else {
-        title <- colnames(ID_Cluster_mat)[1]
-        p <- p + theme_void() + geom_node_point(aes_(color=~color, size=~size))
-        if (node_label == "all" || node_label == "category") {
-            p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
-                cex_label_node = cex_label_category, shadowtext = shadowtext)
-        }
-        p <- p + # scale_color_continuous(name = color) +
-            set_enrichplot_color(name = color) + 
-            scale_size(range=c(3, 8) * cex_category)  +labs(title= title)  
-    }  
-    return(p)
-}
+#         p <- p + theme_void() +
+#             geom_scatterpie_legend(ID_Cluster_mat$radius, 
+#                 x=min(ID_Cluster_mat$x), y=min(ID_Cluster_mat$y),
+#                 n = legend_n,
+#                 labeller=function(x) round(sum(p$data$size) * x^2 / cex_category/ cex_pie2axis)) +
+#             labs(fill = "Cluster")
+#     } else {
+#         title <- colnames(ID_Cluster_mat)[1]
+#         p <- p + theme_void() + geom_node_point(aes_(color=~color, size=~size))
+#         if (node_label == "all" || node_label == "category") {
+#             p <- add_node_label(p = p, data = NULL, label_size_node = label_size_category,
+#                 cex_label_node = cex_label_category, shadowtext = shadowtext)
+#         }
+#         p <- p + # scale_color_continuous(name = color) +
+#             set_enrichplot_color(name = color) + 
+#             scale_size(range=c(3, 8) * cex_category)  +labs(title= title)  
+#     }  
+#     return(p)
+# }
 
+list2df <- ggtangle:::list2df

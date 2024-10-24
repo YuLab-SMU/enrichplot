@@ -114,36 +114,37 @@ setMethod("dotplot", signature(object = "gseaResultList"),
               return(p)
 })
 
-##' @rdname dotplot
-##' @param x variable for x-axis, one of 'GeneRatio' and 'Count'
-##' @param color variable that used to color enriched terms,
-##'              e.g. 'pvalue', 'p.adjust' or 'qvalue'
-##' @param showCategory A number or a list of terms. If it is a number,
-##' the first n terms will be displayed. If it is a list of terms,
-##' the selected terms will be displayed.
-##' @param size variable that used to scale the sizes of categories,
-##' one of "geneRatio", "Percentage" and "count"
-##' @param split separate result by 'category' variable
-##' @param font.size font size
-##' @param title plot title
-##' @param label_format a numeric value sets wrap length, alternatively a
-##' custom function to format axis labels.
-##' by default wraps names longer that 30 characters
-##' @param orderBy The order of the Y-axis
-##' @param decreasing logical. Should the orderBy order be increasing or decreasing?
-##' @importFrom ggplot2 fortify
-##' @importFrom ggplot2 ggplot
-##' @importFrom ggplot2 aes_string
-##' @importFrom ggplot2 geom_point
-##' @importFrom ggplot2 scale_color_gradient
-##' @importFrom ggplot2 scale_color_continuous
-##' @importFrom ggplot2 xlab
-##' @importFrom ggplot2 ylab
-##' @importFrom ggplot2 ggtitle
-##' @importFrom ggplot2 scale_y_discrete
-##' @importFrom ggplot2 guides
-##' @importFrom ggplot2 guide_legend
-##' @importFrom methods is
+#' @rdname dotplot
+#' @param x variable for x-axis, one of 'GeneRatio' and 'Count'
+#' @param color variable that used to color enriched terms,
+#'              e.g. 'pvalue', 'p.adjust' or 'qvalue'
+#' @param showCategory A number or a list of terms. If it is a number,
+#' the first n terms will be displayed. If it is a list of terms,
+#' the selected terms will be displayed.
+#' @param size variable that used to scale the sizes of categories,
+#' one of "geneRatio", "Percentage" and "count"
+#' @param split separate result by 'category' variable
+#' @param font.size font size
+#' @param title plot title
+#' @param label_format a numeric value sets wrap length, alternatively a
+#' custom function to format axis labels.
+#' by default wraps names longer that 30 characters
+#' @param orderBy The order of the Y-axis
+#' @param decreasing logical. Should the orderBy order be increasing or decreasing?
+#' @importFrom ggplot2 fortify
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes_string
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 scale_color_gradient
+#' @importFrom ggplot2 scale_color_continuous
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 ylab
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 ggtitle
+#' @importFrom ggplot2 scale_y_discrete
+#' @importFrom ggplot2 guides
+#' @importFrom ggplot2 guide_legend
+#' @importFrom methods is
 dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
                              showCategory=10, size=NULL, split = NULL,
                              font.size=12, title = "", orderBy="x",
@@ -216,23 +217,24 @@ dotplot.enrichResult <- function(object, x = "geneRatio", color = "p.adjust",
 }
 
 
-##' @rdname dotplot
-##' @param object compareClusterResult object
-##' @param by one of "geneRatio", "Percentage" and "count"
-##' @param split apply `showCategory` to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing
-##' @param includeAll logical
-##' @param font.size font size
-##' @param title figure title
-##' @param group a logical value, whether to connect the
-##' nodes of the same group with wires.
-##' @param shape a logical value, whether to use nodes of
-##' different shapes to distinguish the group it belongs to
-##' @param facet apply `facet_grid` to the plot by specified variable, e.g., "ONTOLOGY", "category" and "intersect".
-##' @param strip_width width of strip text, a.k.a facet label.
-##' @param colorBy variable that used to color enriched terms,
-##' e.g. 'pvalue', 'p.adjust' or 'qvalue'
-##' @importFrom ggplot2 facet_grid
-##' @importFrom rlang check_installed  
+#' @rdname dotplot
+#' @param object compareClusterResult object
+#' @param by one of "geneRatio", "Percentage" and "count"
+#' @param split apply `showCategory` to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing
+#' @param includeAll logical
+#' @param font.size font size
+#' @param title figure title
+#' @param group a logical value, whether to connect the
+#' nodes of the same group with wires.
+#' @param shape a logical value, whether to use nodes of
+#' different shapes to distinguish the group it belongs to
+#' @param facet apply `facet_grid` to the plot by specified variable, e.g., "ONTOLOGY", "category" and "intersect".
+#' @param strip_width width of strip text, a.k.a facet label.
+#' @param colorBy variable that used to color enriched terms,
+#' e.g. 'pvalue', 'p.adjust' or 'qvalue'
+#' @importFrom ggplot2 facet_grid
+#' @importFrom ggplot2 scale_size_continuous
+#' @importFrom rlang check_installed  
 dotplot.compareClusterResult <- function(object, x= "Cluster", colorBy="p.adjust",
                                          showCategory=5, by="geneRatio", size="geneRatio",
                                          split=NULL, includeAll=TRUE,
@@ -347,23 +349,24 @@ append_intersect <- function(x) {
     return(x)
 }
 
-##' compare two clusters in the compareClusterResult object
-##'
-##'
-##' @title dotplot2
-##' @param object a compareClusterResult object
-##' @param x selected variable to visualize in x-axis
-##' @param vars selected Clusters to be compared, only length of two is supported
-##' @param label to label the Clusters in the plot, should be a named vector
-##' @param ... additional parameters passed to dotplot
-##' @return a ggplot object
-##' @importFrom ggplot2 geom_segment
-##' @importFrom ggplot2 geom_vline
-##' @importFrom ggplot2 geom_blank
-##' @importFrom grid arrow
-##' @importFrom grid unit
-##' @export
-##' @author Guangchuang Yu
+#' compare two clusters in the compareClusterResult object
+#'
+#'
+#' @title dotplot2
+#' @param object a compareClusterResult object
+#' @param x selected variable to visualize in x-axis
+#' @param vars selected Clusters to be compared, only length of two is supported
+#' @param label to label the Clusters in the plot, should be a named vector
+#' @param ... additional parameters passed to dotplot
+#' @return a ggplot object
+#' @importFrom ggplot2 geom_segment
+#' @importFrom ggplot2 geom_vline
+#' @importFrom ggplot2 geom_blank
+#' @importFrom grid arrow
+#' @importFrom grid unit
+#' @importFrom ggplot2 geom_text
+#' @export
+#' @author Guangchuang Yu
 dotplot2 <- function(object, x="FoldEnrichment", vars = NULL, label = "auto", ...) {
     if (!is(object, 'compareClusterResult')) {
         stop('only compareClusterResult object is supported')

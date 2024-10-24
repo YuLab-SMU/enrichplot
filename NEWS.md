@@ -1,8 +1,8 @@
-# enrichplot 1.25.4.002
+# enrichplot 1.25.5
 
++ new `emaplot()`, `goplot()`, `cnetplot()` and `ssplot()`, all power by 'ggtangle' package (2024-10-24, Thu)
 + re-export `ggtangle::cnetplot()` (2024-10-24, Thu)
 + remove `drag_network()` (2024-10-24, Thu)
-+ new `cnetplot()` methods (2024-10-24, Thu)
 
 # enrichplot 1.25.4
 

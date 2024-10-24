@@ -59,9 +59,8 @@ setMethod("ssplot", signature(x = "compareClusterResult"),
 ##' additional parameters can refer the emapplot function: \link{emapplot}.
 ssplot.enrichResult <- function(x, showCategory = 30,
                                 drfun = NULL,
-                                with_edge = FALSE,
                                 dr.params = list(),
-                                group_category = TRUE,
+                                group = TRUE,
                                 node_label  = "group",
                                 ...) {
     if (is.null(drfun)) {
@@ -78,9 +77,7 @@ ssplot.enrichResult <- function(x, showCategory = 30,
     colnames(coords) <- c("x", "y")
     rownames(coords) <- attr(drResult$data, "Labels")
     p <- emapplot(x = x, showCategory = showCategory,
-                  coords = coords,
-                  with_edge = with_edge,
-                  group_category = group_category,
+                  group = group,
                   node_label = node_label,
                   ...)
 
@@ -92,20 +89,21 @@ ssplot.enrichResult <- function(x, showCategory = 30,
 
 
 
-##' @rdname ssplot
-##' @importFrom ggplot2 theme_classic
-##' @importFrom ggplot2 coord_equal
-##' @importClassesFrom DOSE compareClusterResult
-##' @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis,
-##' the default value is 0.0125.
-##' @importFrom stats setNames
+#' @rdname ssplot
+#' @param pie one of 'equal' or 'Count' to set the slice ratio of the pies
+#' @importFrom ggplot2 theme_classic
+#' @importFrom ggplot2 coord_equal
+#' @importClassesFrom DOSE compareClusterResult
+# @param cex_pie2axis It is used to adjust the relative size of the pie chart on the coordinate axis,
+# the default value is 0.0125.
+#' @importFrom stats setNames
 ssplot.compareClusterResult <- function(x, showCategory = 30,
-                                        split = NULL, pie = "equal",
+                                        #split = NULL, 
+                                        pie = "equal",
                                         drfun = NULL,
-                                        with_edge = FALSE,
-                                        cex_pie2axis = 0.0125, 
+                                        #cex_pie2axis = 0.0125, 
                                         dr.params = list(), 
-                                        group_category = TRUE,
+                                        group = TRUE,
                                         node_label  = "group", ...) {
     if (is.null(drfun)) {
         drfun = stats::cmdscale
@@ -115,7 +113,7 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
     if (is.character(drfun)) {
         drfun <- eval(parse(text=drfun))
     }
-
+    split = NULL
     drResult <- get_drResult(x = x, showCategory = showCategory, 
         split = split, pie = pie, drfun = drfun, dr.params = dr.params)
     coords <- drResult$drdata[, c(1, 2)]
@@ -124,9 +122,9 @@ ssplot.compareClusterResult <- function(x, showCategory = 30,
     p <- emapplot(x, showCategory = showCategory,
                   coords = coords,
                   split = split, pie = pie,
-                  with_edge = with_edge,
-                  cex_pie2axis = cex_pie2axis, 
-                  group_category = group_category,
+                  #with_edge = with_edge,
+                  #cex_pie2axis = cex_pie2axis, 
+                  group = group,
                   node_label = node_label, ...)
     ## Set axis label according to the method parameter
     p <- adj_axis(p = p, drResult = drResult)
