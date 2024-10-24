@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 1.25.4
+Version: 1.25.4.001
 Authors@R: c(
     person(given = "Guangchuang", family = "Yu", email = "guangchuangyu@gmail.com",   role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
     person(given = "Chun-Hui", family = "Gao", email = "gaospecial@gmail.com", role = "ctb", comment = c(ORCID = "0000-0002-1445-7939")))
@@ -9,10 +9,11 @@ Depends: R (>= 3.5.0)
 Imports:
     aplot (>= 0.2.1),
     DOSE (>= 3.31.2),
-    ggfun (>= 0.1.3),
+    ggfun (>= 0.1.7),
     ggnewscale,
     ggplot2,
     ggraph,
+    ggtangle (>= 0.0.3),
     graphics,
     grid,
     igraph,

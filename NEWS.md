@@ -1,3 +1,7 @@
+# enrichplot 1.25.4.001
+
++ new `cnetplot()` methods (2024-10-24, Thu)
+
 # enrichplot 1.25.4
 
 + fixed `goplot()` (2024-10-23, Wed, #297, #732, #718)
