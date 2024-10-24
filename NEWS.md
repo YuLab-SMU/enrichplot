@@ -1,5 +1,6 @@
 # enrichplot 1.25.4.001
 
++ remove `drag_network()` (2024-10-24, Thu)
 + new `cnetplot()` methods (2024-10-24, Thu)
 
 # enrichplot 1.25.4
