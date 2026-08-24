@@ -15,7 +15,8 @@ gseaplot2(
   pvalue_table = FALSE,
   pvalue_table_columns = c("pvalue", "p.adjust"),
   pvalue_table_rownames = "Description",
-  ES_geom = "line"
+  ES_geom = "line",
+  layer = NULL
 )
 }
 \arguments{

@@ -156,6 +156,24 @@
 3. `treeplot()`
 4. `barplot()` 兼容性确认
 
+这些“待补”图的准确状态是：
+
+- `gseaplot2()` / `gsearank()` / `hplot()` 目前都是普通函数，内部调用普通函数 `gsInfo()`，
+  **不是 S3 泛型**。它们对 `nseaResult` / `mnseaResult` 不会自动进入
+  `gsInfo.mnseaResult()`；因此补齐时首先要把 `gsInfo()` 改造成 dispatch，
+  否则默认路径只会取 `geneList` slot。注意一个缓解性事实：`mnseaResult@geneList`
+  通常就是 collapsed scores，所以 `layer = NULL` 的默认语义不会立刻画错，
+  但单 layer 视图、`geneSetID` 解析、`Description` 列等仍需显式补上。
+- `treeplot()` 已有 `setMethod("treeplot", signature(x = "gseaResult"))`，
+  S4 dispatch 会命中 `nseaResult` / `mnseaResult` 子类，因此它不是“未接入”。
+  对 `nseaResult` 主要是补测试确认；对 `mnseaResult` 的缺口是 layer-aware
+  相似性语义，根因是 `pairwise_termsim` 还没有 `mnseaResult` 方法。
+- `barplot()` 只有 `barplot.enrichResult` 与 `barplot.compareClusterResult`
+  两个 S3 方法，没有 `barplot.gseaResult` / 子类方法；`nseaResult` /
+  `mnseaResult` 继承的是 `gseaResult` 而不是 `enrichResult`，因此会一路落到
+  `graphics::barplot.default`。补兼容性的本质是增加 gseaResult 家族方法或
+  等价别名，而不是仅仅“跑一下确认”。
+
 ## 7. 设计原则
 
 ### 7.1 先复用，再专门化
@@ -213,6 +231,15 @@
 - `layer = NULL` 时使用 `collapsed_scores`
 - `layer = "<single-layer>"` 时使用对应 `layer_scores[[layer]]`
 
+关于 `geneList` 的语义需要写清楚：
+
+- `nseaResult@geneList` 与 `mnseaResult@geneList` 分别来自各自 pipeline 的
+  enrichment 输入：`nsea` 为扩散后的 ranked scores、`mnsea` 为 collapsed scores。
+  因此 `layer = NULL` 的默认复用路径在语义上就是正确的 collapsed 视图；
+  它们不是“原始表达排序”，不要把 `geneList` 当成与扩散无关的输入去二次处理。
+- `layer = "<single-layer>"` 必须显式走 `get_mnsea_ranked_scores()` 一类入口，
+  不能只读 `geneList` slot。
+
 ### 8.2 `mnsea` explanation helper 契约
 
 `mnseaResult` 现有 helper 应被视为公共 plot-facing 契约的一部分：
@@ -265,18 +292,18 @@
 |---|---|---|---|---|
 | `fortify()` | 直接复用 | 扩展 | mixed | `mnsea` 需要 `level` 语义 |
 | `dotplot()` | 直接复用 | 已扩展 | mixed | `mnsea` 支持 pathway contribution |
-| `barplot()` | 直接复用 | 待确认 | reuse | 先补兼容性测试 |
+| `barplot()` | 待补 | 待补 | reuse | 缺 `barplot.gseaResult`，先加方法再补测试 |
 | `heatplot()` | 直接复用 | 已专门化 | extend | pathway / feature 两种视图 |
 | `cnetplot()` | 直接复用 | 已专门化 | extend | pathway-specific subnetwork |
 | `emapplot()` | 直接复用 | 已扩展 | extend | layer-aware similarity |
 | `ssplot()` | 直接复用 | 已扩展 | extend | similarity-space overview |
 | `gseaplot()` | 直接复用 | 已扩展 | extend | collapsed / single-layer |
-| `gseaplot2()` | 待接入 | 待接入 | reuse | running-score 家族应补齐 |
-| `gsearank()` | 待接入 | 待接入 | reuse | 可复用 `gsInfo` 语义 |
-| `hplot()` | 待接入 | 待接入 | reuse | 可复用 ranked score 语义 |
+| `gseaplot2()` | 待补语义 | 待补语义 | reuse | 需先让 `gsInfo()` dispatch |
+| `gsearank()` | 待补语义 | 待补语义 | reuse | 需先让 `gsInfo()` dispatch |
+| `hplot()` | 待补语义 | 待补语义 | reuse | 需先让 `gsInfo()` dispatch |
 | `ridgeplot()` | 直接复用 | 已扩展 | extend | collapsed / single-layer |
 | `upsetplot()` | 待确认 | 已扩展 | extend | `mnsea` 已采用 pathway overlap 语义 |
-| `treeplot()` | 待接入 | 待接入 | extend | 依赖稳定 similarity 语义 |
+| `treeplot()` | 待确认 | 待补语义 | extend | 已有 `gseaResult` 方法可选；缺 `pairwise_termsim` 的 `mnsea` 语义 |
 
 ## 10. 拟新增的新方法家族
 
@@ -318,6 +345,14 @@
 
 但 `mnseaResult` 的价值更高。
 
+#### 数据来源
+
+`phaseplot()` 的 x 轴（enrichment shift）来自结果表的 `NES` 或跨 context 的
+`delta_NES`；y 轴（rewiring score）必须由 `compute_rewiring_score()` 统一返回，
+不允许各图层自行拼装。对于单个 `nseaResult` / `mnseaResult`，如果不存在跨
+network / layer / condition 的比较上下文，y 轴应退化为 layer-to-collapsed 重布线
+得分或显式声明该轴不可用，而不是静默画成无意义的值。
+
 ### 10.2 `consensusmap()`
 
 #### 核心问题
@@ -349,6 +384,15 @@
 
 这是最适合作为 `mnsea` 总览主图的新方法之一。
 
+#### 输入契约（必须先定义）
+
+单个 `nseaResult` 只有一个 network、单个 `mnseaResult` 只有若干 layer，都没有
+“多个 network / 多个 condition”的天然结构。因此 `consensusmap()` 的输入必须
+显式接受一个**命名的结果列表**（例如
+`list(networkA = res1, networkB = res2, ...)` 或
+`list(conditionA = res1, conditionB = res2, ...)`），或对 `mnseaResult` 退化为
+layer 列。没有比较上下文时不得产生不透明行为，建议直接报错并要求传入列表。
+
 ### 10.3 `rewireplot()`
 
 #### 核心问题
@@ -373,6 +417,13 @@
 
 它解决的是“同名 pathway 是否同机制”这个问题。
 
+#### 适用对象与参考基准
+
+`shared` / `gained` / `lost` / `shifted` 都需要一个明确的**参考基准**。第一版
+只支持 `mnseaResult`（至少可以在 layer 之间、或 layer 与 collapsed 之间比较），
+并强制要求显式传入 `reference_layer`；对 `nseaResult` 只有在提供第二个结果对象
+或 reference 输入时才支持，不能在单网络结果上静默产生伪 rewiring 状态。
+
 ### 10.4 `mechanismflow()`
 
 #### 核心问题
@@ -395,6 +446,12 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
 
 它比单纯比较多个 `NES` 更接近机制演化叙事。
 
+#### 输入契约
+
+状态迁移至少需要两个 context，因此 `mechanismflow()` 同样需要命名的结果列表
+或 `mnseaResult` 的 layer 序列。第一版允许只聚焦 `mnseaResult`（见开放问题 4），
+但必须写清楚迁移序列来自哪里；不要假设单个对象隐含了“时间顺序”。
+
 ## 11. 新方法所需 helper
 
 为了支持上述新方法，建议新增或显式稳定以下 helper。
@@ -403,7 +460,7 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
 
 输入：
 
-- `nseaResult` 或 `mnseaResult`
+- `nseaResult` 或 `mnseaResult`；如果用于跨 network / condition 比较，可接受命名列表并返回带 context 列的汇总。
 
 输出 term-level summary table，至少包含：
 
@@ -416,6 +473,16 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
 - `rewiring_score`
 - `centrality_shift`
 - `mechanism_class`
+
+数据来源与退化行为必须显式说明：
+
+- `leading_edge_overlap` / `rewiring_score` / `centrality_shift` 在对象里没有
+  现成 slot，必须由 `compute_rewiring_score()` 等 helper 显式计算。
+- 对 `nseaResult`，若没有第二个 network 或 reference，`leading_edge_overlap` /
+  `centrality_shift` / `rewiring_score` 应返回 `NA` 或显式报参数错误，不能
+  用恒等值（如 0）伪装成“未重布线”。
+- 对 `mnseaResult`，`leading_edge_overlap` 优先来自 layer vs collapsed 比较，
+  而不是重新发明一套既不同层也不同对象间的指标。
 
 ### 11.2 `extract_rewiring_features()`
 
@@ -437,6 +504,10 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
   - `lost`
   - `shifted`
 
+`reference_layer` 是必需输入，不得用未文档化的“第一个 layer”作为默认值；
+没有参考基准时应报错，而不是返回全部 `shared`。对 `nseaResult` 仅在提供第二个
+结果对象或 reference 输入时可用。
+
 ### 11.3 `classify_mechanism_state()`
 
 根据 enrichment shift 与 rewiring score，把 pathway 归类为：
@@ -448,7 +519,12 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
 
 ### 11.4 `compute_rewiring_score()`
 
-这是新方法家族里最核心的数值 helper。
+这是新方法家族里最核心的数值 helper，**必须先于其他 helper / 图层落地**。
+
+第一版采用统一的透明定义：`rewiring_score = 1 - leading-edge Jaccard overlap`
+（即 leading-edge overlap 的补值），范围 `[0, 1]`，`0` 表示完全保守、`1` 表示完全重布线；
+`subnetwork edge overlap`、中心性漂移、coupling 占比变化等作为后续可选复合项，
+由同一函数统一返回，不允许各图层各自计算。
 
 候选定义可以来自：
 
@@ -534,15 +610,23 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
 
 ## 15. 分阶段实施顺序
 
+### Phase 0: 建立可复现的验证基线
+
+1. 使用 `pkgload::load_all(".")` 或重新安装当前源码作为验证入口
+2. 安装建议依赖（至少 `ggupset`，`upsetplot` 测试依赖它）
+3. 在干净环境复跑 `tests/testthat/test-mnsea-helpers.R` 并归档基线结果
+
 ### Phase 1: 补齐继承型图
 
 按优先级建议：
 
-1. `gseaplot2()`
-2. `gsearank()`
-3. `hplot()`
-4. `treeplot()`
-5. `barplot()` 兼容性确认
+1. 把 `gsInfo()` 改成可 dispatch（前置改造）
+2. `gseaplot2()`
+3. `gsearank()`
+4. `hplot()`
+5. 公共化 `pairwise_termsim` 的 `mnsea` 相似性语义
+6. `treeplot()`
+7. `barplot()` 的 gseaResult 家族方法 + 兼容性确认
 
 ### Phase 2: 先做一个最有方法学辨识度的新图
 
@@ -578,18 +662,29 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
 
 当前仍需在实现前确认的问题包括：
 
-1. `rewiring_score` 的统一定义优先采用哪种指标组合？
-2. `phaseplot()` 中 `y` 轴应优先表示 edge overlap、leading-edge overlap，还是复合 rewiring index？
-3. `consensusmap()` 的默认分类阈值应写死还是交给用户指定？
+1. **（已定第一版）**`rewiring_score` 优先采用 `1 - leading-edge Jaccard overlap`；
+   是否在第二版加入 edge overlap / 中心性漂移的复合项仍需评估。
+2. **（已定第一版）**`phaseplot()` 的 `y` 轴 = `compute_rewiring_score()` 的统一返回值；
+   后续可与 edge overlap 并列展示。
+3. `consensusmap()` 的默认分类阈值应写死还是交给用户指定？建议第一版写死，
+   同时提供 `thresholds` 参数，之后再开放自动选阈值。
 4. `mechanismflow()` 是否只服务于 `mnseaResult`，而不强求 `nseaResult` 支持？
+   建议第一版只支持 `mnseaResult`（其 layer 序列天然提供状态迁移），
+   `nseaResult` 需传入命名列表才能使用。
 5. 是否要先把 `pairwise_termsim` 的 `mnsea` 语义进一步公共化，再推进 `treeplot()`？
+   **建议升级为必做项**：`treeplot()`、`emapplot()`、`ssplot()` 都依赖相似性语义，
+   不应各自维护一套 layer-aware 定义。
+6. **（新增）**`consensusmap()` / `mechanismflow()` 的命名列表输入形态、以及
+   `rewireplot()` 的 `reference_layer` 是否为必填，需要与 `enrichit` 侧确认没有
+   对象结构依赖后再冻结参数签名。
 
 ## 18. 当前推荐结论
 
 短期建议非常明确：
 
-1. **先把 `gseaplot2()`、`gsearank()`、`hplot()`、`treeplot()` 接齐**
-2. **再以 `phaseplot()` 和 `rewireplot()` 作为第一批新方法立项**
+1. **先把 `gsInfo()` 改造成可 dispatch，再接齐 `gseaplot2()`、`gsearank()`、`hplot()`**
+2. **公共化 `pairwise_termsim` 的 `mnsea` 语义，再补 `treeplot()` 与 `barplot()` 家族方法**
+3. **再以 `phaseplot()` 和 `rewireplot()` 作为第一批新方法立项**
 
 这样做的好处是：
 

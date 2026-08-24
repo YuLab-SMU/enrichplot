@@ -455,3 +455,52 @@ setGeneric("ssplot", function(x, ...) {
 setGeneric("manhattanplot", function(x, ...) {
     standardGeneric("manhattanplot")
 })
+
+#' Phase plot for enrichment-shift versus rewiring
+#'
+#' @title phaseplot
+#' @rdname phaseplot
+#' @param x A `nseaResult` or `mnseaResult` object.
+#' @param ... Additional parameters passed to plot methods.
+#' @return A ggplot object.
+#' @export
+setGeneric("phaseplot", function(x, ...) {
+    standardGeneric("phaseplot")
+})
+
+#' Pathway-specific rewiring plot
+#'
+#' @title rewireplot
+#' @rdname rewireplot
+#' @param x A `mnseaResult` object.
+#' @param ... Additional parameters passed to plot methods.
+#' @return A ggplot object.
+#' @export
+setGeneric("rewireplot", function(x, ...) {
+    standardGeneric("rewireplot")
+})
+
+#' Multi-context mechanism consensus map
+#'
+#' @title consensusmap
+#' @rdname consensusmap
+#' @param x A `mnseaResult`, `nseaResult`, or a named list of results.
+#' @param ... Additional parameters passed to plot methods.
+#' @return A ggplot object.
+#' @export
+setGeneric("consensusmap", function(x, ...) {
+    standardGeneric("consensusmap")
+})
+
+#' Pathway state transition flow
+#'
+#' @title mechanismflow
+#' @rdname mechanismflow
+#' @param x A `mnseaResult`, `nseaResult`, or a named list of results.
+#' @param ... Additional parameters passed to plot methods.
+#' @return A ggplot object.
+#' @export
+setGeneric("mechanismflow", function(x, ...) {
+    standardGeneric("mechanismflow")
+})
+

@@ -1,5 +1,12 @@
 # enrichplot 1.33.0.001
 
++ refactor `gsInfo()` into an S3 generic and add `layer`-aware running-score support to `gseaplot2()`, `gsearank()` and `hplot()` for `nseaResult` / `mnseaResult`; `hplot()` is now implemented with base `ggplot2` geoms and no longer requires `ggHoriPlot` (2026-08-23, Sun)
++ add `pairwise_termsim()` support for `mnseaResult` so `treeplot()`, `emapplot()` and `ssplot()` share one layer-aware similarity definition, with single-pathway treeplot boundary handling
++ add `barplot.gseaResult()` so `nseaResult` / `mnseaResult` no longer fall through to `graphics::barplot.default`
++ add mechanism-oriented helper layer (`compute_rewiring_score()`, `classify_mechanism_state()`, `summarize_nsea_mechanism()`, `extract_rewiring_features()`) with deterministic tests
++ add `phaseplot()` for enrichment-shift versus rewiring overviews and `rewireplot()` for pathway-specific feature-level rewiring evidence
++ add `consensusmap()` for multi-context mechanism agreement and `mechanismflow()` for pathway state transitions across layers/conditions
+
 + add a minimal `ssplot.mnseaResult()` that projects selected pathways into a similarity-space overview using layer-aware feature overlap, while reusing `emapplot()` semantics and adding stable fallbacks for one- or two-pathway layouts (2026-06-25, Thu)
 + add a minimal `upsetplot.mnseaResult()` that summarizes shared feature overlaps across selected pathways with collapsed-score or single-layer views, including support for score magnitude display and `core_enrichment` filtering (2026-06-25, Thu)
 + add a minimal `ridgeplot.mnseaResult()` that shows pathway-level feature score distributions from collapsed scores or a selected single layer, with regression coverage for layer-aware ranked scores and `core_enrichment` filtering (2026-06-25, Thu)

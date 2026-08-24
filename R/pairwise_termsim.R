@@ -16,6 +16,49 @@ setMethod("pairwise_termsim", signature(x = "gseaResult"),
 
 #' @rdname pairwise_termsim
 #' @exportMethod pairwise_termsim
+setMethod("pairwise_termsim", signature(x = "mnseaResult"),
+    function(x, method = "JC", semData = NULL, showCategory = NULL) {
+        if (is.null(showCategory)) {
+            showCategory <- .default_pairwise_termsim_category(x)
+        }
+        n <- showCategory
+        if (is.numeric(n) && n == 0) {
+            stop("no enriched term found...")
+        }
+        if (!is.numeric(n) && length(n) == 0) {
+            stop("no enriched term found...")
+        }
+
+        selected <- select_terms(x, showCategory)
+        if (nrow(selected$result) == 0) {
+            stop("no enriched term found...")
+        }
+
+        feature_df <- prepare_emapplot_mnsea_feature_data(
+            x,
+            ids = selected$ids,
+            layer = NULL
+        )
+        if (nrow(feature_df) == 0) {
+            stop("no mnsea features available for pairwise termsim.")
+        }
+
+        geneSets <- lapply(selected$ids, function(id) {
+            unique(as.character(feature_df$Feature[feature_df$ID == id]))
+        })
+        names(geneSets) <- selected$ids
+        x@termsim <- get_similarity_matrix(
+            y = selected$result,
+            geneSets = geneSets,
+            method = method,
+            semData = semData
+        )
+        x@method <- method
+        return(x)
+    })
+
+#' @rdname pairwise_termsim
+#' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "compareClusterResult"),
     function(x, method = "JC", semData = NULL, showCategory = NULL) {
         pairwise_termsim.compareClusterResult(x, method = method,

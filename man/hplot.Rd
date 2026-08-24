@@ -4,7 +4,7 @@
 \alias{hplot}
 \title{hplot}
 \usage{
-hplot(x, geneSetID)
+hplot(x, geneSetID, layer = NULL)
 }
 \arguments{
 \item{x}{gseaResult object}

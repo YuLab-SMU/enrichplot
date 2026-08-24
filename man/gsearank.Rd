@@ -4,7 +4,7 @@
 \alias{gsearank}
 \title{gsearank}
 \usage{
-gsearank(x, geneSetID, title = "", output = "plot")
+gsearank(x, geneSetID, title = "", output = "plot", layer = NULL)
 }
 \arguments{
 \item{x}{gseaResult object}

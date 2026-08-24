@@ -40,15 +40,64 @@
 barplot.enrichResult <- function(
     height,
     x = "Count",
-    color = 'p.adjust',
+    color = "p.adjust",
     showCategory = 8,
     font.size = 12,
     title = "",
     label_format = 30,
     ...
 ) {
+    barplot_internal(
+        height = height,
+        x = x,
+        color = color,
+        showCategory = showCategory,
+        font.size = font.size,
+        title = title,
+        label_format = label_format,
+        fortify_fun = fortify.enrichResult,
+        ...
+    )
+}
+
+#' @method barplot gseaResult
+#' @export
+barplot.gseaResult <- function(
+    height,
+    x = "Count",
+    color = "p.adjust",
+    showCategory = 8,
+    font.size = 12,
+    title = "",
+    label_format = 30,
+    ...
+) {
+    barplot_internal(
+        height = height,
+        x = x,
+        color = color,
+        showCategory = showCategory,
+        font.size = font.size,
+        title = title,
+        label_format = label_format,
+        fortify_fun = fortify.gseaResult,
+        ...
+    )
+}
+
+barplot_internal <- function(
+    height,
+    x = "Count",
+    color = "p.adjust",
+    showCategory = 8,
+    font.size = 12,
+    title = "",
+    label_format = 30,
+    fortify_fun = fortify.enrichResult,
+    ...
+) {
     ## use *height* to satisy barplot generic definition
-    ## actually here is an enrichResult object.
+    ## actually here is an enrichment result object.
     object <- height
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
@@ -58,7 +107,6 @@ barplot.enrichResult <- function(
         x <- "Count"
     }
 
-    #df <- fortify(object, showCategory = showCategory, by = x, ...)
     dots <- list(...)
     supported_params <- c("order", "drop", "split")
     fortify_params <- dots[names(dots) %in% supported_params]
@@ -82,8 +130,7 @@ barplot.enrichResult <- function(
         fortify_args$split <- fortify_params$split
     }
 
-    # Use do.call to avoid passing ... through function calls
-    df <- do.call(fortify.enrichResult, fortify_args)
+    df <- do.call(fortify_fun, fortify_args)
 
     if (colorBy %in% colnames(df)) {
         p <- ggplot(

@@ -82,8 +82,22 @@ treeplot_internal <- function(
     # Prepare similarity matrix
     termsim2 <- fill_termsim(x, keep)
 
+    # Single-pathway boundary: hierarchical clustering needs at least two objects.
+    if (length(keep) == 1) {
+        d <- data.frame(
+            label = rownames(termsim2),
+            stringsAsFactors = FALSE
+        )
+        return(
+            ggplot(d, aes(x = 0, y = 0, label = .data$label)) +
+                geom_text() +
+                theme_void()
+        )
+    }
+
     # Hierarchical clustering
     hc <- hclust(as.dist(1 - termsim2), method = cluster_method)
+    nCluster <- min(nCluster, max(1, length(keep)))
     clus <- cutree(hc, nCluster)
 
     # Prepare data for plotting
@@ -223,6 +237,7 @@ treeplot_compareCluster <- function(
 
     # Hierarchical clustering
     hc <- hclust(as.dist(1 - termsim2), method = cluster_method)
+    nCluster <- min(nCluster, max(1, length(keep)))
     clus <- cutree(hc, nCluster)
 
     # Prepare data for plotting

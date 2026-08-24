@@ -450,3 +450,133 @@ test_that("cnetplot uses explicit mnsea legend titles", {
     expect_equal(p$scales$get_scales("colour")$name, "Feature sign")
     expect_equal(p$scales$get_scales("size")$name, "Feature magnitude")
 })
+
+
+test_that("gsInfo dispatches to mnseaResult with layer", {
+    x <- mock_mnsea_result()
+
+    d_collapsed <- enrichplot:::gsInfo(x, "T1")
+    d_rna <- enrichplot:::gsInfo(x, "T1", layer = "rna")
+    d_protein <- enrichplot:::gsInfo(x, "T1", layer = "protein")
+
+    expect_true(all(c("ID", "Description", "runningScore", "position", "layer") %in% colnames(d_collapsed)))
+    expect_equal(unique(as.character(d_collapsed$layer)), "collapsed")
+    expect_equal(unique(as.character(d_rna$layer)), "rna")
+    expect_equal(unique(as.character(d_protein$layer)), "protein")
+    expect_equal(as.numeric(d_rna$geneList), as.numeric(x@layer_scores$rna))
+})
+
+test_that("gseaplot2 works for mnseaResult with collapsed scores", {
+    x <- mock_mnsea_result()
+
+    p <- gseaplot2(x, geneSetID = "T1")
+
+    expect_s3_class(p, "gglist")
+    expect_true(all(c("ID", "Description", "runningScore", "position", "layer") %in% colnames(p[[1]]$data)))
+    expect_equal(unique(as.character(p[[1]]$data$layer)), "collapsed")
+})
+
+test_that("gseaplot2 mnseaResult supports single-layer ranked scores", {
+    x <- mock_mnsea_result()
+
+    p <- gseaplot2(x, geneSetID = "T1", layer = "protein")
+
+    expect_s3_class(p, "gglist")
+    expect_equal(unique(as.character(p[[1]]$data$layer)), "protein")
+    expect_equal(as.numeric(p[[1]]$data$geneList), as.numeric(x@layer_scores$protein))
+})
+
+test_that("gseaplot2 mnseaResult resolves numeric geneSetID", {
+    x <- mock_mnsea_result()
+
+    p_idx <- gseaplot2(x, geneSetID = 1, layer = "rna")
+    p_id <- gseaplot2(x, geneSetID = "T1", layer = "rna")
+
+    expect_equal(as.numeric(p_idx[[1]]$data$runningScore), as.numeric(p_id[[1]]$data$runningScore))
+    expect_equal(as.character(p_idx[[1]]$data$Description), as.character(p_id[[1]]$data$Description))
+})
+
+test_that("gsearank works for nsea and mnsea results", {
+    x <- mock_mnsea_result()
+
+    p_collapsed <- gsearank(x, geneSetID = "T1")
+    p_rna <- gsearank(x, geneSetID = "T1", layer = "rna")
+    tbl <- gsearank(x, geneSetID = "T1", output = "table", layer = "rna")
+
+    expect_s3_class(p_collapsed, "ggplot")
+    expect_s3_class(p_rna, "ggplot")
+    expect_true(all(c("gene", "rank in geneList", "running ES", "core enrichment") %in% colnames(tbl)))
+    expect_equal(unique(as.character(p_rna$data$layer)), "rna")
+})
+
+test_that("gseaplot2 multi-geneSetID works for mnsea collapsed scores", {
+    x <- mock_mnsea_result()
+
+    p <- gseaplot2(x, geneSetID = c("T1", "T2"))
+
+    expect_s3_class(p, "gglist")
+    expect_setequal(unique(as.character(p[[1]]$data$Description)), c("Pathway 1", "Pathway 2"))
+})
+
+
+test_that("pairwise_termsim works for mnseaResult", {
+    x <- mock_mnsea_result()
+
+    y <- pairwise_termsim(x, showCategory = 2)
+
+    expect_s4_class(y, "mnseaResult")
+    expect_true(is.matrix(y@termsim) || is.data.frame(y@termsim))
+    expect_equal(nrow(y@termsim), 2)
+    expect_equal(ncol(y@termsim), 2)
+    expect_equal(y@method, "JC")
+})
+
+test_that("treeplot works for mnseaResult after pairwise_termsim", {
+    x <- mock_mnsea_result()
+    y <- pairwise_termsim(x, showCategory = 2)
+
+    p <- treeplot(y, showCategory = 2)
+
+    expect_s3_class(p, "ggtree")
+})
+
+test_that("treeplot supports single-pathway boundary cases", {
+    x <- mock_mnsea_result()
+    # Only one pathway with precomputed termsim should not error
+    x@termsim <- matrix(1, nrow = 1, ncol = 1,
+        dimnames = list("Pathway 1", "Pathway 1"))
+    x@result <- x@result[1, , drop = FALSE]
+
+    p <- treeplot(x, showCategory = 1)
+    expect_s3_class(p, "ggplot")
+})
+
+test_that("barplot works for mnseaResult without falling back to graphics::barplot", {
+    x <- mock_mnsea_result()
+
+    p <- barplot(x, showCategory = 2)
+
+    expect_s3_class(p, "ggplot")
+    expect_true(all(c("Description", "Count", "p.adjust") %in% colnames(p$data)))
+})
+
+
+test_that("hplot works for mnseaResult with collapsed scores", {
+    x <- mock_mnsea_result()
+
+    p <- hplot(x, geneSetID = "T1")
+
+    expect_s3_class(p, "ggplot")
+    expect_true(all(c("ID", "Description", "runningScore", "position", "layer") %in% colnames(p$data)))
+    expect_equal(unique(as.character(p$data$layer)), "collapsed")
+})
+
+test_that("hplot supports single-layer ranked scores", {
+    x <- mock_mnsea_result()
+
+    p <- hplot(x, geneSetID = "T1", layer = "protein")
+
+    expect_s3_class(p, "ggplot")
+    expect_equal(unique(as.character(p$data$layer)), "protein")
+    expect_equal(as.numeric(p$data$geneList), as.numeric(x@layer_scores$protein))
+})

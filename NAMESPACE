@@ -3,6 +3,7 @@
 S3method(as.data.frame,compareClusterResult)
 S3method(barplot,compareClusterResult)
 S3method(barplot,enrichResult)
+S3method(barplot,gseaResult)
 S3method(cnetplot,compareClusterResult)
 S3method(cnetplot,enrichResult)
 S3method(cnetplot,gseaResult)
@@ -13,10 +14,13 @@ S3method(fortify,gseaResult)
 S3method(fortify,mnseaResult)
 S3method(fortify,nseaResult)
 S3method(ggplot_add,autofacet)
+S3method(gsInfo,gseaResult)
+S3method(gsInfo,mnseaResult)
 S3method(print,enrichplotDot)
 export(autofacet)
 export(cnetplot)
 export(color_palette)
+export(consensusmap)
 export(dotplot)
 export(dotplot2)
 export(emapplot)
@@ -39,8 +43,11 @@ export(gsearank)
 export(heatplot)
 export(hplot)
 export(manhattanplot)
+export(mechanismflow)
+export(phaseplot)
 export(plot_list)
 export(pmcplot)
+export(rewireplot)
 export(ridgeplot)
 export(set_enrichplot_color)
 export(ssplot)
@@ -48,13 +55,17 @@ export(theme_dose)
 export(treeplot)
 export(upsetplot)
 export(volplot)
+exportMethods(consensusmap)
 exportMethods(dotplot)
 exportMethods(emapplot)
 exportMethods(goplot)
 exportMethods(gseaplot)
 exportMethods(heatplot)
 exportMethods(manhattanplot)
+exportMethods(mechanismflow)
 exportMethods(pairwise_termsim)
+exportMethods(phaseplot)
+exportMethods(rewireplot)
 exportMethods(ridgeplot)
 exportMethods(ssplot)
 exportMethods(treeplot)
@@ -67,131 +78,161 @@ importClassesFrom(enrichit,nseaResult)
 importFrom(DOSE,theme_dose)
 importFrom(RColorBrewer,brewer.pal)
 importFrom(aplot,plot_list)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,arrange)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,desc)
-importFrom(dplyr,group_by)
-importFrom(dplyr,mutate)
-importFrom(dplyr,slice_head)
-importFrom(dplyr,ungroup)
-importFrom(enrichit,extract_mnsea_subnetwork)
-importFrom(enrichit,geneID)
-importFrom(enrichit,geneInCategory)
-importFrom(enrichit,get_mnsea_contribution)
-importFrom(enrichit,gseaScores)
+importFrom(dplyr,
+  "%>%",
+  arrange,
+  bind_rows,
+  desc,
+  group_by,
+  mutate,
+  slice_head,
+  ungroup
+)
+importFrom(enrichit,
+  extract_mnsea_subnetwork,
+  geneID,
+  geneInCategory,
+  get_mnsea_contribution,
+  gseaScores
+)
 importFrom(ggfun,"%<+%")
-importFrom(ggnewscale,new_scale_colour)
-importFrom(ggnewscale,new_scale_fill)
-importFrom(ggplot2,"%+%")
-importFrom(ggplot2,aes)
-importFrom(ggplot2,annotation_custom)
-importFrom(ggplot2,coord_equal)
-importFrom(ggplot2,coord_fixed)
-importFrom(ggplot2,coord_flip)
-importFrom(ggplot2,element_blank)
-importFrom(ggplot2,element_line)
-importFrom(ggplot2,element_rect)
-importFrom(ggplot2,element_text)
-importFrom(ggplot2,facet_grid)
-importFrom(ggplot2,fortify)
-importFrom(ggplot2,geom_bar)
-importFrom(ggplot2,geom_blank)
-importFrom(ggplot2,geom_boxplot)
-importFrom(ggplot2,geom_col)
-importFrom(ggplot2,geom_density)
-importFrom(ggplot2,geom_hline)
-importFrom(ggplot2,geom_jitter)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_linerange)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,geom_rect)
-importFrom(ggplot2,geom_segment)
-importFrom(ggplot2,geom_text)
-importFrom(ggplot2,geom_tile)
-importFrom(ggplot2,geom_violin)
-importFrom(ggplot2,geom_vline)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,ggplotGrob)
-importFrom(ggplot2,ggplot_add)
-importFrom(ggplot2,ggplot_build)
-importFrom(ggplot2,ggplot_gtable)
-importFrom(ggplot2,ggtitle)
-importFrom(ggplot2,guide_colorbar)
-importFrom(ggplot2,guide_legend)
-importFrom(ggplot2,guides)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,margin)
-importFrom(ggplot2,rel)
-importFrom(ggplot2,scale_color_continuous)
-importFrom(ggplot2,scale_color_gradient)
-importFrom(ggplot2,scale_color_gradientn)
-importFrom(ggplot2,scale_color_manual)
-importFrom(ggplot2,scale_fill_continuous)
-importFrom(ggplot2,scale_fill_discrete)
-importFrom(ggplot2,scale_fill_gradient2)
-importFrom(ggplot2,scale_fill_gradientn)
-importFrom(ggplot2,scale_fill_manual)
-importFrom(ggplot2,scale_size)
-importFrom(ggplot2,scale_size_continuous)
-importFrom(ggplot2,scale_x_continuous)
-importFrom(ggplot2,scale_x_reverse)
-importFrom(ggplot2,scale_y_continuous)
-importFrom(ggplot2,scale_y_discrete)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_bw)
-importFrom(ggplot2,theme_classic)
-importFrom(ggplot2,theme_minimal)
-importFrom(ggplot2,theme_void)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,xlim)
-importFrom(ggplot2,ylab)
-importFrom(ggrepel,geom_label_repel)
-importFrom(ggrepel,geom_text_repel)
-importFrom(ggtangle,cnetplot)
-importFrom(ggtangle,geom_cnet_label)
-importFrom(ggtangle,geom_edge)
-importFrom(ggtree,geom_cladelab)
-importFrom(ggtree,geom_hilight)
-importFrom(ggtree,geom_tiplab)
-importFrom(ggtree,geom_tippoint)
-importFrom(ggtree,ggtree)
-importFrom(ggtree,gheatmap)
-importFrom(ggtree,groupClade)
+importFrom(ggnewscale,
+  new_scale_colour,
+  new_scale_fill
+)
+importFrom(ggplot2,
+  "%+%",
+  aes,
+  annotation_custom,
+  coord_equal,
+  coord_fixed,
+  coord_flip,
+  element_blank,
+  element_line,
+  element_rect,
+  element_text,
+  facet_grid,
+  fortify,
+  geom_bar,
+  geom_blank,
+  geom_boxplot,
+  geom_col,
+  geom_density,
+  geom_hline,
+  geom_jitter,
+  geom_line,
+  geom_linerange,
+  geom_point,
+  geom_rect,
+  geom_segment,
+  geom_text,
+  geom_tile,
+  geom_violin,
+  geom_vline,
+  ggplot,
+  ggplotGrob,
+  ggplot_add,
+  ggplot_build,
+  ggplot_gtable,
+  ggtitle,
+  guide_colorbar,
+  guide_legend,
+  guides,
+  labs,
+  margin,
+  rel,
+  scale_color_continuous,
+  scale_color_gradient,
+  scale_color_gradientn,
+  scale_color_manual,
+  scale_fill_continuous,
+  scale_fill_discrete,
+  scale_fill_gradient2,
+  scale_fill_gradientn,
+  scale_fill_manual,
+  scale_size,
+  scale_size_continuous,
+  scale_x_continuous,
+  scale_x_reverse,
+  scale_y_continuous,
+  scale_y_discrete,
+  theme,
+  theme_bw,
+  theme_classic,
+  theme_minimal,
+  theme_void,
+  xlab,
+  xlim,
+  ylab
+)
+importFrom(ggrepel,
+  geom_label_repel,
+  geom_text_repel
+)
+importFrom(ggtangle,
+  cnetplot,
+  geom_cnet_label,
+  geom_edge
+)
+importFrom(ggtree,
+  geom_cladelab,
+  geom_hilight,
+  geom_tiplab,
+  geom_tippoint,
+  ggtree,
+  gheatmap,
+  groupClade
+)
 importFrom(graphics,barplot)
-importFrom(grid,arrow)
-importFrom(grid,gpar)
-importFrom(grid,unit)
-importFrom(igraph,'E<-')
-importFrom(igraph,'V<-')
-importFrom(igraph,E)
-importFrom(igraph,V)
-importFrom(igraph,add_vertices)
-importFrom(igraph,delete.edges)
-importFrom(igraph,graph.empty)
-importFrom(igraph,graph_from_data_frame)
-importFrom(methods,is)
-importFrom(methods,setGeneric)
-importFrom(methods,setOldClass)
+importFrom(grid,
+  arrow,
+  gpar,
+  unit
+)
+importFrom(igraph,
+  'E<-',
+  'V<-',
+  E,
+  V,
+  add_vertices,
+  delete.edges,
+  graph.empty,
+  graph_from_data_frame
+)
+importFrom(methods,
+  is,
+  setGeneric,
+  setOldClass
+)
 importFrom(purrr,map_df)
-importFrom(rlang,.data)
-importFrom(rlang,check_installed)
-importFrom(rlang,sym)
-importFrom(scatterpie,geom_scatterpie)
-importFrom(scatterpie,geom_scatterpie_legend)
-importFrom(stats,as.dist)
-importFrom(stats,cutree)
-importFrom(stats,hclust)
-importFrom(stats,quantile)
-importFrom(stats,setNames)
+importFrom(rlang,
+  .data,
+  check_installed,
+  sym
+)
+importFrom(scatterpie,
+  geom_scatterpie,
+  geom_scatterpie_legend
+)
+importFrom(stats,
+  as.dist,
+  cutree,
+  hclust,
+  quantile,
+  setNames
+)
 importFrom(tidydr,theme_dr)
-importFrom(utils,data)
-importFrom(utils,getFromNamespace)
-importFrom(utils,head)
-importFrom(utils,modifyList)
-importFrom(yulab.utils,check_input)
-importFrom(yulab.utils,get_cache_item)
-importFrom(yulab.utils,str_wrap)
-importFrom(yulab.utils,yulab_abort)
-importFrom(yulab.utils,yulab_msg)
-importFrom(yulab.utils,yulab_warn)
+importFrom(utils,
+  data,
+  getFromNamespace,
+  head,
+  modifyList
+)
+importFrom(yulab.utils,
+  check_input,
+  get_cache_item,
+  str_wrap,
+  yulab_abort,
+  yulab_msg,
+  yulab_warn
+)

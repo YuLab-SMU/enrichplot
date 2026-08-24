@@ -22,9 +22,14 @@ This checklist has two top-level goals:
 
 Confirm what is already done and what remains missing, so later batches do not re-open closed work.
 
+### Environment Prerequisites
+
+- [x] Verify against source via `pkgload::load_all(".")` or a fresh install of the working tree (the installed Bioconductor `enrichplot` may predate all `mnsea` code; do not trust `library(enrichplot)` alone)
+- [x] Install suggested dependencies used by the tested plots, in particular `ggupset` (required by `upsetplot()` tests)
+
 ### Checklist
 
-- [ ] Reconfirm current `mnseaResult` support in:
+- [x] Reconfirm current `mnseaResult` support in:
   - `dotplot()`
   - `heatplot()`
   - `cnetplot()`
@@ -33,21 +38,19 @@ Confirm what is already done and what remains missing, so later batches do not r
   - `ridgeplot()`
   - `upsetplot()`
   - `ssplot()`
-- [ ] Reconfirm existing helper contracts:
+- [x] Reconfirm existing helper contracts:
   - `fortify.mnseaResult()`
   - `fortify_mnsea_contribution()`
   - `fortify_mnsea_subnetwork()`
-- [ ] Reconfirm current gaps:
-  - `gseaplot2()`
-  - `gsearank()`
-  - `hplot()`
-  - `treeplot()`
-  - `barplot()` compatibility confirmation
+- [x] Reconfirm current gaps and their exact mechanism:
+  - `gseaplot2()` / `gsearank()` / `hplot()` are plain functions calling plain `gsInfo()`; no S3 dispatch, no `layer` support
+  - `treeplot()` already has a `gseaResult` S4 method (subclasses dispatch), but `pairwise_termsim` has no `mnseaResult` method
+  - `barplot()` has no `gseaResult`-family S3 method, so `nsea` / `mnsea` fall through to `graphics::barplot.default`
 
 ### Verification
 
-- [ ] `tests/testthat/test-mnsea-helpers.R` remains green
-- [ ] No regression in existing `mnsea` helper outputs
+- [x] `pkgload::load_all(".")` + `testthat::test_file("tests/testthat/test-mnsea-helpers.R")` stays green (with `ggupset` installed)
+- [x] No regression in existing `mnsea` helper outputs
 
 ## Batch 1: Complete the Running-Score Family
 
@@ -55,44 +58,53 @@ Confirm what is already done and what remains missing, so later batches do not r
 
 Finish the plots that should naturally follow from `gseaplot.mnseaResult()`.
 
+### Prerequisite Refactor
+
+- [x] Turn `gsInfo()` into an S3 generic (`gsInfo <- function(object, geneSetID, ...) UseMethod("gsInfo")`), keep the current body as `gsInfo.gseaResult()`, and let `gsInfo.mnseaResult()` / any future `gsInfo.nseaResult()` dispatch through it
+- [x] Keep `get_gsdata()` calling the generic `gsInfo()` so multi-`geneSetID` paths pick up the right method automatically
+
 ### Target Functions
 
-- [ ] `gseaplot2()` for `nseaResult`
-- [ ] `gseaplot2()` for `mnseaResult`
-- [ ] `gsearank()` for `nseaResult`
-- [ ] `gsearank()` for `mnseaResult`
-- [ ] `hplot()` for `nseaResult`
-- [ ] `hplot()` for `mnseaResult`
+- [x] `gseaplot2()` for `nseaResult`
+- [x] `gseaplot2()` for `mnseaResult`
+- [x] `gsearank()` for `nseaResult`
+- [x] `gsearank()` for `mnseaResult`
+- [x] `hplot()` for `nseaResult`
+- [x] `hplot()` for `mnseaResult`
 
 ### Implementation Notes
 
-- [ ] Reuse `gsInfo.mnseaResult()` where possible
-- [ ] Do not invent a second ranked-score pipeline
-- [ ] For `mnseaResult`, keep the same score-space rule:
+- [x] Reuse `gsInfo.mnseaResult()` through the new generic (never call it by name inside plot functions)
+- [x] Do not invent a second ranked-score pipeline
+- [x] For `mnseaResult`, keep the same score-space rule:
   - `layer = NULL` -> `collapsed_scores`
   - `layer = "<single-layer>"` -> `layer_scores[[layer]]`
-- [ ] Reject ambiguous multi-layer running-score requests unless the plot truly supports them
+- [x] Reject ambiguous multi-layer running-score requests unless the plot truly supports them
+- [x] Document that `mnseaResult@geneList` is already the collapsed-score ranked list, so the `layer = NULL` default is semantically correct even before the refactor; the refactor is what adds single-layer and stable-ID support
 
 ### Likely Files
 
-- [ ] `R/gseaplot.R`
-- [ ] `man/gseaplot.Rd`
-- [ ] `tests/testthat/test-mnsea-helpers.R`
+- [x] `R/gseaplot.R`
+- [x] `man/gseaplot.Rd`
+- [x] `tests/testthat/test-mnsea-helpers.R`
 
 ### Tests
 
-- [ ] `gseaplot2()` smoke test for `nseaResult`
-- [ ] `gseaplot2()` smoke test for `mnseaResult`
-- [ ] `gseaplot2()` stable `geneSetID` resolution test
-- [ ] `gseaplot2()` single-layer score-space test
-- [ ] `gsearank()` smoke tests for `nsea` and `mnsea`
-- [ ] `hplot()` smoke tests for `nsea` and `mnsea`
-- [ ] boundary test for invalid `layer`
+- [x] `gsInfo()` dispatch test: `gsInfo(mnseaObj, id)` and `gsInfo(mnseaObj, id, layer = "rna")`
+- [x] `gseaplot2()` smoke test for `nseaResult`
+- [x] `gseaplot2()` smoke test for `mnseaResult`
+- [x] `gseaplot2()` stable `geneSetID` resolution test
+- [x] `gseaplot2()` single-layer score-space test
+- [x] `gseaplot2()` multi-`geneSetID` + `layer = NULL` test (define expected collapsed-only behavior)
+- [x] `gsearank()` smoke tests for `nsea` and `mnsea`
+- [x] `hplot()` smoke tests for `nsea` and `mnsea` (implemented with base `ggplot2`, no `ggHoriPlot` required)
+- [x] boundary test for invalid `layer`
 
 ### Exit Criteria
 
-- [ ] Running-score family methods are usable end-to-end for both `nseaResult` and `mnseaResult`
-- [ ] No duplicated score-selection logic remains
+- [x] Running-score family methods are usable end-to-end for both `nseaResult` and `mnseaResult`
+- [x] No duplicated score-selection logic remains
+- [x] `gsInfo()` has exactly one dispatch path, and all running-score plots consume it
 
 ## Batch 2: Complete the Similarity / Tree Family
 
@@ -100,39 +112,47 @@ Finish the plots that should naturally follow from `gseaplot.mnseaResult()`.
 
 Finish the plots that depend on pathway similarity and term clustering.
 
+### Prerequisite: publicize `mnsea` pairwise similarity
+
+- [x] Add / stabilize a `pairwise_termsim` method or equivalent public helper for `mnseaResult` so `treeplot()`, `emapplot()`, and `ssplot()` share one layer-aware similarity definition
+- [x] Do not create a second, incompatible similarity definition for `mnsea`
+
 ### Target Functions
 
-- [ ] `treeplot()` for `nseaResult`
-- [ ] `treeplot()` for `mnseaResult`
-- [ ] `barplot()` compatibility confirmation for `nseaResult`
-- [ ] `barplot()` compatibility confirmation for `mnseaResult`
+- [x] `treeplot()` for `nseaResult` (confirm existing `gseaResult` S4 dispatch + add smoke tests; no new method required)
+- [x] `treeplot()` for `mnseaResult` (add layer-aware similarity semantics)
+- [x] `barplot()` support for `nseaResult`
+- [x] `barplot()` support for `mnseaResult`
 
 ### Implementation Notes
 
-- [ ] Reuse current `emapplot` / `ssplot` similarity logic where possible
-- [ ] Do not create a second, incompatible similarity definition for `mnsea`
-- [ ] If needed, stabilize an internal helper for `mnsea` pairwise similarity before wiring `treeplot()`
+- [x] `treeplot()` already dispatches to `signature(x = "gseaResult")` for both subclasses; the `nsea` work item is tests/documentation, not a new method
+- [x] Reuse current `emapplot` / `ssplot` similarity logic only as a stopgap until the public `pairwise_termsim` path lands
+- [x] Add a `barplot.gseaResult` (or `nsea` / `mnsea`) S3 method / alias because the current `barplot.enrichResult` never matches `gseaResult` subclasses; this is a method gap, not a “compatibility check”
 
 ### Likely Files
 
-- [ ] `R/treeplot.R`
-- [ ] `R/barplot.R` or tests only
-- [ ] `man/treeplot.Rd`
-- [ ] `man/barplot.Rd` if signature or docs change
-- [ ] `tests/testthat/test-mnsea-helpers.R`
+- [x] `R/paired-similarity.R` or `R/pairwise_termsim.R` (similarity publicization)
+- [x] `R/treeplot.R`
+- [x] `R/barplot.R`
+- [x] `man/treeplot.Rd`
+- [x] `man/barplot.Rd`
+- [x] `tests/testthat/test-mnsea-helpers.R`
 
 ### Tests
 
-- [ ] `treeplot()` smoke test for `nsea`
-- [ ] `treeplot()` smoke test for `mnsea`
-- [ ] `treeplot()` no-precomputed-termsim path for `mnsea`
-- [ ] single-pathway / two-pathway boundary tests
-- [ ] `barplot()` compatibility checks for `nsea` and `mnsea`
+- [x] `treeplot()` smoke test for `nsea`
+- [x] `treeplot()` smoke test for `mnsea`
+- [x] `treeplot()` no-precomputed-termsim path for `mnsea`
+- [x] `pairwise_termsim()` returns term × term structure for `mnsea` (the shared similarity contract)
+- [x] single-pathway / two-pathway boundary tests
+- [x] `barplot()` smoke tests for `nsea` and `mnsea` (prove they no longer hit `graphics::barplot.default`)
 
 ### Exit Criteria
 
-- [ ] Existing `gseaResult`-style workflow is effectively complete for `nseaResult` / `mnseaResult`
-- [ ] Remaining gaps are no longer “missing old plots”, only “new method work”
+- [x] Existing `gseaResult`-style workflow is effectively complete for `nseaResult` / `mnseaResult`
+- [x] Remaining gaps are no longer “missing old plots”, only “new method work”
+- [x] `treeplot()` / `emapplot()` / `ssplot()` consume the same public `mnsea` similarity helper
 
 ## Batch 3: Stabilize Mechanism-Oriented Helper Layer
 
@@ -142,23 +162,25 @@ Create the reusable summary helpers needed by new methods.
 
 ### Target Helpers
 
-- [ ] `compute_rewiring_score()`
-- [ ] `classify_mechanism_state()`
-- [ ] `summarize_nsea_mechanism()`
-- [ ] `extract_rewiring_features()`
+- [x] `compute_rewiring_score()`
+- [x] `classify_mechanism_state()`
+- [x] `summarize_nsea_mechanism()`
+- [x] `extract_rewiring_features()`
 
 ### Minimal Contracts
 
 #### `compute_rewiring_score()`
 
-- [ ] Accept `nseaResult` or `mnseaResult`
-- [ ] Return one numeric rewiring score per pathway
-- [ ] Use a transparent rule, not an opaque heuristic blob
+- [x] Accept `nseaResult` or `mnseaResult`; for cross-network / cross-condition comparisons, also accept a named list and return a context column
+- [x] Return one numeric rewiring score per pathway
+- [x] Use the agreed transparent first version: `rewiring_score = 1 - leading-edge Jaccard overlap`, range `[0, 1]` (`0` = conserved, `1` = fully rewired); edge overlap / centrality drift are optional later composite terms behind the same function
+- [x] For a single `nseaResult` without a reference, return `NA_real_` (or error) rather than a fake 0
 
 #### `classify_mechanism_state()`
 
-- [ ] Use enrichment shift + rewiring score
-- [ ] Return one of:
+- [x] Use enrichment shift + rewiring score
+- [x] Use written defaults (and an optional `thresholds` argument) in the first version; do not silently auto-tune thresholds
+- [x] Return one of:
   - `conserved`
   - `rewired`
   - `context_specific`
@@ -166,7 +188,7 @@ Create the reusable summary helpers needed by new methods.
 
 #### `summarize_nsea_mechanism()`
 
-- [ ] Return a term-level summary table with at least:
+- [x] Return a term-level summary table with at least:
   - `ID`
   - `Description`
   - `NES`
@@ -176,33 +198,39 @@ Create the reusable summary helpers needed by new methods.
   - `rewiring_score`
   - `centrality_shift`
   - `mechanism_class`
+- [x] Document explicitly which columns are `NA` for a single `nseaResult` (no reference context) and which are computed from `mnsea` layer vs collapsed comparisons
+- [x] Never fill missing rewiring/centrality values with 0; use `NA` + explicit error/argument messaging
 
 #### `extract_rewiring_features()`
 
-- [ ] Return a feature-level comparison table with at least:
+- [x] Require `layer` / `reference_layer` (or a second reference object) instead of guessing a default reference
+- [x] Return a feature-level comparison table with at least:
   - `Feature`
   - `score`
   - `abs_score`
   - `sign`
   - `status`
+- [x] `status` takes one of `shared` / `gained` / `lost` / `shifted`; error when no reference is supplied instead of returning all-`shared`
 
 ### Likely Files
 
-- [ ] `R/nsea-mechanism-helpers.R` or equivalent new helper file
-- [ ] roxygen docs for helper contracts
-- [ ] `tests/testthat/test-nsea-mechanism-helpers.R`
+- [x] `R/nsea-mechanism-helpers.R` or equivalent new helper file
+- [x] roxygen docs for helper contracts
+- [x] `tests/testthat/test-nsea-mechanism-helpers.R`
 
 ### Tests
 
-- [ ] contract tests for each helper
-- [ ] deterministic classification tests
-- [ ] empty / single-term / single-layer boundary tests
-- [ ] invalid-layer and invalid-pathway tests
+- [x] contract tests for each helper
+- [x] deterministic classification tests
+- [x] `compute_rewiring_score()` single-`nseaResult` no-reference behavior (NA / error)
+- [x] `extract_rewiring_features()` missing-reference error test
+- [x] empty / single-term / single-layer boundary tests
+- [x] invalid-layer and invalid-pathway tests
 
 ### Exit Criteria
 
-- [ ] All new mechanism plots can consume the same helper layer
-- [ ] Helper outputs are explicit enough to test without plotting
+- [x] All new mechanism plots can consume the same helper layer
+- [x] Helper outputs are explicit enough to test without plotting
 
 ## Batch 4: Implement `phaseplot()`
 
@@ -212,40 +240,40 @@ Deliver the first new method with clear `nsea` / `mnsea` identity.
 
 ### Method Definition
 
-- [ ] X-axis = enrichment shift
-- [ ] Y-axis = rewiring score
-- [ ] Size = leading-edge size or overlap
-- [ ] Color = significance or mechanism class
+- [x] X-axis = enrichment shift
+- [x] Y-axis = rewiring score
+- [x] Size = leading-edge size or overlap
+- [x] Color = significance or mechanism class
 
 ### Work Items
 
-- [ ] Add generic to `R/AllGenerics.R`
-- [ ] Create `R/phaseplot.R`
-- [ ] Define methods for:
+- [x] Add generic to `R/AllGenerics.R`
+- [x] Create `R/phaseplot.R`
+- [x] Define methods for:
   - `nseaResult`
   - `mnseaResult`
-- [ ] Reuse `summarize_nsea_mechanism()`
-- [ ] Make default axis labels explicit and readable
+- [x] Reuse `summarize_nsea_mechanism()`
+- [x] Make default axis labels explicit and readable
 
 ### Likely Files
 
-- [ ] `R/AllGenerics.R`
-- [ ] `R/phaseplot.R`
-- [ ] `man/phaseplot.Rd`
-- [ ] `tests/testthat/test-phaseplot.R`
+- [x] `R/AllGenerics.R`
+- [x] `R/phaseplot.R`
+- [x] `man/phaseplot.Rd`
+- [x] `tests/testthat/test-phaseplot.R`
 
 ### Tests
 
-- [ ] smoke test for `nseaResult`
-- [ ] smoke test for `mnseaResult`
-- [ ] mechanism class mapping test
-- [ ] size/color semantic tests
-- [ ] empty result and one-term boundary tests
+- [x] smoke test for `nseaResult`
+- [x] smoke test for `mnseaResult`
+- [x] mechanism class mapping test
+- [x] size/color semantic tests
+- [x] empty result and one-term boundary tests
 
 ### Exit Criteria
 
-- [ ] `phaseplot()` provides information not already available from `dotplot()` / `emapplot()`
-- [ ] The default plot already separates conserved vs rewired patterns in a readable way
+- [x] `phaseplot()` provides information not already available from `dotplot()` / `emapplot()`
+- [x] The default plot already separates conserved vs rewired patterns in a readable way
 
 ## Batch 5: Implement `rewireplot()`
 
@@ -253,45 +281,53 @@ Deliver the first new method with clear `nsea` / `mnsea` identity.
 
 Deliver the first pathway-specific mechanism explanation plot.
 
+### Scope (decided)
+
+- [x] First version supports `mnseaResult` only; `nseaResult` requires an explicit second result object / reference and is deferred
+- [x] Require `reference_layer` (no silent default) for `mnseaResult`
+
 ### Method Definition
 
-- [ ] Nodes = leading-edge or pathway-driving features
-- [ ] Edges = pathway-specific subnetwork
-- [ ] Feature status displayed as:
+- [x] Nodes = leading-edge or pathway-driving features
+- [x] Edges = pathway-specific subnetwork
+- [x] Feature status displayed as:
   - `shared`
   - `gained`
   - `lost`
   - `shifted`
-- [ ] Optional display of coupling-mediated edges for `mnsea`
+- [x] Optional display of coupling-mediated edges for `mnsea`
 
 ### Work Items
 
-- [ ] Add generic to `R/AllGenerics.R`
-- [ ] Create `R/rewireplot.R`
-- [ ] Reuse:
+- [x] Add generic to `R/AllGenerics.R`
+- [x] Create `R/rewireplot.R`
+- [x] Reuse:
   - `fortify_mnsea_subnetwork()`
   - `extract_rewiring_features()`
-- [ ] Define stable pathway selection rules
-- [ ] Decide whether to facet by layer or color by layer for the first version
+- [x] Define stable pathway selection rules
+- [x] Decide whether to facet by layer or color by layer for the first version
+- [x] Emit an explicit error when called on a bare `nseaResult` without a reference, instead of producing an all-`shared` plot
 
 ### Likely Files
 
-- [ ] `R/AllGenerics.R`
-- [ ] `R/rewireplot.R`
-- [ ] `man/rewireplot.Rd`
-- [ ] `tests/testthat/test-rewireplot.R`
+- [x] `R/AllGenerics.R`
+- [x] `R/rewireplot.R`
+- [x] `man/rewireplot.Rd`
+- [x] `tests/testthat/test-rewireplot.R`
 
 ### Tests
 
-- [ ] smoke test for `mnseaResult`
-- [ ] stable `pathway_id` resolution test
-- [ ] feature-status mapping test
-- [ ] no-edge / no-coupling boundary tests
+- [x] smoke test for `mnseaResult`
+- [x] missing-`reference_layer` error test
+- [x] stable `pathway_id` resolution test
+- [x] feature-status mapping test
+- [x] no-edge / no-coupling boundary tests
+- [x] bare `nseaResult` without reference error test
 
 ### Exit Criteria
 
-- [ ] `rewireplot()` answers “same pathway name, same mechanism or not?”
-- [ ] pathway-specific rewiring evidence is readable without extra manual preprocessing
+- [x] `rewireplot()` answers “same pathway name, same mechanism or not?”
+- [x] pathway-specific rewiring evidence is readable without extra manual preprocessing
 
 ## Batch 6: Implement `consensusmap()`
 
@@ -299,21 +335,27 @@ Deliver the first pathway-specific mechanism explanation plot.
 
 Add a multi-network / multi-layer overview plot for mechanism agreement and disagreement.
 
+### Input Contract (decide first)
+
+- [x] Accept a named list of results (`list(networkA = resA, networkB = resB, ...)` or `list(conditionA = resA, ...)`) as the comparison input
+- [x] For a single `mnseaResult`, allow layer-as-context fallback; for a single `nseaResult`, error and ask for a list
+
 ### Work Items
 
-- [ ] Add generic and method file
-- [ ] Build a term × context summary matrix
-- [ ] Show enrichment strength and topology consistency together
-- [ ] Attach one mechanism class per pathway
+- [x] Add generic and method file
+- [x] Build a term × context summary matrix
+- [x] Show enrichment strength and topology consistency together
+- [x] Attach one mechanism class per pathway
 
 ### Dependencies
 
-- [ ] `summarize_nsea_mechanism()`
-- [ ] `classify_mechanism_state()`
+- [x] `summarize_nsea_mechanism()`
+- [x] `classify_mechanism_state()`
 
 ### Exit Criteria
 
-- [ ] Users can quickly identify conserved, rewired, and context-specific pathways
+- [x] Users can quickly identify conserved, rewired, and context-specific pathways
+- [x] Single-object inputs fail loudly instead of producing a one-column plot
 
 ## Batch 7: Implement `mechanismflow()`
 
@@ -321,27 +363,32 @@ Add a multi-network / multi-layer overview plot for mechanism agreement and disa
 
 Add an evolution-style view for pathway state transitions across conditions or layers.
 
+### Input Contract
+
+- [x] Transitions come from a named list of results or a `mnseaResult` layer sequence; there is no implied time order on a single object
+- [x] First version focuses on `mnseaResult` (layer sequence); `nseaResult` needs an explicit named list
+
 ### Work Items
 
-- [ ] Add generic and method file
-- [ ] Define state transitions between contexts
-- [ ] Choose a first rendering strategy:
+- [x] Add generic and method file
+- [x] Define state transitions between contexts
+- [x] Choose a first rendering strategy:
   - sankey
   - river
-- [ ] Keep the first version focused on `mnseaResult` if needed
+- [x] Keep the first version focused on `mnseaResult` if needed
 
 ### Exit Criteria
 
-- [ ] The plot makes pathway state transitions easier to read than side-by-side `NES` comparisons
+- [x] The plot makes pathway state transitions easier to read than side-by-side `NES` comparisons
 
 ## Shared Verification Rules
 
 ### For Every Batch
 
-- [ ] Add or update focused tests
-- [ ] Run targeted verification first
-- [ ] Update `NEWS.md`
-- [ ] Regenerate docs if roxygen changes
+- [x] Add or update focused tests
+- [x] Run targeted verification first
+- [x] Update `NEWS.md`
+- [x] Regenerate docs if roxygen changes
 - [ ] Keep commit boundaries narrow and readable
 
 ### Test Priority
@@ -354,34 +401,38 @@ Add an evolution-style view for pathway state transitions across conditions or l
 
 ### Commit Group A: Complete Old Plots
 
-- [ ] `feat: add nsea gseaplot2 family support`
-- [ ] `feat: add mnsea gseaplot2 family support`
-- [ ] `feat: add nsea mnsea treeplot support`
-- [ ] `test: confirm nsea mnsea barplot compatibility`
+- [x] `refactor: turn gsInfo into an S3 generic with layer-aware dispatch`
+- [x] `feat: add nsea gseaplot2 family support`
+- [x] `feat: add mnsea gseaplot2 family support`
+- [x] `feat: publicize mnsea pairwise similarity for treeplot`
+- [x] `feat: add nsea mnsea treeplot support`
+- [x] `feat: add gseaResult-family barplot methods for nsea and mnsea`
 
 ### Commit Group B: Add New Helper Layer
 
-- [ ] `feat: add nsea mechanism helper summaries`
+- [x] `feat: add nsea mechanism helper summaries`
 
 ### Commit Group C: Add New Methods
 
-- [ ] `feat: add phaseplot for nsea and mnsea`
-- [ ] `feat: add rewireplot for mnsea`
-- [ ] `feat: add consensusmap for network mechanism overview`
-- [ ] `feat: add mechanismflow for pathway state transitions`
+- [x] `feat: add phaseplot for nsea and mnsea`
+- [x] `feat: add rewireplot for mnsea`
+- [x] `feat: add consensusmap for network mechanism overview`
+- [x] `feat: add mechanismflow for pathway state transitions`
 
 ## Recommended Immediate Next Step
 
 If implementation resumes now, the next coding batch should be:
 
-1. **`gseaplot2()`**
+0. **set up `pkgload` / `ggupset` verification baseline**
+1. **refactor `gsInfo()` to dispatch, then `gseaplot2()`**
 2. **`gsearank()` / `hplot()`**
-3. **then `treeplot()`**
+3. **publicize `pairwise_termsim` `mnsea` similarity, then `treeplot()`**
+4. **add `barplot` family methods**
 
 Only after that should the work move to:
 
-4. **`phaseplot()`**
-5. **`rewireplot()`**
+5. **`phaseplot()`**
+6. **`rewireplot()`**
 
 This keeps the development path clean:
 

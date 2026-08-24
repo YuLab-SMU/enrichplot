@@ -165,7 +165,7 @@ gseaplot.mnseaResult <- function(
     ...
 ) {
     by <- match.arg(by, c("runningScore", "preranked", "all"))
-    gsdata <- gsInfo.mnseaResult(x, geneSetID = geneSetID, layer = layer)
+    gsdata <- gsInfo(x, geneSetID = geneSetID, layer = layer)
     p <- ggplot(gsdata, aes(x = .data$x)) +
         theme_dose() +
         xlab("Position in the Ranked List of Genes")
@@ -304,7 +304,9 @@ get_mnsea_geneSet <- function(object, geneSetID, layer = NULL) {
     geneSet
 }
 
-gsInfo.mnseaResult <- function(object, geneSetID, layer = NULL) {
+#' @method gsInfo mnseaResult
+#' @export
+gsInfo.mnseaResult <- function(object, geneSetID, layer = NULL, ...) {
     geneSetID <- resolve_mnsea_gseaplot_id(object, geneSetID)
     geneList <- get_mnsea_ranked_scores(object, layer = layer)
     geneSet <- get_mnsea_geneSet(object, geneSetID = geneSetID, layer = layer)
@@ -348,10 +350,16 @@ gsInfo.mnseaResult <- function(object, geneSetID, layer = NULL) {
 #' @title gsInfo
 #' @param object gseaResult object
 #' @param geneSetID gene set ID
+#' @param ... additional arguments passed to methods (e.g. `layer` for `mnseaResult`)
 #' @return data.frame
 #' @author Guangchuang Yu
-## @export
-gsInfo <- function(object, geneSetID) {
+gsInfo <- function(object, geneSetID, ...) {
+    UseMethod("gsInfo")
+}
+
+#' @method gsInfo gseaResult
+#' @export
+gsInfo.gseaResult <- function(object, geneSetID, ...) {
     geneList <- object@geneList
 
     if (is.numeric(geneSetID)) {
@@ -379,13 +387,13 @@ gsInfo <- function(object, geneSetID) {
 }
 
 
-get_gsdata <- function(x, geneSetID) {
+get_gsdata <- function(x, geneSetID, ...) {
     if (length(geneSetID) == 1) {
-        gsdata <- gsInfo(x, geneSetID)
+        gsdata <- gsInfo(x, geneSetID, ...)
         return(gsdata)
     }
 
-    lapply(geneSetID, gsInfo, object = x) |>
+    lapply(geneSetID, gsInfo, object = x, ...) |>
         yulab.utils::rbindlist()
 }
 
@@ -398,26 +406,35 @@ get_gsdata <- function(x, geneSetID) {
 #' @return horizontal plot
 #' @export
 #' @author Guangchuang Yu
-hplot <- function(x, geneSetID) {
+hplot <- function(x, geneSetID, layer = NULL) {
     if (!inherits(x, "gseaResult")) {
         stop("hplot only work for GSEA result")
     }
 
-    require_suggested('ggHoriPlot', 'for `hplot()`.')
-
-    gsdata <- get_gsdata(x, geneSetID)
+    gsdata <- get_gsdata(x, geneSetID, layer = layer)
 
     ggplot(gsdata, aes(.data$x, .data$runningScore)) +
-        ggHoriPlot::geom_horizon(origin = 'min', horizonscale = 4) +
+        ggplot2::geom_ribbon(
+            aes(
+                ymin = pmin(0, .data$runningScore),
+                ymax = pmax(0, .data$runningScore),
+                fill = ifelse(.data$runningScore >= 0, "up", "down")
+            ),
+            alpha = 0.5
+        ) +
+        geom_line(color = "grey30", linewidth = 0.3) +
+        geom_hline(yintercept = 0, color = "grey50", linewidth = 0.2) +
         facet_grid(Description ~ .) +
-        #ggHoriPlot::scale_fill_hcl(palette = 'Peach', reverse = TRUE) +
-        ggHoriPlot::scale_fill_hcl(palette = 'BluGrn', reverse = TRUE) +
+        scale_fill_manual(
+            values = c(up = "#FA5860", down = "#2166AC"),
+            name = NULL
+        ) +
         theme_minimal() +
         ggfun::theme_noyaxis() +
         theme(
             panel.spacing.y = unit(0, "lines"),
             strip.text.y = element_text(angle = 0),
-            legend.position = 'none',
+            legend.position = "none",
             panel.border = element_blank(),
             panel.grid = element_blank(),
         ) +
@@ -469,13 +486,14 @@ gseaplot2 <- function(
     pvalue_table = FALSE,
     pvalue_table_columns = c("pvalue", "p.adjust"),
     pvalue_table_rownames = "Description",
-    ES_geom = "line"
+    ES_geom = "line",
+    layer = NULL
 ) {
     ES_geom <- match.arg(ES_geom, c("line", "dot"))
 
     geneList <- position <- NULL ## to satisfy codetool
 
-    gsdata <- get_gsdata(x, geneSetID)
+    gsdata <- get_gsdata(x, geneSetID, layer = layer)
 
     p <- ggplot(gsdata, aes(x = .data$x)) +
         xlab(NULL) +
@@ -701,11 +719,11 @@ gseaplot2 <- function(
 #' @importFrom ggplot2 theme_minimal
 #' @export
 #' @author Guangchuang Yu
-gsearank <- function(x, geneSetID, title = "", output = "plot") {
+gsearank <- function(x, geneSetID, title = "", output = "plot", layer = NULL) {
     output <- match.arg(output, c("plot", "table"))
 
     position <- NULL
-    gsdata <- gsInfo(x, geneSetID)
+    gsdata <- gsInfo(x, geneSetID, layer = layer)
     gsdata <- subset(gsdata, position == 1)
 
     if (output == "table") {

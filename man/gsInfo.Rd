@@ -4,12 +4,14 @@
 \alias{gsInfo}
 \title{gsInfo}
 \usage{
-gsInfo(object, geneSetID)
+gsInfo(object, geneSetID, ...)
 }
 \arguments{
 \item{object}{gseaResult object}
 
 \item{geneSetID}{gene set ID}
+
+\item{...}{additional arguments passed to methods (e.g. \code{layer} for \code{mnseaResult})}
 }
 \value{
 data.frame
