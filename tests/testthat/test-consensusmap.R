@@ -23,3 +23,44 @@ test_that("consensusmap requires named list for a single nseaResult", {
     x <- mock_mnsea_result()
     expect_s3_class(consensusmap(x), "ggplot")
 })
+
+test_that("consensusmap fills by delta_NES when available", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p <- consensusmap(list(control = x, treated = x2), fill_var = "delta_NES")
+
+    expect_s3_class(p, "ggplot")
+    expect_true("delta_NES" %in% colnames(p$data))
+    expect_false(all(is.na(p$data$delta_NES)))
+})
+
+test_that("consensusmap uses rewiring size when include_rewiring is TRUE", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p <- consensusmap(
+        list(control = x, treated = x2),
+        include_rewiring = TRUE,
+        size_var = "rewiring_score"
+    )
+
+    expect_s3_class(p, "ggplot")
+    expect_true("rewiring_score" %in% colnames(p$data))
+    expect_false(all(is.na(p$data$rewiring_score)))
+})
+
+test_that("consensusmap supports rewiring-score labels", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p <- consensusmap(
+        list(control = x, treated = x2),
+        label = "rewiring_score"
+    )
+
+    expect_s3_class(p, "ggplot")
+})

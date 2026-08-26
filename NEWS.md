@@ -6,6 +6,7 @@
 + add mechanism-oriented helper layer (`compute_rewiring_score()`, `classify_mechanism_state()`, `summarize_nsea_mechanism()`, `extract_rewiring_features()`) with deterministic tests
 + add `phaseplot()` for enrichment-shift versus rewiring overviews and `rewireplot()` for pathway-specific feature-level rewiring evidence
 + add `consensusmap()` for multi-context mechanism agreement and `mechanismflow()` for pathway state transitions across layers/conditions
++ refine mechanism plots with real cross-object comparisons: `summarize_nsea_mechanism()` now accepts a `reference` result to compute `delta_NES` and cross-object `rewiring_score`; `phaseplot()` supports `reference` / `x_axis` / `size_var`; `consensusmap()` uses fill for NES/delta NES and point size for rewiring/overlap; `mechanismflow()` uses flow magnitude and stable mechanism-state ordering (2026-08-23, Sun)
 
 + add a minimal `ssplot.mnseaResult()` that projects selected pathways into a similarity-space overview using layer-aware feature overlap, while reusing `emapplot()` semantics and adding stable fallbacks for one- or two-pathway layouts (2026-06-25, Thu)
 + add a minimal `upsetplot.mnseaResult()` that summarizes shared feature overlaps across selected pathways with collapsed-score or single-layer views, including support for score magnitude display and `core_enrichment` filtering (2026-06-25, Thu)

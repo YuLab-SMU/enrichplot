@@ -275,6 +275,12 @@ Deliver the first new method with clear `nsea` / `mnsea` identity.
 - [x] `phaseplot()` provides information not already available from `dotplot()` / `emapplot()`
 - [x] The default plot already separates conserved vs rewired patterns in a readable way
 
+### Enhancements (2026-08-23)
+
+- [x] `phaseplot()` accepts `reference` to compute real `delta_NES`
+- [x] `phaseplot()` supports `x_axis = "delta_NES"` / `"NES"` and `size_var = "leading_edge_size"` / `"leading_edge_overlap"`
+- [x] `phaseplot()` errors clearly when `delta_NES` is requested without a reference
+
 ## Batch 5: Implement `rewireplot()`
 
 ### Goal
@@ -357,6 +363,13 @@ Add a multi-network / multi-layer overview plot for mechanism agreement and disa
 - [x] Users can quickly identify conserved, rewired, and context-specific pathways
 - [x] Single-object inputs fail loudly instead of producing a one-column plot
 
+### Enhancements (2026-08-23)
+
+- [x] `consensusmap()` exposes both enrichment strength (`fill`) and topology consistency (`size`)
+- [x] `consensusmap()` accepts `fill_var` / `size_var` / `label` / `reference`
+- [x] `consensusmap()` uses the first list element as default reference for `delta_NES`
+- [x] `compute_rewiring_score()` supports cross-object `reference` for real rewiring scores
+
 ## Batch 7: Implement `mechanismflow()`
 
 ### Goal
@@ -380,6 +393,12 @@ Add an evolution-style view for pathway state transitions across conditions or l
 ### Exit Criteria
 
 - [x] The plot makes pathway state transitions easier to read than side-by-side `NES` comparisons
+
+### Enhancements (2026-08-23)
+
+- [x] `mechanismflow()` accepts `reference` and `flow_var`
+- [x] `mechanismflow()` uses flow magnitude (NES / delta NES / leading-edge size) for line width and point size
+- [x] `mechanismflow()` uses a stable mechanism-state ordering on the y axis
 
 ## Shared Verification Rules
 

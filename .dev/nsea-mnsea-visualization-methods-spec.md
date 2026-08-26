@@ -668,15 +668,18 @@ term 在多个网络 / 多个 layer 中的状态是如何迁移的？
    后续可与 edge overlap 并列展示。
 3. `consensusmap()` 的默认分类阈值应写死还是交给用户指定？建议第一版写死，
    同时提供 `thresholds` 参数，之后再开放自动选阈值。
+   **（已实现第一版）** 当前实现使用写死阈值，并保留后续扩展参数空间。
 4. `mechanismflow()` 是否只服务于 `mnseaResult`，而不强求 `nseaResult` 支持？
-   建议第一版只支持 `mnseaResult`（其 layer 序列天然提供状态迁移），
-   `nseaResult` 需传入命名列表才能使用。
+   **（已实现）** 第一版支持 `mnseaResult` 与命名列表；单个 `nseaResult`
+   仍要求显式命名列表。
 5. 是否要先把 `pairwise_termsim` 的 `mnsea` 语义进一步公共化，再推进 `treeplot()`？
-   **建议升级为必做项**：`treeplot()`、`emapplot()`、`ssplot()` 都依赖相似性语义，
-   不应各自维护一套 layer-aware 定义。
+   **（已实现）** `pairwise_termsim()` 已增加 `mnseaResult` 方法，供
+   `treeplot()` / `emapplot()` / `ssplot()` 共用。
 6. **（新增）**`consensusmap()` / `mechanismflow()` 的命名列表输入形态、以及
    `rewireplot()` 的 `reference_layer` 是否为必填，需要与 `enrichit` 侧确认没有
    对象结构依赖后再冻结参数签名。
+   **（已实现）** 命名列表输入和 `reference_layer` 必填规则已在第一版落地；
+   签名冻结仍可在后续版本再确认。
 
 ## 18. 当前推荐结论
 

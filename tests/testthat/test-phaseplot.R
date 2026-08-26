@@ -25,3 +25,39 @@ test_that("phaseplot handles empty result boundaries", {
         "No mnsea pathways available"
     )
 })
+
+test_that("phaseplot uses delta_NES when reference is supplied", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p <- phaseplot(
+        x2,
+        reference = x,
+        selected_layer = "rna",
+        reference_layer = "protein",
+        showCategory = 2
+    )
+
+    expect_s3_class(p, "ggplot")
+    expect_true(all(c("delta_NES", "rewiring_score", "leading_edge_size", "mechanism_class") %in% colnames(p$data)))
+    expect_false(all(is.na(p$data$delta_NES)))
+})
+
+test_that("phaseplot can use legacy NES axis", {
+    x <- mock_mnsea_result()
+
+    p <- phaseplot(x, showCategory = 2, x_axis = "NES")
+
+    expect_s3_class(p, "ggplot")
+    expect_true("NES" %in% colnames(p$data))
+})
+
+test_that("phaseplot rejects delta_NES without reference", {
+    x <- mock_mnsea_result()
+
+    expect_error(
+        phaseplot(x, showCategory = 2, x_axis = "delta_NES"),
+        "No `delta_NES` available"
+    )
+})

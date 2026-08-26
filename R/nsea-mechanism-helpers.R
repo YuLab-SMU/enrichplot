@@ -15,11 +15,47 @@
 #' @noRd
 compute_rewiring_score <- function(
     x,
+    reference = NULL,
     reference_layer = NULL,
     selected_layer = NULL,
     threshold_abs_score = 0,
     ...
 ) {
+    if (!is.null(reference)) {
+        if (!inherits(reference, c("nseaResult", "mnseaResult"))) {
+            stop("`reference` must be a nseaResult or mnseaResult when computing cross-object rewiring.")
+        }
+        x_sets <- .result_feature_sets(x, layer = selected_layer)
+        ref_sets <- .result_feature_sets(reference, layer = reference_layer)
+        ids <- intersect(names(x_sets), names(ref_sets))
+        if (length(ids) == 0) {
+            return(data.frame(
+                ID = character(0),
+                Description = character(0),
+                layer = character(0),
+                leading_edge_overlap = numeric(0),
+                rewiring_score = numeric(0),
+                centrality_shift = numeric(0)
+            ))
+        }
+        overlap <- vapply(ids, function(id) {
+            a <- x_sets[[id]]
+            b <- ref_sets[[id]]
+            if (length(a) == 0 || length(b) == 0) return(0)
+            length(intersect(a, b)) / length(union(a, b))
+        }, numeric(1))
+        desc <- get_term_labels(x, ids)
+        return(data.frame(
+            ID = ids,
+            Description = unname(desc),
+            layer = if (is.null(selected_layer)) "collapsed" else as.character(selected_layer),
+            leading_edge_overlap = unname(overlap),
+            rewiring_score = 1 - unname(overlap),
+            centrality_shift = NA_real_,
+            stringsAsFactors = FALSE
+        ))
+    }
+
     if (is.list(x) && !inherits(x, c("nseaResult", "mnseaResult"))) {
         if (is.null(names(x))) {
             stop("A list input to compute_rewiring_score() must be named.")
@@ -27,10 +63,12 @@ compute_rewiring_score <- function(
         if (length(x) < 2) {
             stop("At least two contexts are required to compute rewiring.")
         }
+        reference <- x[[1]]
         output_list <- lapply(seq_along(x), function(i) {
             context <- names(x)[i]
             res <- compute_rewiring_score(
                 x[[i]],
+                reference = reference,
                 reference_layer = NULL,
                 selected_layer = NULL,
                 threshold_abs_score = threshold_abs_score
@@ -239,13 +277,16 @@ classify_mechanism_state <- function(
 #' Summarize network mechanism information for a term-level table
 #'
 #' @param x A `nseaResult` or `mnseaResult`.
+#' @param reference Optional reference result (another `nseaResult`,
+#'   `mnseaResult`, or a results data.frame) used to compute `delta_NES`.
 #' @param reference_layer Optional reference layer for mnsea comparisons.
 #' @param selected_layer Optional layer to compare (defaults to collapsed).
 #' @param ... Additional arguments passed to compute_rewiring_score().
-#' @return A term-level data.frame.
+#' @return A term-level data.frame with `reference_NES` and `delta_NES`.
 #' @noRd
 summarize_nsea_mechanism <- function(
     x,
+    reference = NULL,
     reference_layer = NULL,
     selected_layer = NULL,
     ...
@@ -257,12 +298,26 @@ summarize_nsea_mechanism <- function(
 
     rew <- compute_rewiring_score(
         x,
+        reference = reference,
         reference_layer = reference_layer,
         selected_layer = selected_layer,
         ...
     )
 
     ids <- as.character(result_df$ID)
+
+    reference_NES <- rep(NA_real_, length(ids))
+    delta_NES <- rep(NA_real_, length(ids))
+    if (!is.null(reference)) {
+        ref_df <- .result_data(reference)
+        if (!"NES" %in% colnames(ref_df)) {
+            stop("The reference result must contain an `NES` column.")
+        }
+        ref_NES <- setNames(as.numeric(ref_df$NES), as.character(ref_df$ID))
+        reference_NES <- unname(ref_NES[ids])
+        delta_NES <- as.numeric(result_df$NES) - reference_NES
+    }
+
     if (nrow(rew) > 0 && all(ids %in% rew$ID)) {
         rew_match <- rew[match(ids, rew$ID), , drop = FALSE]
     } else {
@@ -275,7 +330,13 @@ summarize_nsea_mechanism <- function(
         length(strsplit(core, "/", fixed = TRUE)[[1]])
     }, integer(1))
 
-    mechanism_class <- if (nrow(rew_match) > 0) {
+    mechanism_class <- if (!is.null(reference) && nrow(rew_match) > 0) {
+        classify_mechanism_state(
+            nes_shift = delta_NES,
+            rewiring_score = rew_match$rewiring_score
+        )
+    } else if (nrow(rew_match) > 0 && !all(is.na(rew_match$rewiring_score))) {
+        # No reference NES is available; classify only on rewiring score.
         classify_mechanism_state(
             nes_shift = rep(0, nrow(rew_match)),
             rewiring_score = rew_match$rewiring_score
@@ -288,6 +349,8 @@ summarize_nsea_mechanism <- function(
         ID = ids,
         Description = as.character(result_df$Description),
         NES = as.numeric(result_df$NES),
+        reference_NES = reference_NES,
+        delta_NES = delta_NES,
         p.adjust = as.numeric(result_df$p.adjust),
         leading_edge_size = leading_edge_size,
         leading_edge_overlap = if (nrow(rew_match) > 0) rew_match$leading_edge_overlap else NA_real_,
@@ -309,4 +372,22 @@ summarize_nsea_mechanism <- function(
         )
         unique(as.character(df$Feature))
     }) |> stats::setNames(ids)
+}
+
+.result_feature_sets <- function(x, layer = NULL) {
+    if (inherits(x, "mnseaResult")) {
+        return(.mnsea_feature_sets(x, layer = layer))
+    }
+    if (inherits(x, "nseaResult")) {
+        ids <- as.character(x@result$ID)
+        gene_sets <- x@geneSets
+        if (!is.list(gene_sets)) {
+            return(stats::setNames(vector("list", length(ids)), ids))
+        }
+        return(lapply(ids, function(id) {
+            set <- gene_sets[[id]]
+            if (is.null(set)) character(0) else unique(as.character(set))
+        }) |> stats::setNames(ids))
+    }
+    stop("x must be a nseaResult or mnseaResult.")
 }
