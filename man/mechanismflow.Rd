@@ -19,10 +19,23 @@ mechanismflow(x, ...)
 \item{x}{A \code{mnseaResult}, \code{nseaResult}, or a named list of results.}
 
 \item{...}{Additional parameters passed to plot methods.}
+
+\item{reference}{An optional reference result used to compute
+\code{delta_NES}. For list input, the first element is used as the default
+reference.}
+
+\item{flow_var}{One of \code{"NES"}, \code{"delta_NES"}, or
+\code{"leading_edge_size"}; controls flow magnitude (line width and point
+size).}
 }
 \value{
 A ggplot object.
 }
 \description{
 Pathway state transition flow
+}
+\details{
+\code{mechanismflow()} draws pathway state transitions across contexts
+(conditions or layers). Line width and point size encode flow
+magnitude, while point shape encodes the mechanism state.
 }

@@ -16,10 +16,32 @@ phaseplot(x, ...)
 \item{x}{A \code{nseaResult} or \code{mnseaResult} object.}
 
 \item{...}{Additional parameters passed to plot methods.}
+
+\item{reference}{An optional reference result (another \code{nseaResult},
+\code{mnseaResult}, or a results \code{data.frame}). When supplied,
+\code{phaseplot()} computes \code{delta_NES = NES - reference_NES} and uses it
+as the default x-axis.}
+
+\item{selected_layer}{Optional layer name for \code{mnseaResult}.}
+
+\item{reference_layer}{Optional reference layer name for \code{mnseaResult}.}
+
+\item{x_axis}{One of \code{"delta_NES"} or \code{"NES"}. By default, \code{delta_NES}
+is used when \code{reference} is supplied, otherwise \code{NES}.}
+
+\item{size_var}{One of \code{"leading_edge_size"} or \code{"leading_edge_overlap"}.}
+
+\item{showCategory}{Number (or vector) of pathways to display.}
 }
 \value{
 A ggplot object.
 }
 \description{
 Phase plot for enrichment-shift versus rewiring
+}
+\details{
+\code{phaseplot()} places each pathway on a two-dimensional plane:
+enrichment strength (or shift) on the x-axis and rewiring score on
+the y-axis. Point size and color encode leading-edge information and
+mechanism class.
 }

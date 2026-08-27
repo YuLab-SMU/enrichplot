@@ -458,9 +458,24 @@ setGeneric("manhattanplot", function(x, ...) {
 
 #' Phase plot for enrichment-shift versus rewiring
 #'
+#' `phaseplot()` places each pathway on a two-dimensional plane:
+#' enrichment strength (or shift) on the x-axis and rewiring score on
+#' the y-axis. Point size and color encode leading-edge information and
+#' mechanism class.
+#'
 #' @title phaseplot
 #' @rdname phaseplot
 #' @param x A `nseaResult` or `mnseaResult` object.
+#' @param reference An optional reference result (another `nseaResult`,
+#'   `mnseaResult`, or a results `data.frame`). When supplied,
+#'   `phaseplot()` computes `delta_NES = NES - reference_NES` and uses it
+#'   as the default x-axis.
+#' @param selected_layer Optional layer name for `mnseaResult`.
+#' @param reference_layer Optional reference layer name for `mnseaResult`.
+#' @param x_axis One of `"delta_NES"` or `"NES"`. By default, `delta_NES`
+#'   is used when `reference` is supplied, otherwise `NES`.
+#' @param size_var One of `"leading_edge_size"` or `"leading_edge_overlap"`.
+#' @param showCategory Number (or vector) of pathways to display.
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
@@ -482,9 +497,22 @@ setGeneric("rewireplot", function(x, ...) {
 
 #' Multi-context mechanism consensus map
 #'
+#' `consensusmap()` creates a pathway by context heatmap. Tile fill
+#' represents enrichment strength (`NES` or `delta_NES`) and point size
+#' represents topology consistency (`rewiring_score` or
+#' `leading_edge_overlap`). Mechanism class is shown as tile text and point
+#' color.
+#'
 #' @title consensusmap
 #' @rdname consensusmap
 #' @param x A `mnseaResult`, `nseaResult`, or a named list of results.
+#' @param fill_var One of `"NES"` or `"delta_NES"`; controls tile fill.
+#' @param size_var One of `"rewiring_score"` or `"leading_edge_overlap"`;
+#'   controls point size.
+#' @param include_rewiring Logical; whether to draw topology-consistency points.
+#' @param label One of `"mechanism_class"`, `"rewiring_score"`, or `"none"`.
+#' @param reference An optional reference result used to compute `delta_NES`.
+#'   For list input, the first element is used as the default reference.
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
@@ -494,9 +522,19 @@ setGeneric("consensusmap", function(x, ...) {
 
 #' Pathway state transition flow
 #'
+#' `mechanismflow()` draws pathway state transitions across contexts
+#' (conditions or layers). Line width and point size encode flow
+#' magnitude, while point shape encodes the mechanism state.
+#'
 #' @title mechanismflow
 #' @rdname mechanismflow
 #' @param x A `mnseaResult`, `nseaResult`, or a named list of results.
+#' @param reference An optional reference result used to compute
+#'   `delta_NES`. For list input, the first element is used as the default
+#'   reference.
+#' @param flow_var One of `"NES"`, `"delta_NES"`, or
+#'   `"leading_edge_size"`; controls flow magnitude (line width and point
+#'   size).
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export

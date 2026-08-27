@@ -19,10 +19,29 @@ consensusmap(x, ...)
 \item{x}{A \code{mnseaResult}, \code{nseaResult}, or a named list of results.}
 
 \item{...}{Additional parameters passed to plot methods.}
+
+\item{fill_var}{One of \code{"NES"} or \code{"delta_NES"}; controls tile fill.}
+
+\item{size_var}{One of \code{"rewiring_score"} or \code{"leading_edge_overlap"};
+controls point size.}
+
+\item{include_rewiring}{Logical; whether to draw topology-consistency points.}
+
+\item{label}{One of \code{"mechanism_class"}, \code{"rewiring_score"}, or \code{"none"}.}
+
+\item{reference}{An optional reference result used to compute \code{delta_NES}.
+For list input, the first element is used as the default reference.}
 }
 \value{
 A ggplot object.
 }
 \description{
 Multi-context mechanism consensus map
+}
+\details{
+\code{consensusmap()} creates a pathway by context heatmap. Tile fill
+represents enrichment strength (\code{NES} or \code{delta_NES}) and point size
+represents topology consistency (\code{rewiring_score} or
+\code{leading_edge_overlap}). Mechanism class is shown as tile text and point
+color.
 }
