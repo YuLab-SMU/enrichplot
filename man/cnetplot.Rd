@@ -2,13 +2,33 @@
 % Please edit documentation in R/cnetplot.R
 \name{prepare_cnetplot_data}
 \alias{prepare_cnetplot_data}
+\alias{cnetplot.enrichResult}
 \alias{cnetplot.gseaResult}
 \alias{prepare_mnsea_cnetplot_data}
 \alias{cnetplot.mnseaResult}
 \alias{cnetplot.compareClusterResult}
 \title{Category-Gene-Network Plot}
 \usage{
-\method{cnetplot}{enrichResult}(x, showCategory, foldChange)
+prepare_cnetplot_data(x, showCategory, foldChange)
+
+\method{cnetplot}{enrichResult}(
+  x,
+  layout = igraph::layout_with_kk,
+  showCategory = 5,
+  color_category = "#E5C494",
+  size_category = 1,
+  color_item = "#B3B3B3",
+  size_item = 1,
+  color_edge = "grey",
+  size_edge = 0.5,
+  categorySizeBy = ~itemNum,
+  node_label = "all",
+  foldChange = NULL,
+  fc_threshold = NULL,
+  hilight = "none",
+  hilight_alpha = 0.3,
+  ...
+)
 
 \method{cnetplot}{gseaResult}(
   x,
@@ -40,14 +60,22 @@ prepare_mnsea_cnetplot_data(
 \method{cnetplot}{mnseaResult}(
   x,
   layout = igraph::layout_with_kk,
+  showCategory = 5,
+  color_category = "#E5C494",
+  size_category = 1,
+  color_item = "#B3B3B3",
+  size_item = 1,
+  color_edge = "grey",
+  size_edge = 0.5,
+  categorySizeBy = ~itemNum,
+  node_label = "all",
+  foldChange = NULL,
+  fc_threshold = NULL,
+  hilight = "none",
+  hilight_alpha = 0.3,
   pathway_id = NULL,
   layer = NULL,
   include_couplings = TRUE,
-  color_category = "#E5C494",
-  size_category = 1,
-  color_edge = "grey",
-  size_edge = 0.5,
-  node_label = "all",
   ...
 )
 
@@ -115,6 +143,9 @@ prepare_mnsea_cnetplot_data(
 
 \item{include_couplings}{logical, whether inter-layer coupling edges should
 be kept in \code{mnseaResult} network plots.}
+
+\item{include_isolated}{logical, whether isolated feature nodes should be
+kept in \code{mnseaResult} subnetworks.}
 
 \item{pie}{one of 'equal' or 'Count' to set the slice ratio of the pies}
 

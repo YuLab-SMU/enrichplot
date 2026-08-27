@@ -28,10 +28,10 @@
 #' @param layer optional layer or layers to retain for `mnseaResult` plots.
 #' @param include_couplings logical, whether inter-layer coupling edges should
 #'   be kept in `mnseaResult` network plots.
+#' @param include_isolated logical, whether isolated feature nodes should be
+#'   kept in `mnseaResult` subnetworks.
 #' @param ... additional parameters
 #' @importFrom ggtangle cnetplot
-#' @method cnetplot enrichResult
-#' @export
 #' @seealso
 #' [cnetplot][ggtangle::cnetplot]
 prepare_cnetplot_data <- function(x, showCategory, foldChange) {
@@ -45,6 +45,9 @@ prepare_cnetplot_data <- function(x, showCategory, foldChange) {
     )
 }
 
+#' @rdname cnetplot
+#' @method cnetplot enrichResult
+#' @export
 cnetplot.enrichResult <- function(
     x,
     layout = igraph::layout_with_kk,
@@ -315,14 +318,22 @@ add_mnsea_label_layers <- function(p, label_data) {
 cnetplot.mnseaResult <- function(
     x,
     layout = igraph::layout_with_kk,
+    showCategory = 5,
+    color_category = "#E5C494",
+    size_category = 1,
+    color_item = "#B3B3B3",
+    size_item = 1,
+    color_edge = "grey",
+    size_edge = .5,
+    categorySizeBy = ~itemNum,
+    node_label = "all",
+    foldChange = NULL,
+    fc_threshold = NULL,
+    hilight = "none",
+    hilight_alpha = .3,
     pathway_id = NULL,
     layer = NULL,
     include_couplings = TRUE,
-    color_category = "#E5C494",
-    size_category = 1,
-    color_edge = "grey",
-    size_edge = .5,
-    node_label = "all",
     ...
 ) {
     plot_data <- prepare_mnsea_cnetplot_data(

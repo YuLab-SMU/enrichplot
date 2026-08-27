@@ -15,7 +15,15 @@
 #' x <- enrichDO(de)
 #' upsetplot(x, 8)
 setMethod("upsetplot", signature(x="enrichResult"),
-          function(x, n=10, ...) {
+          function(
+              x,
+              n = 10,
+              type = "boxplot",
+              layer = NULL,
+              value = c("score", "abs_score"),
+              core_enrichment = FALSE,
+              ...
+          ) {
               upsetplot.enrichResult(x, n, ...)
           })
 
@@ -23,8 +31,16 @@ setMethod("upsetplot", signature(x="enrichResult"),
 #' @aliases upsetplot,gseaResult
 #' @exportMethod upsetplot
 setMethod("upsetplot", signature(x="gseaResult"),
-          function(x, n=10, ...) {
-              upsetplot.gseaResult(x, n, ...)
+          function(
+              x,
+              n = 10,
+              type = "boxplot",
+              layer = NULL,
+              value = c("score", "abs_score"),
+              core_enrichment = FALSE,
+              ...
+          ) {
+              upsetplot.gseaResult(x, n, type = type, ...)
           })
 
 #' @rdname upsetplot-methods
@@ -34,8 +50,24 @@ setMethod("upsetplot", signature(x="gseaResult"),
 #' @param core_enrichment logical. Should only core mnsea features be used?
 #' @exportMethod upsetplot
 setMethod("upsetplot", signature(x="mnseaResult"),
-          function(x, n=10, ...) {
-              upsetplot.mnseaResult(x, n, ...)
+          function(
+              x,
+              n = 10,
+              type = "boxplot",
+              layer = NULL,
+              value = c("score", "abs_score"),
+              core_enrichment = FALSE,
+              ...
+          ) {
+              upsetplot.mnseaResult(
+                  x,
+                  n = n,
+                  type = type,
+                  layer = layer,
+                  value = value,
+                  core_enrichment = core_enrichment,
+                  ...
+              )
           })
 
 

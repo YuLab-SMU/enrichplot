@@ -9,38 +9,134 @@
 \alias{prepare_emapplot_data}
 \title{emapplot}
 \usage{
-emapplot(x, ...)
+emapplot(
+  x,
+  layout = igraph::layout_with_kk,
+  coords = NULL,
+  showCategory = 30,
+  color = "p.adjust",
+  size_category = 1,
+  min_edge = 0.2,
+  color_edge = "grey",
+  size_edge = 0.5,
+  node_label = "category",
+  node_label_size = 5,
+  pie = "equal",
+  layer = NULL,
+  label_format = 30,
+  clusterFunction = stats::kmeans,
+  nWords = 4,
+  nCluster = NULL,
+  ...
+)
 
-\S4method{emapplot}{enrichResult}(x, showCategory = 30, ...)
+\S4method{emapplot}{enrichResult}(
+  x,
+  layout = igraph::layout_with_kk,
+  coords = NULL,
+  showCategory = 30,
+  color = "p.adjust",
+  size_category = 1,
+  min_edge = 0.2,
+  color_edge = "grey",
+  size_edge = 0.5,
+  node_label = "category",
+  node_label_size = 5,
+  pie = "equal",
+  layer = NULL,
+  label_format = 30,
+  clusterFunction = stats::kmeans,
+  nWords = 4,
+  nCluster = NULL,
+  ...
+)
 
-\S4method{emapplot}{gseaResult}(x, showCategory = 30, ...)
+\S4method{emapplot}{gseaResult}(
+  x,
+  layout = igraph::layout_with_kk,
+  coords = NULL,
+  showCategory = 30,
+  color = "p.adjust",
+  size_category = 1,
+  min_edge = 0.2,
+  color_edge = "grey",
+  size_edge = 0.5,
+  node_label = "category",
+  node_label_size = 5,
+  pie = "equal",
+  layer = NULL,
+  label_format = 30,
+  clusterFunction = stats::kmeans,
+  nWords = 4,
+  nCluster = NULL,
+  ...
+)
 
-\S4method{emapplot}{compareClusterResult}(x, showCategory = 30, ...)
+\S4method{emapplot}{compareClusterResult}(
+  x,
+  layout = igraph::layout_with_kk,
+  coords = NULL,
+  showCategory = 30,
+  color = "p.adjust",
+  size_category = 1,
+  min_edge = 0.2,
+  color_edge = "grey",
+  size_edge = 0.5,
+  node_label = "category",
+  node_label_size = 5,
+  pie = "equal",
+  layer = NULL,
+  label_format = 30,
+  clusterFunction = stats::kmeans,
+  nWords = 4,
+  nCluster = NULL,
+  ...
+)
 
-\S4method{emapplot}{mnseaResult}(x, showCategory = 30, ...)
+\S4method{emapplot}{mnseaResult}(
+  x,
+  layout = igraph::layout_with_kk,
+  coords = NULL,
+  showCategory = 30,
+  color = "p.adjust",
+  size_category = 1,
+  min_edge = 0.2,
+  color_edge = "grey",
+  size_edge = 0.5,
+  node_label = "category",
+  node_label_size = 5,
+  pie = "equal",
+  layer = NULL,
+  label_format = 30,
+  clusterFunction = stats::kmeans,
+  nWords = 4,
+  nCluster = NULL,
+  ...
+)
 
 prepare_emapplot_data(x, showCategory, color, min_edge, size_edge)
 }
 \arguments{
 \item{x}{Enrichment result.}
 
-\item{...}{Additional parameters}
+\item{layout}{igraph layout}
+
+\item{coords}{optional user-supplied coordinate data.frame with \code{x}, \code{y}
+and row names matching node labels.}
 
 \item{showCategory}{number of categories to display or a vector of terms.}
 
 \item{color}{Variable used to color enriched terms, e.g. 'pvalue',
 'p.adjust' or 'qvalue'.}
 
+\item{size_category}{relative size of the categories}
+
 \item{min_edge}{The minimum similarity threshold for whether
 two nodes are connected, should be between 0 and 1, default value is 0.2.}
 
-\item{size_edge}{relative size of edge width}
-
-\item{layout}{igraph layout}
-
-\item{size_category}{relative size of the categories}
-
 \item{color_edge}{color of the network edge}
+
+\item{size_edge}{relative size of edge width}
 
 \item{node_label}{Select which labels to display,
 one of 'category', 'group', 'all' and 'none'.}
@@ -60,6 +156,8 @@ one of 'category', 'group', 'all' and 'none'.}
 
 \item{nCluster}{Numeric, the number of clusters,
 the default value is square root of the number of nodes.}
+
+\item{...}{Additional parameters}
 }
 \value{
 ggplot object

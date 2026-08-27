@@ -3,8 +3,29 @@
 setMethod(
     "heatplot",
     signature(x = "enrichResult"),
-    function(x, showCategory = 30, ...) {
-        heatplot.enrichResult(x, showCategory, ...)
+    function(
+        x,
+        showCategory = 30,
+        showTop = NULL,
+        symbol = "rect",
+        foldChange = NULL,
+        pvalue = NULL,
+        label_format = 30,
+        pathway_id = NULL,
+        layer = NULL,
+        value = c("score", "abs_score", "share", "contribution"),
+        ...
+    ) {
+        heatplot.enrichResult(
+            x,
+            showCategory = showCategory,
+            showTop = showTop,
+            symbol = symbol,
+            foldChange = foldChange,
+            pvalue = pvalue,
+            label_format = label_format,
+            ...
+        )
     }
 )
 
@@ -13,8 +34,29 @@ setMethod(
 setMethod(
     "heatplot",
     signature(x = "gseaResult"),
-    function(x, showCategory = 30, ...) {
-        heatplot.enrichResult(x, showCategory, ...)
+    function(
+        x,
+        showCategory = 30,
+        showTop = NULL,
+        symbol = "rect",
+        foldChange = NULL,
+        pvalue = NULL,
+        label_format = 30,
+        pathway_id = NULL,
+        layer = NULL,
+        value = c("score", "abs_score", "share", "contribution"),
+        ...
+    ) {
+        heatplot.enrichResult(
+            x,
+            showCategory = showCategory,
+            showTop = showTop,
+            symbol = symbol,
+            foldChange = foldChange,
+            pvalue = pvalue,
+            label_format = label_format,
+            ...
+        )
     }
 )
 
@@ -23,8 +65,29 @@ setMethod(
 setMethod(
     "heatplot",
     signature(x = "mnseaResult"),
-    function(x, showCategory = 30, ...) {
-        heatplot.mnseaResult(x, showCategory, ...)
+    function(
+        x,
+        showCategory = 30,
+        showTop = NULL,
+        symbol = "rect",
+        foldChange = NULL,
+        pvalue = NULL,
+        label_format = 30,
+        pathway_id = NULL,
+        layer = NULL,
+        value = c("score", "abs_score", "share", "contribution"),
+        ...
+    ) {
+        heatplot.mnseaResult(
+            x,
+            showCategory = showCategory,
+            showTop = showTop,
+            pathway_id = pathway_id,
+            layer = layer,
+            value = value,
+            label_format = label_format,
+            ...
+        )
     }
 )
 

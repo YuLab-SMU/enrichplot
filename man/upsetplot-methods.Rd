@@ -11,26 +11,60 @@
 \alias{upsetplot,mnseaResult}
 \title{upsetplot method}
 \usage{
-upsetplot(x, ...)
+upsetplot(
+  x,
+  n = 10,
+  type = "boxplot",
+  layer = NULL,
+  value = c("score", "abs_score"),
+  core_enrichment = FALSE,
+  ...
+)
 
-\S4method{upsetplot}{enrichResult}(x, n = 10, ...)
+\S4method{upsetplot}{enrichResult}(
+  x,
+  n = 10,
+  type = "boxplot",
+  layer = NULL,
+  value = c("score", "abs_score"),
+  core_enrichment = FALSE,
+  ...
+)
 
-\S4method{upsetplot}{gseaResult}(x, n = 10, ...)
+\S4method{upsetplot}{gseaResult}(
+  x,
+  n = 10,
+  type = "boxplot",
+  layer = NULL,
+  value = c("score", "abs_score"),
+  core_enrichment = FALSE,
+  ...
+)
 
-\S4method{upsetplot}{mnseaResult}(x, n = 10, ...)
+\S4method{upsetplot}{mnseaResult}(
+  x,
+  n = 10,
+  type = "boxplot",
+  layer = NULL,
+  value = c("score", "abs_score"),
+  core_enrichment = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{object}
 
-\item{...}{additional parameters}
-
 \item{n}{number of categories to be plotted}
+
+\item{type}{one of 'boxplot' or 'violin' for \code{gseaResult} / \code{mnseaResult}}
 
 \item{layer}{Optional \code{mnsea} layer. When \code{NULL}, use collapsed scores.}
 
 \item{value}{score summary to display for overlapping features.}
 
 \item{core_enrichment}{logical. Should only core mnsea features be used?}
+
+\item{...}{additional parameters}
 }
 \value{
 plot

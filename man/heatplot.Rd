@@ -8,13 +8,61 @@
 \alias{prepare_heatplot_data}
 \title{heatplot}
 \usage{
-heatplot(x, showCategory = 30, ...)
+heatplot(
+  x,
+  showCategory = 30,
+  showTop = NULL,
+  symbol = "rect",
+  foldChange = NULL,
+  pvalue = NULL,
+  label_format = 30,
+  pathway_id = NULL,
+  layer = NULL,
+  value = c("score", "abs_score", "share", "contribution"),
+  ...
+)
 
-\S4method{heatplot}{enrichResult}(x, showCategory = 30, ...)
+\S4method{heatplot}{enrichResult}(
+  x,
+  showCategory = 30,
+  showTop = NULL,
+  symbol = "rect",
+  foldChange = NULL,
+  pvalue = NULL,
+  label_format = 30,
+  pathway_id = NULL,
+  layer = NULL,
+  value = c("score", "abs_score", "share", "contribution"),
+  ...
+)
 
-\S4method{heatplot}{gseaResult}(x, showCategory = 30, ...)
+\S4method{heatplot}{gseaResult}(
+  x,
+  showCategory = 30,
+  showTop = NULL,
+  symbol = "rect",
+  foldChange = NULL,
+  pvalue = NULL,
+  label_format = 30,
+  pathway_id = NULL,
+  layer = NULL,
+  value = c("score", "abs_score", "share", "contribution"),
+  ...
+)
 
-\S4method{heatplot}{mnseaResult}(x, showCategory = 30, ...)
+\S4method{heatplot}{mnseaResult}(
+  x,
+  showCategory = 30,
+  showTop = NULL,
+  symbol = "rect",
+  foldChange = NULL,
+  pvalue = NULL,
+  label_format = 30,
+  pathway_id = NULL,
+  layer = NULL,
+  value = c("score", "abs_score", "share", "contribution"),
+  ...
+)
 
 prepare_heatplot_data(x, showCategory, showTop, foldChange, pvalue)
 }
@@ -23,10 +71,10 @@ prepare_heatplot_data(x, showCategory, showTop, foldChange, pvalue)
 
 \item{showCategory}{number of enriched terms to display}
 
-\item{...}{Additional parameters}
-
 \item{showTop}{number of top genes ranked by \code{abs(foldChange) * frequency}
 to be shown in the heatmap, default NULL means all genes are shown}
+
+\item{symbol}{symbol of the nodes, one of "rect" (the default) or "dot"}
 
 \item{foldChange}{fold change.}
 
@@ -36,8 +84,6 @@ to be shown in the heatmap, default NULL means all genes are shown}
 custom function to format axis labels.
 by default wraps names longer than 30 characters}
 
-\item{symbol}{symbol of the nodes, one of "rect" (the default) or "dot"}
-
 \item{pathway_id}{optional pathway ID for pathway-specific \code{mnseaResult}
 heatmaps.}
 
@@ -46,6 +92,8 @@ heatmaps.}
 \item{value}{fill value for \code{mnseaResult}; use \code{"share"} or
 \code{"contribution"} for term-layer heatmaps and \code{"score"} or \code{"abs_score"}
 for pathway-specific feature heatmaps.}
+
+\item{...}{Additional parameters}
 }
 \value{
 ggplot object

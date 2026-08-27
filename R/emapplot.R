@@ -3,8 +3,46 @@
 setMethod(
     "emapplot",
     signature(x = "enrichResult"),
-    function(x, showCategory = 30, ...) {
-        emapplot_internal(x, showCategory = showCategory, ...)
+    function(
+        x,
+        layout = igraph::layout_with_kk,
+        coords = NULL,
+        showCategory = 30,
+        color = "p.adjust",
+        size_category = 1,
+        min_edge = .2,
+        color_edge = "grey",
+        size_edge = .5,
+        node_label = "category",
+        node_label_size = 5,
+        pie = "equal",
+        layer = NULL,
+        label_format = 30,
+        clusterFunction = stats::kmeans,
+        nWords = 4,
+        nCluster = NULL,
+        ...
+    ) {
+        emapplot_internal(
+            x,
+            layout = layout,
+            coords = coords,
+            showCategory = showCategory,
+            color = color,
+            size_category = size_category,
+            min_edge = min_edge,
+            color_edge = color_edge,
+            size_edge = size_edge,
+            node_label = node_label,
+            node_label_size = node_label_size,
+            pie = pie,
+            layer = layer,
+            label_format = label_format,
+            clusterFunction = clusterFunction,
+            nWords = nWords,
+            nCluster = nCluster,
+            ...
+        )
     }
 )
 
@@ -13,8 +51,46 @@ setMethod(
 setMethod(
     "emapplot",
     signature(x = "gseaResult"),
-    function(x, showCategory = 30, ...) {
-        emapplot_internal(x, showCategory = showCategory, ...)
+    function(
+        x,
+        layout = igraph::layout_with_kk,
+        coords = NULL,
+        showCategory = 30,
+        color = "p.adjust",
+        size_category = 1,
+        min_edge = .2,
+        color_edge = "grey",
+        size_edge = .5,
+        node_label = "category",
+        node_label_size = 5,
+        pie = "equal",
+        layer = NULL,
+        label_format = 30,
+        clusterFunction = stats::kmeans,
+        nWords = 4,
+        nCluster = NULL,
+        ...
+    ) {
+        emapplot_internal(
+            x,
+            layout = layout,
+            coords = coords,
+            showCategory = showCategory,
+            color = color,
+            size_category = size_category,
+            min_edge = min_edge,
+            color_edge = color_edge,
+            size_edge = size_edge,
+            node_label = node_label,
+            node_label_size = node_label_size,
+            pie = pie,
+            layer = layer,
+            label_format = label_format,
+            clusterFunction = clusterFunction,
+            nWords = nWords,
+            nCluster = nCluster,
+            ...
+        )
     }
 )
 
@@ -23,8 +99,46 @@ setMethod(
 setMethod(
     "emapplot",
     signature(x = "compareClusterResult"),
-    function(x, showCategory = 30, ...) {
-        emapplot_internal(x, showCategory = showCategory, ...)
+    function(
+        x,
+        layout = igraph::layout_with_kk,
+        coords = NULL,
+        showCategory = 30,
+        color = "p.adjust",
+        size_category = 1,
+        min_edge = .2,
+        color_edge = "grey",
+        size_edge = .5,
+        node_label = "category",
+        node_label_size = 5,
+        pie = "equal",
+        layer = NULL,
+        label_format = 30,
+        clusterFunction = stats::kmeans,
+        nWords = 4,
+        nCluster = NULL,
+        ...
+    ) {
+        emapplot_internal(
+            x,
+            layout = layout,
+            coords = coords,
+            showCategory = showCategory,
+            color = color,
+            size_category = size_category,
+            min_edge = min_edge,
+            color_edge = color_edge,
+            size_edge = size_edge,
+            node_label = node_label,
+            node_label_size = node_label_size,
+            pie = pie,
+            layer = layer,
+            label_format = label_format,
+            clusterFunction = clusterFunction,
+            nWords = nWords,
+            nCluster = nCluster,
+            ...
+        )
     }
 )
 
@@ -33,14 +147,54 @@ setMethod(
 setMethod(
     "emapplot",
     signature(x = "mnseaResult"),
-    function(x, showCategory = 30, ...) {
-        emapplot_internal(x, showCategory = showCategory, ...)
+    function(
+        x,
+        layout = igraph::layout_with_kk,
+        coords = NULL,
+        showCategory = 30,
+        color = "p.adjust",
+        size_category = 1,
+        min_edge = .2,
+        color_edge = "grey",
+        size_edge = .5,
+        node_label = "category",
+        node_label_size = 5,
+        pie = "equal",
+        layer = NULL,
+        label_format = 30,
+        clusterFunction = stats::kmeans,
+        nWords = 4,
+        nCluster = NULL,
+        ...
+    ) {
+        emapplot_internal(
+            x,
+            layout = layout,
+            coords = coords,
+            showCategory = showCategory,
+            color = color,
+            size_category = size_category,
+            min_edge = min_edge,
+            color_edge = color_edge,
+            size_edge = size_edge,
+            node_label = node_label,
+            node_label_size = node_label_size,
+            pie = pie,
+            layer = layer,
+            label_format = label_format,
+            clusterFunction = clusterFunction,
+            nWords = nWords,
+            nCluster = nCluster,
+            ...
+        )
     }
 )
 
 
 #' @rdname emapplot
 #' @param layout igraph layout
+#' @param coords optional user-supplied coordinate data.frame with `x`, `y`
+#'   and row names matching node labels.
 #' @param color Variable used to color enriched terms, e.g. 'pvalue',
 #' 'p.adjust' or 'qvalue'.
 #' @param size_category relative size of the categories

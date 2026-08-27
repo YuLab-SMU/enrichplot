@@ -113,9 +113,31 @@ NULL
 #'     emapplot(xx2)
 #' }
 #' @author Guangchuang Yu
-setGeneric("emapplot", function(x, ...) {
-    standardGeneric("emapplot")
-})
+setGeneric(
+    "emapplot",
+    function(
+        x,
+        layout = igraph::layout_with_kk,
+        coords = NULL,
+        showCategory = 30,
+        color = "p.adjust",
+        size_category = 1,
+        min_edge = .2,
+        color_edge = "grey",
+        size_edge = .5,
+        node_label = "category",
+        node_label_size = 5,
+        pie = "equal",
+        layer = NULL,
+        label_format = 30,
+        clusterFunction = stats::kmeans,
+        nWords = 4,
+        nCluster = NULL,
+        ...
+    ) {
+        standardGeneric("emapplot")
+    }
+)
 
 
 #' Get the similarity matrix
@@ -247,9 +269,24 @@ setGeneric("gseaplot", function(x, geneSetID, by = "all", title = "", ...) {
 #' x <- enrichDO(de)
 #' heatplot(x)
 #' @author Guangchuang Yu
-setGeneric("heatplot", function(x, showCategory = 30, ...) {
-    standardGeneric("heatplot")
-})
+setGeneric(
+    "heatplot",
+    function(
+        x,
+        showCategory = 30,
+        showTop = NULL,
+        symbol = "rect",
+        foldChange = NULL,
+        pvalue = NULL,
+        label_format = 30,
+        pathway_id = NULL,
+        layer = NULL,
+        value = c("score", "abs_score", "share", "contribution"),
+        ...
+    ) {
+        standardGeneric("heatplot")
+    }
+)
 
 #' Volcano plot for enrichment result
 #'
@@ -334,11 +371,29 @@ setGeneric(
 #' @rdname upsetplot-methods
 #' @title upsetplot method
 #' @param x object
+#' @param n number of categories to be plotted
+#' @param type one of 'boxplot' or 'violin' for `gseaResult` / `mnseaResult`
+#' @param layer Optional `mnsea` layer. When `NULL`, use collapsed scores.
+#' @param value score summary to display for overlapping features.
+#' @param core_enrichment logical. Should only core mnsea features be used?
 #' @param ... additional parameters
 #' @return plot
 #' @export
 #' @author Guangchuang Yu
-setGeneric("upsetplot", function(x, ...) standardGeneric("upsetplot"))
+setGeneric(
+    "upsetplot",
+    function(
+        x,
+        n = 10,
+        type = "boxplot",
+        layer = NULL,
+        value = c("score", "abs_score"),
+        core_enrichment = FALSE,
+        ...
+    ) {
+        standardGeneric("upsetplot")
+    }
+)
 
 
 #' Functional grouping tree diagram for enrichment result of
