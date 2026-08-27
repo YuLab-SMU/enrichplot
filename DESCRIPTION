@@ -48,12 +48,13 @@ Suggests:
     gridExtra,
     gson,
     org.Hs.eg.db,
-    quarto,
+    knitr,
+    rmarkdown,
     scales,
     testthat (>= 3.0.0),
     tibble,
     tidyr
-VignetteBuilder: quarto
+VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://yulab-smu.top/contribution-knowledge-mining/
 BugReports: https://github.com/GuangchuangYu/enrichplot/issues

@@ -1,0 +1,30 @@
+---
+title: "Visualization of Functional Enrichment Result"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+author: "Guangchuang Yu"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{enrichplot}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+`enrichplot` provides visualization methods for interpreting functional
+enrichment results from ORA or GSEA analyses.
+
+For the complete online book with full examples and usage guidance, please
+visit:
+
+<https://yulab-smu.top/biomedical-knowledge-mining-book/>
