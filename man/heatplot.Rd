@@ -102,11 +102,13 @@ ggplot object
 Heatmap-like plot for functional classification
 }
 \examples{
+\dontrun{
 library(DOSE)
 data(geneList)
 de <- names(geneList)[1:100]
 x <- enrichDO(de)
 heatplot(x)
+}
 }
 \author{
 Guangchuang Yu

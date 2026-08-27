@@ -9,11 +9,13 @@
 #' @author Guangchuang Yu
 #' @exportMethod upsetplot
 #' @examples
+#' \dontrun{
 #' library(DOSE)
 #' data(geneList)
 #' de <- names(geneList)[1:100]
 #' x <- enrichDO(de)
 #' upsetplot(x, 8)
+#' }
 setMethod("upsetplot", signature(x="enrichResult"),
           function(
               x,

@@ -75,11 +75,13 @@ upsetplot method generics
 Upsetplot
 }
 \examples{
+\dontrun{
 library(DOSE)
 data(geneList)
 de <- names(geneList)[1:100]
 x <- enrichDO(de)
 upsetplot(x, 8)
+}
 }
 \author{
 Guangchuang Yu

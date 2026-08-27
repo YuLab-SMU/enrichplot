@@ -44,6 +44,7 @@ Barplot of enrichResult
 Barplot of enrichResult
 }
 \examples{
+\dontrun{
 library(DOSE)
 data(geneList)
 de <- names(geneList)[1:100]
@@ -54,4 +55,5 @@ barplot(x, showCategory = 10)
 categories <- c("urinary bladder cancer", "bronchiolitis obliterans",
                "aortic aneurysm", "esophageal cancer")
 barplot(x, showCategory = categories)
+}
 }

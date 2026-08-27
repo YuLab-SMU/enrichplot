@@ -263,11 +263,13 @@ setGeneric("gseaplot", function(x, geneSetID, by = "all", title = "", ...) {
 #' @export
 #' @return ggplot object
 #' @examples
+#' \dontrun{
 #' library(DOSE)
 #' data(geneList)
 #' de <- names(geneList)[1:100]
 #' x <- enrichDO(de)
 #' heatplot(x)
+#' }
 #' @author Guangchuang Yu
 setGeneric(
     "heatplot",
@@ -305,11 +307,13 @@ setGeneric(
 #' @export
 #' @return ggplot object
 #' @examples
+#' \dontrun{
 #' library(DOSE)
 #' data(geneList)
 #' de <- names(geneList)[1:100]
 #' x <- enrichDO(de)
 #' volplot(x)
+#' }
 #' @author Guangchuang Yu
 setGeneric(
     "volplot",

@@ -65,11 +65,13 @@ ggplot object
 Volcano plot for enrichment result
 }
 \examples{
+\dontrun{
 library(DOSE)
 data(geneList)
 de <- names(geneList)[1:100]
 x <- enrichDO(de)
 volplot(x)
+}
 }
 \author{
 Guangchuang Yu

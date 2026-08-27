@@ -27,6 +27,7 @@
 #' @export
 #' @return ggplot object
 #' @examples
+#' \dontrun{
 #' library(DOSE)
 #' data(geneList)
 #' de <- names(geneList)[1:100]
@@ -37,6 +38,7 @@
 #' categories <- c("urinary bladder cancer", "bronchiolitis obliterans",
 #'                "aortic aneurysm", "esophageal cancer")
 #' barplot(x, showCategory = categories)
+#' }
 barplot.enrichResult <- function(
     height,
     x = "Count",
