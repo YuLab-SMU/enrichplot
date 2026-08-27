@@ -6,16 +6,41 @@
 \alias{phaseplot,mnseaResult-method}
 \title{phaseplot}
 \usage{
-phaseplot(x, ...)
+phaseplot(
+  x,
+  reference = NULL,
+  selected_layer = NULL,
+  reference_layer = NULL,
+  x_axis = NULL,
+  size_var = c("leading_edge_size", "leading_edge_overlap"),
+  showCategory = 30,
+  ...
+)
 
-\S4method{phaseplot}{nseaResult}(x, ...)
+\S4method{phaseplot}{nseaResult}(
+  x,
+  reference = NULL,
+  selected_layer = NULL,
+  reference_layer = NULL,
+  x_axis = NULL,
+  size_var = c("leading_edge_size", "leading_edge_overlap"),
+  showCategory = 30,
+  ...
+)
 
-\S4method{phaseplot}{mnseaResult}(x, ...)
+\S4method{phaseplot}{mnseaResult}(
+  x,
+  reference = NULL,
+  selected_layer = NULL,
+  reference_layer = NULL,
+  x_axis = NULL,
+  size_var = c("leading_edge_size", "leading_edge_overlap"),
+  showCategory = 30,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{nseaResult} or \code{mnseaResult} object.}
-
-\item{...}{Additional parameters passed to plot methods.}
 
 \item{reference}{An optional reference result (another \code{nseaResult},
 \code{mnseaResult}, or a results \code{data.frame}). When supplied,
@@ -32,6 +57,8 @@ is used when \code{reference} is supplied, otherwise \code{NES}.}
 \item{size_var}{One of \code{"leading_edge_size"} or \code{"leading_edge_overlap"}.}
 
 \item{showCategory}{Number (or vector) of pathways to display.}
+
+\item{...}{Additional parameters passed to plot methods.}
 }
 \value{
 A ggplot object.

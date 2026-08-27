@@ -403,6 +403,7 @@ get_gsdata <- function(x, geneSetID, ...) {
 #' @title hplot
 #' @param x gseaResult object
 #' @param geneSetID gene set ID
+#' @param layer Optional `mnsea` layer. When `NULL`, use collapsed scores.
 #' @return horizontal plot
 #' @export
 #' @author Guangchuang Yu
@@ -458,6 +459,7 @@ hplot <- function(x, geneSetID, layer = NULL) {
 #' @param pvalue_table_rownames selected column as the rownames of the `pvalue_table`. If set to NULL, no rownames will be displayed.
 #' @param ES_geom geom for plotting running enrichment score,
 #' one of 'line' or 'dot'
+#' @param layer Optional `mnsea` layer. When `NULL`, use collapsed scores.
 #' @return plot
 #' @export
 #' @importFrom ggplot2 theme_classic
@@ -714,6 +716,7 @@ gseaplot2 <- function(
 #' @param geneSetID gene set ID
 #' @param title plot title
 #' @param output one of 'plot' or 'table' (for exporting data)
+#' @param layer Optional `mnsea` layer. When `NULL`, use collapsed scores.
 #' @return ggplot object
 #' @importFrom ggplot2 geom_segment
 #' @importFrom ggplot2 theme_minimal

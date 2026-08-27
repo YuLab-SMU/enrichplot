@@ -42,6 +42,8 @@ gseaplot2(
 
 \item{ES_geom}{geom for plotting running enrichment score,
 one of 'line' or 'dot'}
+
+\item{layer}{Optional \code{mnsea} layer. When \code{NULL}, use collapsed scores.}
 }
 \value{
 plot

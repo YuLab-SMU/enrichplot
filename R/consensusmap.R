@@ -3,7 +3,25 @@
 setMethod(
     "consensusmap",
     signature(x = "mnseaResult"),
-    function(x, ...) consensusmap_internal(x, ...)
+    function(
+        x,
+        fill_var = c("NES", "delta_NES"),
+        size_var = c("rewiring_score", "leading_edge_overlap"),
+        include_rewiring = TRUE,
+        label = c("mechanism_class", "rewiring_score", "none"),
+        reference = NULL,
+        ...
+    ) {
+        consensusmap_internal(
+            x,
+            fill_var = fill_var,
+            size_var = size_var,
+            include_rewiring = include_rewiring,
+            label = label,
+            reference = reference,
+            ...
+        )
+    }
 )
 
 #' @rdname consensusmap
@@ -11,7 +29,15 @@ setMethod(
 setMethod(
     "consensusmap",
     signature(x = "nseaResult"),
-    function(x, ...) {
+    function(
+        x,
+        fill_var = c("NES", "delta_NES"),
+        size_var = c("rewiring_score", "leading_edge_overlap"),
+        include_rewiring = TRUE,
+        label = c("mechanism_class", "rewiring_score", "none"),
+        reference = NULL,
+        ...
+    ) {
         stop("A single nseaResult does not provide multiple networks/conditions. Pass a named list of results to consensusmap().")
     }
 )
@@ -21,7 +47,25 @@ setMethod(
 setMethod(
     "consensusmap",
     signature(x = "list"),
-    function(x, ...) consensusmap_internal(x, ...)
+    function(
+        x,
+        fill_var = c("NES", "delta_NES"),
+        size_var = c("rewiring_score", "leading_edge_overlap"),
+        include_rewiring = TRUE,
+        label = c("mechanism_class", "rewiring_score", "none"),
+        reference = NULL,
+        ...
+    ) {
+        consensusmap_internal(
+            x,
+            fill_var = fill_var,
+            size_var = size_var,
+            include_rewiring = include_rewiring,
+            label = label,
+            reference = reference,
+            ...
+        )
+    }
 )
 
 consensusmap_internal <- function(

@@ -14,6 +14,8 @@ gsearank(x, geneSetID, title = "", output = "plot", layer = NULL)
 \item{title}{plot title}
 
 \item{output}{one of 'plot' or 'table' (for exporting data)}
+
+\item{layer}{Optional \code{mnsea} layer. When \code{NULL}, use collapsed scores.}
 }
 \value{
 ggplot object

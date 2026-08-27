@@ -10,6 +10,8 @@ hplot(x, geneSetID, layer = NULL)
 \item{x}{gseaResult object}
 
 \item{geneSetID}{gene set ID}
+
+\item{layer}{Optional \code{mnsea} layer. When \code{NULL}, use collapsed scores.}
 }
 \value{
 horizontal plot

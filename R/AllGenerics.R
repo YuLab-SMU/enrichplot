@@ -479,9 +479,21 @@ setGeneric("manhattanplot", function(x, ...) {
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
-setGeneric("phaseplot", function(x, ...) {
-    standardGeneric("phaseplot")
-})
+setGeneric(
+    "phaseplot",
+    function(
+        x,
+        reference = NULL,
+        selected_layer = NULL,
+        reference_layer = NULL,
+        x_axis = NULL,
+        size_var = c("leading_edge_size", "leading_edge_overlap"),
+        showCategory = 30,
+        ...
+    ) {
+        standardGeneric("phaseplot")
+    }
+)
 
 #' Pathway-specific rewiring plot
 #'
@@ -516,9 +528,20 @@ setGeneric("rewireplot", function(x, ...) {
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
-setGeneric("consensusmap", function(x, ...) {
-    standardGeneric("consensusmap")
-})
+setGeneric(
+    "consensusmap",
+    function(
+        x,
+        fill_var = c("NES", "delta_NES"),
+        size_var = c("rewiring_score", "leading_edge_overlap"),
+        include_rewiring = TRUE,
+        label = c("mechanism_class", "rewiring_score", "none"),
+        reference = NULL,
+        ...
+    ) {
+        standardGeneric("consensusmap")
+    }
+)
 
 #' Pathway state transition flow
 #'
@@ -538,7 +561,15 @@ setGeneric("consensusmap", function(x, ...) {
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
-setGeneric("mechanismflow", function(x, ...) {
-    standardGeneric("mechanismflow")
-})
+setGeneric(
+    "mechanismflow",
+    function(
+        x,
+        reference = NULL,
+        flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        ...
+    ) {
+        standardGeneric("mechanismflow")
+    }
+)
 

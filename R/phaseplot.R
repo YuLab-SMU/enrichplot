@@ -3,7 +3,27 @@
 setMethod(
     "phaseplot",
     signature(x = "nseaResult"),
-    function(x, ...) phaseplot_internal(x, ...)
+    function(
+        x,
+        reference = NULL,
+        selected_layer = NULL,
+        reference_layer = NULL,
+        x_axis = NULL,
+        size_var = c("leading_edge_size", "leading_edge_overlap"),
+        showCategory = 30,
+        ...
+    ) {
+        phaseplot_internal(
+            x,
+            reference = reference,
+            selected_layer = selected_layer,
+            reference_layer = reference_layer,
+            x_axis = x_axis,
+            size_var = size_var,
+            showCategory = showCategory,
+            ...
+        )
+    }
 )
 
 #' @rdname phaseplot
@@ -11,7 +31,27 @@ setMethod(
 setMethod(
     "phaseplot",
     signature(x = "mnseaResult"),
-    function(x, ...) phaseplot_internal(x, ...)
+    function(
+        x,
+        reference = NULL,
+        selected_layer = NULL,
+        reference_layer = NULL,
+        x_axis = NULL,
+        size_var = c("leading_edge_size", "leading_edge_overlap"),
+        showCategory = 30,
+        ...
+    ) {
+        phaseplot_internal(
+            x,
+            reference = reference,
+            selected_layer = selected_layer,
+            reference_layer = reference_layer,
+            x_axis = x_axis,
+            size_var = size_var,
+            showCategory = showCategory,
+            ...
+        )
+    }
 )
 
 phaseplot_internal <- function(

@@ -7,18 +7,48 @@
 \alias{consensusmap,list-method}
 \title{consensusmap}
 \usage{
-consensusmap(x, ...)
+consensusmap(
+  x,
+  fill_var = c("NES", "delta_NES"),
+  size_var = c("rewiring_score", "leading_edge_overlap"),
+  include_rewiring = TRUE,
+  label = c("mechanism_class", "rewiring_score", "none"),
+  reference = NULL,
+  ...
+)
 
-\S4method{consensusmap}{mnseaResult}(x, ...)
+\S4method{consensusmap}{mnseaResult}(
+  x,
+  fill_var = c("NES", "delta_NES"),
+  size_var = c("rewiring_score", "leading_edge_overlap"),
+  include_rewiring = TRUE,
+  label = c("mechanism_class", "rewiring_score", "none"),
+  reference = NULL,
+  ...
+)
 
-\S4method{consensusmap}{nseaResult}(x, ...)
+\S4method{consensusmap}{nseaResult}(
+  x,
+  fill_var = c("NES", "delta_NES"),
+  size_var = c("rewiring_score", "leading_edge_overlap"),
+  include_rewiring = TRUE,
+  label = c("mechanism_class", "rewiring_score", "none"),
+  reference = NULL,
+  ...
+)
 
-\S4method{consensusmap}{list}(x, ...)
+\S4method{consensusmap}{list}(
+  x,
+  fill_var = c("NES", "delta_NES"),
+  size_var = c("rewiring_score", "leading_edge_overlap"),
+  include_rewiring = TRUE,
+  label = c("mechanism_class", "rewiring_score", "none"),
+  reference = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{mnseaResult}, \code{nseaResult}, or a named list of results.}
-
-\item{...}{Additional parameters passed to plot methods.}
 
 \item{fill_var}{One of \code{"NES"} or \code{"delta_NES"}; controls tile fill.}
 
@@ -31,6 +61,8 @@ controls point size.}
 
 \item{reference}{An optional reference result used to compute \code{delta_NES}.
 For list input, the first element is used as the default reference.}
+
+\item{...}{Additional parameters passed to plot methods.}
 }
 \value{
 A ggplot object.

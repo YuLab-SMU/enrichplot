@@ -511,7 +511,7 @@ dotplot.mnseaResult <- function(
     font.size,
     title,
     size_range = c(3, 8),
-    size_name = waiver(),
+    size_name = ggplot2::waiver(),
     shape_point = TRUE,
     color_colors = get_enrichplot_color(2),
     color_transform = "log10",

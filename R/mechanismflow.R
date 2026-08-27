@@ -3,7 +3,19 @@
 setMethod(
     "mechanismflow",
     signature(x = "mnseaResult"),
-    function(x, ...) mechanismflow_internal(x, ...)
+    function(
+        x,
+        reference = NULL,
+        flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        ...
+    ) {
+        mechanismflow_internal(
+            x,
+            reference = reference,
+            flow_var = flow_var,
+            ...
+        )
+    }
 )
 
 #' @rdname mechanismflow
@@ -11,7 +23,19 @@ setMethod(
 setMethod(
     "mechanismflow",
     signature(x = "nseaResult"),
-    function(x, ...) mechanismflow_internal(x, ...)
+    function(
+        x,
+        reference = NULL,
+        flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        ...
+    ) {
+        mechanismflow_internal(
+            x,
+            reference = reference,
+            flow_var = flow_var,
+            ...
+        )
+    }
 )
 
 #' @rdname mechanismflow
@@ -19,7 +43,19 @@ setMethod(
 setMethod(
     "mechanismflow",
     signature(x = "list"),
-    function(x, ...) mechanismflow_internal(x, ...)
+    function(
+        x,
+        reference = NULL,
+        flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        ...
+    ) {
+        mechanismflow_internal(
+            x,
+            reference = reference,
+            flow_var = flow_var,
+            ...
+        )
+    }
 )
 
 mechanismflow_internal <- function(

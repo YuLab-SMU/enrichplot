@@ -7,18 +7,36 @@
 \alias{mechanismflow,list-method}
 \title{mechanismflow}
 \usage{
-mechanismflow(x, ...)
+mechanismflow(
+  x,
+  reference = NULL,
+  flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  ...
+)
 
-\S4method{mechanismflow}{mnseaResult}(x, ...)
+\S4method{mechanismflow}{mnseaResult}(
+  x,
+  reference = NULL,
+  flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  ...
+)
 
-\S4method{mechanismflow}{nseaResult}(x, ...)
+\S4method{mechanismflow}{nseaResult}(
+  x,
+  reference = NULL,
+  flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  ...
+)
 
-\S4method{mechanismflow}{list}(x, ...)
+\S4method{mechanismflow}{list}(
+  x,
+  reference = NULL,
+  flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{mnseaResult}, \code{nseaResult}, or a named list of results.}
-
-\item{...}{Additional parameters passed to plot methods.}
 
 \item{reference}{An optional reference result used to compute
 \code{delta_NES}. For list input, the first element is used as the default
@@ -27,6 +45,8 @@ reference.}
 \item{flow_var}{One of \code{"NES"}, \code{"delta_NES"}, or
 \code{"leading_edge_size"}; controls flow magnitude (line width and point
 size).}
+
+\item{...}{Additional parameters passed to plot methods.}
 }
 \value{
 A ggplot object.
