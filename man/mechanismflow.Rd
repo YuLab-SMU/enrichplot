@@ -11,6 +11,7 @@ mechanismflow(
   x,
   reference = NULL,
   flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -18,6 +19,7 @@ mechanismflow(
   x,
   reference = NULL,
   flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -25,6 +27,7 @@ mechanismflow(
   x,
   reference = NULL,
   flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -32,6 +35,7 @@ mechanismflow(
   x,
   reference = NULL,
   flow_var = c("NES", "delta_NES", "leading_edge_size"),
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 }
@@ -45,6 +49,9 @@ reference.}
 \item{flow_var}{One of \code{"NES"}, \code{"delta_NES"}, or
 \code{"leading_edge_size"}; controls flow magnitude (line width and point
 size).}
+
+\item{thresholds}{Optional named list with \code{rewire} and \code{nes} numeric
+thresholds used to classify mechanism states.}
 
 \item{...}{Additional parameters passed to plot methods.}
 }

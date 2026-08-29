@@ -14,6 +14,7 @@ consensusmap(
   include_rewiring = TRUE,
   label = c("mechanism_class", "rewiring_score", "none"),
   reference = NULL,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -24,6 +25,7 @@ consensusmap(
   include_rewiring = TRUE,
   label = c("mechanism_class", "rewiring_score", "none"),
   reference = NULL,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -34,6 +36,7 @@ consensusmap(
   include_rewiring = TRUE,
   label = c("mechanism_class", "rewiring_score", "none"),
   reference = NULL,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -44,6 +47,7 @@ consensusmap(
   include_rewiring = TRUE,
   label = c("mechanism_class", "rewiring_score", "none"),
   reference = NULL,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 }
@@ -61,6 +65,9 @@ controls point size.}
 
 \item{reference}{An optional reference result used to compute \code{delta_NES}.
 For list input, the first element is used as the default reference.}
+
+\item{thresholds}{Optional named list with \code{rewire} and \code{nes} numeric
+thresholds used to classify mechanism states.}
 
 \item{...}{Additional parameters passed to plot methods.}
 }

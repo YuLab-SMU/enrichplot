@@ -64,3 +64,17 @@ test_that("consensusmap supports rewiring-score labels", {
 
     expect_s3_class(p, "ggplot")
 })
+
+test_that("consensusmap respects custom thresholds", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p <- consensusmap(
+        list(control = x, treated = x2),
+        thresholds = list(rewire = 0.5, nes = 1)
+    )
+
+    expect_s3_class(p, "ggplot")
+    expect_true("mechanism_class" %in% colnames(p$data))
+})

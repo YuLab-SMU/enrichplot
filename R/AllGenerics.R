@@ -537,6 +537,8 @@ setGeneric("manhattanplot", function(x, ...) {
 #'   is used when `reference` is supplied, otherwise `NES`.
 #' @param size_var One of `"leading_edge_size"` or `"leading_edge_overlap"`.
 #' @param showCategory Number (or vector) of pathways to display.
+#' @param thresholds Optional named list with `rewire` and `nes` numeric
+#'   thresholds used to classify mechanism states.
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
@@ -550,6 +552,7 @@ setGeneric(
         x_axis = NULL,
         size_var = c("leading_edge_size", "leading_edge_overlap"),
         showCategory = 30,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         standardGeneric("phaseplot")
@@ -586,6 +589,8 @@ setGeneric("rewireplot", function(x, ...) {
 #' @param label One of `"mechanism_class"`, `"rewiring_score"`, or `"none"`.
 #' @param reference An optional reference result used to compute `delta_NES`.
 #'   For list input, the first element is used as the default reference.
+#' @param thresholds Optional named list with `rewire` and `nes` numeric
+#'   thresholds used to classify mechanism states.
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
@@ -598,6 +603,7 @@ setGeneric(
         include_rewiring = TRUE,
         label = c("mechanism_class", "rewiring_score", "none"),
         reference = NULL,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         standardGeneric("consensusmap")
@@ -619,6 +625,8 @@ setGeneric(
 #' @param flow_var One of `"NES"`, `"delta_NES"`, or
 #'   `"leading_edge_size"`; controls flow magnitude (line width and point
 #'   size).
+#' @param thresholds Optional named list with `rewire` and `nes` numeric
+#'   thresholds used to classify mechanism states.
 #' @param ... Additional parameters passed to plot methods.
 #' @return A ggplot object.
 #' @export
@@ -628,6 +636,7 @@ setGeneric(
         x,
         reference = NULL,
         flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         standardGeneric("mechanismflow")

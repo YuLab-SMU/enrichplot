@@ -7,12 +7,14 @@ setMethod(
         x,
         reference = NULL,
         flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         mechanismflow_internal(
             x,
             reference = reference,
             flow_var = flow_var,
+            thresholds = thresholds,
             ...
         )
     }
@@ -27,12 +29,14 @@ setMethod(
         x,
         reference = NULL,
         flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         mechanismflow_internal(
             x,
             reference = reference,
             flow_var = flow_var,
+            thresholds = thresholds,
             ...
         )
     }
@@ -47,12 +51,14 @@ setMethod(
         x,
         reference = NULL,
         flow_var = c("NES", "delta_NES", "leading_edge_size"),
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         mechanismflow_internal(
             x,
             reference = reference,
             flow_var = flow_var,
+            thresholds = thresholds,
             ...
         )
     }
@@ -62,6 +68,7 @@ mechanismflow_internal <- function(
     x,
     reference = NULL,
     flow_var = c("NES", "delta_NES", "leading_edge_size"),
+    thresholds = list(rewire = 0.5, nes = 0.2),
     ...
 ) {
     flow_var <- match.arg(flow_var)
@@ -78,6 +85,7 @@ mechanismflow_internal <- function(
             df <- summarize_nsea_mechanism(
                 x[[i]],
                 reference = reference,
+                thresholds = thresholds,
                 ...
             )
             df$context <- contexts[i]
@@ -92,6 +100,7 @@ mechanismflow_internal <- function(
                 reference = reference,
                 selected_layer = layer,
                 reference_layer = NULL,
+                thresholds = thresholds,
                 ...
             )
             df$context <- layer

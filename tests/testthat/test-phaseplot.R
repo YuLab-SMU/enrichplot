@@ -61,3 +61,22 @@ test_that("phaseplot rejects delta_NES without reference", {
         "No `delta_NES` available"
     )
 })
+
+test_that("phaseplot respects custom thresholds", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p_strict <- phaseplot(
+        x2,
+        reference = x,
+        selected_layer = "rna",
+        reference_layer = "protein",
+        showCategory = 2,
+        thresholds = list(rewire = 0.5, nes = 1)
+    )
+
+    expect_s3_class(p_strict, "ggplot")
+    expect_true("mechanism_class" %in% colnames(p_strict$data))
+    expect_equal(unique(p_strict$data$mechanism_class), "conserved")
+})

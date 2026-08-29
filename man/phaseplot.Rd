@@ -14,6 +14,7 @@ phaseplot(
   x_axis = NULL,
   size_var = c("leading_edge_size", "leading_edge_overlap"),
   showCategory = 30,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -25,6 +26,7 @@ phaseplot(
   x_axis = NULL,
   size_var = c("leading_edge_size", "leading_edge_overlap"),
   showCategory = 30,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 
@@ -36,6 +38,7 @@ phaseplot(
   x_axis = NULL,
   size_var = c("leading_edge_size", "leading_edge_overlap"),
   showCategory = 30,
+  thresholds = list(rewire = 0.5, nes = 0.2),
   ...
 )
 }
@@ -57,6 +60,9 @@ is used when \code{reference} is supplied, otherwise \code{NES}.}
 \item{size_var}{One of \code{"leading_edge_size"} or \code{"leading_edge_overlap"}.}
 
 \item{showCategory}{Number (or vector) of pathways to display.}
+
+\item{thresholds}{Optional named list with \code{rewire} and \code{nes} numeric
+thresholds used to classify mechanism states.}
 
 \item{...}{Additional parameters passed to plot methods.}
 }

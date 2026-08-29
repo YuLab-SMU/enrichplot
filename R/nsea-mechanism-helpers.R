@@ -281,6 +281,8 @@ classify_mechanism_state <- function(
 #'   `mnseaResult`, or a results data.frame) used to compute `delta_NES`.
 #' @param reference_layer Optional reference layer for mnsea comparisons.
 #' @param selected_layer Optional layer to compare (defaults to collapsed).
+#' @param thresholds Optional named list with `rewire` and `nes` numeric
+#'   thresholds used by classify_mechanism_state().
 #' @param ... Additional arguments passed to compute_rewiring_score().
 #' @return A term-level data.frame with `reference_NES` and `delta_NES`.
 #' @noRd
@@ -289,6 +291,7 @@ summarize_nsea_mechanism <- function(
     reference = NULL,
     reference_layer = NULL,
     selected_layer = NULL,
+    thresholds = list(rewire = 0.5, nes = 0.2),
     ...
 ) {
     result_df <- .result_data(x)
@@ -333,13 +336,15 @@ summarize_nsea_mechanism <- function(
     mechanism_class <- if (!is.null(reference) && nrow(rew_match) > 0) {
         classify_mechanism_state(
             nes_shift = delta_NES,
-            rewiring_score = rew_match$rewiring_score
+            rewiring_score = rew_match$rewiring_score,
+            thresholds = thresholds
         )
     } else if (nrow(rew_match) > 0 && !all(is.na(rew_match$rewiring_score))) {
         # No reference NES is available; classify only on rewiring score.
         classify_mechanism_state(
             nes_shift = rep(0, nrow(rew_match)),
-            rewiring_score = rew_match$rewiring_score
+            rewiring_score = rew_match$rewiring_score,
+            thresholds = thresholds
         )
     } else {
         rep(NA_character_, length(ids))

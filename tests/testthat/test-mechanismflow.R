@@ -51,3 +51,16 @@ test_that("mechanismflow preserves stable mechanism-state order", {
     expect_s3_class(p, "ggplot")
     expect_true(all(c("context", "ID", "state_num", "mechanism_class") %in% colnames(p$data)))
 })
+
+test_that("mechanismflow respects custom thresholds", {
+    x <- mock_mnsea_result()
+    x2 <- mock_mnsea_result()
+    x2@result$NES <- c(1.8, -0.7)
+
+    p <- mechanismflow(
+        list(control = x, treated = x2),
+        thresholds = list(rewire = 0.5, nes = 1)
+    )
+
+    expect_s3_class(p, "ggplot")
+})

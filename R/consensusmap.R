@@ -10,6 +10,7 @@ setMethod(
         include_rewiring = TRUE,
         label = c("mechanism_class", "rewiring_score", "none"),
         reference = NULL,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         consensusmap_internal(
@@ -19,6 +20,7 @@ setMethod(
             include_rewiring = include_rewiring,
             label = label,
             reference = reference,
+            thresholds = thresholds,
             ...
         )
     }
@@ -36,6 +38,7 @@ setMethod(
         include_rewiring = TRUE,
         label = c("mechanism_class", "rewiring_score", "none"),
         reference = NULL,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         stop("A single nseaResult does not provide multiple networks/conditions. Pass a named list of results to consensusmap().")
@@ -54,6 +57,7 @@ setMethod(
         include_rewiring = TRUE,
         label = c("mechanism_class", "rewiring_score", "none"),
         reference = NULL,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         consensusmap_internal(
@@ -63,6 +67,7 @@ setMethod(
             include_rewiring = include_rewiring,
             label = label,
             reference = reference,
+            thresholds = thresholds,
             ...
         )
     }
@@ -75,6 +80,7 @@ consensusmap_internal <- function(
     include_rewiring = TRUE,
     label = c("mechanism_class", "rewiring_score", "none"),
     reference = NULL,
+    thresholds = list(rewire = 0.5, nes = 0.2),
     ...
 ) {
     fill_var <- match.arg(fill_var)
@@ -93,6 +99,7 @@ consensusmap_internal <- function(
             df <- summarize_nsea_mechanism(
                 x[[i]],
                 reference = reference,
+                thresholds = thresholds,
                 ...
             )
             df$context <- contexts[i]
@@ -108,6 +115,7 @@ consensusmap_internal <- function(
                 reference = reference,
                 selected_layer = layer,
                 reference_layer = NULL,
+                thresholds = thresholds,
                 ...
             )
             df$context <- layer

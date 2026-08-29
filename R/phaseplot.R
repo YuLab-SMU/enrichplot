@@ -11,6 +11,7 @@ setMethod(
         x_axis = NULL,
         size_var = c("leading_edge_size", "leading_edge_overlap"),
         showCategory = 30,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         phaseplot_internal(
@@ -21,6 +22,7 @@ setMethod(
             x_axis = x_axis,
             size_var = size_var,
             showCategory = showCategory,
+            thresholds = thresholds,
             ...
         )
     }
@@ -39,6 +41,7 @@ setMethod(
         x_axis = NULL,
         size_var = c("leading_edge_size", "leading_edge_overlap"),
         showCategory = 30,
+        thresholds = list(rewire = 0.5, nes = 0.2),
         ...
     ) {
         phaseplot_internal(
@@ -49,6 +52,7 @@ setMethod(
             x_axis = x_axis,
             size_var = size_var,
             showCategory = showCategory,
+            thresholds = thresholds,
             ...
         )
     }
@@ -62,6 +66,7 @@ phaseplot_internal <- function(
     x_axis = NULL,
     size_var = c("leading_edge_size", "leading_edge_overlap"),
     showCategory = 30,
+    thresholds = list(rewire = 0.5, nes = 0.2),
     ...
 ) {
     x_axis_specified <- !is.null(x_axis)
@@ -76,7 +81,8 @@ phaseplot_internal <- function(
         x,
         reference = reference,
         selected_layer = selected_layer,
-        reference_layer = reference_layer
+        reference_layer = reference_layer,
+        thresholds = thresholds
     )
     if (nrow(summary_df) == 0) {
         stop("No mnsea pathways available for phaseplot.")
