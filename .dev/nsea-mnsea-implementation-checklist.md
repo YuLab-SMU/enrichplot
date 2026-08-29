@@ -400,6 +400,22 @@ Add an evolution-style view for pathway state transitions across conditions or l
 - [x] `mechanismflow()` uses flow magnitude (NES / delta NES / leading-edge size) for line width and point size
 - [x] `mechanismflow()` uses a stable mechanism-state ordering on the y axis
 
+## Batch 8: Remaining Enhancements (2026-08-29)
+
+### Goal
+
+Finish the remaining mechanism-plot enhancements after the initial
+implementation batch.
+
+### Completed Items
+
+- [x] `pairwise_termsim()` supports a `layer` argument for `mnseaResult`
+- [x] Classification thresholds are exposed through `phaseplot()`,
+      `consensusmap()` and `mechanismflow()`
+- [x] A real `nseaResult` mock has been added and nsea plotting paths are
+      covered by `test-nsea-support.R`
+- [x] `gsInfo.gseaResult()` defaults `exponent` to 1 when `params` lacks it
+
 ## Shared Verification Rules
 
 ### For Every Batch
