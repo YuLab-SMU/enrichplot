@@ -531,6 +531,30 @@ test_that("pairwise_termsim works for mnseaResult", {
     expect_equal(y@method, "JC")
 })
 
+test_that("pairwise_termsim supports layer filtering for mnseaResult", {
+    x <- mock_mnsea_result()
+
+    y_rna <- pairwise_termsim(x, showCategory = 2, layer = "rna")
+
+    expect_s4_class(y_rna, "mnseaResult")
+    expect_equal(nrow(y_rna@termsim), 2)
+    expect_equal(y_rna@method, "JC")
+
+    # The mock layers share the same feature sets, so values match the
+    # default (all-layer) computation.
+    y_all <- pairwise_termsim(x, showCategory = 2)
+    expect_equal(as.numeric(y_rna@termsim), as.numeric(y_all@termsim))
+})
+
+test_that("pairwise_termsim rejects unknown mnsea layers", {
+    x <- mock_mnsea_result()
+
+    expect_error(
+        pairwise_termsim(x, showCategory = 2, layer = "not_a_layer"),
+        "no mnsea features available"
+    )
+})
+
 test_that("treeplot works for mnseaResult after pairwise_termsim", {
     x <- mock_mnsea_result()
     y <- pairwise_termsim(x, showCategory = 2)

@@ -1,7 +1,7 @@
 #' @rdname pairwise_termsim
 #' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "enrichResult"),
-    function(x, method = "JC", semData = NULL, showCategory = NULL) {
+    function(x, method = "JC", semData = NULL, showCategory = NULL, layer = NULL) {
         pairwise_termsim.enrichResult(x, method = method,
             semData = semData, showCategory = showCategory)
     })
@@ -9,7 +9,7 @@ setMethod("pairwise_termsim", signature(x = "enrichResult"),
 #' @rdname pairwise_termsim
 #' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "gseaResult"),
-    function(x, method = "JC", semData = NULL, showCategory = NULL) {
+    function(x, method = "JC", semData = NULL, showCategory = NULL, layer = NULL) {
         pairwise_termsim.enrichResult(x, method = method,
             semData = semData, showCategory = showCategory)
     })
@@ -17,7 +17,7 @@ setMethod("pairwise_termsim", signature(x = "gseaResult"),
 #' @rdname pairwise_termsim
 #' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "mnseaResult"),
-    function(x, method = "JC", semData = NULL, showCategory = NULL) {
+    function(x, method = "JC", semData = NULL, showCategory = NULL, layer = NULL) {
         if (is.null(showCategory)) {
             showCategory <- .default_pairwise_termsim_category(x)
         }
@@ -37,7 +37,7 @@ setMethod("pairwise_termsim", signature(x = "mnseaResult"),
         feature_df <- prepare_emapplot_mnsea_feature_data(
             x,
             ids = selected$ids,
-            layer = NULL
+            layer = layer
         )
         if (nrow(feature_df) == 0) {
             stop("no mnsea features available for pairwise termsim.")
@@ -60,7 +60,7 @@ setMethod("pairwise_termsim", signature(x = "mnseaResult"),
 #' @rdname pairwise_termsim
 #' @exportMethod pairwise_termsim
 setMethod("pairwise_termsim", signature(x = "compareClusterResult"),
-    function(x, method = "JC", semData = NULL, showCategory = NULL) {
+    function(x, method = "JC", semData = NULL, showCategory = NULL, layer = NULL) {
         pairwise_termsim.compareClusterResult(x, method = method,
             semData = semData, showCategory = showCategory)
     })

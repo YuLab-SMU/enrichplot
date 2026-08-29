@@ -11,15 +11,45 @@
 \alias{pairwise_termsim.compareClusterResult}
 \title{pairwise_termsim}
 \usage{
-pairwise_termsim(x, method = "JC", semData = NULL, showCategory = NULL)
+pairwise_termsim(
+  x,
+  method = "JC",
+  semData = NULL,
+  showCategory = NULL,
+  layer = NULL
+)
 
-\S4method{pairwise_termsim}{enrichResult}(x, method = "JC", semData = NULL, showCategory = NULL)
+\S4method{pairwise_termsim}{enrichResult}(
+  x,
+  method = "JC",
+  semData = NULL,
+  showCategory = NULL,
+  layer = NULL
+)
 
-\S4method{pairwise_termsim}{gseaResult}(x, method = "JC", semData = NULL, showCategory = NULL)
+\S4method{pairwise_termsim}{gseaResult}(
+  x,
+  method = "JC",
+  semData = NULL,
+  showCategory = NULL,
+  layer = NULL
+)
 
-\S4method{pairwise_termsim}{mnseaResult}(x, method = "JC", semData = NULL, showCategory = NULL)
+\S4method{pairwise_termsim}{mnseaResult}(
+  x,
+  method = "JC",
+  semData = NULL,
+  showCategory = NULL,
+  layer = NULL
+)
 
-\S4method{pairwise_termsim}{compareClusterResult}(x, method = "JC", semData = NULL, showCategory = NULL)
+\S4method{pairwise_termsim}{compareClusterResult}(
+  x,
+  method = "JC",
+  semData = NULL,
+  showCategory = NULL,
+  layer = NULL
+)
 
 prepare_pairwise_termsim_data(x, showCategory)
 
@@ -48,6 +78,9 @@ one of "Resnik", "Lin", "Rel", "Jiang", "Wang", and
 \code{GOSemSim::godata}.}
 
 \item{showCategory}{number of enriched terms to be calculated. The default value is the number of enriched terms, or 200 if the number of enriched terms exceeds 200.}
+
+\item{layer}{optional layer or layers to retain when computing feature
+overlap for \code{mnseaResult}; when \code{NULL}, features from all layers are used.}
 }
 \description{
 Get the similarity matrix

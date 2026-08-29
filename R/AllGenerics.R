@@ -159,6 +159,8 @@ setGeneric(
 #' @param semData `GOSemSimDATA` object, can be obtained through
 #' `GOSemSim::godata`.
 #' @param showCategory number of enriched terms to be calculated. The default value is the number of enriched terms, or 200 if the number of enriched terms exceeds 200.
+#' @param layer optional layer or layers to retain when computing feature
+#' overlap for `mnseaResult`; when `NULL`, features from all layers are used.
 #' @examples
 #' \dontrun{
 #'     library(clusterProfiler)
@@ -183,7 +185,7 @@ setGeneric(
 #'    }
 setGeneric(
     "pairwise_termsim",
-    function(x, method = "JC", semData = NULL, showCategory = NULL) {
+    function(x, method = "JC", semData = NULL, showCategory = NULL, layer = NULL) {
         standardGeneric("pairwise_termsim")
     }
 )
