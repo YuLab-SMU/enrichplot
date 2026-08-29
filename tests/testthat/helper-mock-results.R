@@ -193,3 +193,60 @@ mock_mnsea_result <- function() {
         feature_contribution = feature_contribution
     )
 }
+
+mock_nsea_result <- function() {
+    result <- data.frame(
+        ID = c("T1", "T2"),
+        Description = c("Network Pathway 1", "Network Pathway 2"),
+        setSize = c(2L, 2L),
+        enrichmentScore = c(0.8, -0.5),
+        NES = c(1.4, -1.1),
+        pvalue = c(0.01, 0.03),
+        p.adjust = c(0.02, 0.04),
+        qvalue = c(0.02, 0.04),
+        rank = c(1L, 2L),
+        leading_edge = c("tags=50%, list=40%, signal=30%", "tags=50%, list=20%, signal=10%"),
+        core_enrichment = c("g1/g2", "g2/g3"),
+        stringsAsFactors = FALSE
+    )
+    rownames(result) <- result$ID
+
+    adj <- Matrix::Matrix(
+        matrix(
+            c(
+                0, 1, 0,
+                1, 0, 1,
+                0, 1, 0
+            ),
+            nrow = 3,
+            byrow = TRUE,
+            dimnames = list(c("g1", "g2", "g3"), c("g1", "g2", "g3"))
+        ),
+        sparse = TRUE
+    )
+
+    methods::new(
+        "nseaResult",
+        result = result,
+        organism = "mock",
+        setType = "mock",
+        geneSets = list(
+            T1 = c("g1", "g2"),
+            T2 = c("g2", "g3")
+        ),
+        geneList = c(g1 = 1.2, g2 = 0.8, g3 = -0.5),
+        keytype = "UNKNOWN",
+        permScores = matrix(0, 0, 0),
+        params = list(),
+        gene2Symbol = character(),
+        readable = FALSE,
+        termsim = matrix(0, 0, 0),
+        method = "",
+        dr = list(),
+        network = adj,
+        diffusion_scores = c(g1 = 1.2, g2 = 0.8, g3 = -0.5),
+        mode = "signed",
+        iterations = as.integer(15),
+        restart_prob = 0.7
+    )
+}

@@ -368,6 +368,9 @@ gsInfo.gseaResult <- function(object, geneSetID, ...) {
 
     geneSet <- object@geneSets[[geneSetID]]
     exponent <- object@params[["exponent"]]
+    if (length(exponent) == 0 || is.na(exponent)) {
+        exponent <- 1
+    }
     df <- gseaScores(geneList, geneSet, exponent, fortify = TRUE)
     df$ymin <- 0
     df$ymax <- 0
