@@ -88,10 +88,14 @@ rewireplot_internal <- function(
         selected_layer = selected_layer,
         reference_layer = reference_layer
     )
-    if (nrow(feature_status) > 0) {
+    if (nrow(feature_status) > 0 && "status" %in% colnames(feature_status)) {
+        # Only the `status` column is consumed downstream. Merging the whole
+        # `feature_status` table collides with `nodes` on the shared
+        # `abs_score` / `score` / `sign` columns and renames them to
+        # `abs_score.x` / `.y`, which breaks `aes(size = abs_score)` at render.
         nodes <- merge(
             nodes,
-            feature_status,
+            feature_status[, c("Feature", "status"), drop = FALSE],
             by = "Feature",
             all.x = TRUE,
             sort = FALSE
