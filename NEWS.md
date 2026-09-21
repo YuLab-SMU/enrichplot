@@ -30,16 +30,13 @@
 
 + fix `heatplot()` dot-mode p-value scaling: zero or non-positive gene p-values are now clamped to the smallest positive double before the reversed log-size transform is applied, so significance-sized dots no longer emit infinite-value warnings for exact-zero inputs (2026-09-22, Tue)
 + fix `ridgeplot()` blank rows for undersized core gene sets (#288): pathways with fewer than three ranked values are now dropped before `geom_density_ridges()` is built, and the function now errors clearly when no selected pathway has enough values to estimate a density, so two-gene core sets no longer leave empty y-axis slots in the plot (2026-09-21, Mon)
-
 # enrichplot 1.99.4
 
 + fix `cnetplot()` for `compareClusterResult` terms with duplicated descriptions (#279): category nodes now use stable ID-backed labels internally, so distinct terms that share the same `Description` are no longer merged into one network node, with regression coverage for the duplicated-label case (2026-09-21, Mon)
-
 # enrichplot 1.99.3
 
 + fix `treeplot()` heatmap panels for `compareClusterResult`: the `cluster_panel = "heatMap"` path now calls `ggtree::gheatmap()` with the active tree plot object instead of treating it like a regular layer, so compare-cluster treeplots render again instead of failing with a missing `data` argument error (2026-09-21, Mon)
 + fix `treeplot()` dotplot panels for `compareClusterResult` (#232, #224): the `cluster_panel = "dotplot"` path now passes `ggtreeExtra::geom_fruit()` the plain term columns it expects, so compare-cluster treeplots render again on current `ggtreeExtra` builds instead of failing while decoding the `y` mapping (2026-09-21, Mon)
-
 # enrichplot 1.99.2
 
 + support importing results from external enrichment tools: `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()` and `import_fgsea()` map enrichr / g:Profiler / WebGestaltR / fgsea output tables to `enrichResult` / `gseaResult` objects that plug into the 'enrichplot' visualization functions; the 'enrichit' constructors `as_enrichResult()` / `as_gseaResult()` are re-exported for other table formats (2026-09-21, Mon)
