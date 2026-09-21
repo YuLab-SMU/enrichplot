@@ -1,6 +1,6 @@
 Package: enrichplot
 Title: Visualization of Functional Enrichment Result
-Version: 1.99.1
+Version: 1.99.2
 Authors@R: c(
     person(given = "Guangchuang", family = "Yu", email = "guangchuangyu@gmail.com",   role  = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781"))
     )
@@ -8,7 +8,7 @@ Description: The 'enrichplot' package provides visualization methods for interpr
     It is designed to work with the 'clusterProfiler' ecosystem and builds on 'ggplot2' for flexible and extensible graphics.
 Depends: R (>= 4.2.0)
 Imports:
-    aplot (>= 0.2.1),
+    aplot (>= 0.3.2),
     DOSE,
     dplyr,
     enrichit (>= 0.1.6),
@@ -35,6 +35,7 @@ Imports:
 Suggests:
     AnnotationDbi,
     clusterProfiler,
+    cowplot,
     europepmc,
     ggarchery,
     ggforce,
