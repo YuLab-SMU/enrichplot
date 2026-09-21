@@ -10,3 +10,5 @@ Rplots*
 Rplots.pdf
 ..Rcheck/
 enrichplot-issues.md
+.tmp/
+CONVERTER_PLAN.md

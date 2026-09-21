@@ -125,6 +125,8 @@ setGeneric(
         min_edge = .2,
         color_edge = "grey",
         size_edge = .5,
+        group = NULL,
+        group_legend = TRUE,
         node_label = "category",
         node_label_size = 5,
         pie = "equal",
@@ -642,4 +644,3 @@ setGeneric(
         standardGeneric("mechanismflow")
     }
 )
-

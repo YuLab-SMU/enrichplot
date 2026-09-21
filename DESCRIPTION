@@ -8,7 +8,7 @@ Description: The 'enrichplot' package provides visualization methods for interpr
     It is designed to work with the 'clusterProfiler' ecosystem and builds on 'ggplot2' for flexible and extensible graphics.
 Depends: R (>= 4.2.0)
 Imports:
-    aplot (>= 0.3.2),
+    aplot (>= 0.2.1),
     DOSE,
     dplyr,
     enrichit (>= 0.1.6),

@@ -13,6 +13,8 @@ setMethod(
         min_edge = .2,
         color_edge = "grey",
         size_edge = .5,
+        group = NULL,
+        group_legend = TRUE,
         node_label = "category",
         node_label_size = 5,
         pie = "equal",
@@ -33,6 +35,8 @@ setMethod(
             min_edge = min_edge,
             color_edge = color_edge,
             size_edge = size_edge,
+            group = group,
+            group_legend = group_legend,
             node_label = node_label,
             node_label_size = node_label_size,
             pie = pie,
@@ -61,6 +65,8 @@ setMethod(
         min_edge = .2,
         color_edge = "grey",
         size_edge = .5,
+        group = NULL,
+        group_legend = TRUE,
         node_label = "category",
         node_label_size = 5,
         pie = "equal",
@@ -81,6 +87,8 @@ setMethod(
             min_edge = min_edge,
             color_edge = color_edge,
             size_edge = size_edge,
+            group = group,
+            group_legend = group_legend,
             node_label = node_label,
             node_label_size = node_label_size,
             pie = pie,
@@ -109,6 +117,8 @@ setMethod(
         min_edge = .2,
         color_edge = "grey",
         size_edge = .5,
+        group = NULL,
+        group_legend = TRUE,
         node_label = "category",
         node_label_size = 5,
         pie = "equal",
@@ -129,6 +139,8 @@ setMethod(
             min_edge = min_edge,
             color_edge = color_edge,
             size_edge = size_edge,
+            group = group,
+            group_legend = group_legend,
             node_label = node_label,
             node_label_size = node_label_size,
             pie = pie,
@@ -157,6 +169,8 @@ setMethod(
         min_edge = .2,
         color_edge = "grey",
         size_edge = .5,
+        group = NULL,
+        group_legend = TRUE,
         node_label = "category",
         node_label_size = 5,
         pie = "equal",
@@ -177,6 +191,8 @@ setMethod(
             min_edge = min_edge,
             color_edge = color_edge,
             size_edge = size_edge,
+            group = group,
+            group_legend = group_legend,
             node_label = node_label,
             node_label_size = node_label_size,
             pie = pie,
@@ -373,6 +389,8 @@ emapplot_internal <- function(
     min_edge = .2,
     color_edge = "grey",
     size_edge = .5,
+    group = NULL,
+    group_legend = TRUE,
     node_label = "category",
     node_label_size = 5,
     pie = "equal",
@@ -484,18 +502,22 @@ emapplot_internal <- function(
         }
     }
 
-    group <- group_label <- FALSE
-    if (node_label == "group") {
-        group <- TRUE
+    group_enabled <- node_label %in% c("group", "all")
+    if (!is.null(group)) {
+        group_enabled <- isTRUE(group)
+        if (!group_enabled && node_label == "group") {
+            node_label <- "none"
+        }
     }
 
+    group_label <- FALSE
     if (node_label == "all") {
-        group <- TRUE
+        group_enabled <- TRUE
         group_label <- TRUE
         node_label <- "category"
     }
 
-    if (group) {
+    if (group_enabled) {
         if (inherits(x, 'compareClusterResult')) {
             p <- p + ggnewscale::new_scale_fill()
         } #else {
@@ -512,7 +534,7 @@ emapplot_internal <- function(
         p <- p +
             add_ellipse(
                 node_data,
-                group_legend = TRUE,
+                group_legend = group_legend,
                 label = group_label
             )
     }

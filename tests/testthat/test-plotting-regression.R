@@ -242,6 +242,30 @@ test_that("upsetplot methods run", {
     expect_ggplot(upsetplot(make_rich_gsea_result(), n = 3))
 })
 
+test_that("upsetplot.gseaResult boxplots do not duplicate outliers", {
+    p <- upsetplot(make_rich_gsea_result(), n = 3, type = "boxplot")
+
+    expect_identical(p$layers[[1]]$geom_params$outlier_gp$shape, NA)
+})
+
+test_that("upsetplot.gseaResult remaps fold changes for readable objects", {
+    x <- make_rich_gsea_result()
+    x@readable <- TRUE
+    x@gene2Symbol <- setNames(paste0("SYM", 1:10), paste0("g", 1:10))
+    x@geneSets <- lapply(x@geneSets, function(gs) unname(x@gene2Symbol[gs]))
+    x@result$core_enrichment <- vapply(
+        x@geneSets[x@result$ID],
+        paste,
+        character(1),
+        collapse = "/"
+    )
+
+    p <- upsetplot(x, n = 3)
+
+    expect_false(anyNA(p$data$foldChange))
+    expect_true(all(grepl("^SYM", p$data$gene)))
+})
+
 ## ---------------------------------------------------------------------------
 ## Semantic-similarity based plots (emapplot / ssplot / treeplot)
 ## ---------------------------------------------------------------------------
@@ -258,6 +282,30 @@ test_that("emapplot / ssplot / treeplot run on JC similarity", {
     expect_ggplot(emapplot(x, showCategory = 8, nCluster = 2))
     expect_ggplot(ssplot(x, showCategory = 8))
     expect_ggplot(treeplot(x, showCategory = 8, nCluster = 2))
+})
+
+test_that("emapplot and ssplot honor group_legend for grouped layouts", {
+    x <- pairwise_termsim(make_rich_enrich_result(), method = "JC")
+
+    p_emap_no_legend <- emapplot(
+        x,
+        showCategory = 8,
+        group = TRUE,
+        group_legend = FALSE
+    )
+    p_emap_with_legend <- emapplot(
+        x,
+        showCategory = 8,
+        group = TRUE,
+        group_legend = TRUE
+    )
+    p_ss <- ssplot(x, showCategory = 8, group_legend = FALSE)
+
+    expect_ggplot(p_emap_no_legend)
+    expect_ggplot(p_emap_with_legend)
+    expect_ggplot(p_ss)
+    expect_false(isTRUE(p_emap_no_legend$layers[[3]]$show.legend[["fill"]]))
+    expect_true(isTRUE(p_emap_with_legend$layers[[3]]$show.legend[["fill"]]))
 })
 
 test_that("emapplot and ssplot accept label-keyed similarity matrices from non-JC methods", {
@@ -326,6 +374,31 @@ test_that("gseaplot2 and gsearank run", {
     expect_error(gseaplot2(x, geneSetID = 1), NA)
     expect_error(gseaplot2(x, geneSetID = c(1, 2), subplots = 1), NA)
     expect_ggplot(gsearank(x, geneSetID = 1))
+})
+
+test_that("gseaplot2 gglist objects work with cowplot grids", {
+    skip_if_not_installed("cowplot")
+
+    x <- make_rich_gsea_result()
+    p <- gseaplot2(
+        x,
+        geneSetID = 1,
+        subplots = c(1, 2),
+        pvalue_table = TRUE
+    )
+
+    expect_s3_class(p, "gglist")
+    expect_s3_class(cowplot::as_grob(p), "grob")
+    expect_error(cowplot::plot_grid(p, p, ncol = 1), NA)
+})
+
+test_that("gseaplot2 hit bins follow ranked-list order", {
+    x <- make_rich_gsea_result()
+    p <- gseaplot2(x, geneSetID = 1)
+    rects <- ggplot2::ggplot_build(p[[2]])$data[[2]]
+
+    expect_equal(rects$xmin, c(1, 2, 3, 4))
+    expect_equal(rects$xmax, c(2, 3, 4, 11))
 })
 
 test_that("hplot runs", {

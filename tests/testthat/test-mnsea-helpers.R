@@ -245,6 +245,13 @@ test_that("upsetplot works for mnseaResult with collapsed scores", {
     expect_setequal(unique(as.character(df$Feature)), c("g1", "g2", "g3"))
 })
 
+test_that("upsetplot.mnseaResult boxplots do not duplicate outliers", {
+    x <- mock_mnsea_result()
+    p <- upsetplot(x, n = 2, type = "boxplot")
+
+    expect_identical(p$layers[[1]]$geom_params$outlier_gp$shape, NA)
+})
+
 test_that("upsetplot mnseaResult supports single-layer feature overlap", {
     x <- mock_mnsea_result()
     df <- build_mnsea_upset_df(x, n = 2, layer = "protein", value = "abs_score")

@@ -118,7 +118,7 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     geneSets <- extract_geneSets(x, n)
     labels <- get_geneSet_labels(geneSets)
 
-    ## foldChange <- fc_readable(x, x@geneList)
+    foldChange <- fc_readable(x, x@geneList)
     d <- list2df(geneSets)
     d$Description <- labels[as.character(d$categoryID)]
 
@@ -126,10 +126,10 @@ upsetplot.gseaResult <- function(x, n = 10, type = "boxplot", ...) {
     require_suggested('tibble', 'for `upsetplot()`.')
     y <- tibble::tibble(Description = category,
                       gene = names(category),
-                      foldChange = x@geneList[names(category)])
+                      foldChange = foldChange[names(category)])
 
     if (type == "boxplot") {
-        ly_dist <- geom_boxplot()
+        ly_dist <- geom_boxplot(outlier.shape = NA)
     } else {
         ly_dist <- geom_violin()
     }
@@ -162,7 +162,7 @@ upsetplot.mnseaResult <- function(
     )
 
     if (type == "boxplot") {
-        ly_dist <- geom_boxplot()
+        ly_dist <- geom_boxplot(outlier.shape = NA)
     } else {
         ly_dist <- geom_violin()
     }
@@ -257,4 +257,3 @@ upsetplot.compareClusterResult <- function(x, n, ...) {
         theme(strip.text = element_text(size = 14)) +
         xlab(NULL) + ylab(NULL) 
 }
-

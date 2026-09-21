@@ -578,6 +578,10 @@ gseaplot2 <- function(
 
         v <- seq(1, sum(gsdata$position), length.out = 9)
         inv <- findInterval(rev(cumsum(gsdata$position)), v)
+        ## `rev(cumsum(position))` counts hits from the bottom of the ranked
+        ## list, so the intervals need to be mirrored back before they are
+        ## used as left-to-right x ranges for the hit bins.
+        inv <- rev(9 - inv)
         if (min(inv) == 0) {
             inv <- inv + 1
         }

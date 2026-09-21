@@ -3,6 +3,44 @@ expect_ggplot_build_ok <- function(p) {
     expect_error(ggplot2::ggplot_build(p), NA)
 }
 
+make_strict_cutoff_enrich_result <- function() {
+    result <- data.frame(
+        ID = c("T1", "T2"),
+        Description = c("a", "b"),
+        GeneRatio = c("1/2", "1/2"),
+        BgRatio = c("1/10", "1/10"),
+        pvalue = c(0.01, 0.02),
+        p.adjust = c(0.2, 0.3),
+        qvalue = c(0.2, 0.3),
+        geneID = c("g1/g2", "g2/g3"),
+        Count = c(2L, 2L),
+        stringsAsFactors = FALSE
+    )
+    rownames(result) <- result$ID
+
+    methods::new(
+        "enrichResult",
+        result = result,
+        pvalueCutoff = 0.05,
+        pAdjustMethod = "BH",
+        qvalueCutoff = 0.05,
+        organism = "mock",
+        ontology = "mock",
+        gene = c("g1", "g2", "g3"),
+        keytype = "UNKNOWN",
+        universe = character(),
+        gene2Symbol = character(),
+        geneSets = list(
+            T1 = c("g1", "g2"),
+            T2 = c("g2", "g3")
+        ),
+        readable = FALSE,
+        termsim = matrix(0, 0, 0),
+        method = "",
+        dr = list()
+    )
+}
+
 test_that("duplicate term descriptions get stable display labels", {
     x <- mock_enrich_result()
 
@@ -58,6 +96,18 @@ test_that("pairwise_termsim uses stable labels when descriptions repeat", {
 
     expect_equal(rownames(y@termsim), c("dup [T1]", "dup [T2]"))
     expect_equal(colnames(y@termsim), c("dup [T1]", "dup [T2]"))
+})
+
+test_that("pairwise_termsim can use raw enrichResult rows beyond significance cutoffs", {
+    x <- make_strict_cutoff_enrich_result()
+
+    expect_equal(nrow(as.data.frame(x)), 0)
+
+    y <- pairwise_termsim(x, method = "JC", showCategory = 2)
+
+    expect_equal(dim(y@termsim), c(2L, 2L))
+    expect_equal(rownames(y@termsim), c("a", "b"))
+    expect_ggplot_build_ok(emapplot(y, showCategory = 2))
 })
 
 test_that("get_enrichplot_color expands two custom colors to three safely", {
@@ -186,5 +236,13 @@ test_that("dotplot applies numeric showCategory after orderBy sorting", {
         dr = list()
     )
 
-    ids2 <- ggplot2::ggplot_build(dotplot(x, showCategory = 2, orderBy = "Count"))$plot$data$ID
-    ids4 <- ggplot2::ggplot_build(dotplot(x, showCategory = 4, orderBy = "Count"))$plot$data$ID
+    ids2 <- ggplot2::ggplot_build(
+        dotplot(x, showCategory = 2, orderBy = "Count")
+    )$plot$data$ID
+    ids4 <- ggplot2::ggplot_build(
+        dotplot(x, showCategory = 4, orderBy = "Count")
+    )$plot$data$ID
+
+    expect_identical(ids2, c("T2", "T4"))
+    expect_identical(ids4[seq_along(ids2)], ids2)
+})

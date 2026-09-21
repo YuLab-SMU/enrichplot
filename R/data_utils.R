@@ -17,7 +17,8 @@ update_n <- function(x, showCategory) {
         if (inherits(x, 'list')) {
             showCategory <- showCategory[showCategory %in% names(x)]
         } else {
-            if (!all(c("ID", "Description") %in% colnames(as.data.frame(x)))) {
+            result_df <- .result_data(x)
+            if (!all(c("ID", "Description") %in% colnames(result_df))) {
                 yulab_abort(
                     "Input data must have 'ID' and 'Description' columns",
                     class = "missing_column_error"
@@ -38,7 +39,7 @@ update_n <- function(x, showCategory) {
     if (inherits(x, 'list')) {
         nn <- length(x)
     } else {
-        nn <- nrow(x)
+        nn <- nrow(.result_data(x))
     }
     if (nn < n) {
         yulab_warn(
@@ -59,7 +60,7 @@ update_n <- function(x, showCategory) {
 }
 
 get_term_mapping <- function(x) {
-    y <- as.data.frame(x)
+    y <- .result_data(x)
     if (!all(c("ID", "Description") %in% colnames(y))) {
         yulab_abort(
             "Input data must have 'ID' and 'Description' columns",
@@ -171,7 +172,7 @@ select_terms <- function(x, showCategory) {
         ))
     }
 
-    y <- as.data.frame(x)
+    y <- .result_data(x)
     if (is.numeric(selection)) {
         selected <- y[seq_len(selection), , drop = FALSE]
     } else {
@@ -372,6 +373,5 @@ prepare_pie_data <- function(pie_data, pie = "equal", type = "category") {
 as.data.frame.compareClusterResult <- function(x, ...) {
     as.data.frame(x@compareClusterResult, ...)
 }
-
 
 

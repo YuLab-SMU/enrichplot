@@ -9,3 +9,5 @@ Rplots.pdf
 ^\.dev$
 ..Rcheck/
 AGENTS.md
+.tmp/
+CONVERTER_PLAN.md
