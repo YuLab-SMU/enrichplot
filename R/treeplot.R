@@ -369,7 +369,7 @@ add_cluster_panel <- function(
         paths <- pData$label[order(pData$y, decreasing = TRUE)]
         paths <- paths[!is.na(paths)]
         dotdata <- dotdata[dotdata$Description %in% paths, ]
-        dotdata <- dplyr::select(dotdata, .data$Description, dplyr::everything())
+        dotdata <- dplyr::select(dotdata, "Description", dplyr::everything())
 
         p <- p +
             ggnewscale::new_scale_colour() +
@@ -377,9 +377,9 @@ add_cluster_panel <- function(
                 data = dotdata,
                 geom = geom_point,
                 mapping = aes(
-                    x = .data$Cluster,
-                    y = .data$Description,
-                    size = .data$Count,
+                    x = Cluster,
+                    y = Description,
+                    size = Count,
                     color = .data[[color]]
                 ),
                 pwidth = 0.06 * ncol(ID_Cluster_mat),

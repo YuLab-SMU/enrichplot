@@ -1,6 +1,7 @@
 # enrichplot 1.99.3
 
 + fix `treeplot()` heatmap panels for `compareClusterResult`: the `cluster_panel = "heatMap"` path now calls `ggtree::gheatmap()` with the active tree plot object instead of treating it like a regular layer, so compare-cluster treeplots render again instead of failing with a missing `data` argument error (2026-09-21, Mon)
++ fix `treeplot()` dotplot panels for `compareClusterResult` (#232, #224): the `cluster_panel = "dotplot"` path now passes `ggtreeExtra::geom_fruit()` the plain term columns it expects, so compare-cluster treeplots render again on current `ggtreeExtra` builds instead of failing while decoding the `y` mapping (2026-09-21, Mon)
 
 # enrichplot 1.99.2
 
