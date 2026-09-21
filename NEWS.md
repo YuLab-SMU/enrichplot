@@ -1,3 +1,7 @@
+# enrichplot 1.99.4
+
++ fix `cnetplot()` for `compareClusterResult` terms with duplicated descriptions (#279): category nodes now use stable ID-backed labels internally, so distinct terms that share the same `Description` are no longer merged into one network node, with regression coverage for the duplicated-label case (2026-09-21, Mon)
+
 # enrichplot 1.99.3
 
 + fix `treeplot()` heatmap panels for `compareClusterResult`: the `cluster_panel = "heatMap"` path now calls `ggtree::gheatmap()` with the active tree plot object instead of treating it like a regular layer, so compare-cluster treeplots render again instead of failing with a missing `data` argument error (2026-09-21, Mon)

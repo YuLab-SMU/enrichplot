@@ -130,6 +130,23 @@ test_that("cnetplot smoke test works for compareClusterResult", {
     expect_s3_class(p, "ggplot")
 })
 
+test_that("cnetplot keeps duplicate compareCluster descriptions as separate term nodes", {
+    x <- mock_comparecluster_result()
+    d <- as.data.frame(x@compareClusterResult, stringsAsFactors = FALSE)
+    d$ID <- c("T1", "T2", "T3", "T4")
+    d$Description <- c("dup", "other", "dup", "other")
+    d$geneID <- c("1/2", "2/3", "4/5", "5/6")
+    x@compareClusterResult <- d
+
+    p <- cnetplot(x, showCategory = 4)
+
+    expect_ggplot_build_ok(p)
+    expect_setequal(
+        unique(as.character(p$data$name[p$data$.isCategory])),
+        c("dup [T1]", "other [T2]", "dup [T3]", "other [T4]")
+    )
+})
+
 test_that("emapplot smoke test works for compareClusterResult", {
     x <- mock_comparecluster_result()
     x <- pairwise_termsim(x, method = "JC", showCategory = 2)

@@ -507,6 +507,7 @@ cnetplot.compareClusterResult <- function(
         split = split,
         includeAll = includeAll
     )
+    d$Description <- unname(get_term_labels(x, d$ID))
     y <- split(d$geneID, d$Description)
     gs <- lapply(y, function(item) unique(unlist(strsplit(item, split = "/"))))
     category_size <- compute_comparecluster_category_size(d, category_size_quo)
