@@ -48,7 +48,8 @@ plotting.clusterProfile <- function(
     colorBy = "p.adjust",
     by = "geneRatio",
     title = "",
-    font.size = 12
+    font.size = 12,
+    width = NULL
 ) {
     if (type == "bar") {
         yvar <- switch(by,
@@ -66,9 +67,12 @@ plotting.clusterProfile <- function(
                 fill = !!sym("Cluster")
             )
         )
-        p <- p +
-            geom_col() +
-            coord_flip()
+        if (is.null(width)) {
+            p <- p + geom_col()
+        } else {
+            p <- p + geom_col(width = width)
+        }
+        p <- p + coord_flip()
     }
 
     p <- p + xlab("") + ylab("") + ggtitle(title) + theme_dose(font.size)

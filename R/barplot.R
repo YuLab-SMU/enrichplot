@@ -108,6 +108,7 @@ barplot_internal <- function(
     dots <- list(...)
     supported_params <- c("order", "drop", "split")
     fortify_params <- dots[names(dots) %in% supported_params]
+    geom_width <- dots[["width"]]
 
     # Create the call to fortify without passing ... directly
     # This prevents ggplot2 from checking for unused parameters
@@ -159,8 +160,13 @@ barplot_internal <- function(
         label_func <- label_format
     }
 
+    if (is.null(geom_width)) {
+        p <- p + geom_col()
+    } else {
+        p <- p + geom_col(width = geom_width)
+    }
+
     p +
-        geom_col() + # geom_bar(stat = "identity") + coord_flip() +
         scale_y_discrete(labels = label_func) +
         ggtitle(title) +
         ylab(NULL) # + xlab(NULL)
@@ -186,12 +192,14 @@ barplot.compareClusterResult <- function(
         by = by,
         includeAll = includeAll
     )
+    geom_width <- list(...)[["width"]]
     plotting.clusterProfile(
         df,
         type = "bar",
         colorBy = color,
         by = by,
         title = title,
-        font.size = font.size
+        font.size = font.size,
+        width = geom_width
     )
 }

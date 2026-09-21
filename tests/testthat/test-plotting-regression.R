@@ -171,6 +171,14 @@ test_that("barplot.enrichResult works when colorBy is absent from result", {
     expect_ggplot(barplot(x, showCategory = 5))
 })
 
+test_that("barplot methods forward width to geom_col", {
+    p_enrich <- barplot(make_rich_enrich_result(), showCategory = 5, width = 0.2)
+    p_compare <- barplot(mock_comparecluster_result(), showCategory = 2, width = 0.3)
+
+    expect_equal(unique(ggplot2::ggplot_build(p_enrich)$data[[1]]$width), 0.2)
+    expect_equal(unique(ggplot2::ggplot_build(p_compare)$data[[1]]$width), 0.3)
+})
+
 test_that("barplot.gseaResult runs", {
     expect_ggplot(barplot(make_rich_gsea_result(), showCategory = 3))
 })
