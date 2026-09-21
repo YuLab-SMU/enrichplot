@@ -8,3 +8,5 @@
 Rplots*
 *.log
 Rplots.pdf
+..Rcheck/
+enrichplot-issues.md

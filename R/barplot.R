@@ -103,11 +103,7 @@ barplot_internal <- function(
     object <- height
 
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
-    if (x == "geneRatio" || x == "GeneRatio") {
-        x <- "GeneRatio"
-    } else if (x == "count" || x == "Count") {
-        x <- "Count"
-    }
+    x <- normalize_measure_var(x)
 
     dots <- list(...)
     supported_params <- c("order", "drop", "split")

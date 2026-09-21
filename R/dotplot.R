@@ -289,14 +289,12 @@ dotplot.enrichResult <- function(
 ) {
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     .formula_expr <- NULL
-    .orig_x <- x
-    if (x == "geneRatio" || x == "GeneRatio") {
-        x <- "GeneRatio"
+    x <- normalize_measure_var(x)
+    if (x == "GeneRatio") {
         if (is.null(size)) {
             size <- "Count"
         }
-    } else if (x == "count" || x == "Count") {
-        x <- "Count"
+    } else if (x == "Count") {
         if (is.null(size)) {
             size <- "GeneRatio"
         }
@@ -616,16 +614,7 @@ dotplot.compareClusterResult <- function(
         label_func <- label_format
     }
 
-    if (size %in% c("rowPercentage", "count", "geneRatio")) {
-        by2 <- switch(
-            size,
-            rowPercentage = "Percentage",
-            count = "Count",
-            geneRatio = "GeneRatio"
-        )
-    } else {
-        by2 <- size
-    }
+    by2 <- normalize_measure_var(size, include_percentage = TRUE)
 
     # Use internal helper function for base plot, but without shape_point for flexibility
     p <- .dotplot_internal(
@@ -644,8 +633,14 @@ dotplot.compareClusterResult <- function(
     if (group) {
         p <- p +
             geom_line(
-                aes(color = .data$Cluster, group = .data$Cluster),
-                size = .3
+                aes(
+                    x = .data[[x]],
+                    y = .data[["Description"]],
+                    color = .data$Cluster,
+                    group = .data$Cluster
+                ),
+                linewidth = .3,
+                inherit.aes = FALSE
             ) +
             ggnewscale::new_scale_colour()
     }
@@ -749,14 +744,34 @@ dotplot2 <- function(
     }
     object <- dplyr::filter(object, .data$Cluster %in% vars)
     d <- object@compareClusterResult
+    x <- normalize_measure_var(x)
+    if (!x %in% colnames(d)) {
+        if (identical(x, "FoldEnrichment")) {
+            d$FoldEnrichment <- compute_fold_enrichment(d)
+        } else {
+            yulab.utils::yulab_abort(
+                paste0(
+                    "`x` column `",
+                    x,
+                    "` is not available in `compareClusterResult`."
+                )
+            )
+        }
+    }
     d[[x]] <- d[[x]] * ifelse(d$Cluster == vars[1], -1, 1)
     object@compareClusterResult <- d
     p <- dotplot(object, x = x, ...)
     p <- p +
         geom_segment(
-            aes(xend = 0, yend = .data$Description),
-            size = 1,
-            color = 'grey50'
+            aes(
+                x = .data[[x]],
+                y = .data[["Description"]],
+                xend = 0,
+                yend = .data$Description
+            ),
+            linewidth = 1,
+            color = 'grey50',
+            inherit.aes = FALSE
         ) +
         geom_vline(xintercept = 0, lty = 'dashed') +
         scale_x_continuous(labels = abs)
@@ -767,11 +782,16 @@ dotplot2 <- function(
         return(p)
     }
 
-    d <- dplyr::group_by(object, .data$Cluster) |>
+    d <- dplyr::group_by(object@compareClusterResult, .data$Cluster) |>
         dplyr::summarise(mid = max(abs(.data[[x]])) * sign(max(.data[[x]])) / 2)
 
-    if (label != "auto") {
-        d$Cluster <- label[d$Cluster]
+    if (!identical(label, "auto")) {
+        if (is.null(names(label))) {
+            yulab.utils::yulab_abort(
+                "`label` should be a named vector keyed by cluster names."
+            )
+        }
+        d$Cluster <- unname(label[as.character(d$Cluster)])
     }
 
     p +

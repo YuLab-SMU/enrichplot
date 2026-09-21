@@ -109,10 +109,9 @@ fortify.compareClusterResult <- function(
         result$GeneRatio <- yulab.utils::parse_ratio(result$GeneRatio)
     } else if (by == "geneRatio") {
         ## for result of ORA
-        # if (class(result$GeneRatio) == "character" && grep("/", result$GeneRatio[1])) {
         if (
             inherits(result$GeneRatio, "character") &&
-                grep("/", result$GeneRatio[1])
+                isTRUE(grepl("/", result$GeneRatio[1]))
         ) {
             gcsize <- as.numeric(sub(
                 "^\\d+/",

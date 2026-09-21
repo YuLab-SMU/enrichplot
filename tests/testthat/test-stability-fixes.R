@@ -1,3 +1,8 @@
+expect_ggplot_build_ok <- function(p) {
+    expect_s3_class(p, "ggplot")
+    expect_error(ggplot2::ggplot_build(p), NA)
+}
+
 test_that("duplicate term descriptions get stable display labels", {
     x <- mock_enrich_result()
 
@@ -82,4 +87,49 @@ test_that("emapplot smoke test works for compareClusterResult", {
     p <- emapplot(x, showCategory = 2)
 
     expect_s3_class(p, "ggplot")
+})
+
+test_that("compareCluster pie plots tolerate duplicated cluster-term rows", {
+    x <- mock_comparecluster_result()
+    d <- x@compareClusterResult[c(1, 3, 2), , drop = FALSE]
+    d$Cluster <- factor(c("A", "A", "A"), levels = c("A", "B"))
+    x@compareClusterResult <- d
+
+    expect_ggplot_build_ok(cnetplot(x, showCategory = 3))
+
+    x <- pairwise_termsim(x, method = "JC", showCategory = 3)
+    expect_ggplot_build_ok(emapplot(x, showCategory = 3))
+})
+
+test_that("manhattanplot normalizes lowercase size aliases", {
+    expect_ggplot_build_ok(
+        manhattanplot(mock_enrich_result(), showCategory = 2, size = "count")
+    )
+    expect_ggplot_build_ok(
+        manhattanplot(
+            mock_comparecluster_result(),
+            showCategory = 2,
+            size = "geneRatio"
+        )
+    )
+})
+
+test_that("dotplot2 derives FoldEnrichment from ratio columns", {
+    p <- dotplot2(
+        mock_comparecluster_result(),
+        vars = c("A", "B"),
+        label = c(A = "Control", B = "Treated")
+    )
+
+    expect_ggplot_build_ok(p)
+})
+
+test_that("dotplot2 fails clearly when x cannot be derived", {
+    x <- mock_comparecluster_result()
+    x@compareClusterResult$BgRatio <- NULL
+
+    expect_error(
+        dotplot2(x, vars = c("A", "B")),
+        "`FoldEnrichment` is unavailable"
+    )
 })

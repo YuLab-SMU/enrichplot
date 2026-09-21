@@ -303,6 +303,7 @@ manhattanplot.enrichResult <- function(
     ...
 ) {
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
+    size <- normalize_measure_var(size)
 
     if (inherits(x, c("enrichResultList", "gseaResultList"))) {
         ldf <- lapply(x, as.data.frame)
@@ -372,6 +373,8 @@ manhattanplot.compareClusterResult <- function(
     strip_width = 15,
     ...
 ) {
+    size <- normalize_measure_var(size)
+
     if (!is.null(facet) && facet == "intersect") {
         x <- append_intersect(x)
     }

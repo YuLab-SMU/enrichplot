@@ -332,7 +332,7 @@ prepare_pie_data <- function(pie_data, pie = "equal", type = "category") {
     )
     rownames(ID_Cluster_mat) <- ID_unique
     colnames(ID_Cluster_mat) <- Cluster_unique
-    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringAsFactors = FALSE)
+    ID_Cluster_mat <- as.data.frame(ID_Cluster_mat, stringsAsFactors = FALSE)
 
     if (pie == "Count") {
         # Vectorized matrix indexing

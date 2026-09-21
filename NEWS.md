@@ -1,5 +1,6 @@
 # enrichplot 1.99.1
 
++ fix `cnetplot()` / `emapplot()` for `compareClusterResult` pie nodes when duplicated `(Cluster, Description)` rows are present: pie counts are now aggregated before widening, avoiding list-columns and the tidyr cast error ("Can't convert `fill` <double> to <list>"), with regression coverage for duplicated cluster-term inputs (2026-09-21, Mon)
 + fix `barplot()` for `compareClusterResult` objects: the default `by = "geneRatio"` and `by = "rowPercentage"` crashed in `plotting.clusterProfile()`, and `by = "count"` failed at rendering time under `ggplot2` 4.x; `by` is now mapped to the fortify-produced column and bars are drawn with `geom_col()` (2026-09-21, Mon)
 + fix `emapplot()` / `ssplot()` with similarity measures other than 'JC' (e.g., 'Wang'): label-keyed similarity matrices were re-mapped as term IDs, producing NA edges ("edge data frame contains NAs"); the stale re-mapping in `build_emap_graph()` was removed (2026-09-21, Mon)
 + add a plotting regression suite (`test-plotting-regression.R`) covering the tutorial-facing visualization functions, including a dispatch canary for the `ggplot() + theme_dose()` failure seen under `ggplot2` 4.0.x with S7 < 0.2.2; ggplot outputs are evaluated with `ggplot_build()` to catch bad aesthetics (2026-09-21, Mon)
@@ -14,7 +15,6 @@
 + add `phaseplot()` for enrichment-shift versus rewiring overviews and `rewireplot()` for pathway-specific feature-level rewiring evidence
 + add `consensusmap()` for multi-context mechanism agreement and `mechanismflow()` for pathway state transitions across layers/conditions
 + refine mechanism plots with real cross-object comparisons: `summarize_nsea_mechanism()` now accepts a `reference` result to compute `delta_NES` and cross-object `rewiring_score`; `phaseplot()` supports `reference` / `x_axis` / `size_var`; `consensusmap()` uses fill for NES/delta NES and point size for rewiring/overlap; `mechanismflow()` uses flow magnitude and stable mechanism-state ordering (2026-08-23, Sun)
-
 + add a minimal `ssplot.mnseaResult()` that projects selected pathways into a similarity-space overview using layer-aware feature overlap, while reusing `emapplot()` semantics and adding stable fallbacks for one- or two-pathway layouts (2026-06-25, Thu)
 + add a minimal `upsetplot.mnseaResult()` that summarizes shared feature overlaps across selected pathways with collapsed-score or single-layer views, including support for score magnitude display and `core_enrichment` filtering (2026-06-25, Thu)
 + add a minimal `ridgeplot.mnseaResult()` that shows pathway-level feature score distributions from collapsed scores or a selected single layer, with regression coverage for layer-aware ranked scores and `core_enrichment` filtering (2026-06-25, Thu)

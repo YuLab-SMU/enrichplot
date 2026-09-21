@@ -557,6 +557,13 @@ add_node_pie <- function(
 
     ## category nodes
     dd <- d[, c('Cluster', 'Description', 'Count')]
+    if (nrow(dd) > 0) {
+        dd <- stats::aggregate(
+            Count ~ Cluster + Description,
+            data = dd,
+            FUN = sum
+        )
+    }
     default_size <- sapply(split(dd$Count, dd$Description), sum)
     if (is.null(category_size)) {
         category_size <- default_size
@@ -570,7 +577,8 @@ add_node_pie <- function(
         dd,
         names_from = "Cluster",
         values_from = "Count",
-        values_fill = 0
+        values_fill = list(Count = 0),
+        values_fn = sum
     )
     normalized_category_size <- normalize_comparecluster_radius(category_size)
     dd$pathway_radius <- normalized_category_size[dd$Description] * category_scale
@@ -584,7 +592,8 @@ add_node_pie <- function(
         dg,
         names_from = "Cluster",
         values_from = "Count",
-        values_fill = 0
+        values_fill = list(Count = 0),
+        values_fn = sum
     )
     dg$pathway_radius <- .05 * item_scale
 

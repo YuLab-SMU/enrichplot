@@ -7,3 +7,5 @@ README.md
 TODO.md
 Rplots.pdf
 ^\.dev$
+..Rcheck/
+AGENTS.md
