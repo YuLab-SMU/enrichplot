@@ -1,5 +1,6 @@
 # enrichplot 1.99.1
 
++ fix `dotplot()` size scaling for enrichment results (#118): `size = "Percentage"` now derives a percentage column from `GeneRatio` for `enrichResult` / `gseaResult` data instead of failing at draw time with a missing-column error (2026-09-21, Mon)
 + fix `barplot()` width handling (#201): `width = ...` is now forwarded to the internal `geom_col()` layer for both enrichment-result and compare-cluster barplots, so bar thickness can be adjusted directly without stacking a second `geom_col()` layer on top of the original bars (2026-09-21, Mon)
 + fix `cnetplot()` / `emapplot()` for `compareClusterResult` pie nodes when duplicated `(Cluster, Description)` rows are present: pie counts are now aggregated before widening, avoiding list-columns and the tidyr cast error ("Can't convert `fill` <double> to <list>"), with regression coverage for duplicated cluster-term inputs (2026-09-21, Mon)
 + fix `barplot()` for `compareClusterResult` objects: the default `by = "geneRatio"` and `by = "rowPercentage"` crashed in `plotting.clusterProfile()`, and `by = "count"` failed at rendering time under `ggplot2` 4.x; `by` is now mapped to the fortify-produced column and bars are drawn with `geom_col()` (2026-09-21, Mon)

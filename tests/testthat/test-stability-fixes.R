@@ -114,6 +114,19 @@ test_that("manhattanplot normalizes lowercase size aliases", {
     )
 })
 
+test_that("dotplot supports Percentage as a size measure", {
+    p <- dotplot(
+        mock_enrich_result(),
+        x = "geneRatio",
+        size = "Percentage",
+        showCategory = 2
+    )
+
+    expect_ggplot_build_ok(p)
+    expect_true("Percentage" %in% colnames(p$data))
+    expect_equal(p$data$Percentage, p$data$GeneRatio * 100)
+})
+
 test_that("dotplot2 derives FoldEnrichment from ratio columns", {
     p <- dotplot2(
         mock_comparecluster_result(),

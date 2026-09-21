@@ -290,6 +290,7 @@ dotplot.enrichResult <- function(
     colorBy <- match.arg(color, c("pvalue", "p.adjust", "qvalue"))
     .formula_expr <- NULL
     x <- normalize_measure_var(x)
+    size <- normalize_measure_var(size, include_percentage = TRUE)
     if (x == "GeneRatio") {
         if (is.null(size)) {
             size <- "Count"
@@ -330,6 +331,10 @@ dotplot.enrichResult <- function(
 
     if (!is.null(.formula_expr)) {
         df$x <- rlang::eval_tidy(.formula_expr, data = df)
+    }
+
+    if (identical(size, "Percentage") && !"Percentage" %in% colnames(df)) {
+        df$Percentage <- df$GeneRatio * 100
     }
 
     if (orderBy != 'x' && !orderBy %in% colnames(df)) {
