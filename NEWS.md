@@ -1,3 +1,7 @@
+# enrichplot 1.99.3
+
++ fix `treeplot()` heatmap panels for `compareClusterResult`: the `cluster_panel = "heatMap"` path now calls `ggtree::gheatmap()` with the active tree plot object instead of treating it like a regular layer, so compare-cluster treeplots render again instead of failing with a missing `data` argument error (2026-09-21, Mon)
+
 # enrichplot 1.99.2
 
 + fix `dotplot()` legend keys under plot composition (#273): size legends now keep the hollow point shape after `cowplot::plot_grid()` / similar grob composition, instead of reverting to solid circles in combined figures (2026-09-21, Mon)

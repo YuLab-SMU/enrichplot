@@ -350,13 +350,12 @@ add_cluster_panel <- function(
             ] <- heatMapData[i, color]
         }
 
-        p <- p +
-            ggnewscale::new_scale_fill() +
-            ggtree::gheatmap(
-                ID_Cluster_mat,
-                colnames_angle = colnames_angle,
-                width = 0.5
-            ) +
+        p <- ggtree::gheatmap(
+            p + ggnewscale::new_scale_fill(),
+            ID_Cluster_mat,
+            colnames_angle = colnames_angle,
+            width = 0.5
+        ) +
             set_enrichplot_color(
                 type = "fill",
                 transform = "log10",

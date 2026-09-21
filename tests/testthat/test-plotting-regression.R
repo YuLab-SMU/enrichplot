@@ -284,6 +284,12 @@ test_that("emapplot / ssplot / treeplot run on JC similarity", {
     expect_ggplot(treeplot(x, showCategory = 8, nCluster = 2))
 })
 
+test_that("treeplot compareCluster heatMap panels run", {
+    x <- pairwise_termsim(mock_comparecluster_result(), method = "JC")
+
+    expect_ggplot(treeplot(x, showCategory = 2, cluster_panel = "heatMap"))
+})
+
 test_that("emapplot and ssplot honor group_legend for grouped layouts", {
     x <- pairwise_termsim(make_rich_enrich_result(), method = "JC")
 
