@@ -146,3 +146,45 @@ test_that("dotplot2 fails clearly when x cannot be derived", {
         "`FoldEnrichment` is unavailable"
     )
 })
+
+test_that("dotplot applies numeric showCategory after orderBy sorting", {
+    x <- methods::new(
+        "enrichResult",
+        result = structure(
+            data.frame(
+                ID = paste0("T", 1:4),
+                Description = paste0("term", 1:4),
+                GeneRatio = c("1/10", "2/10", "3/10", "4/10"),
+                BgRatio = rep("1/100", 4),
+                pvalue = c(0.05, 0.001, 0.02, 0.03),
+                p.adjust = c(0.05, 0.001, 0.02, 0.03),
+                qvalue = c(0.05, 0.001, 0.02, 0.03),
+                geneID = c("g1", "g1/g2", "g1/g2/g3", "g1/g2/g3/g4"),
+                Count = c(1L, 50L, 10L, 20L),
+                stringsAsFactors = FALSE
+            ),
+            row.names = paste0("T", 1:4)
+        ),
+        pvalueCutoff = 1,
+        pAdjustMethod = "BH",
+        qvalueCutoff = 1,
+        organism = "mock",
+        ontology = "mock",
+        gene = c("g1", "g2", "g3", "g4"),
+        keytype = "UNKNOWN",
+        universe = character(),
+        gene2Symbol = character(),
+        geneSets = list(
+            T1 = "g1",
+            T2 = c("g1", "g2"),
+            T3 = c("g1", "g2", "g3"),
+            T4 = c("g1", "g2", "g3", "g4")
+        ),
+        readable = FALSE,
+        termsim = matrix(0, 0, 0),
+        method = "",
+        dr = list()
+    )
+
+    ids2 <- ggplot2::ggplot_build(dotplot(x, showCategory = 2, orderBy = "Count"))$plot$data$ID
+    ids4 <- ggplot2::ggplot_build(dotplot(x, showCategory = 4, orderBy = "Count"))$plot$data$ID

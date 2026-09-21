@@ -179,6 +179,20 @@ test_that("barplot methods forward width to geom_col", {
     expect_equal(unique(ggplot2::ggplot_build(p_compare)$data[[1]]$width), 0.3)
 })
 
+test_that("dotplot keeps hollow size legends after cowplot composition", {
+    skip_if_not_installed("cowplot")
+
+    p <- dotplot(make_rich_enrich_result(), showCategory = 5)
+    combo <- cowplot::plot_grid(p, p, ncol = 1)
+    grob <- grid::grid.force(ggplot2::ggplotGrob(combo))
+    point_grobs <- grep("GRID.points", grid::grid.ls(grob, print = FALSE)$name, value = TRUE)
+    legend_points <- lapply(point_grobs, function(name) grid::getGrob(grob, name, grep = TRUE))
+
+    expect_true(length(legend_points) >= 6)
+    expect_true(all(vapply(legend_points, `[[`, numeric(1), "pch") == enrichplot_point_shape))
+    expect_true(all(vapply(legend_points, function(x) all(is.na(x$gp$fill)), logical(1))))
+})
+
 test_that("barplot.gseaResult runs", {
     expect_ggplot(barplot(make_rich_gsea_result(), showCategory = 3))
 })

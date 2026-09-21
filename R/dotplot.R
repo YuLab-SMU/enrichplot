@@ -314,17 +314,60 @@ dotplot.enrichResult <- function(
         }
     }
 
+    full_category_count <- function(obj) {
+        nrow(as.data.frame(obj))
+    }
+
+    subset_dotplot_rows <- function(df, group_cols = NULL) {
+        if (!is.numeric(showCategory) || length(showCategory) != 1 || is.na(showCategory)) {
+            return(df)
+        }
+
+        show_n <- as.integer(showCategory)
+        if (show_n <= 0) {
+            return(df[0, , drop = FALSE])
+        }
+
+        if (!length(group_cols)) {
+            return(utils::head(df, n = show_n))
+        }
+
+        group_key <- interaction(df[, group_cols, drop = FALSE], drop = TRUE)
+        keep <- unlist(
+            lapply(split(seq_len(nrow(df)), group_key), utils::head, n = show_n),
+            use.names = FALSE
+        )
+        df[sort(unique(keep)), , drop = FALSE]
+    }
+
+    fortify_show_category <- showCategory
+    if (is.numeric(showCategory) && !inherits(object, c("enrichResultList", "gseaResultList"))) {
+        fortify_show_category <- full_category_count(object)
+    }
+
     if (inherits(object, c("enrichResultList", "gseaResultList"))) {
         ldf <- lapply(
             object,
-            fortify,
-            showCategory = showCategory,
-            split = split
+            function(obj) {
+                fortify(
+                    obj,
+                    showCategory = if (is.numeric(showCategory)) {
+                        full_category_count(obj)
+                    } else {
+                        showCategory
+                    },
+                    split = split
+                )
+            }
         )
         df <- dplyr::bind_rows(ldf, .id = "category")
         df$category <- factor(df$category, levels = names(object))
     } else {
-        df <- fortify(object, showCategory = showCategory, split = split)
+        df <- fortify(
+            object,
+            showCategory = fortify_show_category,
+            split = split
+        )
         ## already parsed in fortify
         ## df$GeneRatio <- parse_ratio(df$GeneRatio)
     }
@@ -349,11 +392,18 @@ dotplot.enrichResult <- function(
     label_func <- .label_format(label_format)
 
     idx <- order(df[[orderBy]], decreasing = decreasing)
+    df <- df[idx, , drop = FALSE]
 
-    df$Description <- factor(
-        df$Description,
-        levels = rev(unique(df$Description[idx]))
-    )
+    group_cols <- character()
+    if (inherits(object, c("enrichResultList", "gseaResultList"))) {
+        group_cols <- c(group_cols, "category")
+    }
+    if (!is.null(split) && split %in% colnames(df)) {
+        group_cols <- c(group_cols, split)
+    }
+    df <- subset_dotplot_rows(df, group_cols = group_cols)
+
+    df$Description <- factor(df$Description, levels = rev(unique(df$Description)))
 
     # Use internal helper function for common plotting logic
     p <- .dotplot_internal(
@@ -516,10 +566,17 @@ dotplot.mnseaResult <- function(
     size_range = c(3, 8),
     size_name = ggplot2::waiver(),
     shape_point = TRUE,
+    point_shape = enrichplot_point_shape,
     color_colors = get_enrichplot_color(2),
     color_transform = "log10",
     color_reverse = TRUE
 ) {
+    point_layer <- if (shape_point) {
+        geom_point(shape = point_shape)
+    } else {
+        geom_point()
+    }
+
     p <- ggplot(
         df,
         aes(
@@ -529,7 +586,7 @@ dotplot.mnseaResult <- function(
             fill = .data[[colorBy]]
         )
     ) +
-        geom_point() +
+        point_layer +
         set_enrichplot_color(
             colors = color_colors,
             type = "fill",
@@ -541,10 +598,6 @@ dotplot.mnseaResult <- function(
         ylab(NULL) +
         ggtitle(title) +
         theme_dose(font.size)
-    
-    if (shape_point) {
-        p <- p + aes(shape = I(enrichplot_point_shape))
-    }
     
     # Apply size scaling
     if (size == "Count") {
@@ -665,7 +718,7 @@ dotplot.compareClusterResult <- function(
             set_enrichplot_color(type = "fill", transform = 'log10')
     } else {
         # Add standard point with shape
-        p <- p + aes(shape = I(enrichplot_point_shape))
+        p$layers[[1]]$aes_params$shape <- enrichplot_point_shape
     }
     
     # Add facet if requested

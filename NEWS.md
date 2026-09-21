@@ -1,10 +1,21 @@
-# enrichplot 1.99.1
+# enrichplot 1.99.2
 
++ fix `dotplot()` legend keys under plot composition (#273): size legends now keep the hollow point shape after `cowplot::plot_grid()` / similar grob composition, instead of reverting to solid circles in combined figures (2026-09-21, Mon)
 + fix `dotplot()` size scaling for enrichment results (#118): `size = "Percentage"` now derives a percentage column from `GeneRatio` for `enrichResult` / `gseaResult` data instead of failing at draw time with a missing-column error (2026-09-21, Mon)
 + fix `barplot()` width handling (#201): `width = ...` is now forwarded to the internal `geom_col()` layer for both enrichment-result and compare-cluster barplots, so bar thickness can be adjusted directly without stacking a second `geom_col()` layer on top of the original bars (2026-09-21, Mon)
-+ fix `cnetplot()` / `emapplot()` for `compareClusterResult` pie nodes when duplicated `(Cluster, Description)` rows are present: pie counts are now aggregated before widening, avoiding list-columns and the tidyr cast error ("Can't convert `fill` <double> to <list>"), with regression coverage for duplicated cluster-term inputs (2026-09-21, Mon)
++ fix `dotplot()` selection ordering for numeric `showCategory` (#345, #219): the function now orders the fortified data by `orderBy` first and only then takes the requested top rows, so the leading categories stay stable when `showCategory` changes and `orderBy` is honored correctly (2026-09-21, Mon)
+
+# enrichplot 1.99.1
+
++ fix `upsetplot()` for readable `gseaResult` objects (#179): the fold-change vector is now remapped through `fc_readable()`, so `setReadable()` results no longer lose all ranked-score values when pathway genes are shown as symbols (2026-09-21, Mon)
++ fix `gseaplot()` / `gseaplot2()` multi-panel compatibility with `cowplot` (#239): `gglist` results now provide a `cowplot::as_grob()` bridge via `aplot::gglistGrob()`, so `plot_grid()` / `ggarrange()` no longer fail with “Cannot convert object of class gglistlist into a grob” (2026-09-21, Mon)
++ fix `upsetplot()` boxplot overlays for `gseaResult` and `mnseaResult` (#178): the boxplot layer now suppresses its own outlier glyphs so jittered feature points are drawn only once instead of being duplicated on top of boxplot outliers (2026-09-21, Mon)
++ fix `pairwise_termsim()` for `enrichResult` objects whose raw result table has terms but the object cutoffs filter them all out of `as.data.frame()` (#269): term selection now uses the raw result rows, so `showCategory` can still pick the requested top terms and downstream plots such as `emapplot()` continue to work for non-significant result tables (2026-09-21, Mon)
++ fix grouped `emapplot()` / `ssplot()` legend control (#292): the compatibility arguments `group` and `group_legend` are accepted again, and grouped layouts no longer force the "groups" legend on when `group_legend = FALSE` is requested (2026-09-21, Mon)
++ fix `gseaplot2()` hit-bin rectangles for single gene sets (#221, #20): the colored bins under the hit ticks now follow the ranked-list direction instead of mirroring the cumulative hit counts, so highly one-sided enrichments no longer collapse the wide interval onto the wrong end of the plot (2026-09-21, Mon)
++ fix `cnetplot()` / `emapplot()` for `compareClusterResult` pie nodes when duplicated `(Cluster, Description)` rows are present (#314): pie counts are now aggregated before widening, avoiding list-columns and the tidyr cast error ("Can't convert `fill` <double> to <list>"), with regression coverage for duplicated cluster-term inputs (2026-09-21, Mon)
 + fix `barplot()` for `compareClusterResult` objects: the default `by = "geneRatio"` and `by = "rowPercentage"` crashed in `plotting.clusterProfile()`, and `by = "count"` failed at rendering time under `ggplot2` 4.x; `by` is now mapped to the fortify-produced column and bars are drawn with `geom_col()` (2026-09-21, Mon)
-+ fix `emapplot()` / `ssplot()` with similarity measures other than 'JC' (e.g., 'Wang'): label-keyed similarity matrices were re-mapped as term IDs, producing NA edges ("edge data frame contains NAs"); the stale re-mapping in `build_emap_graph()` was removed (2026-09-21, Mon)
++ fix `emapplot()` / `ssplot()` with similarity measures other than 'JC' (e.g., 'Wang') (#309): label-keyed similarity matrices were re-mapped as term IDs, producing NA edges ("edge data frame contains NAs"); the stale re-mapping in `build_emap_graph()` was removed (2026-09-21, Mon)
 + add a plotting regression suite (`test-plotting-regression.R`) covering the tutorial-facing visualization functions, including a dispatch canary for the `ggplot() + theme_dose()` failure seen under `ggplot2` 4.0.x with S7 < 0.2.2; ggplot outputs are evaluated with `ggplot_build()` to catch bad aesthetics (2026-09-21, Mon)
 
 # enrichplot 1.33.1
