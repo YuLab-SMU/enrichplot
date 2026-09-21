@@ -1,3 +1,7 @@
+# enrichplot 1.99.5
+
++ fix `ridgeplot()` blank rows for undersized core gene sets (#288): pathways with fewer than three ranked values are now dropped before `geom_density_ridges()` is built, and the function now errors clearly when no selected pathway has enough values to estimate a density, so two-gene core sets no longer leave empty y-axis slots in the plot (2026-09-21, Mon)
+
 # enrichplot 1.99.4
 
 + fix `cnetplot()` for `compareClusterResult` terms with duplicated descriptions (#279): category nodes now use stable ID-backed labels internally, so distinct terms that share the same `Description` are no longer merged into one network node, with regression coverage for the duplicated-label case (2026-09-21, Mon)

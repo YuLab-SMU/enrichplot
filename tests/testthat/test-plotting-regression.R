@@ -425,7 +425,13 @@ test_that("gseadist runs", {
 
 test_that("ridgeplot.gseaResult runs", {
     skip_if_not_installed("ggridges")
-    expect_ggplot(ridgeplot(make_rich_gsea_result(), showCategory = 4))
+    expect_ggplot(
+        ridgeplot(
+            make_rich_gsea_result(),
+            showCategory = c("T1", "T3", "T4"),
+            core_enrichment = TRUE
+        )
+    )
 })
 
 ## ---------------------------------------------------------------------------

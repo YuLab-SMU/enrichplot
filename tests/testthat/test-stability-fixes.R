@@ -41,6 +41,49 @@ make_strict_cutoff_enrich_result <- function() {
     )
 }
 
+make_short_core_gsea_result <- function() {
+    result <- data.frame(
+        ID = c("T1", "T2", "T3"),
+        Description = c("dense core set", "short core set A", "short core set B"),
+        setSize = c(3L, 2L, 2L),
+        enrichmentScore = c(0.9, 0.7, 0.6),
+        NES = c(1.8, 1.4, 1.2),
+        pvalue = c(0.01, 0.02, 0.03),
+        p.adjust = c(0.02, 0.03, 0.04),
+        qvalue = c(0.02, 0.03, 0.04),
+        rank = c(1L, 2L, 3L),
+        leading_edge = c(
+            "tags=100%, list=40%, signal=60%",
+            "tags=100%, list=60%, signal=50%",
+            "tags=100%, list=80%, signal=40%"
+        ),
+        core_enrichment = c("g1/g2/g3", "g4/g5", "g4/g5"),
+        stringsAsFactors = FALSE
+    )
+    rownames(result) <- result$ID
+
+    methods::new(
+        "gseaResult",
+        result = result,
+        organism = "mock",
+        setType = "mock",
+        geneSets = list(
+            T1 = c("g1", "g2", "g3"),
+            T2 = c("g4", "g5"),
+            T3 = c("g4", "g5")
+        ),
+        geneList = c(g1 = 3, g2 = 2, g3 = 1, g4 = -1, g5 = -2),
+        keytype = "UNKNOWN",
+        permScores = matrix(runif(30), nrow = 10, ncol = 3),
+        params = list(exponent = 1, nPerm = 10, pvalueCutoff = 1),
+        gene2Symbol = character(),
+        readable = FALSE,
+        termsim = matrix(0, 0, 0),
+        method = "",
+        dr = list()
+    )
+}
+
 test_that("duplicate term descriptions get stable display labels", {
     x <- mock_enrich_result()
 
@@ -86,6 +129,24 @@ test_that("heatplot uses disambiguated labels for duplicate descriptions", {
     expect_equal(
         anyDuplicated(ggplot2::ggplot_build(p)$layout$panel_params[[1]]$y$get_labels()),
         0L
+    )
+})
+
+test_that("ridgeplot drops undersized core gene sets instead of drawing empty rows", {
+    skip_if_not_installed("ggridges")
+
+    x <- make_short_core_gsea_result()
+
+    expect_warning(
+        p <- ridgeplot(x, showCategory = 3, core_enrichment = TRUE),
+        "Dropping 2 gene set\\(s\\) with fewer than 3 ranked values"
+    )
+
+    expect_ggplot_build_ok(p)
+    expect_equal(unique(as.character(p$data$category)), "dense core set")
+    expect_equal(
+        ggplot2::ggplot_build(p)$layout$panel_params[[1]]$y$get_labels(),
+        "dense core set"
     )
 })
 

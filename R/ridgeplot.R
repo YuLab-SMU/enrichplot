@@ -136,26 +136,39 @@ ridgeplot.gseaResult <- function(
         res[!is.na(res)]
     })
 
-    nn <- names(gs2val)
-    i <- match(nn, x$ID)
-    nn <- x$Description[i]
+    ids <- names(gs2val)
+    i <- match(ids, x$ID)
+    labels <- x$Description[i]
+    fill_values <- x[i, fill]
+    order_values <- x@result[[orderBy]][i]
+
+    pruned <- prune_ridgeplot_groups(
+        gs2val = gs2val,
+        ids = ids,
+        labels = labels,
+        fill_values = fill_values,
+        order_values = order_values
+    )
+    gs2val <- pruned$gs2val
+    ids <- pruned$ids
+    labels <- pruned$labels
+    fill_values <- pruned$fill_values
+    order_values <- pruned$order_values
 
     ## Optimized ordering
-    order_values <- x@result[[orderBy]][i]
     j <- order(order_values, decreasing = decreasing)
     
     ## Efficient data frame construction
     len <- lengths(gs2val)
-    total_len <- sum(len)
     
     gs2val.df <- data.frame(
-        category = rep(nn, times = len),
-        color = rep(x[i, fill], times = len),
+        category = rep(labels, times = len),
+        color = rep(fill_values, times = len),
         value = unlist(gs2val, use.names = FALSE)
     )
 
     colnames(gs2val.df)[2] <- fill
-    gs2val.df$category <- factor(gs2val.df$category, levels = nn[j])
+    gs2val.df$category <- factor(gs2val.df$category, levels = labels[j])
 
     label_func <- default_labeller(label_format)
     if (is.function(label_format)) {
@@ -282,6 +295,20 @@ build_mnsea_ridge_df <- function(
     label_vec <- unname(as.character(labels[selected_ids]))
     fill_values <- object@result[selected_ids, fill]
     order_values <- object@result[selected_ids, orderBy]
+
+    pruned <- prune_ridgeplot_groups(
+        gs2val = gs2val,
+        ids = selected_ids,
+        labels = label_vec,
+        fill_values = fill_values,
+        order_values = order_values
+    )
+    gs2val <- pruned$gs2val
+    selected_ids <- pruned$ids
+    label_vec <- pruned$labels
+    fill_values <- pruned$fill_values
+    order_values <- pruned$order_values
+
     j <- order(order_values, decreasing = decreasing)
 
     len <- lengths(gs2val)
@@ -295,6 +322,49 @@ build_mnsea_ridge_df <- function(
     gs2val.df[[fill]] <- rep(fill_values, times = len)
     gs2val.df$category <- factor(gs2val.df$category, levels = label_vec[j])
     gs2val.df
+}
+
+prune_ridgeplot_groups <- function(
+    gs2val,
+    ids,
+    labels,
+    fill_values,
+    order_values,
+    min_size = 3L
+) {
+    counts <- lengths(gs2val)
+    keep <- counts >= min_size
+
+    if (!all(keep)) {
+        yulab_warn(
+            paste0(
+                "Dropping ",
+                sum(!keep),
+                " gene set(s) with fewer than ",
+                min_size,
+                " ranked values for `ridgeplot()`."
+            ),
+            class = "insufficient_values_warning"
+        )
+    }
+
+    if (!any(keep)) {
+        yulab_abort(
+            paste0(
+                "No selected gene sets have at least ",
+                min_size,
+                " ranked values for `ridgeplot()`."
+            )
+        )
+    }
+
+    list(
+        gs2val = gs2val[keep],
+        ids = ids[keep],
+        labels = labels[keep],
+        fill_values = fill_values[keep],
+        order_values = order_values[keep]
+    )
 }
 
 resolve_mnsea_ridge_ids <- function(object, showCategory = 30) {
