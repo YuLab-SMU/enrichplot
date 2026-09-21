@@ -51,27 +51,23 @@ plotting.clusterProfile <- function(
     font.size = 12
 ) {
     if (type == "bar") {
-        if (by == "percentage") {
-            p <- ggplot(
-                clProf.reshape.df,
-                aes(
-                    x = !!sym("Description"),
-                    y = !!sym("Percentage"),
-                    fill = !!sym("Cluster")
-                )
+        yvar <- switch(by,
+            percentage = "Percentage",
+            rowPercentage = "Percentage",
+            count = "Count",
+            geneRatio = "GeneRatio",
+            by
+        )
+        p <- ggplot(
+            clProf.reshape.df,
+            aes(
+                x = !!sym("Description"),
+                y = !!sym(yvar),
+                fill = !!sym("Cluster")
             )
-        } else if (by == "count") {
-            p <- ggplot(
-                clProf.reshape.df,
-                aes(
-                    x = !!sym("Description"),
-                    y = !!sym("Count"),
-                    fill = !!sym("Cluster")
-                )
-            )
-        } else {}
+        )
         p <- p +
-            geom_bar() +
+            geom_col() +
             coord_flip()
     }
 
