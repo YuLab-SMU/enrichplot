@@ -90,8 +90,7 @@ build_emap_graph <- function(
     color,
     cex_line,
     min_edge,
-    pair_sim,
-    method
+    pair_sim
 ) {
     if (!is.numeric(min_edge) || min_edge < 0 || min_edge > 1) {
         stop('"min_edge" should be a number between 0 and 1.')
@@ -114,11 +113,6 @@ build_emap_graph <- function(
     wd <- wd[wd[, 1] != wd[, 2], ]
     # remove NA
     wd <- wd[!is.na(wd[, 3]), ]
-    if (method != "JC") {
-        # map id to names
-        wd[, 1] <- get_term_labels(enrichDf, wd[, 1])
-        wd[, 2] <- get_term_labels(enrichDf, wd[, 2])
-    }
 
     label_map <- get_term_labels(enrichDf, enrichDf$ID)
     keep_edge <- wd[, 3] >= min_edge

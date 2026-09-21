@@ -229,8 +229,7 @@ prepare_emapplot_data <- function(x, showCategory, color, min_edge, size_edge) {
         color = color,
         cex_line = size_edge,
         min_edge = min_edge,
-        pair_sim = x@termsim,
-        method = x@method
+        pair_sim = x@termsim
     )
     plot_result <- selected$result
     plot_result$Description <- unname(selected$labels)
@@ -354,8 +353,7 @@ prepare_emapplot_mnsea_data <- function(x, showCategory, color, min_edge, size_e
         color = color,
         cex_line = size_edge,
         min_edge = min_edge,
-        pair_sim = plot_data$pair_sim,
-        method = plot_data$method
+        pair_sim = plot_data$pair_sim
     )
 
     list(
@@ -573,8 +571,7 @@ graph_from_compareClusterResult <- function(
         color = color,
         cex_line = size_edge,
         min_edge = min_edge,
-        pair_sim = x@termsim,
-        method = x@method
+        pair_sim = x@termsim
     )
     return(list(graph = g, geneSet = gs, data = d))
 }
