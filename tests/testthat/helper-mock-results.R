@@ -55,6 +55,8 @@ mock_comparecluster_result <- function() {
         Description = c("dup", "other", "dup", "other"),
         geneID = c("1/2", "2/3", "2/3", "3/4"),
         Count = c(2L, 2L, 2L, 2L),
+        GeneRatio = c("2/10", "2/10", "2/10", "2/10"),
+        BgRatio = c("10/100", "10/100", "10/100", "10/100"),
         p.adjust = c(0.01, 0.02, 0.03, 0.04),
         stringsAsFactors = FALSE
     )
