@@ -1,4 +1,10 @@
-# enrichplot 1.33.0.001
+# enrichplot 1.99.1
+
++ fix `barplot()` for `compareClusterResult` objects: the default `by = "geneRatio"` and `by = "rowPercentage"` crashed in `plotting.clusterProfile()`, and `by = "count"` failed at rendering time under `ggplot2` 4.x; `by` is now mapped to the fortify-produced column and bars are drawn with `geom_col()` (2026-09-21, Mon)
++ fix `emapplot()` / `ssplot()` with similarity measures other than 'JC' (e.g., 'Wang'): label-keyed similarity matrices were re-mapped as term IDs, producing NA edges ("edge data frame contains NAs"); the stale re-mapping in `build_emap_graph()` was removed (2026-09-21, Mon)
++ add a plotting regression suite (`test-plotting-regression.R`) covering the tutorial-facing visualization functions, including a dispatch canary for the `ggplot() + theme_dose()` failure seen under `ggplot2` 4.0.x with S7 < 0.2.2; ggplot outputs are evaluated with `ggplot_build()` to catch bad aesthetics (2026-09-21, Mon)
+
+# enrichplot 1.33.1
 
 + complete remaining mechanism-plot enhancements: `pairwise_termsim()` now supports layer-aware similarity for `mnseaResult`, classification thresholds are exposed through `phaseplot()` / `consensusmap()` / `mechanismflow()`, and an explicit `nseaResult` mock plus coverage has been added for nsea plotting paths; `gsInfo.gseaResult()` also defaults `exponent` to 1 when `params` lacks it (2026-08-29, Sun)
 + refactor `gsInfo()` into an S3 generic and add `layer`-aware running-score support to `gseaplot2()`, `gsearank()` and `hplot()` for `nseaResult` / `mnseaResult`; `hplot()` is now implemented with base `ggplot2` geoms and no longer requires `ggHoriPlot` (2026-08-23, Sun)
