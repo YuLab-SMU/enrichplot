@@ -1,3 +1,7 @@
+# enrichplot 1.99.7
+
++ fix `emapplot()` compare-cluster pie nodes across ontologies (#228): ontology-specific terms that share the same `Description` now keep stable ID-backed labels all the way into pie-layer data alignment, so `compareCluster(..., ont = "ALL")` no longer collapses those nodes or breaks while building the pie overlay (2026-09-22, Tue)
+
 # enrichplot 1.99.6
 
 + fix `goplot()` DAG construction for top-level GO terms: parent edges that point to the synthetic `all` root are now dropped before the graph is built, so plots that include terms such as `GO:0008150` no longer fail with `Some vertex names in \`d\` are not listed in \`vertices\`` (2026-09-22, Tue)

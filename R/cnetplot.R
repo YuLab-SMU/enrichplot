@@ -599,10 +599,30 @@ add_node_pie <- function(
     dg$pathway_radius <- .05 * item_scale
 
     d2 <- rbind(dd, dg)
+    node_layout <- p$data
+    node_label_col <- if ("name" %in% colnames(node_layout)) {
+        "name"
+    } else {
+        "label"
+    }
+    node_layout <- data.frame(
+        Description = as.character(node_layout[[node_label_col]]),
+        x = node_layout$x,
+        y = node_layout$y,
+        stringsAsFactors = FALSE
+    )
+    d2 <- merge(
+        d2,
+        node_layout,
+        by = "Description",
+        all.x = FALSE,
+        all.y = FALSE,
+        sort = FALSE
+    )
 
-    p <- p %<+%
-        d2 +
+    p <- p +
         scatterpie::geom_scatterpie(
+            data = d2,
             aes(
                 x = .data$x,
                 y = .data$y,
@@ -610,16 +630,17 @@ add_node_pie <- function(
             ),
             cols = as.character(unique(d$Cluster)),
             legend_name = "Cluster",
-            color = NA
+            color = NA,
+            inherit.aes = FALSE
         ) +
         coord_fixed() +
         guides(size = "none")
 
-    if (any(dd$pathway_radius > 0)) {
+    if (nrow(d2) > 0 && any(dd$pathway_radius > 0)) {
         p <- p + scatterpie::geom_scatterpie_legend(
             unique(dd$pathway_radius),
-            x = min(p$data$x),
-            y = min(p$data$y),
+            x = min(d2$x),
+            y = min(d2$y),
             n = 3,
             labeller = function(x) {
                 format(signif(x / category_scale * sum(category_size), 3), trim = TRUE)

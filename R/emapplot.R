@@ -582,6 +582,10 @@ graph_from_compareClusterResult <- function(
 ) {
     d <- tidy_compareCluster(x, showCategory)
     mergedEnrichDf <- merge_compareClusterResult(d)
+    term_labels <- unname(get_term_labels(mergedEnrichDf, mergedEnrichDf$ID))
+    label_map <- stats::setNames(term_labels, mergedEnrichDf$ID)
+    d$Description <- unname(label_map[d$ID])
+    mergedEnrichDf$Description <- term_labels
     gs <- setNames(
         strsplit(as.character(mergedEnrichDf$geneID), "/", fixed = TRUE),
         mergedEnrichDf$ID

@@ -243,6 +243,31 @@ test_that("compareCluster pie plots tolerate duplicated cluster-term rows", {
     expect_ggplot_build_ok(emapplot(x, showCategory = 3))
 })
 
+test_that("emapplot keeps compareCluster ontology-specific terms distinct in pies", {
+    x <- mock_comparecluster_result()
+    d <- x@compareClusterResult
+    d$ONTOLOGY <- c("BP", "MF", "BP", "MF")
+    d <- rbind(
+        d,
+        transform(
+            d[1:2, , drop = FALSE],
+            Cluster = c("A", "B"),
+            ID = c("T3", "T4"),
+            Description = c("dup", "other"),
+            geneID = c("1/3", "2/4"),
+            ONTOLOGY = c("CC", "CC")
+        )
+    )
+    rownames(d) <- NULL
+    x@compareClusterResult <- d
+
+    x <- pairwise_termsim(x, method = "JC", showCategory = 6)
+    p <- emapplot(x, showCategory = 6)
+
+    expect_ggplot_build_ok(p)
+    expect_setequal(p$data$name, c("dup [T1]", "other [T2]", "dup [T3]", "other [T4]"))
+})
+
 test_that("manhattanplot normalizes lowercase size aliases", {
     expect_ggplot_build_ok(
         manhattanplot(mock_enrich_result(), showCategory = 2, size = "count")
