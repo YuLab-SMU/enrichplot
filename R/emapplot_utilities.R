@@ -51,14 +51,15 @@ get_similarity_matrix <- function(y, geneSets, method, semData = NULL) {
 #'
 #' @noRd
 has_pairsim <- function(x) {
-    if (length(x@termsim) == 0) {
-        error_message <- paste(
-            "Term similarity matrix not available.",
-            "Please use pairwise_termsim function to",
-            "deal with the results of enrichment analysis."
-        )
-        stop(error_message)
+    if (length(x@termsim) == 0 || is.null(dim(x@termsim))) {
+        yulab.utils::yulab_abort(paste0(
+            "Term similarity matrix not available, so the terms cannot be laid out ",
+            "as a network or a tree. Call `pairwise_termsim()` on the result first:\n",
+            "  x <- pairwise_termsim(x)\n",
+            "`emapplot()`, `treeplot()` and `ssplot()` all require it."
+        ))
     }
+    invisible(TRUE)
 }
 
 

@@ -237,6 +237,9 @@ setMethod(
 #' @importFrom ggrepel geom_label_repel
 #' @author Guangchuang Yu
 prepare_emapplot_data <- function(x, showCategory, color, min_edge, size_edge) {
+    ## this path feeds x@termsim straight into the graph builder, so an
+    ## unpopulated matrix used to crash with "no 'dimnames' attribute for array"
+    has_pairsim(x)
     selected <- select_terms(x, showCategory)
     g <- build_emap_graph(
         enrichDf = selected$result,
@@ -579,6 +582,9 @@ graph_from_compareClusterResult <- function(
     min_edge = .2,
     size_edge = .5
 ) {
+    ## x@termsim goes straight into the graph builder below, so an unpopulated
+    ## matrix used to crash with "no 'dimnames' attribute for array"
+    has_pairsim(x)
     d <- tidy_compareCluster(x, showCategory)
     mergedEnrichDf <- merge_compareClusterResult(d)
     term_labels <- unname(get_term_labels(mergedEnrichDf, mergedEnrichDf$ID))

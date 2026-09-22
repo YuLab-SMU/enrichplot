@@ -671,3 +671,16 @@ test_that("cnetplot() warns when no foldChange name matches the result (#177)", 
         })
     )
 })
+
+test_that("treeplot()/emapplot() explain a missing similarity matrix", {
+    # Both used to die with "no 'dimnames' attribute for array" because an
+    # unpopulated termsim was subsetted / handed to the graph builder.
+    x <- mock_comparecluster_result()
+
+    expect_error(treeplot(x, showCategory = 2), "pairwise_termsim")
+    expect_error(
+        treeplot(x, showCategory = 2, cluster_panel = "dotplot"),
+        "pairwise_termsim"
+    )
+    expect_error(emapplot(x, showCategory = 2), "pairwise_termsim")
+})

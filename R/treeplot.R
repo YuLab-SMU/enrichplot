@@ -677,6 +677,9 @@ annotate_tree_splits <- function(p, split_var) {
 #' @return filled similarity matrix
 #' @noRd
 fill_termsim <- function(x, keep) {
+    ## Subsetting an unpopulated termsim used to fail with the cryptic
+    ## "no 'dimnames' attribute for array"; say what is actually missing instead.
+    has_pairsim(x)
     termsim <- x@termsim[keep, keep]
     termsim[which(is.na(termsim))] <- 0
     termsim2 <- termsim + t(termsim)
