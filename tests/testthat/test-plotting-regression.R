@@ -232,6 +232,21 @@ test_that("dotplot.compareClusterResult keeps cluster labels for geneRatio sizin
     expect_setequal(as.character(p_ratio$data$Cluster), c("A\n(10)", "B\n(10)"))
 })
 
+test_that("dotplot formats very small p-value breaks readably (#277)", {
+    x <- mock_enrich_result()
+    df <- as.data.frame(x)
+    df$p.adjust <- c(1.234567e-11, 0.045)
+    x@result <- df
+
+    p <- dotplot(x, color = "p.adjust", showCategory = 2)
+    expect_ggplot(p)
+
+    scales <- ggplot2::ggplot_build(p)$plot$scales$get_scales("fill")
+    expect_true(is.function(scales$labels))
+    expect_equal(scales$labels(1.2e-11), "1.2e-11")
+    expect_equal(scales$labels(0.045), "0.045")
+})
+
 ## ---------------------------------------------------------------------------
 ## Gene-concept network, heatmap, upset
 ## ---------------------------------------------------------------------------

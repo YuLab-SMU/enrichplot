@@ -148,7 +148,9 @@ e.g. 'pvalue', 'p.adjust' or 'qvalue'}
 \item{showCategory}{number of categories to display or a vector of terms.}
 
 \item{size}{variable used to scale the sizes of categories,
-one of "geneRatio", "Percentage" and "count"}
+one of "geneRatio", "Percentage" and "count". When \code{x} is "GeneRatio",
+the size defaults to "count" (number of genes); pass \code{size = "GeneRatio"}
+to scale point size by the enrichment gene ratio instead.}
 
 \item{split}{apply \code{showCategory} to each category specified by the 'split', e.g., "ONTOLOGY", "category" and "intersect".  Default is NULL and do nothing}
 

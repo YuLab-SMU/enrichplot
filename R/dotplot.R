@@ -250,7 +250,9 @@ setMethod(
 #'              e.g. 'pvalue', 'p.adjust' or 'qvalue'
 #' @param showCategory number of categories to display or a vector of terms.
 #' @param size variable used to scale the sizes of categories,
-#' one of "geneRatio", "Percentage" and "count"
+#' one of "geneRatio", "Percentage" and "count". When `x` is "GeneRatio",
+#' the size defaults to "count" (number of genes); pass `size = "GeneRatio"`
+#' to scale point size by the enrichment gene ratio instead.
 #' @param split separate result by 'category' variable
 #' @param font.size font size
 #' @param title plot title
@@ -577,6 +579,20 @@ dotplot.mnseaResult <- function(
         geom_point()
     }
 
+    ## For p-value style color scales, format break labels in a
+    ## user-friendly way (plain decimals above 1e-3, scientific below) so
+    ## very small adjusted p-values do not render as long unreadable strings.
+    color_labels <- NULL
+    if (colorBy %in% c("pvalue", "p.adjust", "qvalue")) {
+        color_labels <- function(x) {
+            ifelse(
+                !is.finite(x) | x >= 1e-3,
+                format(x, scientific = FALSE),
+                formatC(x, format = "e", digits = 1)
+            )
+        }
+    }
+
     p <- ggplot(
         df,
         aes(
@@ -587,12 +603,18 @@ dotplot.mnseaResult <- function(
         )
     ) +
         point_layer +
-        set_enrichplot_color(
-            colors = color_colors,
-            type = "fill",
-            name = color,
-            transform = color_transform,
-            reverse = color_reverse
+        do.call(
+            set_enrichplot_color,
+            c(
+                list(
+                    colors = color_colors,
+                    type = "fill",
+                    name = color,
+                    transform = color_transform,
+                    reverse = color_reverse
+                ),
+                if (!is.null(color_labels)) list(labels = color_labels)
+            )
         ) +
         scale_y_discrete(labels = label_func) +
         ylab(NULL) +
