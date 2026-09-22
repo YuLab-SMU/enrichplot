@@ -645,3 +645,29 @@ test_that("plot_list combines tutorial plots", {
     )
     expect_error(print(p), NA)
 })
+
+test_that("cnetplot() warns when no foldChange name matches the result (#177)", {
+    x <- mock_enrich_result()
+
+    # matching names: silent
+    fc_ok <- c(g1 = 1, g2 = -1)
+    expect_no_warning({
+        p <- cnetplot(x, foldChange = fc_ok, showCategory = 2)
+        expect_error(ggplot2::ggplot_build(p), NA)
+    })
+
+    # non-matching names: the nodes come out grey, so say so
+    fc_bad <- c(nope1 = 1, nope2 = -1)
+    expect_warning(
+        cnetplot(x, foldChange = fc_bad, showCategory = 2),
+        "foldChange"
+    )
+
+    # the plot itself must still build with the mismatched vector
+    expect_no_error(
+        suppressWarnings({
+            p <- cnetplot(x, foldChange = fc_bad, showCategory = 2)
+            ggplot2::ggplot_build(p)
+        })
+    )
+})

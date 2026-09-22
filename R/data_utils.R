@@ -214,16 +214,36 @@ fc_readable <- function(x, foldChange = NULL) {
         return(NULL)
     }
 
+    if (is(x, 'gseaResult')) {
+        universe <- names(x@geneList)
+    } else {
+        universe <- x@gene
+    }
+
     if (x@readable && x@keytype != "SYMBOL") {
         gid <- names(foldChange)
-        if (is(x, 'gseaResult')) {
-            ii <- gid %in% names(x@geneList)
-        } else {
-            ii <- gid %in% x@gene
-        }
+        ii <- gid %in% universe
         gid[ii] <- x@gene2Symbol[gid[ii]]
         names(foldChange) <- gid
     }
+
+    ## When none of the names can be matched the item nodes are drawn grey, which
+    ## is easily misread as "foldChange was ignored" (issue #177). Say what went
+    ## wrong instead of leaving the user to guess.
+    expected <- universe
+    if (x@readable && x@keytype != "SYMBOL") {
+        expected <- unique(c(universe, unname(x@gene2Symbol[universe])))
+    }
+    if (length(universe) > 0 && length(foldChange) > 0 &&
+        !any(names(foldChange) %in% expected)) {
+        yulab_warn(paste0(
+            "None of the names in `foldChange` match the genes of this result, ",
+            "so the item nodes will be drawn grey. `foldChange` has to be named ",
+            "with the same gene IDs as the enrichment result, e.g. ",
+            paste(utils::head(universe, 3), collapse = ", "), "."
+        ))
+    }
+
     return(foldChange)
 }
 
