@@ -107,6 +107,8 @@ normalize_legacy_category_size_arg <- function(category_size_legacy, categorySiz
 }
 
 #' @rdname cnetplot
+#' @param node_label_size size of the node label text. When `NULL` (default)
+#'   the built-in label size is used.
 #' @method cnetplot enrichResult
 #' @export
 cnetplot.enrichResult <- function(
@@ -122,6 +124,7 @@ cnetplot.enrichResult <- function(
     categorySize = NULL,
     categorySizeBy = ~itemNum,
     node_label = "all",
+    node_label_size = NULL,
     foldChange = NULL,
     fc_threshold = NULL,
     hilight = "none",
@@ -159,6 +162,7 @@ cnetplot.enrichResult <- function(
         color_edge = color_edge,
         size_edge = size_edge,
         node_label = node_label,
+        node_label_size = node_label_size,
         hilight = hilight,
         hilight_alpha = hilight_alpha,
         categorySizeBy = categorySizeBy
@@ -352,14 +356,17 @@ select_mnsea_label_data <- function(node_label, node_data, pathway_nodes, featur
     )
 }
 
-add_mnsea_label_layers <- function(p, label_data) {
+add_mnsea_label_layers <- function(p, label_data, node_label_size = NULL) {
+    path_size <- if (is.null(node_label_size)) 4.2 else node_label_size
+    feat_size <- if (is.null(node_label_size)) 3.2 else node_label_size
+
     if (nrow(label_data$pathway) > 0) {
         p <- p +
             geom_text_repel(
                 data = label_data$pathway,
                 aes(x = .data$x, y = .data$y, label = .data$label),
                 seed = 1,
-                size = 4.2,
+                size = path_size,
                 fontface = "bold",
                 box.padding = 0.5,
                 point.padding = 0.35,
@@ -376,7 +383,7 @@ add_mnsea_label_layers <- function(p, label_data) {
                 data = label_data$feature,
                 aes(x = .data$x, y = .data$y, label = .data$label),
                 seed = 1,
-                size = 3.2,
+                size = feat_size,
                 box.padding = 0.25,
                 point.padding = 0.15,
                 min.segment.length = 0,
@@ -404,6 +411,7 @@ cnetplot.mnseaResult <- function(
     size_edge = .5,
     categorySizeBy = ~itemNum,
     node_label = "all",
+    node_label_size = NULL,
     foldChange = NULL,
     fc_threshold = NULL,
     hilight = "none",
@@ -546,7 +554,7 @@ cnetplot.mnseaResult <- function(
             pathway_nodes = pathway_nodes,
             feature_nodes = feature_nodes
         )
-        p <- add_mnsea_label_layers(p, label_data)
+        p <- add_mnsea_label_layers(p, label_data, node_label_size = node_label_size)
     }
 
     p

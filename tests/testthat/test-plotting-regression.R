@@ -257,6 +257,12 @@ test_that("cnetplot methods run", {
     expect_ggplot(cnetplot(mock_comparecluster_result(), showCategory = 2))
 })
 
+test_that("cnetplot supports node_label_size (#41)", {
+    expect_ggplot(cnetplot(make_rich_enrich_result(), node_label = "category", node_label_size = 3))
+    expect_ggplot(cnetplot(make_rich_gsea_result(), node_label = "all", node_label_size = 4))
+    expect_ggplot(cnetplot(make_rich_enrich_result(), node_label = "all", node_label_size = NULL))
+})
+
 test_that("cnetplot accepts legacy circular, colorEdge, and categorySize args", {
     x <- mock_enrich_result()
     fold_change <- c(g1 = 3, g2 = 2.5, g3 = -2)

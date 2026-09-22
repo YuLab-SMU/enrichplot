@@ -24,6 +24,7 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
+  node_label_size = NULL,
   foldChange = NULL,
   fc_threshold = NULL,
   hilight = "none",
@@ -46,6 +47,7 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
+  node_label_size = NULL,
   foldChange = NULL,
   fc_threshold = NULL,
   hilight = "none",
@@ -75,6 +77,7 @@ prepare_mnsea_cnetplot_data(
   size_edge = 0.5,
   categorySizeBy = ~itemNum,
   node_label = "all",
+  node_label_size = NULL,
   foldChange = NULL,
   fc_threshold = NULL,
   hilight = "none",
@@ -139,6 +142,9 @@ prepare_mnsea_cnetplot_data(
 
 \item{node_label}{one of 'all', 'none', 'category', 'item', 'exclusive' or 'share'.
 'exclusive' labels genes that uniquely belong to categories; 'share' labels genes that are shared between categories.}
+
+\item{node_label_size}{size of the node label text. When \code{NULL} (default)
+the built-in label size is used.}
 
 \item{fc_threshold}{threshold for filtering genes by absolute fold change (e.g., fc_threshold = 1 keeps only genes with |foldChange| > 1).}
 

@@ -5,6 +5,7 @@
 + document `dotplot()` `size` behavior for `gseaResult` (#206): when `x` is "GeneRatio" the point size defaults to "count" (number of genes); `size = "GeneRatio"` scales it by the enrichment gene ratio instead (2026-09-22, Tue)
 + fix `ridgeplot()` for `mnseaResult` with small per-feature contributions: the undersized-gene-set guard (intended for gseaResult density estimation) no longer drops mnsea mechanism groups that only carry a few feature scores, so layered mnsea ridgeplots render again instead of aborting (2026-09-22, Tue)
 + `gseaplot2()`: `pvalue_table` now defaults to `NES` and `p.adjust` columns instead of two redundant p-value columns; columns remain fully configurable via `pvalue_table_columns` and row names can be suppressed with `pvalue_table_rownames = NULL` (2026-09-22, Tue)
++ `cnetplot()` supports `node_label_size` (#41): control the font size of the category/item node labels; defaults to the built-in size when `NULL` (backed by the same parameter in `ggtangle`)
 
 # enrichplot 1.99.12
 
