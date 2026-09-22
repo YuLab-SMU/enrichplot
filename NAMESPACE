@@ -17,6 +17,8 @@ S3method(ggplot_add,autofacet)
 S3method(gsInfo,gseaResult)
 S3method(gsInfo,mnseaResult)
 S3method(print,enrichplotDot)
+export(as_enrichResult)
+export(as_gseaResult)
 export(autofacet)
 export(cnetplot)
 export(color_palette)
@@ -42,6 +44,10 @@ export(gseaplot2)
 export(gsearank)
 export(heatplot)
 export(hplot)
+export(import_enrichr)
+export(import_fgsea)
+export(import_gprofiler2)
+export(import_webgestalt)
 export(manhattanplot)
 export(mechanismflow)
 export(phaseplot)
@@ -89,6 +95,8 @@ importFrom(dplyr,
   ungroup
 )
 importFrom(enrichit,
+  as_enrichResult,
+  as_gseaResult,
   extract_mnsea_subnetwork,
   geneID,
   geneInCategory,

@@ -36,7 +36,9 @@ Suggests:
     AnnotationDbi,
     clusterProfiler,
     cowplot,
+    enrichR,
     europepmc,
+    fgsea,
     ggarchery,
     ggforce,
     ggplotify,
@@ -45,6 +47,7 @@ Suggests:
     ggtreeExtra,
     ggupset,
     glue,
+    gprofiler2,
     grDevices,
     gridExtra,
     gson,
@@ -54,7 +57,8 @@ Suggests:
     scales,
     testthat (>= 3.0.0),
     tibble,
-    tidyr
+    tidyr,
+    WebGestaltR
 VignetteBuilder: knitr
 License: Artistic-2.0
 URL: https://yulab-smu.top/contribution-knowledge-mining/

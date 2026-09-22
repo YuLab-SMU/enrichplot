@@ -22,6 +22,7 @@
 
 # enrichplot 1.99.2
 
++ support importing results from external enrichment tools: `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()` and `import_fgsea()` map enrichr / g:Profiler / WebGestaltR / fgsea output tables to `enrichResult` / `gseaResult` objects that plug into the 'enrichplot' visualization functions; the 'enrichit' constructors `as_enrichResult()` / `as_gseaResult()` are re-exported for other table formats (2026-09-21, Mon)
 + fix `dotplot()` legend keys under plot composition (#273): size legends now keep the hollow point shape after `cowplot::plot_grid()` / similar grob composition, instead of reverting to solid circles in combined figures (2026-09-21, Mon)
 + fix `dotplot()` size scaling for enrichment results (#118): `size = "Percentage"` now derives a percentage column from `GeneRatio` for `enrichResult` / `gseaResult` data instead of failing at draw time with a missing-column error (2026-09-21, Mon)
 + fix `barplot()` width handling (#201): `width = ...` is now forwarded to the internal `geom_col()` layer for both enrichment-result and compare-cluster barplots, so bar thickness can be adjusted directly without stacking a second `geom_col()` layer on top of the original bars (2026-09-21, Mon)
