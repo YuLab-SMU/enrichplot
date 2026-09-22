@@ -12,6 +12,8 @@
 \alias{gseaScores}
 \alias{geneID}
 \alias{geneInCategory}
+\alias{as_enrichResult}
+\alias{as_gseaResult}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -23,7 +25,7 @@ below to see their documentation.
 
   \item{DOSE}{\code{\link[DOSE:theme_dose]{theme_dose()}}}
 
-  \item{enrichit}{\code{\link[enrichit:geneID]{geneID()}}, \code{\link[enrichit:geneInCategory]{geneInCategory()}}, \code{\link[enrichit:gseaScores]{gseaScores()}}}
+  \item{enrichit}{\code{\link[enrichit:as_enrichResult]{as_enrichResult()}}, \code{\link[enrichit:as_gseaResult]{as_gseaResult()}}, \code{\link[enrichit:geneID]{geneID()}}, \code{\link[enrichit:geneInCategory]{geneInCategory()}}, \code{\link[enrichit:gseaScores]{gseaScores()}}}
 
   \item{ggplot2}{\code{\link[ggplot2:facet_grid]{facet_grid()}}, \code{\link[ggplot2:ggtitle]{ggtitle()}}}
 

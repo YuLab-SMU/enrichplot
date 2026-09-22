@@ -34,5 +34,13 @@ enrichit::geneID
 #' @export
 enrichit::geneInCategory
 
+#' @importFrom enrichit as_enrichResult
+#' @export
+enrichit::as_enrichResult
+
+#' @importFrom enrichit as_gseaResult
+#' @export
+enrichit::as_gseaResult
+
 #' @importClassesFrom enrichit compareClusterResult
 NULL
