@@ -145,6 +145,10 @@ test_that("heatplot dot mode handles zero pvalues without scale warnings", {
     expect_true(all(is.finite(p$data$pvalue[!is.na(p$data$pvalue)])))
     expect_true(all(p$data$pvalue[!is.na(p$data$pvalue)] > 0))
 })
+<<<<<<< HEAD
+=======
+
+>>>>>>> e35e772 (fix: stabilize heatplot dot-mode pvalue scaling)
 test_that("ridgeplot drops undersized core gene sets instead of drawing empty rows", {
     skip_if_not_installed("ggridges")
     skip_if_not_installed("ggridges")
