@@ -11,6 +11,7 @@
 #' @param size_item relative size of the item nodes (e.g., genes)
 #' @param color_edge color of edge
 #' @param size_edge relative size of edge
+#' @param categorySize deprecated compatibility alias for `categorySizeBy`.
 #' @param categorySizeBy An expression (e.g., `itemNum`, `p.adjust`) or a formula
 #'   (e.g., `~ -log10(p.adjust)`) to set the category node size. For
 #'   `compareClusterResult`, this controls the category pie size.
@@ -20,6 +21,8 @@
 #' @param fc_threshold threshold for filtering genes by absolute fold change (e.g., fc_threshold = 1 keeps only genes with |foldChange| > 1).
 #' @param hilight selected categories to be highlighted
 #' @param hilight_alpha transparency value for non-highlighted items
+#' @param circular logical, whether to arrange the network on a circular layout.
+#' @param colorEdge logical, whether to color edges by category membership.
 #' @param split apply `showCategory` to each category specified by `split` for
 #'   `compareClusterResult`, e.g. `ONTOLOGY`, `category` or `intersect`.
 #' @param includeAll logical value passed to `fortify()` when selecting terms
@@ -45,6 +48,64 @@ prepare_cnetplot_data <- function(x, showCategory, foldChange) {
     )
 }
 
+normalize_cnetplot_legacy_args <- function(args, layout, color_edge) {
+    circular <- isTRUE(args$circular)
+    args$circular <- NULL
+
+    color_edge_legacy <- args$colorEdge
+    args$colorEdge <- NULL
+
+    if (circular) {
+        layout <- "layout_circular"
+    }
+
+    if (!is.null(color_edge_legacy) && identical(color_edge, "grey")) {
+        if (isTRUE(color_edge_legacy)) {
+            color_edge <- "category"
+        } else if (is.character(color_edge_legacy) && length(color_edge_legacy) == 1) {
+            color_edge <- color_edge_legacy
+        }
+    }
+
+    list(args = args, layout = layout, color_edge = color_edge)
+}
+
+translate_legacy_category_size <- function(category_size) {
+    if (inherits(category_size, "formula")) {
+        return(category_size)
+    }
+
+    if (rlang::is_symbol(category_size)) {
+        return(rlang::new_formula(NULL, category_size))
+    }
+
+    if (!is.character(category_size) || length(category_size) != 1) {
+        stop(
+            "`categorySize` must be a single column name or formula. ",
+            "Use `categorySizeBy` for richer expressions."
+        )
+    }
+
+    category_size_name <- trimws(category_size)
+    category_size_key <- tolower(category_size_name)
+    if (category_size_key %in% c("genenum", "count", "itemnum")) {
+        return(~itemNum)
+    }
+
+    rlang::new_formula(NULL, rlang::sym(category_size_name))
+}
+
+normalize_legacy_category_size_arg <- function(category_size_legacy, categorySizeBy, categorySizeBy_missing) {
+    if (!is.null(category_size_legacy)) {
+        if (!categorySizeBy_missing) {
+            stop("Use either `categorySize` or `categorySizeBy`, not both.")
+        }
+        categorySizeBy <- translate_legacy_category_size(category_size_legacy)
+    }
+
+    categorySizeBy
+}
+
 #' @rdname cnetplot
 #' @method cnetplot enrichResult
 #' @export
@@ -58,17 +119,33 @@ cnetplot.enrichResult <- function(
     size_item = 1,
     color_edge = "grey",
     size_edge = .5,
+    categorySize = NULL,
     categorySizeBy = ~itemNum,
     node_label = "all",
     foldChange = NULL,
     fc_threshold = NULL,
     hilight = "none",
     hilight_alpha = .3,
+    circular = FALSE,
+    colorEdge = FALSE,
     ...
 ) {
     plot_data <- prepare_cnetplot_data(x, showCategory, foldChange)
 
-    args <- list(...)
+    args <- c(
+        list(circular = circular, colorEdge = colorEdge),
+        list(...)
+    )
+    legacy_args <- normalize_cnetplot_legacy_args(args, layout, color_edge)
+    args <- legacy_args$args
+    layout <- legacy_args$layout
+    color_edge <- legacy_args$color_edge
+    categorySizeBy <- normalize_legacy_category_size_arg(
+        category_size_legacy = categorySize,
+        categorySizeBy = categorySizeBy,
+        categorySizeBy_missing = missing(categorySizeBy)
+    )
+
     plot_args <- list(
         x = plot_data$plot_geneSets,
         layout = layout,
@@ -489,6 +566,7 @@ cnetplot.compareClusterResult <- function(
     size_item = 1,
     color_edge = "grey",
     size_edge = .5,
+    categorySize = NULL,
     categorySizeBy = ~itemNum,
     node_label = "all",
     foldChange = NULL,
@@ -496,10 +574,26 @@ cnetplot.compareClusterResult <- function(
     hilight = "none",
     hilight_alpha = .3,
     pie = "equal",
+    circular = FALSE,
+    colorEdge = FALSE,
     split = NULL,
     includeAll = TRUE,
     ...
 ) {
+    args <- c(
+        list(circular = circular, colorEdge = colorEdge),
+        list(...)
+    )
+    legacy_args <- normalize_cnetplot_legacy_args(args, layout, color_edge)
+    args <- legacy_args$args
+    layout <- legacy_args$layout
+    color_edge <- legacy_args$color_edge
+    categorySizeBy <- normalize_legacy_category_size_arg(
+        category_size_legacy = categorySize,
+        categorySizeBy = categorySizeBy,
+        categorySizeBy_missing = missing(categorySizeBy)
+    )
+
     category_size_quo <- rlang::enquo(categorySizeBy)
     d <- tidy_compareCluster(
         x,
@@ -512,22 +606,27 @@ cnetplot.compareClusterResult <- function(
     gs <- lapply(y, function(item) unique(unlist(strsplit(item, split = "/"))))
     category_size <- compute_comparecluster_category_size(d, category_size_quo)
 
-    p <- cnetplot(
-        gs,
-        layout = layout,
-        showCategory = names(gs),
-        foldChange = foldChange,
-        fc_threshold = fc_threshold,
-        color_category = color_category,
-        size_category = 0,
-        color_item = color_item,
-        size_item = 0,
-        color_edge = color_edge,
-        size_edge = size_edge,
-        node_label = "none",
-        hilight = hilight,
-        hilight_alpha = hilight_alpha,
-        ...
+    p <- do.call(
+        cnetplot,
+        c(
+            list(
+                x = gs,
+                layout = layout,
+                showCategory = names(gs),
+                foldChange = foldChange,
+                fc_threshold = fc_threshold,
+                color_category = color_category,
+                size_category = 0,
+                color_item = color_item,
+                size_item = 0,
+                color_edge = color_edge,
+                size_edge = size_edge,
+                node_label = "none",
+                hilight = hilight,
+                hilight_alpha = hilight_alpha
+            ),
+            args
+        )
     )
 
     p <- add_node_pie(

@@ -1,3 +1,7 @@
+# enrichplot 1.99.13
+
++ fix `cnetplot()` legacy circular, edge-color, and category-size arguments (#330): the wrapper now translates `circular = TRUE` to the current circular layout, `colorEdge = TRUE` to category-colored edges, and legacy `categorySize` strings to the current `categorySizeBy` semantics, so older fold-change cnetplot calls build again without leaking stale arguments into the layout backend (2026-09-22, Tue)
+
 # enrichplot 1.99.12
 
 + guard `cnetplot()` compare-cluster pies across `showCategory` sizes (#284): add a regression test that exercises `pie = "count"` while increasing `showCategory`, ensuring term nodes expand consistently and both plots still build cleanly (2026-09-22, Tue)

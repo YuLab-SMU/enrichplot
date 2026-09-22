@@ -242,6 +242,31 @@ test_that("cnetplot methods run", {
     expect_ggplot(cnetplot(mock_comparecluster_result(), showCategory = 2))
 })
 
+test_that("cnetplot accepts legacy circular, colorEdge, and categorySize args", {
+    x <- mock_enrich_result()
+    fold_change <- c(g1 = 3, g2 = 2.5, g3 = -2)
+
+    expect_no_warning(
+        p <- cnetplot(
+            x,
+            foldChange = fold_change,
+            categorySize = "pvalue",
+            showCategory = 2,
+            circular = TRUE,
+            colorEdge = TRUE
+        )
+    )
+    expect_ggplot(p)
+    expect_no_warning(ggplot2::ggplot_build(p))
+    expect_equal(
+        rlang::expr_text(p$layers[[1]]$mapping$colour),
+        "~.data$category"
+    )
+
+    radii <- sqrt(p$data$x^2 + p$data$y^2)
+    expect_lt(max(radii) - min(radii), 1e-8)
+})
+
 test_that("cnetplot compareCluster pies stay stable as showCategory grows", {
     x <- mock_comparecluster_result()
     d <- x@compareClusterResult

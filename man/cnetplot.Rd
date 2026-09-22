@@ -21,12 +21,15 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   size_item = 1,
   color_edge = "grey",
   size_edge = 0.5,
+  categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
   foldChange = NULL,
   fc_threshold = NULL,
   hilight = "none",
   hilight_alpha = 0.3,
+  circular = FALSE,
+  colorEdge = FALSE,
   ...
 )
 
@@ -40,12 +43,15 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   size_item = 1,
   color_edge = "grey",
   size_edge = 0.5,
+  categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
   foldChange = NULL,
   fc_threshold = NULL,
   hilight = "none",
   hilight_alpha = 0.3,
+  circular = FALSE,
+  colorEdge = FALSE,
   ...
 )
 
@@ -89,6 +95,7 @@ prepare_mnsea_cnetplot_data(
   size_item = 1,
   color_edge = "grey",
   size_edge = 0.5,
+  categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
   foldChange = NULL,
@@ -96,6 +103,8 @@ prepare_mnsea_cnetplot_data(
   hilight = "none",
   hilight_alpha = 0.3,
   pie = "equal",
+  circular = FALSE,
+  colorEdge = FALSE,
   split = NULL,
   includeAll = TRUE,
   ...
@@ -122,6 +131,8 @@ prepare_mnsea_cnetplot_data(
 
 \item{size_edge}{relative size of edge}
 
+\item{categorySize}{deprecated compatibility alias for \code{categorySizeBy}.}
+
 \item{categorySizeBy}{An expression (e.g., \code{itemNum}, \code{p.adjust}) or a formula
 (e.g., \code{~ -log10(p.adjust)}) to set the category node size. For
 \code{compareClusterResult}, this controls the category pie size.}
@@ -134,6 +145,10 @@ prepare_mnsea_cnetplot_data(
 \item{hilight}{selected categories to be highlighted}
 
 \item{hilight_alpha}{transparency value for non-highlighted items}
+
+\item{circular}{logical, whether to arrange the network on a circular layout.}
+
+\item{colorEdge}{logical, whether to color edges by category membership.}
 
 \item{...}{additional parameters}
 
