@@ -458,7 +458,9 @@ hplot <- function(x, geneSetID, layer = NULL) {
 #' @param rel_heights relative heights of subplots
 #' @param subplots which subplots to be displayed
 #' @param pvalue_table whether add pvalue table
-#' @param pvalue_table_columns selected columns to be plotted in the `pvalue_table`
+#' @param pvalue_table_columns selected columns to be plotted in the `pvalue_table`.
+#' Defaults to `c("NES", "p.adjust")`, but can be set to any columns of the
+#' enrichment result (e.g. `"pvalue"`, `"qvalue"`).
 #' @param pvalue_table_rownames selected column as the rownames of the `pvalue_table`. If set to NULL, no rownames will be displayed.
 #' @param ES_geom geom for plotting running enrichment score,
 #' one of 'line' or 'dot'
@@ -489,7 +491,7 @@ gseaplot2 <- function(
     rel_heights = c(1.5, .5, 1),
     subplots = 1:3,
     pvalue_table = FALSE,
-    pvalue_table_columns = c("pvalue", "p.adjust"),
+    pvalue_table_columns = c("NES", "p.adjust"),
     pvalue_table_rownames = "Description",
     ES_geom = "line",
     layer = NULL

@@ -4,6 +4,7 @@
 + fix `dotplot()` p-value color legend labels for very small values (#277): p-value / p-adjusted / q-value breaks below `1e-3` are now shown in readable scientific notation instead of long unreadable decimals (2026-09-22, Tue)
 + document `dotplot()` `size` behavior for `gseaResult` (#206): when `x` is "GeneRatio" the point size defaults to "count" (number of genes); `size = "GeneRatio"` scales it by the enrichment gene ratio instead (2026-09-22, Tue)
 + fix `ridgeplot()` for `mnseaResult` with small per-feature contributions: the undersized-gene-set guard (intended for gseaResult density estimation) no longer drops mnsea mechanism groups that only carry a few feature scores, so layered mnsea ridgeplots render again instead of aborting (2026-09-22, Tue)
++ `gseaplot2()`: `pvalue_table` now defaults to `NES` and `p.adjust` columns instead of two redundant p-value columns; columns remain fully configurable via `pvalue_table_columns` and row names can be suppressed with `pvalue_table_rownames = NULL` (2026-09-22, Tue)
 
 # enrichplot 1.99.12
 

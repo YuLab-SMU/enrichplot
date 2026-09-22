@@ -578,6 +578,28 @@ test_that("gseaplot2 gglist objects work with cowplot grids", {
     expect_error(cowplot::plot_grid(p, p, ncol = 1), NA)
 })
 
+test_that("gseaplot2 pvalue_table defaults to NES/p.adjust and is configurable", {
+    # default avoids two redundant p-value columns (#134, #203)
+    expect_identical(
+        eval(formals(gseaplot2)$pvalue_table_columns),
+        c("NES", "p.adjust")
+    )
+
+    x <- make_rich_gsea_result()
+    # user-selected columns still work
+    expect_error(
+        gseaplot2(x, geneSetID = 1, pvalue_table = TRUE,
+                  pvalue_table_columns = c("qvalue", "NES")),
+        NA
+    )
+    # row names can be suppressed (#238)
+    expect_error(
+        gseaplot2(x, geneSetID = 1, pvalue_table = TRUE,
+                  pvalue_table_rownames = NULL),
+        NA
+    )
+})
+
 test_that("gseaplot2 hit bins follow ranked-list order", {
     x <- make_rich_gsea_result()
     p <- gseaplot2(x, geneSetID = 1)
