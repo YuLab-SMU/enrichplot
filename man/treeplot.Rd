@@ -21,6 +21,7 @@ treeplot_internal(
   showCategory = 30,
   color = "p.adjust",
   size_var = c("Count", "setSize"),
+  split = NULL,
   nCluster = 5,
   cluster_method = "ward.D",
   label_format = 30,
@@ -45,6 +46,8 @@ treeplot_internal(
 \item{color}{variable to color nodes, e.g. 'p.adjust', 'pvalue', or 'qvalue'}
 
 \item{size_var}{variable for node size, e.g. 'Count' (for enrichResult) or 'setSize' (for gseaResult)}
+
+\item{split}{optional result column used to keep split metadata available for faceting}
 
 \item{nCluster}{number of clusters for tree cutting}
 

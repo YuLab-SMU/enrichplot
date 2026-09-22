@@ -1,3 +1,7 @@
+# enrichplot 1.99.9
+
++ fix `treeplot()` split-aware faceting for GSEA results (#169): `split` is now carried into tree, tip, and clade metadata so `treeplot(..., split = ".sign") + facet_grid(. ~ .sign)` builds instead of dropping the faceting variable from every layer (2026-09-22, Tue)
+
 # enrichplot 1.99.8
 
 + fix `treeplot()` cluster color assignment when `nCluster` reaches two digits (#171): cluster palettes and clade-label groups now follow numeric cluster ids instead of lexical ordering, so groups like `cluster_10` no longer steal `cluster_2` colors when the cluster count increases (2026-09-22, Tue)

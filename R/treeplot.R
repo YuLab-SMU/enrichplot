@@ -26,6 +26,7 @@ setMethod("treeplot", signature(x = "compareClusterResult"), function(x, ...) {
 #' @param showCategory number of enriched terms to display
 #' @param color variable to color nodes, e.g. 'p.adjust', 'pvalue', or 'qvalue'
 #' @param size_var variable for node size, e.g. 'Count' (for enrichResult) or 'setSize' (for gseaResult)
+#' @param split optional result column used to keep split metadata available for faceting
 #' @param nCluster number of clusters for tree cutting
 #' @param cluster_method hierarchical clustering method
 #' @param label_format wrap length for labels or custom formatting function
@@ -47,6 +48,7 @@ treeplot_internal <- function(
     showCategory = 30,
     color = "p.adjust",
     size_var = c("Count", "setSize"),
+    split = NULL,
     nCluster = 5,
     cluster_method = "ward.D",
     label_format = 30,
@@ -67,13 +69,25 @@ treeplot_internal <- function(
         )
     }
 
+    selected_terms <- NULL
+
     # Get selected categories
-    n <- update_n(x, showCategory)
-    if (is.numeric(n)) {
-        keep <- seq_len(n)
+    if (!is.null(split)) {
+        available_terms <- fortify(x, showCategory = NULL)
+        if (!split %in% colnames(available_terms)) {
+            stop("split column not found in enrichment result: ", split)
+        }
+        selected_terms <- fortify(x, showCategory = showCategory, split = split)
+        keep <- unique(as.character(selected_terms$Description))
     } else {
-        keep <- match(n, rownames(x@termsim))
+        n <- update_n(x, showCategory)
+        if (is.numeric(n)) {
+            keep <- seq_len(n)
+        } else {
+            keep <- match(n, rownames(x@termsim))
+        }
     }
+    keep <- keep[!is.na(keep)]
 
     if (length(keep) == 0) {
         stop("no enriched term found...")
@@ -88,6 +102,14 @@ treeplot_internal <- function(
             label = rownames(termsim2),
             stringsAsFactors = FALSE
         )
+        if (!is.null(split) && !is.null(selected_terms)) {
+            split_df <- unique(selected_terms[, c("Description", split), drop = FALSE])
+            split_map <- stats::setNames(
+                as.character(split_df[[split]]),
+                as.character(split_df$Description)
+            )
+            d[[split]] <- unname(split_map[d$label])
+        }
         return(
             ggplot(d, aes(x = 0, y = 0, label = .data$label)) +
                 geom_text() +
@@ -128,7 +150,17 @@ treeplot_internal <- function(
     d$label <- names(clus)
     
     # Select columns safely
-    d <- d[, c("label", color, size_col)]
+    keep_cols <- c("label", color, size_col)
+    if (!is.null(split) && !is.null(selected_terms)) {
+        split_df <- unique(selected_terms[, c("Description", split), drop = FALSE])
+        split_map <- stats::setNames(
+            as.character(split_df[[split]]),
+            as.character(split_df$Description)
+        )
+        d[[split]] <- unname(split_map[d$label])
+        keep_cols <- c(keep_cols, split)
+    }
+    d <- d[, keep_cols]
 
     # Create tree plot
     p <- create_tree_plot(
@@ -144,6 +176,7 @@ treeplot_internal <- function(
         align = align,
         color_var = color,
         size_var = size_col,
+        split_var = split,
         tiplab_offset = tiplab_offset,
         cladelab_offset = cladelab_offset
     )
@@ -427,6 +460,7 @@ create_tree_plot <- function(
     align = 'left',
     color_var,
     size_var = 'size',
+    split_var = NULL,
     tiplab_offset = 0.2,
     cladelab_offset,
     add_tippoint = TRUE
@@ -465,6 +499,9 @@ create_tree_plot <- function(
 
     # Add tip points and labels
     p <- p %<+% data
+    if (!is.null(split_var) && split_var %in% colnames(data)) {
+        p <- annotate_tree_splits(p, split_var)
+    }
 
     # Add clade labels and highlights
     if (hilight) {
@@ -476,6 +513,7 @@ create_tree_plot <- function(
             group_color,
             extend,
             align,
+            split_var = split_var,
             offset = cladelab_offset
         )
     }
@@ -527,6 +565,7 @@ add_clade_labels <- function(
     group_color,
     extend,
     align,
+    split_var = NULL,
     offset
 ) {
     # Prepare clade label data
@@ -561,6 +600,17 @@ add_clade_labels <- function(
     df$labels <- label_func(df$labels)
 
     df$color <- group_color
+    if (!is.null(split_var) && split_var %in% colnames(p$data)) {
+        node_split <- stats::setNames(
+            as.character(p$data[[split_var]]),
+            as.character(p$data$node)
+        )
+        df[[split_var]] <- unname(node_split[as.character(df$node)])
+        df <- df[!is.na(df[[split_var]]), , drop = FALSE]
+    }
+    if (nrow(df) == 0) {
+        return(p)
+    }
 
     # Add clade labels and highlights
     p <- p +
@@ -588,6 +638,35 @@ add_clade_labels <- function(
         scale_fill_manual(values = group_color, guide = 'none')
 
     return(p)
+}
+
+
+#' Annotate tree nodes with split metadata
+#'
+#' @param p ggtree object
+#' @param split_var split column name
+#' @return ggtree object with split assignments for tips and pure internal clades
+#' @noRd
+annotate_tree_splits <- function(p, split_var) {
+    pdata <- as.data.frame(p$data)
+    node_split <- stats::setNames(
+        as.character(pdata[[split_var]]),
+        as.character(pdata$node)
+    )
+    internal_nodes <- sort(unique(pdata$node[!pdata$isTip]))
+
+    for (node in internal_nodes) {
+        child_nodes <- as.character(pdata$node[pdata$parent == node])
+        child_splits <- unique(na.omit(node_split[child_nodes]))
+        node_split[as.character(node)] <- if (length(child_splits) == 1) {
+            child_splits
+        } else {
+            NA_character_
+        }
+    }
+
+    p$data[[split_var]] <- unname(node_split[as.character(p$data$node)])
+    p
 }
 
 

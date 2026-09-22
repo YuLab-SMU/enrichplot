@@ -317,6 +317,16 @@ test_that("treeplot keeps cluster ids in numeric order when they reach two digit
     expect_equal(names(grp), c("cluster_1", "cluster_2", "cluster_10"))
 })
 
+test_that("treeplot keeps split metadata available for faceting", {
+    x <- pairwise_termsim(make_rich_gsea_result(), method = "JC")
+    p <- treeplot(x, showCategory = 2, split = ".sign")
+
+    expect_ggplot(p)
+    expect_true(".sign" %in% colnames(p$data))
+    expect_setequal(na.omit(unique(p$data$.sign)), c("activated", "suppressed"))
+    expect_error(ggplot2::ggplot_build(p + ggplot2::facet_grid(. ~ .sign)), NA)
+})
+
 test_that("emapplot and ssplot honor group_legend for grouped layouts", {
     x <- pairwise_termsim(make_rich_enrich_result(), method = "JC")
 
