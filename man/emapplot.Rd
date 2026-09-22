@@ -19,6 +19,8 @@ emapplot(
   min_edge = 0.2,
   color_edge = "grey",
   size_edge = 0.5,
+  group = NULL,
+  group_legend = TRUE,
   node_label = "category",
   node_label_size = 5,
   pie = "equal",
@@ -40,6 +42,8 @@ emapplot(
   min_edge = 0.2,
   color_edge = "grey",
   size_edge = 0.5,
+  group = NULL,
+  group_legend = TRUE,
   node_label = "category",
   node_label_size = 5,
   pie = "equal",
@@ -61,6 +65,8 @@ emapplot(
   min_edge = 0.2,
   color_edge = "grey",
   size_edge = 0.5,
+  group = NULL,
+  group_legend = TRUE,
   node_label = "category",
   node_label_size = 5,
   pie = "equal",
@@ -82,6 +88,8 @@ emapplot(
   min_edge = 0.2,
   color_edge = "grey",
   size_edge = 0.5,
+  group = NULL,
+  group_legend = TRUE,
   node_label = "category",
   node_label_size = 5,
   pie = "equal",
@@ -103,6 +111,8 @@ emapplot(
   min_edge = 0.2,
   color_edge = "grey",
   size_edge = 0.5,
+  group = NULL,
+  group_legend = TRUE,
   node_label = "category",
   node_label_size = 5,
   pie = "equal",
@@ -137,6 +147,10 @@ two nodes are connected, should be between 0 and 1, default value is 0.2.}
 \item{color_edge}{color of the network edge}
 
 \item{size_edge}{relative size of edge width}
+
+\item{group}{logical, if TRUE, group the categories.}
+
+\item{group_legend}{logical, if TRUE, draw a legend for the groups.}
 
 \item{node_label}{Select which labels to display,
 one of 'category', 'group', 'all' and 'none'.}

@@ -223,9 +223,8 @@ setMethod(
 #' @param node_label_size size of node label, default is 5.
 #' @param pie one of 'equal' or 'Count' to set the slice ratio of the pies
 #' @param layer optional layer or layers to retain for `mnseaResult` plots.
-# @param group logical, if TRUE, group the category.
-# @param group_style style of ellipse, one of "ggforce" an "polygon".
-# @param label_group_style style of group label, one of "shadowtext" and "ggforce".
+#' @param group logical, if TRUE, group the categories.
+#' @param group_legend logical, if TRUE, draw a legend for the groups.
 #' @param label_format a numeric value sets wrap length, alternatively a custom function to format axis labels.
 #' @param clusterFunction clustering method function, such as `stats::kmeans` (default),
 #' `cluster::clara`, `cluster::fanny`, or `cluster::pam`.

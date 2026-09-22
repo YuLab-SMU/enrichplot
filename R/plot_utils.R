@@ -25,6 +25,7 @@ autofacet <- function(by = 'row', scales = "free", levels = NULL) {
 #' @param title graph title
 #' @param font.size graph font size
 #' @param colorBy one of pvalue or p.adjust
+#' @param width width of the plot
 #' @return ggplot object
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes

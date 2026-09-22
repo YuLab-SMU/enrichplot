@@ -11,7 +11,8 @@ plotting.clusterProfile(
   colorBy = "p.adjust",
   by = "geneRatio",
   title = "",
-  font.size = 12
+  font.size = 12,
+  width = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ plotting.clusterProfile(
 \item{title}{graph title}
 
 \item{font.size}{graph font size}
+
+\item{width}{width of the plot}
 }
 \value{
 ggplot object
