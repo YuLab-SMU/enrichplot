@@ -338,6 +338,16 @@ test_that("treeplot keeps split metadata available for faceting", {
     expect_error(ggplot2::ggplot_build(p + ggplot2::facet_grid(. ~ .sign)), NA)
 })
 
+test_that("treeplot stays compatible with tidytree's private offspring helper", {
+    ns <- asNamespace("tidytree")
+    x <- pairwise_termsim(make_rich_enrich_result(), method = "JC")
+    p <- treeplot(x, showCategory = 8, nCluster = 2)
+
+    expect_false(exists("offspring.tbl_tree_item", envir = ns, inherits = FALSE))
+    expect_true(exists(".offspring.tbl_tree_item", envir = ns, inherits = FALSE))
+    expect_error(ggplot2::ggplot_build(p), NA)
+})
+
 test_that("emapplot and ssplot honor group_legend for grouped layouts", {
     x <- pairwise_termsim(make_rich_enrich_result(), method = "JC")
 

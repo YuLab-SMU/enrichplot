@@ -1,3 +1,7 @@
+# enrichplot 1.99.11
+
++ guard `treeplot()` against tidytree helper renames (#249, #247): add a regression test that explicitly exercises the current tidytree namespace shape (private `.offspring.tbl_tree_item` without exported `offspring.tbl_tree_item`) while ensuring `treeplot()` still builds cleanly (2026-09-22, Tue)
+
 # enrichplot 1.99.10
 
 + guard `dotplot()` compare-cluster labels against `geneRatio` regressions (#180): add a regression test that keeps `by = "geneRatio"` and `by = "count"` from reintroducing `NA` cluster labels in compare-cluster dotplots (2026-09-22, Tue)
