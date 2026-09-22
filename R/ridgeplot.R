@@ -296,12 +296,17 @@ build_mnsea_ridge_df <- function(
     fill_values <- object@result[selected_ids, fill]
     order_values <- object@result[selected_ids, orderBy]
 
+    ## mnsea mechanism plots are built from per-feature layer contributions,
+    ## which are much smaller than full ranked lists. Only drop empty groups
+    ## (already done above); do not impose the >= 3 points that gseaResult
+    ## requires for density estimation.
     pruned <- prune_ridgeplot_groups(
         gs2val = gs2val,
         ids = selected_ids,
         labels = label_vec,
         fill_values = fill_values,
-        order_values = order_values
+        order_values = order_values,
+        min_size = 1L
     )
     gs2val <- pruned$gs2val
     selected_ids <- pruned$ids

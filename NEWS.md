@@ -3,6 +3,7 @@
 + fix `cnetplot()` legacy circular, edge-color, and category-size arguments (#330): the wrapper now translates `circular = TRUE` to the current circular layout, `colorEdge = TRUE` to category-colored edges, and legacy `categorySize` strings to the current `categorySizeBy` semantics, so older fold-change cnetplot calls build again without leaking stale arguments into the layout backend (2026-09-22, Tue)
 + fix `dotplot()` p-value color legend labels for very small values (#277): p-value / p-adjusted / q-value breaks below `1e-3` are now shown in readable scientific notation instead of long unreadable decimals (2026-09-22, Tue)
 + document `dotplot()` `size` behavior for `gseaResult` (#206): when `x` is "GeneRatio" the point size defaults to "count" (number of genes); `size = "GeneRatio"` scales it by the enrichment gene ratio instead (2026-09-22, Tue)
++ fix `ridgeplot()` for `mnseaResult` with small per-feature contributions: the undersized-gene-set guard (intended for gseaResult density estimation) no longer drops mnsea mechanism groups that only carry a few feature scores, so layered mnsea ridgeplots render again instead of aborting (2026-09-22, Tue)
 
 # enrichplot 1.99.12
 
