@@ -50,6 +50,44 @@ like `geneInCategory()`).
 | GSEA views | gseaplot.R, ridgeplot.R, upsetplot.R, wordcloud.R |
 | Mechanism plots (nsea/mnsea) | phaseplot.R, rewireplot.R, consensusmap.R, mechanismflow.R, mnsea-helpers.R, nsea-mechanism-helpers.R |
 
+## Interface rules for rebuilt features
+
+Some historical features were implemented in the old `ggraph`-based code and may be
+partially missing or intentionally reshaped after the move to `ggtangle` and the
+current plotting architecture. When restoring a genuinely useful missing feature, do
+**not** treat "feature parity" as "copy the old interface verbatim".
+
+Use these rules instead:
+
+1. **Simple beats exhaustive.** The default path should solve the common use case with
+   as few arguments as possible. Extra control is only worth adding when it improves
+   real user workflows without making the main path harder to follow.
+2. **Follow the current API, not the historical one.** Reintroduced functionality must
+   match the naming, argument style, and semantics of today's `enrichplot` functions.
+   Do not revive old argument bundles, legacy flag combinations, or backend-shaped
+   parameters just because they existed before.
+3. **One concept, one parameter.** Prefer a small number of orthogonal arguments over
+   multiple overlapping switches. Avoid designs where users must coordinate several
+   booleans or memorize hidden precedence rules.
+4. **User-facing arguments describe plot semantics, not implementation details.**
+   Expose concepts such as term selection, grouping, labels, colors, and panel type.
+   Do not leak `ggraph`/`ggtangle`/`igraph` internals into the public API unless there
+   is a compelling and user-comprehensible reason.
+5. **Prefer current shared vocabulary.** Reuse the modern parameter conventions already
+   present in the package (`showCategory`, `group`, `group_legend`, normalized measure
+   names such as `Count`/`GeneRatio`/`Percentage`, etc.) instead of inventing
+   plot-specific synonyms.
+6. **Behavioral parity matters more than signature parity.** If an old feature is worth
+   bringing back, preserve the useful outcome in a cleaner form rather than matching
+   every historical argument name or edge-case behavior.
+7. **Make complexity pay rent.** If a restored control would only serve a narrow or
+   confusing legacy workflow, prefer leaving it out or folding it into a simpler,
+   more general option. Missing low-value complexity is acceptable; user-hostile API
+   shape is not.
+8. **Test the user story, not just the code path.** Regression tests for rebuilt
+   features should assert the intended user-visible behavior under the new interface,
+   not merely that the legacy internal route can still be reached.
+
 ## Testing
 
 - `testthat`, edition 3. Run: `Rscript -e 'setwd("<repo>"); devtools::load_all("."); testthat::test_local(".")'`.
@@ -152,6 +190,9 @@ instead of re-deriving commands (they encode the maintainer's workflow):
   site (package avoids NAMESPACE-wide imports).
 - NEWS.md entries go under the current devel version heading, one `+` bullet per
   user-visible change, dated `(YYYY-MM-DD, Weekday)`.
+- When adding back a missing capability from the pre-`ggtangle` era, prefer a small,
+  user-friendly interface that matches the current package style over exact historical
+  argument compatibility.
 - Commit style: `fix:`, `test:`, `docs:` prefixes seen in history. Version bumps in
   DESCRIPTION are made by the maintainer, not agents — ask before committing one.
 - Bioc timeline: release 1.32.0 = Bioc 3.23; devel is 1.99.x heading to 2.0.0 with
