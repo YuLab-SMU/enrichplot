@@ -362,6 +362,51 @@ test_that("emapplot runs with real Wang similarity on GO terms", {
     expect_ggplot(ssplot(x, showCategory = 5))
 })
 
+make_goplot_root_enrich_result <- function() {
+    result <- data.frame(
+        ID = c("GO:0008150", "GO:0009987"),
+        Description = c("biological process", "cellular process"),
+        GeneRatio = c("2/10", "2/10"),
+        BgRatio = c("20/500", "20/500"),
+        pvalue = c(0.01, 0.02),
+        p.adjust = c(0.02, 0.03),
+        qvalue = c(0.02, 0.03),
+        geneID = c("g1/g2", "g2/g3"),
+        Count = c(2L, 2L),
+        stringsAsFactors = FALSE
+    )
+    rownames(result) <- result$ID
+
+    methods::new(
+        "enrichResult",
+        result = result,
+        pvalueCutoff = 0.05,
+        pAdjustMethod = "BH",
+        qvalueCutoff = 0.2,
+        organism = "mock",
+        ontology = "BP",
+        gene = c("g1", "g2", "g3"),
+        keytype = "UNKNOWN",
+        universe = character(),
+        gene2Symbol = character(),
+        geneSets = list(
+            "GO:0008150" = c("g1", "g2"),
+            "GO:0009987" = c("g2", "g3")
+        ),
+        readable = FALSE,
+        termsim = matrix(0, 0, 0),
+        method = "",
+        dr = list()
+    )
+}
+
+test_that("goplot tolerates top-level GO terms", {
+    skip_if_not_installed("ggarchery")
+    skip_if_not_installed("glue")
+
+    expect_ggplot(goplot(make_goplot_root_enrich_result(), showCategory = 2))
+})
+
 ## ---------------------------------------------------------------------------
 ## Term-level statistical plots
 ## ---------------------------------------------------------------------------

@@ -1,3 +1,7 @@
+# enrichplot 1.99.6
+
++ fix `goplot()` DAG construction for top-level GO terms: parent edges that point to the synthetic `all` root are now dropped before the graph is built, so plots that include terms such as `GO:0008150` no longer fail with `Some vertex names in \`d\` are not listed in \`vertices\`` (2026-09-22, Tue)
+
 # enrichplot 1.99.5
 
 + fix `heatplot()` dot-mode p-value scaling: zero or non-positive gene p-values are now clamped to the smallest positive double before the reversed log-size transform is applied, so significance-sized dots no longer emit infinite-value warnings for exact-zero inputs (2026-09-22, Tue)

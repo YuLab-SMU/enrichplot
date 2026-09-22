@@ -67,11 +67,18 @@ goplot.enrichResult <- function(x, showCategory = 10, color = "p.adjust",
 
     uanc <- unique(unlist(anc))
     uanc <- uanc[!uanc %in% ca]
-    dag <- gotbl[gotbl$go_id %in% unique(c(id, uanc)),]
-
+    dag_ids <- unique(c(id, uanc))
+    dag <- gotbl[gotbl$go_id %in% dag_ids,]
 
     edge <- dag[, c(5, 1, 4)]
-    node <- unique(gotbl[gotbl$go_id %in% unique(c(edge[,1], edge[,2])), 1:3])
+    node <- unique(gotbl[gotbl$go_id %in% dag_ids, 1:3])
+    valid_vertices <- node$go_id
+    edge <- edge[
+        edge[, 1] %in% valid_vertices &
+        edge[, 2] %in% valid_vertices,
+        ,
+        drop = FALSE
+    ]
     node$color <- x[node$go_id, color]
     node$size <- sapply(geneSets[node$go_id], length)
 
