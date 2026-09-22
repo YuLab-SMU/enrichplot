@@ -242,6 +242,43 @@ test_that("cnetplot methods run", {
     expect_ggplot(cnetplot(mock_comparecluster_result(), showCategory = 2))
 })
 
+test_that("cnetplot compareCluster pies stay stable as showCategory grows", {
+    x <- mock_comparecluster_result()
+    d <- x@compareClusterResult
+    d <- rbind(
+        d,
+        transform(
+            d[1:2, , drop = FALSE],
+            Cluster = c("A", "B"),
+            ID = c("T3", "T3"),
+            Description = c("third", "third"),
+            geneID = c("1/4", "2/5"),
+            Count = c(2L, 2L),
+            GeneRatio = c("2/10", "2/10"),
+            BgRatio = c("10/100", "10/100"),
+            p.adjust = c(0.05, 0.06)
+        )
+    )
+    rownames(d) <- NULL
+    x@compareClusterResult <- d
+
+    p2 <- cnetplot(x, pie = "count", layout = igraph::layout_with_kk, showCategory = 2)
+    p3 <- cnetplot(x, pie = "count", layout = igraph::layout_with_kk, showCategory = 3)
+
+    expect_ggplot(p2)
+    expect_ggplot(p3)
+    expect_setequal(
+        as.character(p2$data$name[p2$data$.isCategory]),
+        c("dup [T1]", "other [T2]")
+    )
+    expect_setequal(
+        as.character(p3$data$name[p3$data$.isCategory]),
+        c("dup [T1]", "other [T2]", "third [T3]")
+    )
+    expect_error(ggplot2::ggplot_build(p2), NA)
+    expect_error(ggplot2::ggplot_build(p3), NA)
+})
+
 test_that("heatplot.enrichResult runs with and without foldChange", {
     x <- make_rich_enrich_result()
     expect_ggplot(heatplot(x, showCategory = 4))

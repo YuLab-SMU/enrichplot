@@ -1,3 +1,7 @@
+# enrichplot 1.99.12
+
++ guard `cnetplot()` compare-cluster pies across `showCategory` sizes (#284): add a regression test that exercises `pie = "count"` while increasing `showCategory`, ensuring term nodes expand consistently and both plots still build cleanly (2026-09-22, Tue)
+
 # enrichplot 1.99.11
 
 + guard `treeplot()` against tidytree helper renames (#249, #247): add a regression test that explicitly exercises the current tidytree namespace shape (private `.offspring.tbl_tree_item` without exported `offspring.tbl_tree_item`) while ensuring `treeplot()` still builds cleanly (2026-09-22, Tue)
