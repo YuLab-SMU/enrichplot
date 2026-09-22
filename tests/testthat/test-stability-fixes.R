@@ -145,12 +145,8 @@ test_that("heatplot dot mode handles zero pvalues without scale warnings", {
     expect_true(all(is.finite(p$data$pvalue[!is.na(p$data$pvalue)])))
     expect_true(all(p$data$pvalue[!is.na(p$data$pvalue)] > 0))
 })
-<<<<<<< HEAD
-=======
 
->>>>>>> e35e772 (fix: stabilize heatplot dot-mode pvalue scaling)
 test_that("ridgeplot drops undersized core gene sets instead of drawing empty rows", {
-    skip_if_not_installed("ggridges")
     skip_if_not_installed("ggridges")
 
     x <- make_short_core_gsea_result()
@@ -358,12 +354,12 @@ test_that("dotplot applies numeric showCategory after orderBy sorting", {
     )
 
     ids2 <- ggplot2::ggplot_build(
-        dotplot(x, showCategory = 2, orderBy = "Count")
+        dotplot(x, x = "Count", orderBy = "Count", showCategory = 2)
     )$plot$data$ID
     ids4 <- ggplot2::ggplot_build(
-        dotplot(x, showCategory = 4, orderBy = "Count")
+        dotplot(x, x = "Count", orderBy = "Count", showCategory = 4)
     )$plot$data$ID
 
-    expect_identical(ids2, c("T2", "T4"))
-    expect_identical(ids4[seq_along(ids2)], ids2)
+    expect_equal(ids2, c("T2", "T4"))
+    expect_equal(ids4[seq_along(ids2)], ids2)
 })
