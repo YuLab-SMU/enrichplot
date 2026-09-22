@@ -288,6 +288,35 @@ test_that("cnetplot accepts legacy circular, colorEdge, and categorySize args", 
     expect_lt(max(radii) - min(radii), 1e-8)
 })
 
+test_that("cnetplot compareCluster categorySizeBy formula keeps its environment", {
+    ## The legacy-argument shim forces `categorySizeBy` before it is captured
+    ## with enquo(), which leaves the quosure's environment empty. For a formula
+    ## the expression must therefore be evaluated in the formula's own
+    ## environment; missing that made every formula fail at draw time with
+    ## "could not find function '-'".
+    x <- mock_comparecluster_result()
+
+    expect_no_error(
+        p <- cnetplot(x, showCategory = 3, categorySizeBy = ~ -log10(p.adjust))
+    )
+    expect_ggplot(p)
+
+    ## A formula built in another frame must still see the variables it closed
+    ## over, not just the ones in the data mask.
+    scale_by <- function(v) ~ v * itemNum
+    expect_no_error(
+        p2 <- cnetplot(x, showCategory = 3, categorySizeBy = scale_by(2))
+    )
+    expect_ggplot(p2)
+
+    ## ... and the legacy `categorySize` alias keeps working alongside it.
+    ## (the compareCluster mock carries p.adjust, not pvalue)
+    expect_no_error(
+        p3 <- cnetplot(x, showCategory = 3, categorySize = "p.adjust")
+    )
+    expect_ggplot(p3)
+})
+
 test_that("cnetplot compareCluster pies stay stable as showCategory grows", {
     x <- mock_comparecluster_result()
     d <- x@compareClusterResult

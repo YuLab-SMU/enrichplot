@@ -800,6 +800,17 @@ compute_comparecluster_category_size <- function(d, categorySizeBy) {
         category_size_env <- parent.frame()
     }
     if (rlang::is_formula(category_size_expr)) {
+        ## A formula carries the environment it was written in, and that is the
+        ## environment the expression must be evaluated in. The quosure's own
+        ## environment is empty when the argument was forced before enquo(),
+        ## which is what happens now that the legacy-argument shim reassigns
+        ## `categorySizeBy` before capturing it. Preferring the formula's
+        ## environment keeps `~-log10(p.adjust)` working instead of failing with
+        ## "could not find function '-'".
+        formula_env <- environment(category_size_expr)
+        if (!is.null(formula_env)) {
+            category_size_env <- formula_env
+        }
         category_size_expr <- rlang::f_rhs(category_size_expr)
     }
 
