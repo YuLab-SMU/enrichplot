@@ -1,3 +1,7 @@
+# enrichplot 1.99.8
+
++ fix `treeplot()` cluster color assignment when `nCluster` reaches two digits (#171): cluster palettes and clade-label groups now follow numeric cluster ids instead of lexical ordering, so groups like `cluster_10` no longer steal `cluster_2` colors when the cluster count increases (2026-09-22, Tue)
+
 # enrichplot 1.99.7
 
 + fix `emapplot()` compare-cluster pie nodes across ontologies (#228): ontology-specific terms that share the same `Description` now keep stable ID-backed labels all the way into pie-layer data alignment, so `compareCluster(..., ont = "ALL")` no longer collapses those nodes or breaks while building the pie overlay (2026-09-22, Tue)

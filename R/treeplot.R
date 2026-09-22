@@ -432,10 +432,14 @@ create_tree_plot <- function(
     add_tippoint = TRUE
 ) {
     # Set colors
+    cluster_levels <- paste0("cluster_", sort(unique(as.numeric(clus))))
     if (is.null(group_color)) {
         require_suggested('scales', 'for `treeplot()`.')
         n_clusters <- length(unique(clus))
         group_color <- scales::hue_pal()(n_clusters)
+    }
+    if (is.null(names(group_color))) {
+        names(group_color) <- cluster_levels
     }
 
     # Create base tree
@@ -444,15 +448,19 @@ create_tree_plot <- function(
     # Group nodes
     dat <- data.frame(
         name = names(clus),
-        cls = paste0("cluster_", as.numeric(clus))
+        cls = factor(
+            paste0("cluster_", as.numeric(clus)),
+            levels = names(group_color)
+        )
     )
     grp <- apply(table(dat), 2, function(x) names(x[x == 1]))
     clades <- vapply(grp, \(nodes) ggtree::MRCA(p, nodes), numeric(1))
     p <- groupClade(p, clades, "group") +
         aes(color = .data$group) +
         scale_color_manual(
-            values = c(group_color, "white"),
-            breaks = names(clades)
+            values = group_color,
+            breaks = names(group_color),
+            na.value = "white"
         )
 
     # Add tip points and labels
@@ -525,7 +533,7 @@ add_clade_labels <- function(
     df <- data.frame(
         node = as.numeric(clades),
         labels = names(clades),
-        cluster = factor(names(clades))
+        cluster = factor(names(clades), levels = names(group_color))
     )
 
     # Get the tree data to access tip labels

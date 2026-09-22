@@ -298,6 +298,25 @@ test_that("treeplot compareCluster dotplot panels run", {
     expect_ggplot(treeplot(x, showCategory = 2, cluster_panel = "dotplot"))
 })
 
+test_that("treeplot keeps cluster ids in numeric order when they reach two digits", {
+    term_matrix <- matrix(seq_len(24), ncol = 2)
+    rownames(term_matrix) <- paste0("term", seq_len(nrow(term_matrix)))
+    hc <- stats::hclust(stats::dist(term_matrix))
+    clus <- stats::setNames(c(1, 2, 10), hc$labels[1:3])
+    cluster_levels <- paste0("cluster_", sort(unique(as.numeric(clus))))
+    dat <- data.frame(
+        name = names(clus),
+        cls = factor(
+            paste0("cluster_", as.numeric(clus)),
+            levels = cluster_levels
+        ),
+        stringsAsFactors = FALSE
+    )
+    grp <- apply(table(dat), 2, function(x) names(x[x == 1]))
+
+    expect_equal(names(grp), c("cluster_1", "cluster_2", "cluster_10"))
+})
+
 test_that("emapplot and ssplot honor group_legend for grouped layouts", {
     x <- pairwise_termsim(make_rich_enrich_result(), method = "JC")
 
