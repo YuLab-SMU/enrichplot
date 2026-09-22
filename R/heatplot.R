@@ -134,7 +134,7 @@ prepare_heatplot_data <- function(x, showCategory, showTop, foldChange, pvalue) 
     }
 
     foldChange <- fc_readable(x, foldChange)
-    pvalue <- fc_readable(x, pvalue)
+    pvalue <- sanitize_heatplot_pvalues(fc_readable(x, pvalue))
     d <- list2df(geneSets)
     d$categoryID <- get_geneSet_labels(geneSets)[as.character(d$categoryID)]
     if (!is.null(foldChange)) {
@@ -146,6 +146,18 @@ prepare_heatplot_data <- function(x, showCategory, showTop, foldChange, pvalue) 
     }
 
     d
+}
+
+sanitize_heatplot_pvalues <- function(pvalue) {
+    if (is.null(pvalue)) {
+        return(NULL)
+    }
+
+    pvalue_names <- names(pvalue)
+    pvalue <- stats::setNames(as.numeric(pvalue), pvalue_names)
+    pvalue[!is.finite(pvalue)] <- NA_real_
+    pvalue[pvalue <= 0] <- .Machine$double.xmin
+    pvalue
 }
 
 prepare_heatplot_mnsea_data <- function(

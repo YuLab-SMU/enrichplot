@@ -132,6 +132,20 @@ test_that("heatplot uses disambiguated labels for duplicate descriptions", {
     )
 })
 
+test_that("heatplot dot mode handles zero pvalues without scale warnings", {
+    x <- mock_enrich_result()
+    genes <- unique(unlist(geneInCategory(x)))
+    pvalue <- setNames(rep(c(0, 1e-5, 0.1), length.out = length(genes)), genes)
+
+    expect_warning(
+        p <- heatplot(x, showCategory = c("T1", "T2"), symbol = "dot", pvalue = pvalue),
+        NA
+    )
+    expect_ggplot_build_ok(p)
+    expect_true(all(is.finite(p$data$pvalue[!is.na(p$data$pvalue)])))
+    expect_true(all(p$data$pvalue[!is.na(p$data$pvalue)] > 0))
+})
+
 test_that("ridgeplot drops undersized core gene sets instead of drawing empty rows", {
     skip_if_not_installed("ggridges")
 

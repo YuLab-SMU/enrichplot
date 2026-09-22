@@ -1,5 +1,6 @@
 # enrichplot 1.99.5
 
++ fix `heatplot()` dot-mode p-value scaling: zero or non-positive gene p-values are now clamped to the smallest positive double before the reversed log-size transform is applied, so significance-sized dots no longer emit infinite-value warnings for exact-zero inputs (2026-09-22, Tue)
 + fix `ridgeplot()` blank rows for undersized core gene sets (#288): pathways with fewer than three ranked values are now dropped before `geom_density_ridges()` is built, and the function now errors clearly when no selected pathway has enough values to estimate a density, so two-gene core sets no longer leave empty y-axis slots in the plot (2026-09-21, Mon)
 
 # enrichplot 1.99.4
