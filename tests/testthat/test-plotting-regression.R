@@ -221,6 +221,17 @@ test_that("dotplot methods run for enrichResult, gseaResult and compareClusterRe
     expect_ggplot(dotplot(mock_comparecluster_result(), showCategory = 2))
 })
 
+test_that("dotplot.compareClusterResult keeps cluster labels for geneRatio sizing", {
+    x <- mock_comparecluster_result()
+
+    p_ratio <- dotplot(x, showCategory = 2, by = "geneRatio")
+    p_count <- dotplot(x, showCategory = 2, by = "count")
+
+    expect_false(anyNA(p_ratio$data$Cluster))
+    expect_false(anyNA(p_count$data$Cluster))
+    expect_setequal(as.character(p_ratio$data$Cluster), c("A\n(10)", "B\n(10)"))
+})
+
 ## ---------------------------------------------------------------------------
 ## Gene-concept network, heatmap, upset
 ## ---------------------------------------------------------------------------

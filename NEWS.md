@@ -1,3 +1,7 @@
+# enrichplot 1.99.10
+
++ guard `dotplot()` compare-cluster labels against `geneRatio` regressions (#180): add a regression test that keeps `by = "geneRatio"` and `by = "count"` from reintroducing `NA` cluster labels in compare-cluster dotplots (2026-09-22, Tue)
+
 # enrichplot 1.99.9
 
 + fix `treeplot()` split-aware faceting for GSEA results (#169): `split` is now carried into tree, tip, and clade metadata so `treeplot(..., split = ".sign") + facet_grid(. ~ .sign)` builds instead of dropping the faceting variable from every layer (2026-09-22, Tue)
