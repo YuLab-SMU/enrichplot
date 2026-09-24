@@ -70,7 +70,8 @@ import_enrichr <- function(
         }
     }
 
-    enrichit::as_enrichResult(
+    out$qvalue <- out$p.adjust
+    .as_external_enrich_result(enrichit::as_enrichResult(
         out,
         gene = gene,
         universe = universe,
@@ -79,7 +80,7 @@ import_enrichr <- function(
         keytype = keytype,
         pAdjustMethod = pAdjustMethod,
         ...
-    )
+    ))
 }
 
 ##' Import g:Profiler (gprofiler2) results
@@ -143,7 +144,12 @@ import_gprofiler2 <- function(
         )
     }
 
-    enrichit::as_enrichResult(
+    out$qvalue <- if (!is.null(out$p.adjust)) {
+        out$p.adjust
+    } else {
+        stats::p.adjust(out$pvalue, method = pAdjustMethod)
+    }
+    .as_external_enrich_result(enrichit::as_enrichResult(
         out,
         gene = gene,
         ontology = ontology,
@@ -151,7 +157,7 @@ import_gprofiler2 <- function(
         keytype = keytype,
         pAdjustMethod = pAdjustMethod,
         ...
-    )
+    ))
 }
 
 ##' Import WebGestaltR results
@@ -201,7 +207,12 @@ import_webgestalt <- function(
         out$BgRatio <- paste0(as.integer(df$size), "/", length(universe))
     }
 
-    enrichit::as_enrichResult(
+    out$qvalue <- if (!is.null(out$p.adjust)) {
+        out$p.adjust
+    } else {
+        stats::p.adjust(out$pvalue, method = pAdjustMethod)
+    }
+    .as_external_enrich_result(enrichit::as_enrichResult(
         out,
         gene = gene,
         universe = universe,
@@ -210,7 +221,7 @@ import_webgestalt <- function(
         keytype = keytype,
         pAdjustMethod = pAdjustMethod,
         ...
-    )
+    ))
 }
 
 ##' Import fgsea results
@@ -254,7 +265,16 @@ import_fgsea <- function(
         "fgsea"
     )
 
-    enrichit::as_gseaResult(
+    if (!"qvalue" %in% names(df)) {
+        adjusted <- intersect(c("padj", "p.adjust"), names(df))
+        df$qvalue <- if (length(adjusted) > 0) {
+            df[[adjusted[1]]]
+        } else {
+            stats::p.adjust(as.numeric(df$pval), method = pAdjustMethod)
+        }
+    }
+
+    .as_external_gsea_result(enrichit::as_gseaResult(
         df,
         geneList = stats,
         geneSets = geneSets,
@@ -265,7 +285,7 @@ import_fgsea <- function(
         scoreType = scoreType,
         pAdjustMethod = pAdjustMethod,
         ...
-    )
+    ))
 }
 
 ## ---- internal helpers -------------------------------------------------

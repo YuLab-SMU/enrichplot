@@ -52,6 +52,7 @@ emapplot(
   clusterFunction = stats::kmeans,
   nWords = 4,
   nCluster = NULL,
+  show_category_size_legend = TRUE,
   ...
 )
 
@@ -75,6 +76,7 @@ emapplot(
   clusterFunction = stats::kmeans,
   nWords = 4,
   nCluster = NULL,
+  show_category_size_legend = TRUE,
   ...
 )
 
@@ -98,6 +100,7 @@ emapplot(
   clusterFunction = stats::kmeans,
   nWords = 4,
   nCluster = NULL,
+  show_category_size_legend = TRUE,
   ...
 )
 
@@ -121,6 +124,7 @@ emapplot(
   clusterFunction = stats::kmeans,
   nWords = 4,
   nCluster = NULL,
+  show_category_size_legend = TRUE,
   ...
 )
 
@@ -172,6 +176,9 @@ one of 'category', 'group', 'all' and 'none'.}
 the default value is square root of the number of nodes.}
 
 \item{...}{Additional parameters}
+
+\item{show_category_size_legend}{Logical, whether to draw the category-size
+annotation legend for compareCluster pie charts.}
 }
 \value{
 ggplot object

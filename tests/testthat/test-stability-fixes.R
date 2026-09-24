@@ -229,6 +229,9 @@ test_that("emapplot smoke test works for compareClusterResult", {
     p <- emapplot(x, showCategory = 2)
 
     expect_s3_class(p, "ggplot")
+    expect_ggplot_build_ok(
+        emapplot(x, showCategory = 2, show_category_size_legend = FALSE)
+    )
 })
 
 test_that("compareCluster pie plots tolerate duplicated cluster-term rows", {

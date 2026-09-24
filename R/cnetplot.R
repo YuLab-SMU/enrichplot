@@ -11,7 +11,6 @@
 #' @param size_item relative size of the item nodes (e.g., genes)
 #' @param color_edge color of edge
 #' @param size_edge relative size of edge
-#' @param categorySize deprecated compatibility alias for `categorySizeBy`.
 #' @param categorySizeBy An expression (e.g., `itemNum`, `p.adjust`) or a formula
 #'   (e.g., `~ -log10(p.adjust)`) to set the category node size. For
 #'   `compareClusterResult`, this controls the category pie size.
@@ -21,19 +20,14 @@
 #' @param fc_threshold threshold for filtering genes by absolute fold change (e.g., fc_threshold = 1 keeps only genes with |foldChange| > 1).
 #' @param hilight selected categories to be highlighted
 #' @param hilight_alpha transparency value for non-highlighted items
-#' @param circular logical, whether to arrange the network on a circular layout.
-#' @param colorEdge logical, whether to color edges by category membership.
-#' @param split apply `showCategory` to each category specified by `split` for
-#'   `compareClusterResult`, e.g. `ONTOLOGY`, `category` or `intersect`.
-#' @param includeAll logical value passed to `fortify()` when selecting terms
-#'   from a `compareClusterResult`.
 #' @param pathway_id optional pathway ID for `mnseaResult` subnetworks.
 #' @param layer optional layer or layers to retain for `mnseaResult` plots.
 #' @param include_couplings logical, whether inter-layer coupling edges should
 #'   be kept in `mnseaResult` network plots.
 #' @param include_isolated logical, whether isolated feature nodes should be
 #'   kept in `mnseaResult` subnetworks.
-#' @param ... additional parameters
+#' @param ... additional parameters. Legacy `categorySize`, `circular`,
+#'   `colorEdge`, `pie`, `split`, and `includeAll` arguments are also accepted.
 #' @importFrom ggtangle cnetplot
 #' @seealso
 #' [cnetplot][ggtangle::cnetplot]
@@ -96,8 +90,25 @@ translate_legacy_category_size <- function(category_size) {
 }
 
 normalize_legacy_category_size_arg <- function(category_size_legacy, categorySizeBy, categorySizeBy_missing) {
+    if (
+        is.null(category_size_legacy) &&
+            is.character(categorySizeBy) &&
+            length(categorySizeBy) == 1
+    ) {
+        category_size_legacy <- categorySizeBy
+        categorySizeBy <- ~itemNum
+        categorySizeBy_missing <- TRUE
+    }
+
+    category_size_default <- FALSE
+    if (rlang::is_formula(categorySizeBy)) {
+        category_size_default <- identical(
+            rlang::expr_text(rlang::f_rhs(categorySizeBy)),
+            "itemNum"
+        )
+    }
     if (!is.null(category_size_legacy)) {
-        if (!categorySizeBy_missing) {
+        if (!categorySizeBy_missing && !category_size_default) {
             stop("Use either `categorySize` or `categorySizeBy`, not both.")
         }
         categorySizeBy <- translate_legacy_category_size(category_size_legacy)
@@ -121,7 +132,6 @@ cnetplot.enrichResult <- function(
     size_item = 1,
     color_edge = "grey",
     size_edge = .5,
-    categorySize = NULL,
     categorySizeBy = ~itemNum,
     node_label = "all",
     node_label_size = NULL,
@@ -129,22 +139,19 @@ cnetplot.enrichResult <- function(
     fc_threshold = NULL,
     hilight = "none",
     hilight_alpha = .3,
-    circular = FALSE,
-    colorEdge = FALSE,
     ...
 ) {
     plot_data <- prepare_cnetplot_data(x, showCategory, foldChange)
 
-    args <- c(
-        list(circular = circular, colorEdge = colorEdge),
-        list(...)
-    )
+    args <- list(...)
+    category_size_legacy <- args$categorySize
+    args$categorySize <- NULL
     legacy_args <- normalize_cnetplot_legacy_args(args, layout, color_edge)
     args <- legacy_args$args
     layout <- legacy_args$layout
     color_edge <- legacy_args$color_edge
     categorySizeBy <- normalize_legacy_category_size_arg(
-        category_size_legacy = categorySize,
+        category_size_legacy = category_size_legacy,
         categorySizeBy = categorySizeBy,
         categorySizeBy_missing = missing(categorySizeBy)
     )
@@ -561,7 +568,6 @@ cnetplot.mnseaResult <- function(
 }
 
 #' @rdname cnetplot
-#' @param pie one of 'equal' or 'Count' to set the slice ratio of the pies
 #' @method cnetplot compareClusterResult
 #' @export
 cnetplot.compareClusterResult <- function(
@@ -574,30 +580,30 @@ cnetplot.compareClusterResult <- function(
     size_item = 1,
     color_edge = "grey",
     size_edge = .5,
-    categorySize = NULL,
     categorySizeBy = ~itemNum,
     node_label = "all",
+    node_label_size = NULL,
     foldChange = NULL,
     fc_threshold = NULL,
     hilight = "none",
     hilight_alpha = .3,
-    pie = "equal",
-    circular = FALSE,
-    colorEdge = FALSE,
-    split = NULL,
-    includeAll = TRUE,
     ...
 ) {
-    args <- c(
-        list(circular = circular, colorEdge = colorEdge),
-        list(...)
-    )
+    args <- list(...)
+    category_size_legacy <- args$categorySize
+    args$categorySize <- NULL
+    pie <- if (is.null(args$pie)) "equal" else args$pie
+    split <- if (is.null(args$split)) NULL else args$split
+    includeAll <- if (is.null(args$includeAll)) TRUE else args$includeAll
+    args$pie <- NULL
+    args$split <- NULL
+    args$includeAll <- NULL
     legacy_args <- normalize_cnetplot_legacy_args(args, layout, color_edge)
     args <- legacy_args$args
     layout <- legacy_args$layout
     color_edge <- legacy_args$color_edge
     categorySizeBy <- normalize_legacy_category_size_arg(
-        category_size_legacy = categorySize,
+        category_size_legacy = category_size_legacy,
         categorySizeBy = categorySizeBy,
         categorySizeBy_missing = missing(categorySizeBy)
     )
@@ -659,7 +665,8 @@ add_node_pie <- function(
     pie = "equal",
     category_scale = 1,
     item_scale = 1,
-    category_size = NULL
+    category_size = NULL,
+    show_size_legend = TRUE
 ) {
     require_suggested('tidyr', 'for `cnetplot()`.')
 
@@ -743,7 +750,7 @@ add_node_pie <- function(
         coord_fixed() +
         guides(size = "none")
 
-    if (nrow(d2) > 0 && any(dd$pathway_radius > 0)) {
+    if (show_size_legend && nrow(d2) > 0 && any(dd$pathway_radius > 0)) {
         p <- p + scatterpie::geom_scatterpie_legend(
             unique(dd$pathway_radius),
             x = min(d2$x),

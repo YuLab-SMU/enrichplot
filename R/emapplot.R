@@ -23,6 +23,7 @@ setMethod(
         clusterFunction = stats::kmeans,
         nWords = 4,
         nCluster = NULL,
+        show_category_size_legend = TRUE,
         ...
     ) {
         emapplot_internal(
@@ -45,6 +46,7 @@ setMethod(
             clusterFunction = clusterFunction,
             nWords = nWords,
             nCluster = nCluster,
+            show_category_size_legend = show_category_size_legend,
             ...
         )
     }
@@ -75,6 +77,7 @@ setMethod(
         clusterFunction = stats::kmeans,
         nWords = 4,
         nCluster = NULL,
+        show_category_size_legend = TRUE,
         ...
     ) {
         emapplot_internal(
@@ -97,6 +100,7 @@ setMethod(
             clusterFunction = clusterFunction,
             nWords = nWords,
             nCluster = nCluster,
+            show_category_size_legend = show_category_size_legend,
             ...
         )
     }
@@ -127,6 +131,7 @@ setMethod(
         clusterFunction = stats::kmeans,
         nWords = 4,
         nCluster = NULL,
+        show_category_size_legend = TRUE,
         ...
     ) {
         emapplot_internal(
@@ -149,6 +154,7 @@ setMethod(
             clusterFunction = clusterFunction,
             nWords = nWords,
             nCluster = nCluster,
+            show_category_size_legend = show_category_size_legend,
             ...
         )
     }
@@ -179,6 +185,7 @@ setMethod(
         clusterFunction = stats::kmeans,
         nWords = 4,
         nCluster = NULL,
+        show_category_size_legend = TRUE,
         ...
     ) {
         emapplot_internal(
@@ -201,6 +208,7 @@ setMethod(
             clusterFunction = clusterFunction,
             nWords = nWords,
             nCluster = nCluster,
+            show_category_size_legend = show_category_size_legend,
             ...
         )
     }
@@ -231,6 +239,8 @@ setMethod(
 #' @param nWords Numeric, the number of words in the cluster tags, the default value is 4.
 #' @param nCluster Numeric, the number of clusters,
 #' the default value is square root of the number of nodes.
+#' @param show_category_size_legend Logical, whether to draw the category-size
+#'   annotation legend for compareCluster pie charts.
 #' @importFrom ggplot2 scale_size
 #' @importFrom ggtangle geom_edge
 #' @importFrom ggrepel geom_text_repel
@@ -400,7 +410,8 @@ emapplot_internal <- function(
     label_format = 30,
     clusterFunction = stats::kmeans,
     nWords = 4,
-    nCluster = NULL
+    nCluster = NULL,
+    show_category_size_legend = TRUE
 ) {
     if (inherits(x, 'compareClusterResult')) {
         gg <- graph_from_compareClusterResult(
@@ -449,7 +460,13 @@ emapplot_internal <- function(
     }
 
     if (inherits(x, 'compareClusterResult')) {
-        p <- add_node_pie(p, gg$data, pie, category_scale = size_category)
+        p <- add_node_pie(
+            p,
+            gg$data,
+            pie,
+            category_scale = size_category,
+            show_size_legend = show_category_size_legend
+        )
     } else {
         if (color %in% names(gg$result)) {
             color_scale <- switch(

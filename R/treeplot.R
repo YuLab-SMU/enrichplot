@@ -397,6 +397,11 @@ add_cluster_panel <- function(
     } else if (cluster_panel == "dotplot") {
         # Add dotplot panel
         require_suggested('ggtreeExtra', 'for `treeplot(cluster_panel = \"dotplot\")`.')
+        ggplot2_attached <- "package:ggplot2" %in% search()
+        if (!ggplot2_attached) {
+            suppressPackageStartupMessages(base::library("ggplot2"))
+            on.exit(base::detach("package:ggplot2"), add = TRUE)
+        }
         dotdata <- as.data.frame(x)
         pData <- as.data.frame(p$data)
         paths <- pData$label[order(pData$y, decreasing = TRUE)]
@@ -408,11 +413,11 @@ add_cluster_panel <- function(
             ggnewscale::new_scale_colour() +
             ggtreeExtra::geom_fruit(
                 data = dotdata,
-                geom = geom_point,
+                geom = "geom_point",
                 mapping = aes(
-                    x = Cluster,
-                    y = Description,
-                    size = Count,
+                    x = !!sym("Cluster"),
+                    y = !!sym("Description"),
+                    size = !!sym("Count"),
                     color = .data[[color]]
                 ),
                 pwidth = 0.06 * ncol(ID_Cluster_mat),
@@ -657,7 +662,7 @@ annotate_tree_splits <- function(p, split_var) {
 
     for (node in internal_nodes) {
         child_nodes <- as.character(pdata$node[pdata$parent == node])
-        child_splits <- unique(na.omit(node_split[child_nodes]))
+        child_splits <- unique(stats::na.omit(node_split[child_nodes]))
         node_split[as.character(node)] <- if (length(child_splits) == 1) {
             child_splits
         } else {

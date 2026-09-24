@@ -644,8 +644,29 @@ test_that("gseaplot2 hit bins follow ranked-list order", {
     expect_equal(rects$xmax, c(2, 3, 4, 11))
 })
 
-test_that("hplot runs", {
-    expect_error(hplot(make_rich_gsea_result(), geneSetID = 1), NA)
+test_that("hplot keeps readable facet labels and running-score axes", {
+    p <- hplot(make_rich_gsea_result(), geneSetID = 1:2)
+    expect_error(ggplot2::ggplot_build(p), NA)
+    expect_identical(p$facet$params$switch, "y")
+})
+
+test_that("pmcplot accepts deterministic local trend data", {
+    years <- 2018:2020
+    fixture <- expand.grid(
+        query = c("term A", "term B"),
+        year = years,
+        KEEP.OUT.ATTRS = FALSE,
+        stringsAsFactors = FALSE
+    )
+    fixture$all_hits <- 100 + fixture$year - 2018
+    fixture$query_hits <- 10 + match(fixture$query, c("term A", "term B"))
+
+    expect_error(
+        ggplot2::ggplot_build(
+            pmcplot(c("term A", "term B"), years, data = fixture)
+        ),
+        NA
+    )
 })
 
 test_that("gseadist runs", {

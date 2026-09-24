@@ -51,6 +51,7 @@ Suggests:
     grDevices,
     gridExtra,
     gson,
+    Matrix,
     org.Hs.eg.db,
     knitr,
     rmarkdown,

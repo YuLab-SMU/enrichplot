@@ -1,5 +1,11 @@
 # enrichplot 1.99.6
 
++ fix `cnetplot()` S3 generic/method consistency under `R CMD check`: the `enrichResult`, `gseaResult` and `compareClusterResult` methods now match the current `ggtangle::cnetplot()` signature while retaining legacy controls such as `categorySize`, `circular`, `colorEdge`, `pie`, `split` and `includeAll` through `...` (2026-09-24, Thu)
++ fix `treeplot(cluster_panel = "dotplot")` with current `ggtreeExtra`: the fruit layer now uses the geometry name and mappings expected by `ggtreeExtra`, and the method works when `ggplot2` is not attached (2026-09-24, Thu)
++ fix `hplot()` failures when `ggplot2` is not attached: `expansion()` is now called through the `ggplot2` namespace (2026-09-24, Thu)
++ make external-result importers citation-neutral: `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()` and `import_fgsea()` now display imported-result summaries without claiming a `clusterProfiler` citation, and use supplied adjusted p-values or deterministic p-adjusted fallbacks for small tables (2026-09-24, Thu)
++ fix package checks for test fixtures by declaring the `Matrix` package used in `mnsea` mock results, and add regression coverage for the repaired plotting paths (2026-09-24, Thu)
+
 + `treeplot()`, `emapplot()` and `ssplot()` now explain a missing term-similarity matrix instead of failing with `no 'dimnames' attribute for array`: when `pairwise_termsim()` has not been run, the error now says so and shows the call to make. The existing `has_pairsim()` guard had been left unwired, so the cryptic crash was what users actually saw (2026-09-22, Tue)
 + `cnetplot()` now warns when none of the names in `foldChange` match the genes of the result (#177): the item nodes are drawn grey in that case, which is easily misread as "foldChange was ignored", so the mismatch is reported along with the expected ID style (2026-09-22, Tue)
 + fix `cnetplot()` `categorySizeBy` formulas for `compareClusterResult`: the legacy-argument shim forces the argument before it is captured, which left the quosure's environment empty, so every formula failed at draw time with `could not find function "-"`; the expression is now evaluated in the formula's own environment, so `categorySizeBy = ~-log10(p.adjust)` works again (2026-09-22, Tue)

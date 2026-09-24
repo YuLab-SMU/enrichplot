@@ -21,7 +21,6 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   size_item = 1,
   color_edge = "grey",
   size_edge = 0.5,
-  categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
   node_label_size = NULL,
@@ -29,8 +28,6 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   fc_threshold = NULL,
   hilight = "none",
   hilight_alpha = 0.3,
-  circular = FALSE,
-  colorEdge = FALSE,
   ...
 )
 
@@ -44,7 +41,6 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   size_item = 1,
   color_edge = "grey",
   size_edge = 0.5,
-  categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
   node_label_size = NULL,
@@ -52,8 +48,6 @@ prepare_cnetplot_data(x, showCategory, foldChange)
   fc_threshold = NULL,
   hilight = "none",
   hilight_alpha = 0.3,
-  circular = FALSE,
-  colorEdge = FALSE,
   ...
 )
 
@@ -98,18 +92,13 @@ prepare_mnsea_cnetplot_data(
   size_item = 1,
   color_edge = "grey",
   size_edge = 0.5,
-  categorySize = NULL,
   categorySizeBy = ~itemNum,
   node_label = "all",
+  node_label_size = NULL,
   foldChange = NULL,
   fc_threshold = NULL,
   hilight = "none",
   hilight_alpha = 0.3,
-  pie = "equal",
-  circular = FALSE,
-  colorEdge = FALSE,
-  split = NULL,
-  includeAll = TRUE,
   ...
 )
 }
@@ -134,8 +123,6 @@ prepare_mnsea_cnetplot_data(
 
 \item{size_edge}{relative size of edge}
 
-\item{categorySize}{deprecated compatibility alias for \code{categorySizeBy}.}
-
 \item{categorySizeBy}{An expression (e.g., \code{itemNum}, \code{p.adjust}) or a formula
 (e.g., \code{~ -log10(p.adjust)}) to set the category node size. For
 \code{compareClusterResult}, this controls the category pie size.}
@@ -152,11 +139,8 @@ the built-in label size is used.}
 
 \item{hilight_alpha}{transparency value for non-highlighted items}
 
-\item{circular}{logical, whether to arrange the network on a circular layout.}
-
-\item{colorEdge}{logical, whether to color edges by category membership.}
-
-\item{...}{additional parameters}
+\item{...}{additional parameters. Legacy \code{categorySize}, \code{circular},
+\code{colorEdge}, \code{pie}, \code{split}, and \code{includeAll} arguments are also accepted.}
 
 \item{pathway_id}{optional pathway ID for \code{mnseaResult} subnetworks.}
 
@@ -167,14 +151,6 @@ be kept in \code{mnseaResult} network plots.}
 
 \item{include_isolated}{logical, whether isolated feature nodes should be
 kept in \code{mnseaResult} subnetworks.}
-
-\item{pie}{one of 'equal' or 'Count' to set the slice ratio of the pies}
-
-\item{split}{apply \code{showCategory} to each category specified by \code{split} for
-\code{compareClusterResult}, e.g. \code{ONTOLOGY}, \code{category} or \code{intersect}.}
-
-\item{includeAll}{logical value passed to \code{fortify()} when selecting terms
-from a \code{compareClusterResult}.}
 }
 \description{
 Category-gene-network plot

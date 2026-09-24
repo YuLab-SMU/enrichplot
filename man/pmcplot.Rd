@@ -4,7 +4,7 @@
 \alias{pmcplot}
 \title{pmcplot}
 \usage{
-pmcplot(query, period, proportion = TRUE)
+pmcplot(query, period, proportion = TRUE, data = NULL)
 }
 \arguments{
 \item{query}{query terms}
@@ -12,6 +12,9 @@ pmcplot(query, period, proportion = TRUE)
 \item{period}{period of query in the unit of year}
 
 \item{proportion}{If TRUE, use query_hits/all_hits, otherwise use query_hits.}
+
+\item{data}{Optional data.frame with \code{query}, \code{year}, \code{query_hits}, and
+\code{all_hits} columns. When supplied, no Europe PMC request is made.}
 }
 \value{
 ggplot object
