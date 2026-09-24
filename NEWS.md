@@ -1,4 +1,4 @@
-# enrichplot 1.99.13
+# enrichplot 1.99.6
 
 + `treeplot()`, `emapplot()` and `ssplot()` now explain a missing term-similarity matrix instead of failing with `no 'dimnames' attribute for array`: when `pairwise_termsim()` has not been run, the error now says so and shows the call to make. The existing `has_pairsim()` guard had been left unwired, so the cryptic crash was what users actually saw (2026-09-22, Tue)
 + `cnetplot()` now warns when none of the names in `foldChange` match the genes of the result (#177): the item nodes are drawn grey in that case, which is easily misread as "foldChange was ignored", so the mismatch is reported along with the expected ID style (2026-09-22, Tue)
@@ -9,46 +9,28 @@
 + fix `ridgeplot()` for `mnseaResult` with small per-feature contributions: the undersized-gene-set guard (intended for gseaResult density estimation) no longer drops mnsea mechanism groups that only carry a few feature scores, so layered mnsea ridgeplots render again instead of aborting (2026-09-22, Tue)
 + `gseaplot2()`: `pvalue_table` now defaults to `NES` and `p.adjust` columns instead of two redundant p-value columns; columns remain fully configurable via `pvalue_table_columns` and row names can be suppressed with `pvalue_table_rownames = NULL` (2026-09-22, Tue)
 + `cnetplot()` supports `node_label_size` (#41): control the font size of the category/item node labels; defaults to the built-in size when `NULL` (backed by the same parameter in `ggtangle`)
-
-# enrichplot 1.99.12
-
 + guard `cnetplot()` compare-cluster pies across `showCategory` sizes (#284): add a regression test that exercises `pie = "count"` while increasing `showCategory`, ensuring term nodes expand consistently and both plots still build cleanly (2026-09-22, Tue)
-
-# enrichplot 1.99.11
-
 + guard `treeplot()` against tidytree helper renames (#249, #247): add a regression test that explicitly exercises the current tidytree namespace shape (private `.offspring.tbl_tree_item` without exported `offspring.tbl_tree_item`) while ensuring `treeplot()` still builds cleanly (2026-09-22, Tue)
-
-# enrichplot 1.99.10
-
-+ guard `dotplot()` compare-cluster labels against `geneRatio` regressions (#180): add a regression test that keeps `by = "geneRatio"` and `by = "count"` from reintroducing `NA` cluster labels in compare-cluster dotplots (2026-09-22, Tue)
-
-# enrichplot 1.99.9
-
-+ fix `treeplot()` split-aware faceting for GSEA results (#169): `split` is now carried into tree, tip, and clade metadata so `treeplot(..., split = ".sign") + facet_grid(. ~ .sign)` builds instead of dropping the faceting variable from every layer (2026-09-22, Tue)
-
-# enrichplot 1.99.8
-
-+ fix `treeplot()` cluster color assignment when `nCluster` reaches two digits (#171): cluster palettes and clade-label groups now follow numeric cluster ids instead of lexical ordering, so groups like `cluster_10` no longer steal `cluster_2` colors when the cluster count increases (2026-09-22, Tue)
-
-# enrichplot 1.99.7
-
-+ fix `emapplot()` compare-cluster pie nodes across ontologies (#228): ontology-specific terms that share the same `Description` now keep stable ID-backed labels all the way into pie-layer data alignment, so `compareCluster(..., ont = "ALL")` no longer collapses those nodes or breaks while building the pie overlay (2026-09-22, Tue)
-
-# enrichplot 1.99.6
-
-+ fix `goplot()` DAG construction for top-level GO terms: parent edges that point to the synthetic `all` root are now dropped before the graph is built, so plots that include terms such as `GO:0008150` no longer fail with `Some vertex names in \`d\` are not listed in \`vertices\`` (2026-09-22, Tue)
 
 # enrichplot 1.99.5
 
-+ fix `heatplot()` dot-mode p-value scaling: zero or non-positive gene p-values are now clamped to the smallest positive double before the reversed log-size transform is applied, so significance-sized dots no longer emit infinite-value warnings for exact-zero inputs (2026-09-22, Tue)
-+ fix `ridgeplot()` blank rows for undersized core gene sets (#288): pathways with fewer than three ranked values are now dropped before `geom_density_ridges()` is built, and the function now errors clearly when no selected pathway has enough values to estimate a density, so two-gene core sets no longer leave empty y-axis slots in the plot (2026-09-21, Mon)
++ guard `dotplot()` compare-cluster labels against `geneRatio` regressions (#180): add a regression test that keeps `by = "geneRatio"` and `by = "count"` from reintroducing `NA` cluster labels in compare-cluster dotplots (2026-09-22, Tue)
++ fix `treeplot()` split-aware faceting for GSEA results (#169): `split` is now carried into tree, tip, and clade metadata so `treeplot(..., split = ".sign") + facet_grid(. ~ .sign)` builds instead of dropping the faceting variable from every layer (2026-09-22, Tue)
++ fix `treeplot()` cluster color assignment when `nCluster` reaches two digits (#171): cluster palettes and clade-label groups now follow numeric cluster ids instead of lexical ordering, so groups like `cluster_10` no longer steal `cluster_2` colors when the cluster count increases (2026-09-22, Tue)
++ fix `emapplot()` compare-cluster pie nodes across ontologies (#228): ontology-specific terms that share the same `Description` now keep stable ID-backed labels all the way into pie-layer data alignment, so `compareCluster(..., ont = "ALL")` no longer collapses those nodes or breaks while building the pie overlay (2026-09-22, Tue)
+
 # enrichplot 1.99.4
 
-+ fix `cnetplot()` for `compareClusterResult` terms with duplicated descriptions (#279): category nodes now use stable ID-backed labels internally, so distinct terms that share the same `Description` are no longer merged into one network node, with regression coverage for the duplicated-label case (2026-09-21, Mon)
++ fix `goplot()` DAG construction for top-level GO terms: parent edges that point to the synthetic `all` root are now dropped before the graph is built, so plots that include terms such as `GO:0008150` no longer fail with `Some vertex names in \`d\` are not listed in \`vertices\`` (2026-09-22, Tue)
++ fix `heatplot()` dot-mode p-value scaling: zero or non-positive gene p-values are now clamped to the smallest positive double before the reversed log-size transform is applied, so significance-sized dots no longer emit infinite-value warnings for exact-zero inputs (2026-09-22, Tue)
++ fix `ridgeplot()` blank rows for undersized core gene sets (#288): pathways with fewer than three ranked values are now dropped before `geom_density_ridges()` is built, and the function now errors clearly when no selected pathway has enough values to estimate a density, so two-gene core sets no longer leave empty y-axis slots in the plot (2026-09-21, Mon)
+
 # enrichplot 1.99.3
 
++ fix `cnetplot()` for `compareClusterResult` terms with duplicated descriptions (#279): category nodes now use stable ID-backed labels internally, so distinct terms that share the same `Description` are no longer merged into one network node, with regression coverage for the duplicated-label case (2026-09-21, Mon)
 + fix `treeplot()` heatmap panels for `compareClusterResult`: the `cluster_panel = "heatMap"` path now calls `ggtree::gheatmap()` with the active tree plot object instead of treating it like a regular layer, so compare-cluster treeplots render again instead of failing with a missing `data` argument error (2026-09-21, Mon)
 + fix `treeplot()` dotplot panels for `compareClusterResult` (#232, #224): the `cluster_panel = "dotplot"` path now passes `ggtreeExtra::geom_fruit()` the plain term columns it expects, so compare-cluster treeplots render again on current `ggtreeExtra` builds instead of failing while decoding the `y` mapping (2026-09-21, Mon)
+
 # enrichplot 1.99.2
 
 + support importing results from external enrichment tools: `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()` and `import_fgsea()` map enrichr / g:Profiler / WebGestaltR / fgsea output tables to `enrichResult` / `gseaResult` objects that plug into the 'enrichplot' visualization functions; the 'enrichit' constructors `as_enrichResult()` / `as_gseaResult()` are re-exported for other table formats (2026-09-21, Mon)

@@ -167,3 +167,32 @@ test_that("imported results work with enrichplot visualization", {
     built <- lapply(plots, ggplot2::ggplot_build)
     expect_true(all(vapply(built, inherits, logical(1), "ggplot_built")))
 })
+
+test_that("external importers do not claim a clusterProfiler citation", {
+    db <- data.frame(
+        Term = "GO:0006915;;apoptotic process",
+        Overlap = "1/10",
+        P.value = 0.001,
+        Adjusted.P.value = 0.01,
+        Genes = "G1",
+        stringsAsFactors = FALSE
+    )
+    ora <- suppressWarnings(import_enrichr(db, gene = "G1"))
+
+    fgsea_result <- data.frame(
+        pathway = "P1", ES = 0.5, pval = 0.01,
+        stringsAsFactors = FALSE
+    )
+    gsea <- suppressWarnings(
+        import_fgsea(
+            fgsea_result,
+            stats = c(G1 = 1),
+            geneSets = list(P1 = "G1")
+        )
+    )
+
+    ora_output <- capture.output(show(ora))
+    gsea_output <- capture.output(show(gsea))
+    expect_false(any(grepl("clusterProfiler", ora_output, fixed = TRUE)))
+    expect_false(any(grepl("clusterProfiler", gsea_output, fixed = TRUE)))
+})
