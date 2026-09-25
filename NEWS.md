@@ -1,5 +1,6 @@
 # enrichplot 1.99.6
 
++ fix `hplot()` visual semantics by replacing the inaccurate ribbon/rug approximation with a pure `ggplot2` horizon-band implementation: four `BluGrn` score bands, minimum-origin scaling, stacked facet geometry and right-side term labels now match the historical `ggHoriPlot::geom_horizon(origin = "min", horizonscale = 4)` output without requiring `ggHoriPlot` (2026-09-24, Thu)
 + fix `cnetplot()` S3 generic/method consistency under `R CMD check`: the `enrichResult`, `gseaResult` and `compareClusterResult` methods now match the current `ggtangle::cnetplot()` signature while retaining legacy controls such as `categorySize`, `circular`, `colorEdge`, `pie`, `split` and `includeAll` through `...` (2026-09-24, Thu)
 + fix `treeplot(cluster_panel = "dotplot")` with current `ggtreeExtra`: the fruit layer now uses the geometry name and mappings expected by `ggtreeExtra`, and the method works when `ggplot2` is not attached (2026-09-24, Thu)
 + fix `hplot()` failures when `ggplot2` is not attached: `expansion()` is now called through the `ggplot2` namespace (2026-09-24, Thu)

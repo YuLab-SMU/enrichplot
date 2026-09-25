@@ -644,10 +644,28 @@ test_that("gseaplot2 hit bins follow ranked-list order", {
     expect_equal(rects$xmax, c(2, 3, 4, 11))
 })
 
-test_that("hplot keeps readable facet labels and running-score axes", {
-    p <- hplot(make_rich_gsea_result(), geneSetID = 1:2)
+test_that("hplot reproduces the ggHoriPlot horizon layout", {
+    x <- make_rich_gsea_result()
+    p <- hplot(x, geneSetID = 1:2)
     expect_error(ggplot2::ggplot_build(p), NA)
-    expect_identical(p$facet$params$switch, "y")
+    expect_null(p$facet$params$switch)
+    expect_length(p$layers, 1)
+
+    horizon <- enrichplot:::hplot_horizon_data(
+        enrichplot:::get_gsdata(x, geneSetID = 1:2),
+        horizonscale = 4
+    )
+    expect_equal(levels(horizon$band), paste0("ypos", 1:4))
+    expect_equal(
+        horizon$ymax[horizon$Description == "cell cycle phase transition" &
+            horizon$x == 4 & horizon$band == "ypos4"],
+        1
+    )
+    expect_equal(
+        horizon$ymax[horizon$Description == "immune response regulation" &
+            horizon$x == 1 & horizon$band == "ypos1"],
+        1
+    )
 })
 
 test_that("pmcplot accepts deterministic local trend data", {
