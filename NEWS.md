@@ -1,3 +1,7 @@
+# enrichplot 2.0.0
+
++ Bioconductor RELEASE_3_24 (2026-11-25, Wed)
+
 # enrichplot 1.99.8
 
 + `emapplot()` / `ssplot()` no longer require the suggested `ggforce` package,
